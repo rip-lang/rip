@@ -5,7 +5,7 @@ module Rip
   class Parser < Parslet::Parser
     root(:statements)
 
-    rule(:statement) { comment | expression >> spaces.maybe >> comment.maybe }
+    rule(:statement) { comment | expression >> spaces? >> comment.maybe }
     rule(:statements) { statement.repeat }
 
     rule(:comment) { (str('#') >> (eol.absent? >> any).repeat.as(:comment)) >> eol.maybe }
@@ -13,7 +13,7 @@ module Rip
     rule(:expression) { simple_expression }
     rule(:expression_terminator) { str(';') | eol }
 
-    rule(:simple_expression) { simple_expression_fancy >> spaces.maybe >> expression_terminator.maybe }
+    rule(:simple_expression) { simple_expression_fancy >> spaces? >> expression_terminator.maybe }
     rule(:simple_expression_fancy) { object }
 
     #---------------------------------------------
@@ -81,10 +81,13 @@ module Rip
 
     #---------------------------------------------
 
-    rule(:whitespace) { spaces | eols }
+    rule(:whitespace) { space | eol }
+    rule(:whitespaces) { whitespace.repeat(1) }
+    rule(:whitespaces?) { whitespaces.maybe }
 
     rule(:space) { str(' ') | str("\t") }
-    rule(:spaces) { space.repeat }
+    rule(:spaces) { space.repeat(1) }
+    rule(:spaces?) { spaces.maybe }
 
     rule(:eol) { str("\r\n") | str("\n") | str("\r") }
     rule(:eols) { eol.repeat }
