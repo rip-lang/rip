@@ -18,9 +18,11 @@ module Rip
 
     #---------------------------------------------
 
-    rule(:object) { simple_object }
+    rule(:object) { recursive_object | simple_object }
 
     rule(:simple_object) { nil_literal | boolean | numeric | character | string | regular_expression }
+
+    rule(:recursive_object) { key_value_pair | range | hash_literal | list }
 
     #---------------------------------------------
 
@@ -78,6 +80,36 @@ module Rip
 
     # TODO expand regular expression pattern
     rule(:regular_expression) { str('/') >> (str('/').absent? >> any).repeat.as(:regex) >> str('/') }
+
+    #---------------------------------------------
+
+    # TODO allow type restriction
+    rule(:key_value_pair) { simple_object.as(:key) >> spaces? >> str(':') >> spaces? >> object.as(:value) }
+
+    rule(:range) do
+      rangable_object = integer | character
+      # TODO capture exclusivity (two dots versus three)
+      rangable_object.as(:start) >> str('.').repeat(2, 3) >> rangable_object.as(:end)
+    end
+
+    # NOTE a hash is just a list with only key_value_pairs allowed in it
+    # TODO allow type restriction (to be passed on to key value pairs and list)
+    rule(:hash_literal) do
+      start = str('{') >> whitespaces?
+      # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil) at http://kschiess.github.com/parslet/parser.html
+      kvps = (key_value_pair >> (whitespaces? >> str(',') >> whitespaces? >> key_value_pair).repeat).repeat(0, nil)
+      finish = whitespaces? >> str('}')
+      start >> kvps.as(:hash) >> finish
+    end
+
+    # TODO allow type restriction
+    rule(:list) do
+      start = str('[') >> whitespaces?
+      # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil) at http://kschiess.github.com/parslet/parser.html
+      objects = (object >> (whitespaces? >> str(',') >> whitespaces? >> object).repeat).repeat(0, nil)
+      finish = whitespaces? >> str(']')
+      start >> objects.as(:list) >> finish
+    end
 
     #---------------------------------------------
 
