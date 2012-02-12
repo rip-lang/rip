@@ -1,0 +1,21 @@
+statement = 'cat' # statement is anything that responds to #to_string(), which is everything
+function = lambda () {
+  'hello!'
+}
+
+# no interpolation for single quoted strings
+'#{statement}'                                       # => '#{statement}'
+
+# full interpolation for double quoted strings, heredocs and system strings (`this is a system string`)
+# anything between #{ and } is interpreted as regular code (even lambdas) and the result is converted to a string via #to_string()
+"#{statement}"                                       # => 'cat'
+"#{function()}"                                      # => 'hello!'
+
+<<-STRING
+I say, '#{function()}'
+STRING
+# => "I say, 'hello!'\n"
+
+# deferred interpolation
+'#{function()} %{statement}' % [ :statement: 'dog' ] # => '#{function()} dog'
+"#{function()} %{statement}" % [ :statement: 'dog' ] # => 'hello! dog'

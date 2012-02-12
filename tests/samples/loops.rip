@@ -1,0 +1,31 @@
+# not sure how useful a for loop would be, but here is what it would look like
+#for (x in [ 1, 2, 3 ]) {
+#  # do stuff
+#}
+
+# or like this
+#for ([ 1, 2, 3 ]: x) {
+#  # do stuff
+#}
+
+# loop runs forever
+while (true) {
+  # do stuff
+}
+
+# loop never runs
+until (true) {
+  # do stuff
+
+  if (condition) {
+    next  # skip to next iteration
+  } else {
+    break # break out of loop
+  }
+}
+
+# post-fix example
+# loop runs once, then exits
+{
+  # do stuff
+} until (true)

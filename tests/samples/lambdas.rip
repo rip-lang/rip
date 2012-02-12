@@ -1,0 +1,25 @@
+# lambda is a keyword which defines a method literal
+# lambda may also be written as λ: they are equivalent
+# this evaluates to true
+[2, 4, 6] == [1, 2, 3].map(λ (number) {
+  number * 2
+})
+
+# qualified names may have special characters, such as ! and ?
+Object.another_member! = lambda () {}
+
+# 'Object' is a class object
+# new is not a keyword, but a class-level lambda
+# the following pairs are equivalent
+Object.new()
+#'Object.new'() # TODO find a better way
+
+# saves a callback to a variable
+constructor = Object.new
+
+# call the callback
+constructor()
+
+# TODO find a better way
+#constructor_name = 'Object.new'
+#constructor_name()

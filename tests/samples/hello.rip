@@ -1,0 +1,11 @@
+IO = Kernel.require('io')
+
+class {
+  initialize = lambda (name) {
+    receiver.name = name
+  }
+
+  greet = lambda {
+    IO.puts("Hello, #{receiver.name}!")
+  }
+}.new(:World).greet()

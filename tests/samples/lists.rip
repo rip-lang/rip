@@ -1,0 +1,30 @@
+Object = Kernel.require(:object)
+KVP = Kernel.require(:key_value_pair)
+String = Kernel.require(:string)
+
+
+# empty lists of type object
+[]<Object>
+[]
+
+# empty lists of type key-value pair (hash)
+# a hash is simply a list of key-value pairs
+# type arguments may be added to restrict the key-value pairs
+[]<KVP>
+[]<KVP<String, Object>>
+# these forms might be useful
+#{}
+#{}<String, Integer>
+
+# empty lists of type character (string)
+# a string is simply a list of characters
+[]<String>
+''
+""
+
+
+# some sample lists
+[ 1, 2, 3 ]
+[ 1, 2, 3, :xyz, Object.new ]
+:abc == [ :a, :b, :c ]<String>
+{ :a: 1, 42: :answer, :c: 'word' } == [ :a: 1, 42: :answer, :c: 'word' ]<KVP>

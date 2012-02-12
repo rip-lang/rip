@@ -1,0 +1,3 @@
+Kernel.require
+'rip'.reverse
+'rip'.upcase.downcase

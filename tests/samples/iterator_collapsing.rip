@@ -1,0 +1,37 @@
+# iterator lambdas get collapsed into a single iterator
+
+
+
+new = [ 1, 2, 3, 4 ].map(λ (n) {
+  n * 2
+}).map(λ (n) {
+  n * 2
+}).map(λ (n) {
+  n * 2
+})
+# new == [ 8, 16, 24, 32 ]
+
+new = []
+[ 1, 2, 3, 4 ].each(λ (n) {
+  r1 = n * 2
+  r2 = r1 * 2
+  new << (r2 * 2)
+})
+# new == [ 8, 16, 24, 32 ]
+
+
+
+new = [ 1, 2, 3, 4 ].where(λ (n) {
+  n.odd?
+}).map(λ (n) {
+  n * 2
+})
+# new == [ 16, 32 ]
+
+new = []
+[ 1, 2, 3, 4 ].each(λ (n) {
+  if (n.odd?) {
+    new << (n * 2)
+  }
+})
+# new == [ 16, 32 ]

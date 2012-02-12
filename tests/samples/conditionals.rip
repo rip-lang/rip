@@ -1,0 +1,46 @@
+true ? i_run_if_true() : i_run_if_false()
+
+if (true) {
+  # do stuff
+} elseif (true) {
+  # do other stuff
+} else {
+  # do other stuff
+}
+
+unless (true) {
+  # do stuff if false
+}
+
+# post-fix examples
+# do stuff if (true)
+# do stuff unless (true)
+
+# first case that matches something gets executed
+switch (something) {
+  case (1) {
+    # do something
+    next # continues to next case immediately (explicit fall-through)
+  }
+  case (2, 'two', 2234, variable_name, lambda_name()) {
+    # do something
+    break # break out of switch early
+    # do something
+  }
+  else {
+    # do something
+  }
+}
+
+# first case to evaluate to true gets executed (like passing true to switch)
+switch {
+  case (true) {
+    # do something
+  }
+  case (true) {
+    # do something
+  }
+  else {
+    # do something
+  }
+}
