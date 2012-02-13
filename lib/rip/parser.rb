@@ -6,14 +6,14 @@ module Rip
     root(:statements)
 
     rule(:statement) { comment | expression >> spaces? >> comment.maybe }
-    rule(:statements) { statement.repeat }
+    rule(:statements) { thing_list(statement, whitespaces?) }
 
     rule(:comment) { (str('#') >> (eol.absent? >> any).repeat.as(:comment)) >> eol.maybe }
 
     rule(:expression) { simple_expression }
     rule(:expression_terminator) { str(';') | eol }
 
-    rule(:simple_expression) { simple_expression_fancy >> spaces? >> expression_terminator.maybe }
+    rule(:simple_expression) { simple_expression_fancy >> spaces? >> expression_terminator? }
     rule(:simple_expression_fancy) { object }
 
     #---------------------------------------------
@@ -103,13 +103,7 @@ module Rip
     end
 
     # TODO allow type restriction
-    rule(:list) do
-      start = str('[') >> whitespaces?
-      # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil) at http://kschiess.github.com/parslet/parser.html
-      objects = (object >> (whitespaces? >> str(',') >> whitespaces? >> object).repeat).repeat(0, nil)
-      finish = whitespaces? >> str(']')
-      start >> objects.as(:list) >> finish
-    end
+    rule(:list) { surround_with('[', thing_list(object, str(',')).as(:list), ']') }
 
     #---------------------------------------------
 
@@ -128,6 +122,15 @@ module Rip
 
     def parse_file(path)
       parse(path.read)
+    end
+
+    # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil) at http://kschiess.github.com/parslet/parser.html
+    def thing_list(thing, separator)
+      (thing >> (whitespaces? >> (separator.is_a?(String) ? str(separator) : separator) >> whitespaces? >> thing).repeat).repeat(0, nil)
+    end
+
+    def surround_with(left, center, right = left)
+      str(left) >> whitespaces? >> center >> whitespaces? >> str(right)
     end
   end
 end

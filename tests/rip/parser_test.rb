@@ -58,4 +58,38 @@ class ParserTest < TestCase
       assert_equal space, parser.eols.parse(space)
     end
   end
+
+  def test_surround_with
+    surrounded = parser.surround_with('(', parser.object.as(:object), ')').parse('(:one)')
+    assert_equal 'one', surrounded[:object][:string]
+
+    rip_list = <<-RIP_LIST
+[
+  :one
+]
+    RIP_LIST
+    list = parser.surround_with('[', parser.object.as(:list), ']').parse(rip_list.strip)
+    assert_equal 'one', list[:list][:string]
+
+    rip_block = <<-RIP_LIST
+{
+  # comment
+}
+    RIP_LIST
+    block = parser.surround_with('{', parser.statement.as(:body), '}').parse(rip_block.strip)
+    assert_equal ' comment', block[:body][:comment]
+  end
+
+  def test_thing_list
+    empty = parser.thing_list(parser.object, parser.whitespaces?).as(:list).parse('')
+    assert_equal [], empty[:list]
+
+    single = parser.thing_list(parser.object, ',').as(:label).parse(':single')
+    assert_equal 'single', single[:label].first[:string]
+
+    full = parser.thing_list(parser.integer, '**').as(:numbers).parse('1 ** 2 ** 3')
+    assert_equal '1', full[:numbers][0][:integer]
+    assert_equal '2', full[:numbers][1][:integer]
+    assert_equal '3', full[:numbers][2][:integer]
+  end
 end
