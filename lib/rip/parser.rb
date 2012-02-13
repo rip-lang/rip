@@ -61,7 +61,7 @@ module Rip
     # NOTE a string is just a list with characters allowed in it
     rule(:string) { symbol_string | single_quoted_string | double_quoted_string | here_doc}
 
-    # FIXME should match most printable characters except whitespace
+    # FIXME should match most (all?) non-whitespace characters
     rule(:symbol_string) { str(':') >> match['a-zA-Z_'].repeat(1).as(:string) }
 
     rule(:single_quoted_string) { str('\'') >> (str('\'').absent? >> any).repeat.as(:string) >> str('\'') }
