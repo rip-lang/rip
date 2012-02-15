@@ -107,6 +107,10 @@ module Rip
 
     #---------------------------------------------
 
+    rule(:block) { surround_with('{', statements.as(:body), '}') }
+
+    #---------------------------------------------
+
     rule(:whitespace) { space | eol }
     rule(:whitespaces) { whitespace.repeat(1) }
     rule(:whitespaces?) { whitespaces.maybe }
