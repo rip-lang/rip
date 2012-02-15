@@ -14,6 +14,7 @@ module Rip
 
     rule(:expression) { simple_expression }
     rule(:expression_terminator) { str(';') | eol }
+    rule(:expression_terminator?) { expression_terminator.maybe }
 
     rule(:simple_expression) { simple_expression_fancy >> spaces? >> expression_terminator? }
     rule(:simple_expression_fancy) { object }
