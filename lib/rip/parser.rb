@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'parslet'
 require 'pathname'
 
@@ -108,6 +110,17 @@ module Rip
     #---------------------------------------------
 
     rule(:block) { surround_with('{', statements.as(:body), '}') }
+
+    #---------------------------------------------
+
+    rule(:variable) { variable_name.as(:variable) }
+
+    # FIXME simple_names should not be so strict
+    # any utf-8 squence of characters which does not begin with a digit may be used as an variable_name except for the following:
+    # comma, semicolon, period, parenthesis, brace, whitespace
+    rule(:variable_name) { variable_name_part.repeat(1) >> (variable_name_part | digit).repeat }
+
+    rule(:variable_name_part) { match['A-Za-z_+\-*/=!?<>π&$~%'] }
 
     #---------------------------------------------
 

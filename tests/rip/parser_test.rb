@@ -108,4 +108,18 @@ class ParserTest < TestCase
     assert_equal ' comment', block[:body].first[:comment]
     assert_equal 'words', block[:body].last[:string]
   end
+
+  def test_variable
+    [
+      'name',
+      'Person',
+      '==',
+      'save!',
+      'valid?',
+      'long_var-name',
+      '*/-+<>&$~%'
+    ].each do |variable|
+      assert_equal variable, parser.variable.parse(variable)[:variable]
+    end
+  end
 end
