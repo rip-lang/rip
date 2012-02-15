@@ -122,4 +122,10 @@ class ParserTest < TestCase
       assert_equal variable, parser.variable.parse(variable)[:variable]
     end
   end
+
+  def test_assignment
+    assignment = parser.assignment.parse('favorite_language = :rip')
+    assert_equal 'favorite_language', assignment[:assignment][:variable]
+    assert_equal 'rip', assignment[:assignment][:value][:string]
+  end
 end

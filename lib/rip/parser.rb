@@ -110,6 +110,9 @@ module Rip
 
     #---------------------------------------------
 
+    # TODO consider multiple assignment
+    rule(:assignment) { (variable >> spaces >> str('=') >> spaces >> expression.as(:value)).as(:assignment) }
+
     rule(:block) { surround_with('{', statements.as(:body), '}') }
 
     #---------------------------------------------
