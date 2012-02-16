@@ -21,11 +21,13 @@ module Rip
 
     #---------------------------------------------
 
-    rule(:object) { recursive_object | simple_object }
+    rule(:object) { recursive_object | simple_object | structural_object | variable }
 
     rule(:simple_object) { nil_literal | boolean | numeric | character | string | regular_expression }
 
     rule(:recursive_object) { key_value_pair | range | hash_literal | list }
+
+    rule(:structural_object) { class_literal | lambda_literal }
 
     #---------------------------------------------
 
@@ -90,7 +92,7 @@ module Rip
     rule(:key_value_pair) { simple_object.as(:key) >> spaces? >> str(':') >> spaces? >> object.as(:value) }
 
     rule(:range) do
-      rangable_object = integer | character
+      rangable_object = integer | character | variable
       # TODO capture exclusivity (two dots versus three)
       rangable_object.as(:start) >> str('.').repeat(2, 3) >> rangable_object.as(:end)
     end
@@ -107,6 +109,18 @@ module Rip
 
     # TODO allow type restriction
     rule(:list) { surround_with('[', thing_list(object, str(',')).as(:list), ']') }
+
+    #---------------------------------------------
+
+    rule(:class_literal) do
+      (str('class') >> whitespaces? >> surround_with('(', thing_list(object, str(',')).as(:ancestors).maybe, ')').maybe >> whitespaces? >> block >> expression_terminator?).as(:class)
+    end
+
+    # NOTE 'λ' is "\xCE\xBB" in ASCII
+    rule(:lambda_literal) do
+      parameters = surround_with('(', thing_list((assignment | object), str(',')).as(:parameters), ')')
+      ((str('lambda') | str('λ')) >> whitespaces? >> parameters.maybe >> whitespaces? >> block >> expression_terminator?).as(:lambda)
+    end
 
     #---------------------------------------------
 

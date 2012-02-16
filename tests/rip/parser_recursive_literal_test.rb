@@ -11,6 +11,10 @@ class ParserRecursiveLiteralTest < TestCase
     range = parser.range.parse('1..3')
     assert_equal '1', range[:start][:integer]
     assert_equal '3', range[:end][:integer]
+
+    range = parser.range.parse('1..age')
+    assert_equal '1', range[:start][:integer]
+    assert_equal 'age', range[:end][:variable]
   end
 
   def test_hash_literal
