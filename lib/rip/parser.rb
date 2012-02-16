@@ -93,8 +93,7 @@ module Rip
 
     rule(:range) do
       rangable_object = integer | character | variable
-      # TODO capture exclusivity (two dots versus three)
-      rangable_object.as(:start) >> str('.').repeat(2, 3) >> rangable_object.as(:end)
+      rangable_object.as(:start) >> str('..') >> str('.').maybe.as(:exclusivity) >> rangable_object.as(:end)
     end
 
     # NOTE a hash is just a list with only key_value_pairs allowed in it
