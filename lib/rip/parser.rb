@@ -21,7 +21,7 @@ module Rip
 
     #---------------------------------------------
 
-    rule(:object) { recursive_object | simple_object | structural_object | variable }
+    rule(:object) { recursive_object | simple_object | structural_object | reference }
 
     rule(:simple_object) { nil_literal | boolean | numeric | character | string | regular_expression }
 
@@ -92,7 +92,7 @@ module Rip
     rule(:key_value_pair) { simple_object.as(:key) >> spaces? >> str(':') >> spaces? >> object.as(:value) }
 
     rule(:range) do
-      rangable_object = integer | character | variable
+      rangable_object = integer | character | reference
       rangable_object.as(:start) >> str('..') >> str('.').maybe.as(:exclusivity) >> rangable_object.as(:end)
     end
 
@@ -124,20 +124,20 @@ module Rip
     #---------------------------------------------
 
     # TODO consider multiple assignment
-    rule(:assignment) { (variable >> spaces >> str('=') >> spaces >> expression.as(:value)).as(:assignment) }
+    rule(:assignment) { (reference >> spaces >> str('=') >> spaces >> expression.as(:value)).as(:assignment) }
 
     rule(:block) { surround_with('{', statements.as(:body), '}') }
 
     #---------------------------------------------
 
-    rule(:variable) { variable_name.as(:variable) }
+    rule(:reference) { reference_name.as(:reference) }
 
     # FIXME simple_names should not be so strict
-    # any utf-8 squence of characters which does not begin with a digit may be used as an variable_name except for the following:
+    # any utf-8 squence of characters which does not begin with a digit may be used as an reference_name except for the following:
     # comma, semicolon, period, parenthesis, brace, whitespace
-    rule(:variable_name) { variable_name_part.repeat(1) >> (variable_name_part | digit).repeat }
+    rule(:reference_name) { reference_name_part.repeat(1) >> (reference_name_part | digit).repeat }
 
-    rule(:variable_name_part) { match['A-Za-z_+\-*/=!?<>π&$~%'] }
+    rule(:reference_name_part) { match['A-Za-z_+\-*/=!?<>π&$~%'] }
 
     #---------------------------------------------
 

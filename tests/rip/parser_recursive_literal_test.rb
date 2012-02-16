@@ -15,7 +15,7 @@ class ParserRecursiveLiteralTest < TestCase
 
     range = parser.range.parse('1...age')
     assert_equal '1', range[:start][:integer]
-    assert_equal 'age', range[:end][:variable]
+    assert_equal 'age', range[:end][:reference]
     assert_equal '.', range[:exclusivity]
   end
 

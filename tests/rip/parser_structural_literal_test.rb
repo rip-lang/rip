@@ -29,20 +29,20 @@ class ParserStructuralLiteralTest < TestCase
   def test_lambda_with_parameter
     lamb = parser.lambda_literal.parse('lambda(name) {}')
     assert_equal 1, lamb[:lambda][:parameters].count
-    assert_equal 'name', lamb[:lambda][:parameters].first[:variable]
+    assert_equal 'name', lamb[:lambda][:parameters].first[:reference]
   end
 
   def test_lambda_with_parameter_default
     lamb = parser.lambda_literal.parse('lambda (name = :rip) {}')
     assert_equal 1, lamb[:lambda][:parameters].count
-    assert_equal 'name', lamb[:lambda][:parameters].first[:assignment][:variable]
+    assert_equal 'name', lamb[:lambda][:parameters].first[:assignment][:reference]
     assert_equal 'rip', lamb[:lambda][:parameters].first[:assignment][:value][:string]
   end
 
   def test_lambda_with_parameter_default
     lamb = parser.lambda_literal.parse('lambda (platform, name = :rip) {}')
     assert_equal 2, lamb[:lambda][:parameters].count
-    assert_equal 'platform', lamb[:lambda][:parameters].first[:variable]
-    assert_equal 'name', lamb[:lambda][:parameters].last[:assignment][:variable]
+    assert_equal 'platform', lamb[:lambda][:parameters].first[:reference]
+    assert_equal 'name', lamb[:lambda][:parameters].last[:assignment][:reference]
   end
 end

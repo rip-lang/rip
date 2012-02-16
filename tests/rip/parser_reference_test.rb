@@ -1,23 +1,23 @@
 require_relative '../test_case'
 
-class ParserVariableLiteralTest < TestCase
-  def test_variable
+class ParserReferenceLiteralTest < TestCase
+  def test_reference
     [
       'name',
       'Person',
       '==',
       'save!',
       'valid?',
-      'long_var-name',
+      'long_ref-name',
       '*/-+<>&$~%'
-    ].each do |variable|
-      assert_equal variable, parser.variable.parse(variable)[:variable]
+    ].each do |reference|
+      assert_equal reference, parser.reference.parse(reference)[:reference]
     end
   end
 
   def test_assignment
     assignment = parser.assignment.parse('favorite_language = :rip')
-    assert_equal 'favorite_language', assignment[:assignment][:variable]
+    assert_equal 'favorite_language', assignment[:assignment][:reference]
     assert_equal 'rip', assignment[:assignment][:value][:string]
   end
 end
