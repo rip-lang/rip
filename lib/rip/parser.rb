@@ -135,9 +135,11 @@ module Rip
     # FIXME simple_names should not be so strict
     # any utf-8 squence of characters which does not begin with a digit may be used as an reference_name except for the following:
     # comma, semicolon, period, parenthesis, brace, whitespace
-    rule(:reference_name) { reference_name_part.repeat(1) >> (reference_name_part | digit).repeat }
+    rule(:reference_name) do
+      reference_name_part = match['A-Za-z_+\-*/=!?<>π&$~%']
+      reference_name_part.repeat(1) >> (reference_name_part | digit).repeat
+    end
 
-    rule(:reference_name_part) { match['A-Za-z_+\-*/=!?<>π&$~%'] }
 
     #---------------------------------------------
 
