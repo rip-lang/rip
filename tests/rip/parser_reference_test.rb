@@ -13,6 +13,16 @@ class ParserReferenceLiteralTest < TestCase
     ].each do |reference|
       assert_equal reference, parser.reference.parse(reference)[:reference]
     end
+
+    [
+      'one.two',
+      '6teen',
+      'rip rocks'
+    ].each do |reference|
+      assert_raises Parslet::UnconsumedInput, Parslet::ParseFailed do
+        parser.reference.parse(reference)
+      end
+    end
   end
 
   def test_assignment
