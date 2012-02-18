@@ -27,7 +27,7 @@ class ParserStructuralLiteralTest < TestCase
   end
 
   def test_lambda_with_parameter
-    lamb = parser.lambda_literal.parse('lambda(name) {}')
+    lamb = parser.lambda_literal.parse('lambda (name) {}')
     assert_equal 1, lamb[:lambda][:parameters].count
     assert_equal 'name', lamb[:lambda][:parameters].first[:reference]
   end
