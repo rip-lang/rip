@@ -9,7 +9,8 @@ class ParserReferenceLiteralTest < TestCase
       'save!',
       'valid?',
       'long_ref-name',
-      '*/-+<>&$~%'
+      '*/-+<>&$~%',
+      'one_9'
     ].each do |reference|
       assert_equal reference, parser.reference.parse(reference)[:reference]
     end
