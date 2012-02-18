@@ -136,8 +136,8 @@ module Rip
     # any utf-8 squence of characters which does not begin with a digit may be used as an reference_name except for the following:
     # comma, semicolon, period, parenthesis, brace, whitespace
     rule(:reference_name) do
-      reference_name_part = match['A-Za-z_+\-*/=!?<>π&$~%']
-      reference_name_part.repeat(1) >> (reference_name_part | digit).repeat
+      legal = match['A-Za-z_+\-*/=!?<>π&$~%']
+      legal.repeat(1) >> (legal | digit).repeat
     end
 
 
