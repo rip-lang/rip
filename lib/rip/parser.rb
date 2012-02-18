@@ -130,10 +130,10 @@ module Rip
 
     #---------------------------------------------
 
-    rule(:reference) { reference_name.as(:reference) }
+    rule(:reference) { simple_reference.as(:reference) }
 
     # http://www.rubular.com/r/sTue8ePXW9
-    rule(:reference_name) do
+    rule(:simple_reference) do
       legal = match['^.,;\d\s()\[\]{}']
       legal.repeat(1) >> (legal | digit).repeat
     end
