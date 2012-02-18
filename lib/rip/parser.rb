@@ -117,7 +117,7 @@ module Rip
 
     # NOTE 'λ' is "\xCE\xBB" in ASCII
     rule(:lambda_literal) do
-      parameters = surround_with('(', thing_list((assignment | object), str(',')).as(:parameters), ')')
+      parameters = surround_with('(', thing_list((assignment | simple_reference.as(:reference)), str(',')).as(:parameters), ')')
       ((str('lambda') | str('λ')) >> whitespaces? >> parameters.maybe >> whitespaces? >> block >> expression_terminator?).as(:lambda)
     end
 
