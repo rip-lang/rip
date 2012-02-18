@@ -132,11 +132,9 @@ module Rip
 
     rule(:reference) { reference_name.as(:reference) }
 
-    # FIXME simple_names should not be so strict
-    # any utf-8 squence of characters which does not begin with a digit may be used as an reference_name except for the following:
-    # comma, semicolon, period, parenthesis, brace, whitespace
+    # http://www.rubular.com/r/sTue8ePXW9
     rule(:reference_name) do
-      legal = match['A-Za-z_+\-*/=!?<>π&$~%']
+      legal = match['^.,;\d\s()\[\]{}']
       legal.repeat(1) >> (legal | digit).repeat
     end
 
