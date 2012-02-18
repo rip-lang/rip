@@ -39,7 +39,7 @@ class ParserStructuralLiteralTest < TestCase
     assert_equal 'rip', lamb[:lambda][:parameters].first[:assignment][:value][:string]
   end
 
-  def test_lambda_with_parameter_default
+  def test_lambda_with_parameter_and_parameter_default
     lamb = parser.lambda_literal.parse('lambda (platform, name = :rip) {}')
     assert_equal 2, lamb[:lambda][:parameters].count
     assert_equal 'platform', lamb[:lambda][:parameters].first[:reference]
