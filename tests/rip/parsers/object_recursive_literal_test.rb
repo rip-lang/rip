@@ -1,6 +1,6 @@
-require_relative '../test_case'
+require_relative '../../test_case'
 
-class ParserRecursiveLiteralTest < TestCase
+class ParsersObjectRecursiveLiteralTest < TestCase
   def test_key_value_pair
     kvp = parser.key_value_pair.parse('5: \'five\'')
     assert_equal '5', kvp[:key][:integer]

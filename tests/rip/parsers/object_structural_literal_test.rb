@@ -1,6 +1,6 @@
-require_relative '../test_case'
+require_relative '../../test_case'
 
-class ParserStructuralLiteralTest < TestCase
+class ParsersObjectStructuralLiteralTest < TestCase
   def test_class
     klass = parser.class_literal.parse('class {}')
     assert_nil klass[:class][:ancestors]

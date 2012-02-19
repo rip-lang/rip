@@ -1,6 +1,6 @@
-require_relative '../test_case'
+require_relative '../../test_case'
 
-class ParserReferenceLiteralTest < TestCase
+class ParsersObjectReferenceLiteralTest < TestCase
   def test_reference
     [
       'name',
