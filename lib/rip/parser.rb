@@ -112,7 +112,7 @@ module Rip
     #---------------------------------------------
 
     rule(:class_literal) do
-      ancestors = surround_with('(', thing_list(object, str(',')).as(:ancestors).maybe, ')')
+      ancestors = surround_with('(', thing_list((class_literal | reference), str(',')).as(:ancestors).maybe, ')')
       (str('class') >> whitespaces? >> ancestors.maybe >> whitespaces? >> block >> expression_terminator?).as(:class)
     end
 
