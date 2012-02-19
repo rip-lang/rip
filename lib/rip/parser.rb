@@ -112,7 +112,8 @@ module Rip
     #---------------------------------------------
 
     rule(:class_literal) do
-      (str('class') >> whitespaces? >> surround_with('(', thing_list(object, str(',')).as(:ancestors).maybe, ')').maybe >> whitespaces? >> block >> expression_terminator?).as(:class)
+      ancestors = surround_with('(', thing_list(object, str(',')).as(:ancestors).maybe, ')')
+      (str('class') >> whitespaces? >> ancestors.maybe >> whitespaces? >> block >> expression_terminator?).as(:class)
     end
 
     # NOTE 'λ' is "\xCE\xBB" in ASCII
