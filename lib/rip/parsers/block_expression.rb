@@ -10,6 +10,8 @@ module Rip::Parsers
 
     rule(:block_expression) { condition | loop_block | exception_handling }
 
-    rule(:block) { surround_with('{', statements.as(:body), '}') }
+    def block(body = statements)
+      surround_with('{', body.as(:body), '}')
+    end
   end
 end
