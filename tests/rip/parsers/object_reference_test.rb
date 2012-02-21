@@ -19,7 +19,8 @@ class ParsersObjectReferenceLiteralTest < TestCase
       'one.two',
       '999',
       '6teen',
-      'rip rocks'
+      'rip rocks',
+      'key:value'
     ].each do |reference|
       assert_raises Parslet::UnconsumedInput, Parslet::ParseFailed, "#{reference} was matched, but should not have been" do
         parser.reference.parse(reference)

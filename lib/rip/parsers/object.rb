@@ -124,7 +124,7 @@ module Rip::Parsers
 
     # http://www.rubular.com/r/sTue8ePXW9
     rule(:simple_reference) do
-      legal = match['^.,;\d\s()\[\]{}']
+      legal = match['^.,;:\d\s()\[\]{}']
       legal.repeat(1) >> (legal | digit).repeat
     end
   end
