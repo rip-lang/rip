@@ -80,7 +80,8 @@ module Rip::Parsers
     #---------------------------------------------
 
     # TODO allow type restriction
-    rule(:key_value_pair) { simple_object.as(:key) >> spaces? >> str(':') >> spaces? >> object.as(:value) }
+    # FIXME allow more types to be used as the key
+    rule(:key_value_pair) { (simple_object | reference).as(:key) >> spaces? >> str(':') >> spaces? >> object.as(:value) }
 
     rule(:range) do
       rangable_object = integer | character | reference

@@ -5,6 +5,10 @@ class ParsersObjectRecursiveLiteralTest < TestCase
     kvp = parser.key_value_pair.parse('5: \'five\'')
     assert_equal '5', kvp[:key][:integer]
     assert_equal 'five', kvp[:value][:string]
+
+    reference_kvp = parser.key_value_pair.parse('Exception: e')
+    assert_equal 'Exception', reference_kvp[:key][:reference]
+    assert_equal 'e', reference_kvp[:value][:reference]
   end
 
   def test_range
