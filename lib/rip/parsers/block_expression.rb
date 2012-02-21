@@ -8,7 +8,7 @@ module Rip::Parsers
     include Parslet
     include Rip::Parsers::Helpers
 
-    rule(:block_expression) { condition | loop_block | exception_handling }
+    rule(:block_expression) { conditional | exception_handling }
 
     rule(:conditional) { if_prefix | unless_prefix | switch }
 
@@ -39,6 +39,16 @@ module Rip::Parsers
     rule(:case_block) do
       case_qualifiers = surround_with('(', thing_list(object, str(',')).as(:case_qualifiers).maybe, ')')
       (str('case') >> whitespaces? >> case_qualifiers.maybe >> whitespaces? >> block).as(:case)
+    end
+
+    #---------------------------------------------
+
+    rule(:exception_handling) do
+      try_block = (str('try') >> whitespaces? >> block).as(:try)
+      catch_block = (str('catch') >> whitespaces? >> surround_with('(', key_value_pair, ')') >> whitespaces? >> block).as(:catch)
+      finally = (str('finally') >> whitespaces? >> block).as(:finally)
+
+      (try_block >> whitespaces? >> catch_block.repeat(1) >> whitespaces? >> finally.maybe).as(:exception_handling)
     end
 
     #---------------------------------------------

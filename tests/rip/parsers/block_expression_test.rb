@@ -46,6 +46,23 @@ switch (favorite_language) {
     assert_equal [], switch[:switch][:body].last[:else][:body]
   end
 
+  def test_exception_handling
+    rip = <<-RIP
+try {
+}
+catch (Exception: e) {
+}
+finally {
+}
+    RIP
+    tcf = parser.exception_handling.parse(rip.strip)
+    assert_equal [], tcf[:exception_handling][0][:try][:body]
+    assert_equal 'Exception', tcf[:exception_handling][1][:catch][:key][:reference]
+    assert_equal 'e', tcf[:exception_handling][1][:catch][:value][:reference]
+    assert_equal [], tcf[:exception_handling][1][:catch][:body]
+    assert_equal [], tcf[:exception_handling][2][:finally][:body]
+  end
+
   def test_block
     block = parser.block.parse('{}')
     assert_equal [], block[:body]

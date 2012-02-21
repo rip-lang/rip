@@ -20,7 +20,7 @@ module Rip
 
     rule(:comment) { (str('#') >> (eol.absent? >> any).repeat.as(:comment)) >> eol.maybe }
 
-    rule(:expression) { simple_expression }
+    rule(:expression) { simple_expression | block_expression }
 
     rule(:expression_terminator) { str(';') | eol }
     rule(:expression_terminator?) { expression_terminator.maybe }
