@@ -20,8 +20,6 @@ module Rip::Parsers
       (str('if') >> spaces? >> binary_condition >> spaces? >> block  >> whitespaces? >> else_block.maybe).as(:if_prefix)
     end
 
-    rule(:elseif_block) { (str('elseif') >> spaces? >> binary_condition >> spaces? >> block).as(:elseif) }
-
     rule(:else_block) { (str('else') >> whitespaces? >> block).as(:else) }
 
     rule(:unless_prefix) do
