@@ -16,15 +16,12 @@ module Rip::Parsers
 
     rule(:binary_condition) { surround_with('(', object.as(:binary_condition), ')') }
 
-    rule(:if_prefix) do
-      (str('if') >> spaces? >> binary_condition >> spaces? >> block  >> whitespaces? >> else_block.maybe).as(:if_prefix)
+    [:if, :unless].each do |cond|
+      name = "#{cond}_prefix".to_sym
+      rule(name) { (str(cond) >> spaces? >> binary_condition >> spaces? >> block  >> whitespaces? >> else_block.maybe).as(name) }
     end
 
     rule(:else_block) { (str('else') >> whitespaces? >> block).as(:else) }
-
-    rule(:unless_prefix) do
-      (str('unless') >> spaces? >> binary_condition >> spaces? >> block  >> whitespaces? >> else_block.maybe).as(:unless_prefix)
-    end
 
     #---------------------------------------------
 
