@@ -19,6 +19,10 @@ module Rip::Parsers
 
     #---------------------------------------------
 
+    def block(body = statements)
+      surround_with('{', body.as(:body), '}')
+    end
+
     # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil) at http://kschiess.github.com/parslet/parser.html
     def thing_list(thing, separator)
       (thing >> (whitespaces? >> (separator.is_a?(String) ? str(separator) : separator) >> whitespaces? >> thing).repeat).repeat(0, nil)

@@ -3,14 +3,12 @@ require 'pathname'
 
 require 'rip/parsers/block_expression'
 require 'rip/parsers/helpers'
-require 'rip/parsers/object'
 require 'rip/parsers/simple_expression'
 
 module Rip
   class Parser < Parslet::Parser
     include Rip::Parsers::BlockExpression
     include Rip::Parsers::Helpers
-    include Rip::Parsers::Object
     include Rip::Parsers::SimpleExpression
 
     root(:statements)

@@ -1,10 +1,12 @@
 require 'parslet'
 
 require 'rip'
+require 'rip/parsers/object'
 
 module Rip::Parsers
   module SimpleExpression
     include Parslet
+    include Rip::Parsers::Object
 
     rule(:simple_expression) { simple_expression_fancy >> expression_terminator? }
 

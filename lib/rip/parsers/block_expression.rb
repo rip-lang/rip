@@ -2,11 +2,13 @@ require 'parslet'
 
 require 'rip'
 require 'rip/parsers/helpers'
+require 'rip/parsers/object'
 
 module Rip::Parsers
   module BlockExpression
     include Parslet
     include Rip::Parsers::Helpers
+    include Rip::Parsers::Object
 
     rule(:block_expression) { conditional | exception_handling }
 
@@ -44,12 +46,6 @@ module Rip::Parsers
       finally = (str('finally') >> whitespaces? >> block).as(:finally)
 
       (try_block >> whitespaces? >> catch_block.repeat(1) >> whitespaces? >> finally.maybe).as(:exception_handling)
-    end
-
-    #---------------------------------------------
-
-    def block(body = statements)
-      surround_with('{', body.as(:body), '}')
     end
   end
 end

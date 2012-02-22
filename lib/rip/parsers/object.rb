@@ -3,13 +3,11 @@
 require 'parslet'
 
 require 'rip'
-require 'rip/parsers/block_expression'
 require 'rip/parsers/helpers'
 
 module Rip::Parsers
   module Object
     include Parslet
-    include Rip::Parsers::BlockExpression
     include Rip::Parsers::Helpers
 
     rule(:object) { recursive_object | simple_object | structural_object | reference }
