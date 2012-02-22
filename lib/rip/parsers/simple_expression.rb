@@ -8,7 +8,7 @@ module Rip::Parsers
     include Parslet
     include Rip::Parsers::Object
 
-    rule(:simple_expression) { simple_expression_fancy >> expression_terminator? }
+    rule(:simple_expression) { simple_expression_fancy >> spaces? >> expression_terminator? }
 
     rule(:simple_expression_fancy) { assignment | object }
 
