@@ -22,9 +22,6 @@ module Rip
 
     rule(:expression) { simple_expression | block_expression }
 
-    rule(:expression_terminator) { str(';') | eol }
-    rule(:expression_terminator?) { expression_terminator.maybe }
-
     def parse_file(path)
       parse(path.read)
     end
