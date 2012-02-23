@@ -90,13 +90,7 @@ module Rip::Parsers
 
     # NOTE a hash is just a list with only key_value_pairs allowed in it
     # TODO allow type restriction (to be passed on to key value pairs and list)
-    rule(:hash_literal) do
-      start = str('{') >> whitespaces?
-      # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil) at http://kschiess.github.com/parslet/parser.html
-      kvps = (key_value_pair >> (whitespaces? >> str(',') >> whitespaces? >> key_value_pair).repeat).repeat(0, nil)
-      finish = whitespaces? >> str('}')
-      start >> kvps.as(:hash) >> finish
-    end
+    rule(:hash_literal) { surround_with('{', thing_list((key_value_pair | reference), str(',')).as(:hash), '}') }
 
     # TODO allow type restriction
     rule(:list) { surround_with('[', thing_list(object, str(',')).as(:list), ']') }
