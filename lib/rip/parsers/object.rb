@@ -4,11 +4,13 @@ require 'parslet'
 
 require 'rip'
 require 'rip/parsers/helpers'
+require 'rip/parsers/reference'
 
 module Rip::Parsers
   module Object
     include Parslet
     include Rip::Parsers::Helpers
+    include Rip::Parsers::Reference
 
     rule(:object) { recursive_object | simple_object | structural_object | reference }
 
@@ -110,21 +112,6 @@ module Rip::Parsers
     rule(:lambda_literal) do
       parameters = surround_with('(', thing_list((assignment | simple_reference.as(:reference)), str(',')).as(:parameters), ')')
       ((str('lambda') | str('λ')) >> whitespaces? >> parameters.maybe >> whitespaces? >> block).as(:lambda)
-    end
-
-    #---------------------------------------------
-
-    # TODO consider multiple assignment
-    rule(:assignment) { (reference >> spaces >> str('=') >> spaces >> expression.as(:value)).as(:assignment) }
-
-    #---------------------------------------------
-
-    rule(:reference) { simple_reference.as(:reference) }
-
-    # http://www.rubular.com/r/sTue8ePXW9
-    rule(:simple_reference) do
-      legal = match['^.,;:\d\s()\[\]{}']
-      legal.repeat(1) >> (legal | digit).repeat
     end
   end
 end
