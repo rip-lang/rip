@@ -74,8 +74,12 @@ class ParsersHelperTest < TestCase
     empty = parser.thing_list(parser.object, parser.whitespaces?).as(:list).parse('')
     assert_equal [], empty[:list]
 
-    single = parser.thing_list(parser.object, ',').as(:label).parse(':single')
+    single = parser.thing_list(parser.object).as(:label).parse(':single')
     assert_equal 'single', single[:label].first[:string]
+
+    double = parser.thing_list(parser.object).as(:label).parse(':one, :two')
+    assert_equal 'one', double[:label].first[:string]
+    assert_equal 'two', double[:label].last[:string]
 
     full = parser.thing_list(parser.integer, '**').as(:numbers).parse('1 ** 2 ** 3')
     assert_equal '1', full[:numbers][0][:integer]

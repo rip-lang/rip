@@ -90,21 +90,21 @@ module Rip::Parsers
 
     # NOTE a hash is just a list with only key_value_pairs allowed in it
     # TODO allow type restriction (to be passed on to key value pairs and list)
-    rule(:hash_literal) { surround_with('{', thing_list((key_value_pair | reference), str(',')).as(:hash), '}') }
+    rule(:hash_literal) { surround_with('{', thing_list(key_value_pair | reference).as(:hash), '}') }
 
     # TODO allow type restriction
-    rule(:list) { surround_with('[', thing_list(object, str(',')).as(:list), ']') }
+    rule(:list) { surround_with('[', thing_list(object).as(:list), ']') }
 
     #---------------------------------------------
 
     rule(:class_literal) do
-      ancestors = surround_with('(', thing_list((class_literal | reference), str(',')).as(:ancestors).maybe, ')')
+      ancestors = surround_with('(', thing_list(class_literal | reference).as(:ancestors).maybe, ')')
       (str('class') >> whitespaces? >> ancestors.maybe >> whitespaces? >> block).as(:class)
     end
 
     # NOTE 'λ' is "\xCE\xBB" in ASCII
     rule(:lambda_literal) do
-      parameters = surround_with('(', thing_list((assignment | simple_reference.as(:reference)), str(',')).as(:parameters), ')')
+      parameters = surround_with('(', thing_list(assignment | simple_reference.as(:reference)).as(:parameters), ')')
       ((str('lambda') | str('λ')) >> whitespaces? >> parameters.maybe >> whitespaces? >> block).as(:lambda)
     end
   end
