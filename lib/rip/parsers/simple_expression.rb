@@ -12,12 +12,18 @@ module Rip::Parsers
     include Rip::Parsers::Object
     include Rip::Parsers::Invocation
 
-    rule(:simple_expression) { simple_expression_fancy >> spaces? >> expression_terminator? }
-
-    rule(:simple_expression_fancy) { (exiter >> spaces).maybe >> (assignment | invocation | object) >> (spaces >> (if_postfix | unless_postfix)).maybe }
+    rule(:simple_expression) do
+      ((exiter >> spaces >> phrase) | exiter | phrase) >> (spaces >> postfix).maybe >> spaces? >> expression_terminator?
+    end
 
     rule(:expression_terminator) { str(';') | eol }
     rule(:expression_terminator?) { expression_terminator.maybe }
+
+    #---------------------------------------------
+
+    rule(:postfix) { (if_postfix | unless_postfix) }
+
+    rule(:phrase) { (postfix.absent? >> (assignment | invocation | object)) }
 
     #---------------------------------------------
 
