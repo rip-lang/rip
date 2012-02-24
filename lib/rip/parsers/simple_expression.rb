@@ -14,7 +14,7 @@ module Rip::Parsers
 
     rule(:simple_expression) { simple_expression_fancy >> spaces? >> expression_terminator? }
 
-    rule(:simple_expression_fancy) { (assignment | invocation | object) >> (spaces >> (if_postfix | unless_postfix)).maybe }
+    rule(:simple_expression_fancy) { (exiter >> spaces).maybe >> (assignment | invocation | object) >> (spaces >> (if_postfix | unless_postfix)).maybe }
 
     rule(:expression_terminator) { str(';') | eol }
     rule(:expression_terminator?) { expression_terminator.maybe }

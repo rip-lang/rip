@@ -16,5 +16,14 @@ module Rip::Parsers
     end
 
     rule(:binary_condition) { surround_with('(', object.as(:binary_condition), ')') }
+
+    #---------------------------------------------
+
+    rule(:exiter) { exit_keyword | return_keyword | throw_keyword | break_keyword | next_keyword }
+
+    [:exit, :return, :throw, :break, :next].each do |keyword|
+      name = "#{keyword}_keyword".to_sym
+      rule(name) { str(keyword).as(name) }
+    end
   end
 end
