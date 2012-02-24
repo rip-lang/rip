@@ -13,12 +13,12 @@ module Rip
 
     root(:statements)
 
-    rule(:statement) { comment | expression >> spaces? >> comment.maybe }
+    rule(:statement) { (comment | expression) >> spaces? >> comment.maybe }
     rule(:statements) { thing_list(statement, whitespaces?) }
 
     rule(:comment) { (str('#') >> (eol.absent? >> any).repeat.as(:comment)) >> eol.maybe }
 
-    rule(:expression) { simple_expression | block_expression }
+    rule(:expression) { (simple_expression | block_expression) }
 
     def parse_file(path)
       parse(path.read)
