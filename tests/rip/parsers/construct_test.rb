@@ -17,4 +17,9 @@ class ParsersConstructTest < TestCase
     unless_condition = parser.unless_condition.parse('unless (false)')
     assert_equal 'false', unless_condition[:binary_condition][:false]
   end
+
+  def test_binary_condition
+    binary_condition = parser.binary_condition.parse('(:rip)')
+    assert_equal 'rip', binary_condition[:binary_condition][:string]
+  end
 end
