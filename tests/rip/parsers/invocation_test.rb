@@ -18,4 +18,11 @@ class ParsersInvocationTest < TestCase
     assert_equal 'Thomas', invocation[:invocation][:arguments].first[:string]
     assert_equal 'Ingram', invocation[:invocation][:arguments].last[:string]
   end
+
+  def test_operator_invocation
+    invocation = parser.invocation.parse('2 + 2')
+    assert_equal '2', invocation[:invocation][:operand][:integer]
+    assert_equal '+', invocation[:invocation][:operator][:reference]
+    assert_equal '2', invocation[:invocation][:argument][:integer]
+  end
 end
