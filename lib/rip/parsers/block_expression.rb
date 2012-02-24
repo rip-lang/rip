@@ -1,12 +1,14 @@
 require 'parslet'
 
 require 'rip'
+require 'rip/parsers/construct'
 require 'rip/parsers/helpers'
 require 'rip/parsers/object'
 
 module Rip::Parsers
   module BlockExpression
     include Parslet
+    include Rip::Parsers::Construct
     include Rip::Parsers::Helpers
     include Rip::Parsers::Object
 
@@ -14,13 +16,12 @@ module Rip::Parsers
 
     rule(:conditional) { if_prefix | unless_prefix | switch }
 
-    #---------------------------------------------
 
-    rule(:binary_condition) { surround_with('(', object.as(:binary_condition), ')') }
+    #---------------------------------------------
 
     [:if, :unless].each do |cond|
       name = "#{cond}_prefix".to_sym
-      rule(name) { (str(cond) >> spaces? >> binary_condition >> spaces? >> block  >> whitespaces? >> else_block.maybe).as(name) }
+      rule(name) { (send("#{cond}_condition") >> spaces? >> block  >> whitespaces? >> else_block.maybe).as(name) }
     end
 
     rule(:else_block) { (str('else') >> whitespaces? >> block).as(:else) }
