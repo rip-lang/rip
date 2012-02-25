@@ -15,6 +15,7 @@ module Rip::Parsers
     rule(:if_condition) { if_keyword >> spaces? >> binary_condition }
     rule(:unless_condition) { unless_keyword >> spaces? >> binary_condition }
 
-    rule(:binary_condition) { surround_with('(', object.as(:binary_condition), ')') }
+    # NOTE phrase is defined in Rip::Parsers::SimpleExpression and will be available when needed
+    rule(:binary_condition) { surround_with('(', phrase.as(:binary_condition), ')') }
   end
 end

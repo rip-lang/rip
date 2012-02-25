@@ -19,7 +19,11 @@ class ParsersConstructTest < TestCase
   end
 
   def test_binary_condition
-    binary_condition = parser.binary_condition.parse('(:rip)')
-    assert_equal 'rip', binary_condition[:binary_condition][:string]
+    a = parser.binary_condition.parse('(:rip)')
+    assert_equal 'rip', a[:binary_condition][:string]
+
+    b = parser.binary_condition.parse('(l())')
+    assert_equal 'l', b[:binary_condition][:invocation][:reference]
+    assert_equal [], b[:binary_condition][:invocation][:arguments]
   end
 end

@@ -9,8 +9,8 @@ module Rip::Parsers
   module SimpleExpression
     include Parslet
     include Rip::Parsers::Construct
-    include Rip::Parsers::Object
     include Rip::Parsers::Invocation
+    include Rip::Parsers::Object
 
     rule(:simple_expression) do
       ((exiter >> spaces >> phrase) | exiter | phrase) >> (spaces >> postfix).maybe >> spaces? >> expression_terminator?

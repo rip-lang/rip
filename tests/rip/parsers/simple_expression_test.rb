@@ -26,9 +26,10 @@ class ParsersSimpleExpressionTest < TestCase
   end
 
   def test_simple_expression_e
-    e = parser.simple_expression.parse('nil if (true);')
+    e = parser.simple_expression.parse('nil if (empty());')
     assert_equal 'nil', e[:nil]
-    assert_equal 'true', e[:if_postfix][:binary_condition][:true]
+    assert_equal 'empty', e[:if_postfix][:binary_condition][:invocation][:reference]
+    assert_equal [], e[:if_postfix][:binary_condition][:invocation][:arguments]
   end
 
   def test_simple_expression_f
