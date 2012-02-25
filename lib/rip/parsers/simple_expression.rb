@@ -23,7 +23,7 @@ module Rip::Parsers
 
     rule(:postfix) { (if_postfix | unless_postfix) }
 
-    rule(:phrase) { (postfix.absent? >> (assignment | invocation | object)) }
+    rule(:phrase) { (exiter | postfix).absent? >> (assignment | invocation | object) }
 
     #---------------------------------------------
 
