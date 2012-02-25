@@ -1,15 +1,15 @@
-# encoding: utf-8
-
 require 'parslet'
 
 require 'rip'
 require 'rip/parsers/helpers'
+require 'rip/parsers/keyword'
 require 'rip/parsers/reference'
 
 module Rip::Parsers
   module Object
     include Parslet
     include Rip::Parsers::Helpers
+    include Rip::Parsers::Keyword
     include Rip::Parsers::Reference
 
     rule(:object) { recursive_object | simple_object | structural_object | reference }
@@ -99,13 +99,12 @@ module Rip::Parsers
 
     rule(:class_literal) do
       ancestors = surround_with('(', thing_list(class_literal | reference).as(:ancestors).maybe, ')')
-      (str('class') >> whitespaces? >> ancestors.maybe >> whitespaces? >> block).as(:class)
+      (class_keyword >> whitespaces? >> ancestors.maybe >> whitespaces? >> block).as(:class)
     end
 
-    # NOTE 'λ' is "\xCE\xBB" in ASCII
     rule(:lambda_literal) do
       parameters = surround_with('(', thing_list(assignment | simple_reference.as(:reference)).as(:parameters), ')')
-      ((str('lambda') | str('λ')) >> whitespaces? >> parameters.maybe >> whitespaces? >> block).as(:lambda)
+      (lambda_keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block).as(:lambda)
     end
   end
 end
