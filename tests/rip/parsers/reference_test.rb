@@ -1,7 +1,7 @@
 require_relative '../../test_case'
 
 class ParsersReferenceTest < TestCase
-  def test_reference
+  def test_valid_reference
     [
       'name',
       'Person',
@@ -14,7 +14,9 @@ class ParsersReferenceTest < TestCase
     ].each do |reference|
       assert_equal reference, parser.reference.parse(reference)[:reference]
     end
+  end
 
+  def test_invalid_reference
     [
       'one.two',
       '999',
