@@ -14,21 +14,11 @@ module Rip::Parsers
 
     rule(:object) { recursive_object | simple_object | structural_object | reference }
 
-    rule(:simple_object) { nil_literal | boolean | numeric | character | string | regular_expression }
+    rule(:simple_object) { numeric | character | string | regular_expression }
 
     rule(:recursive_object) { key_value_pair | range | hash_literal | list }
 
     rule(:structural_object) { class_literal | lambda_literal }
-
-    #---------------------------------------------
-
-    rule(:nil_literal) { str('nil').as(:nil) }
-
-    rule(:boolean) { true_literal | false_literal }
-
-    rule(:true_literal) { str('true').as(:true) }
-
-    rule(:false_literal) { str('false').as(:false) }
 
     #---------------------------------------------
 

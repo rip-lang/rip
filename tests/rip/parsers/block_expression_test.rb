@@ -3,7 +3,7 @@ require_relative '../../test_case'
 class ParsersBlockExpressionTest < TestCase
   def test_if_prefix
     if_prefix = parser.if_prefix.parse('if (true) {}')
-    assert_equal 'true', if_prefix[:if_prefix][:binary_condition][:true]
+    assert_equal 'true', if_prefix[:if_prefix][:binary_condition][:reference][:true]
     assert_equal [], if_prefix[:if_prefix][:body]
 
     if_else_prefix = parser.if_prefix.parse('if (true) {} else {}')
@@ -13,7 +13,7 @@ class ParsersBlockExpressionTest < TestCase
 
   def test_unless_prefix
     unless_prefix = parser.unless_prefix.parse('unless (true) {}')
-    assert_equal 'true', unless_prefix[:unless_prefix][:binary_condition][:true]
+    assert_equal 'true', unless_prefix[:unless_prefix][:binary_condition][:reference][:true]
     assert_equal [], unless_prefix[:unless_prefix][:body]
 
     unless_else_prefix = parser.unless_prefix.parse('unless (true) {} else {}')

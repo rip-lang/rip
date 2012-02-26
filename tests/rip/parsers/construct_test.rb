@@ -10,12 +10,12 @@ class ParsersConstructTest < TestCase
 
   def test_if_condition
     if_condition = parser.if_condition.parse('if (true)')
-    assert_equal 'true', if_condition[:binary_condition][:true]
+    assert_equal 'true', if_condition[:binary_condition][:reference][:true]
   end
 
   def test_unless_condition
     unless_condition = parser.unless_condition.parse('unless (false)')
-    assert_equal 'false', unless_condition[:binary_condition][:false]
+    assert_equal 'false', unless_condition[:binary_condition][:reference][:false]
   end
 
   def test_binary_condition

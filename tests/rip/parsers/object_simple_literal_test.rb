@@ -1,19 +1,6 @@
 require_relative '../../test_case'
 
 class ParsersObjectSimpleLiteralTest < TestCase
-  def test_nil_literal
-    n = parser.nil_literal.parse('nil')
-    assert_equal 'nil', n[:nil]
-  end
-
-  def test_true_literal
-    t = parser.boolean.parse('true')
-    assert_equal 'true', t[:true]
-
-    f = parser.boolean.parse('false')
-    assert_equal 'false', f[:false]
-  end
-
   def test_numeric
     integer = parser.numeric.parse('42')
     assert_equal '42', integer[:integer]
