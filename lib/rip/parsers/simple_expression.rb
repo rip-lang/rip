@@ -12,6 +12,7 @@ module Rip::Parsers
     include Rip::Parsers::Invocation
     include Rip::Parsers::Object
 
+    # NOTE anything that might be followed by an expression terminator
     rule(:simple_expression) do
       ((exiter >> spaces >> phrase) | exiter | phrase) >> (spaces >> postfix).maybe >> spaces? >> expression_terminator?
     end
@@ -23,6 +24,7 @@ module Rip::Parsers
 
     rule(:postfix) { (if_postfix | unless_postfix) }
 
+    # TODO allow parenthesis around phrase to arbitrary levels
     rule(:phrase) { (exiter | postfix).absent? >> (assignment | invocation | object) }
 
     #---------------------------------------------

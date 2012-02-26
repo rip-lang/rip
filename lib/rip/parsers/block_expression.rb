@@ -14,6 +14,7 @@ module Rip::Parsers
     include Rip::Parsers::Keyword
     include Rip::Parsers::Object
 
+    # NOTE anything that should not be followed by an expression terminator
     rule(:block_expression) { conditional | exception_handling }
 
     rule(:conditional) { if_prefix | unless_prefix | switch }

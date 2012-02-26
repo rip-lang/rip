@@ -7,6 +7,7 @@ module Rip::Parsers
     include Parslet
 
     # TODO consider multiple assignment
+    # TODO rules for visibility (public, protected, private)
     rule(:assignment) { (reference >> spaces >> str('=') >> spaces >> expression.as(:value)).as(:assignment) }
 
     #---------------------------------------------
