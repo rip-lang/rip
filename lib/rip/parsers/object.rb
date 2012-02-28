@@ -12,7 +12,7 @@ module Rip::Parsers
     include Rip::Parsers::Keyword
     include Rip::Parsers::Reference
 
-    rule(:object) { (recursive_object | simple_object | structural_object | regular_invocation | reference) >> property.repeat }
+    rule(:object) { (recursive_object | simple_object | structural_object | regular_invocation | reference) >> property.repeat.as(:property_chain) }
 
     rule(:property) { str('.') >> (regular_invocation | reference) }
 
