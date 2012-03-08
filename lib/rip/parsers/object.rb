@@ -71,6 +71,29 @@ module Rip::Parsers
     # TODO expand regular expression pattern
     rule(:regular_expression) { str('/') >> (str('/').absent? >> any).repeat.as(:regex) >> str('/') }
 
+    #rule(:system) { '`' ( !'`' . / '\`' )* '`' }
+
+    #rule(:version) do
+    #  dot = str('.')
+    #  (str('v') >> integer.as(:major) >> dot >> integer.as(:minor) >> dot >> integer.as(:patch)).as(:version)
+    #end
+
+    #---------------------------------------------
+
+    #rule(:datetime) { date >> str('T') >> time }
+
+    #rule(:date) do
+    #  dash = str('-')
+    #  (digit.repeat(4, 4).as(:year) >> dash >> digit.repeat(2, 2).as(:month) >> dash >> digit.repeat(2, 2).as(:day)).as(:date)
+    #end
+
+    ## TODO make second optional
+    ## TODO handle fractional seconds (optional) and time zone offset (optional)
+    #rule(:time) do
+    #  colon = str(':')
+    #  (digit.repeat(2, 2).as(:hour) >> colon >> digit.repeat(2, 2).as(:minute) >> colon >> digit.repeat(2, 2).as(:second)).as(:time)
+    #end
+
     #---------------------------------------------
 
     # TODO allow type restriction
