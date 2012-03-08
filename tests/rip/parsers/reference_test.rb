@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require_relative '../../test_case'
 
 class ParsersReferenceTest < TestCase
@@ -10,7 +12,8 @@ class ParsersReferenceTest < TestCase
       'valid?',
       'long_ref-name',
       '*/-+<>&$~%',
-      'one_9'
+      'one_9',
+      'É¹ÇÊ‡É¹oÔ€uÉlâˆ€â„¢'
     ].each do |reference|
       assert_equal reference, parser.reference.parse(reference)[:reference]
     end
