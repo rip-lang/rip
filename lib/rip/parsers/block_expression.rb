@@ -15,6 +15,7 @@ module Rip::Parsers
     include Rip::Parsers::Object
 
     # NOTE anything that should not be followed by an expression terminator
+    # TODO rule for loop_block (maybe)
     rule(:block_expression) { conditional | exception_handling }
 
     rule(:conditional) { if_prefix | unless_prefix | switch }
