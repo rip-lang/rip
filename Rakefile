@@ -1,22 +1,10 @@
 require 'pathname'
+require 'rake/testtask'
 
 task :default => [ :tests ]
 
-desc 'Run all tests in path specified (defaults to tests).'
-task :tests, :path do |t, args|
-  args.with_defaults(:path => 'tests')
-
-  run_recursively = lambda do |dir|
-    Pathname(dir).expand_path.children.each do |dir_or_test|
-      if dir_or_test.directory?
-        run_recursively.call dir_or_test
-      elsif dir_or_test.to_s.end_with? '_test.rb'
-        require dir_or_test
-      end
-    end
-  end
-
-  run_recursively.call args[:path]
+Rake::TestTask.new :tests do |t|
+  t.pattern = 'tests/**/*_test.rb'
 end
 
 desc 'Enumerate annotations. Optionally takes a pipe-separated list of tags to process'
