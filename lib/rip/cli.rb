@@ -28,7 +28,7 @@ module Rip
       puts tree
     end
 
-    def self.run
+    def self.start
       cli = new
       command = (ARGV.first || :help).to_sym
 
