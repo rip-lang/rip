@@ -2,6 +2,7 @@
 
 $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + '/../lib'))
 
+require 'rip/boot'
 require 'rip/cli'
 
-Rip::CLI.start
+Rip::CLI.start ARGV
