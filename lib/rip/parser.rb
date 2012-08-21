@@ -13,6 +13,13 @@ module Rip
 
     root(:statements)
 
+    # statement
+    #   comment
+    #   expression (literal, invocation or reference eg: 2 + 2, full_name())
+    #   assignment (reference = expression eg: answer = 2 + 2, name = full_name())
+    #   block (if, unless, switch, case, try)
+    #   (expression | assignment | block) comment
+
     rule(:statement) { (comment | expression) >> spaces? >> comment.maybe }
     rule(:statements) { thing_list(statement, whitespaces?) }
 
