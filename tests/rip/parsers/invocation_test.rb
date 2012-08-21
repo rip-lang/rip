@@ -2,7 +2,7 @@ require_relative '../../test_case'
 
 class ParsersInvocationTest < TestCase
   def test_lambda_literal_invocation
-    invocation = parser.invocation.parse('lambda () {}()')
+    invocation = parser.invocation.parse('-> () {}()')
     assert_equal [], invocation[:invocation][:arguments]
   end
 

@@ -25,8 +25,7 @@ module Rip::Parsers
 
     make_keywords :class
 
-    # NOTE 'λ' is "\xCE\xBB" in ASCII
-    rule(:lambda_keyword) { (str('lambda') | str('λ')).as(:lambda_keyword) }
+    rule(:lambda_keyword) { (str('->') | str('=>')).as(:lambda_keyword) }
 
     #---------------------------------------------
 
