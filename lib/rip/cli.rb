@@ -2,10 +2,15 @@ require 'pathname'
 require 'thor'
 
 require 'rip/parser'
+require 'rip/version'
 
 module Rip
   class CLI < Thor
+    class_option :verbose, :type => :boolean, :default => false, :desc => 'Make Rip chatty'
+
     default_task :execute
+
+    map '--version' => :version
 
     desc 'help [task]', 'Describe available tasks or one specific [task]'
     def help(*args)
@@ -16,6 +21,11 @@ Usage:
       USAGE
       puts general_usage if args.empty?
       super
+    end
+
+    desc 'version', 'Print the version and exit'
+    def version
+      puts Rip::Version.to_s(options[:verbose])
     end
 
     desc 'parse_tree <file>', 'Print the parse tree for <file> and exit'

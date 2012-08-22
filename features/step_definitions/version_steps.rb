@@ -1,7 +1,4 @@
 Then /^I should see (expanded )?version information$/ do |expand|
-  all_stdout.should =~ /\d\.\d\.\d/
-
-  if expand
-    all_stdout.should =~ /Rip version \d\.\d\.\d/
-  end
+  expand_text = expand ? 'Rip version ' : ''
+  all_stdout.should =~ /^#{expand_text}\d\.\d\.\d$/
 end
