@@ -10,6 +10,12 @@ Then /^the output should contain a brief explanation for everything$/ do
   ].each do |command|
     output.should match(/^  rip #{command} .+ # .{10,}$/), "A description for `#{command}` should probably be longer than ten characters to be useful"
   end
+
+  [
+    :verbose
+  ].each do |option|
+    output.should match(/^  \[--#{option}\] + # .{10,}$/), "A description for `--#{option}` should probably be longer than ten characters to be useful"
+  end
 end
 
 Then /^the output should contain detailed help for running the REPL$/ do
