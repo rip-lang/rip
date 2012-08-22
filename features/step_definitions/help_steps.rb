@@ -1,19 +1,11 @@
 Then /^the output should contain a brief explanation for everything$/ do
   output = all_stdout
 
-  [
-    :help,
-    :do,
-    :version,
-    :parse_tree,
-    :syntax_tree
-  ].each do |command|
+  most_actions.each do |command|
     output.should match(/^  rip #{command} .+ # .{10,}$/), "A description for `#{command}` should probably be longer than ten characters to be useful"
   end
 
-  [
-    :verbose
-  ].each do |option|
+  global_options.each do |option|
     output.should match(/^  \[--#{option}\] + # .{10,}$/), "A description for `--#{option}` should probably be longer than ten characters to be useful"
   end
 end
