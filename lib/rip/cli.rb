@@ -12,6 +12,21 @@ module Rip
 
     map '--version' => :version
 
+    desc '<file>', 'Read and execute <file>'
+    def execute(file = nil)
+      wip :execute
+      if file
+        make_syntax_tree(file).walk
+      else
+        repl
+      end
+    end
+
+    desc '[repl]', 'Enter read, evaluate, print loop'
+    def repl
+      wip :repl
+    end
+
     desc 'help [task]', 'Describe available tasks or one specific [task]'
     def help(*args)
       general_usage = <<-USAGE
@@ -21,6 +36,12 @@ Usage:
       USAGE
       puts general_usage if args.empty?
       super
+    end
+
+    desc 'do <command> [arguments...]', 'Execute specified <command>, similar to Ruby\'s rake'
+    def do(command, *args)
+      wip :do
+      make_syntax_tree(file).walk
     end
 
     desc 'version', 'Print the version and exit'
@@ -38,27 +59,6 @@ Usage:
     def syntax_tree(file)
       wip :syntax_tree
       puts make_syntax_tree(file)
-    end
-
-    desc 'do <command> [arguments...]', 'Execute specified <command>, similar to Ruby\'s rake'
-    def do(command, *args)
-      wip :do
-      make_syntax_tree(file).walk
-    end
-
-    desc '[repl]', 'Enter read, evaluate, print loop'
-    def repl
-      wip :repl
-    end
-
-    desc '<file>', 'Read and execute <file>'
-    def execute(file = nil)
-      wip :execute
-      if file
-        make_syntax_tree(file).walk
-      else
-        repl
-      end
     end
 
     protected
