@@ -30,27 +30,30 @@ Usage:
 
     desc 'parse_tree <file>', 'Print the parse tree for <file> and exit'
     def parse_tree(file)
+      wip :parse_tree
       puts make_parse_tree(file)
     end
 
     desc 'syntax_tree <file>', 'Print the syntax tree for <file> and exit'
     def syntax_tree(file)
+      wip :syntax_tree
       puts make_syntax_tree(file)
     end
 
     desc 'do <command> [arguments...]', 'Execute specified <command>, similar to Ruby\'s rake'
     def do(command, *args)
+      wip :do
       make_syntax_tree(file).walk
     end
 
     desc '[repl]', 'Enter read, evaluate, print loop'
     def repl
-      # TODO enter repl
-      puts 'repl command not implemented yet'
+      wip :repl
     end
 
     desc '<file>', 'Read and execute <file>'
     def execute(file = nil)
+      wip :execute
       if file
         make_syntax_tree(file).walk
       else
@@ -66,6 +69,10 @@ Usage:
 
     def make_syntax_tree(filename)
       make_parse_tree(filename).to_ast
+    end
+
+    def wip(command)
+      puts "`#{command}` command not implemented yet"
     end
   end
 end
