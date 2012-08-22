@@ -1,4 +1,4 @@
-Then /^the output should contain a brief explanation for each command$/ do
+Then /^the output should contain a brief explanation for everything$/ do
   output = all_stdout
 
   [
