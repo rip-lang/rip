@@ -7,7 +7,7 @@ module Rip::Nodes
 
     def initialize(number, sign = :+)
       @data = Integer number
-      @sign = sign
+      @sign = sign.to_sym
     end
 
     def ==(other)
