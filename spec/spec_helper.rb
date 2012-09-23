@@ -26,7 +26,7 @@ RSpec.configure do |config|
   config.order = 'random'
 
   def samples_path
-    Pathname("#{__FILE__}/../samples").expand_path
+    Pathname("#{__FILE__}/../fixtures").expand_path
   end
 
   def parser
