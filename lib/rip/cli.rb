@@ -1,6 +1,7 @@
 require 'pathname'
 require 'thor'
 
+require 'rip/ast'
 require 'rip/parser'
 require 'rip/version'
 
@@ -15,11 +16,7 @@ module Rip
     desc '<file>', 'Read and execute <file>'
     def execute(file = nil)
       wip :execute
-      if file
-        make_syntax_tree(file).walk
-      else
-        repl
-      end
+      file ? make_syntax_tree(file).evaluate : repl
     end
 
     desc '[repl]', 'Enter read, evaluate, print loop'
@@ -41,7 +38,6 @@ Usage:
     desc 'do <command> [arguments...]', 'Execute specified <command>, similar to Ruby\'s rake'
     def do(command, *args)
       wip :do
-      make_syntax_tree(file).walk
     end
 
     desc 'version', 'Print the version and exit'
@@ -52,13 +48,13 @@ Usage:
     desc 'parse_tree <file>', 'Print the parse tree for <file> and exit'
     def parse_tree(file)
       wip :parse_tree
-      puts make_parse_tree(file)
+      puts make_parse_tree(file).inspect
     end
 
     desc 'syntax_tree <file>', 'Print the syntax tree for <file> and exit'
     def syntax_tree(file)
       wip :syntax_tree
-      puts make_syntax_tree(file)
+      puts make_syntax_tree(file).inspect
     end
 
     protected
@@ -68,7 +64,7 @@ Usage:
     end
 
     def make_syntax_tree(filename)
-      make_parse_tree(filename).to_ast
+      Rip::AST.new make_parse_tree(filename)
     end
 
     def wip(command)
