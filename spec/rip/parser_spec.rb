@@ -12,69 +12,21 @@ describe Rip::Parser do
     it 'parses comments' do
       expect(comment[:comment]).to eq(' this is a comment')
     end
-  end
 
-  context 'whitespace' do
-    describe '#whitespace' do
-      it 'recognizes single whitespace sequences' do
-        [' ', "\t", "\r", "\n", "\r\n"].each do |space|
-          expect(parser.whitespace.parse(space)).to eq(space)
-        end
-      end
-    end
-
-    describe '#whitespaces' do
-      it 'recognizes consecutive whitespace sequences' do
-        [' ', "\t\t"].each do |space|
-          expect(parser.whitespaces.parse(space)).to eq(space)
-        end
-      end
-    end
-
-    describe '#whitespaces?' do
-      it 'recognizes any whitespace sequences' do
-        ['', "\n", "\t\r"].each do |space|
-          expect(parser.whitespaces?.parse(space)).to eq(space)
-        end
-      end
-    end
-
-    describe '#space' do
-      it 'recognizes single space sequences' do
-        [' ', "\t"].each do |space|
-          expect(parser.space.parse(space)).to eq(space)
-        end
-      end
-    end
-
-    describe '#spaces' do
-      it 'recognizes consecutive space sequences' do
-        [' ', "\t\t", "  \t  \t  "].each do |space|
-          expect(parser.spaces.parse(space)).to eq(space)
-        end
-      end
-    end
-
-    describe '#spaces?' do
-      it 'recognizes any space sequences' do
-        ['', ' ', "  \t  \t  "].each do |space|
-          expect(parser.spaces?.parse(space)).to eq(space)
-        end
-      end
-    end
-
-    describe '#eol' do
-      it 'recognizes single end of line sequences' do
-        ["\n", "\r", "\r\n"].each do |space|
-          expect(parser.eol.parse(space)).to eq(space)
-        end
-      end
-    end
-
-    describe '#eols' do
-      it 'recognizes consecutive end of line sequences' do
-        ['', "\n", "\r\r"].each do |space|
-          expect(parser.eols.parse(space)).to eq(space)
+    it 'recognizes various whitespace sequences' do
+      {
+        [' ', "\t", "\r", "\n", "\r\n"] => :whitespace,
+        [' ', "\t\t"]                   => :whitespaces,
+        ['', "\n", "\t\r"]              => :whitespaces?,
+        [' ', "\t"]                     => :space,
+        [' ', "\t\t", "  \t  \t  "]     => :spaces,
+        ['', ' ', "  \t  \t  "]         => :spaces?,
+        ["\n", "\r", "\r\n"]            => :eol,
+        ['', "\n", "\r\r"]              => :eols
+      }.each do |whitespaces, method|
+        space_parser = parser.send(method)
+        whitespaces.each do |space|
+          expect(space_parser.parse(space)).to eq(space)
         end
       end
     end
