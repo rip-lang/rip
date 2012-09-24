@@ -128,4 +128,27 @@ describe Rip::Parser do
       expect(assignment[:assignment][:value][:string]).to eq('rip')
     end
   end
+
+  describe '#block' do
+    let(:empty_block) { parser.block.parse('{}') }
+    let(:block) do
+      rip_block = <<-RIP_LIST
+{
+  # comment
+  :words
+}
+      RIP_LIST
+      parser.block.parse(rip_block.strip)
+    end
+
+    it 'parses empty blocks' do
+      expect(empty_block[:body]).to eq([])
+    end
+
+    it 'parses useful blocks' do
+      expect(block[:body].count).to be(2)
+      expect(block[:body].first[:comment]).to eq(' comment')
+      expect(block[:body].last[:string]).to eq('words')
+    end
+  end
 end
