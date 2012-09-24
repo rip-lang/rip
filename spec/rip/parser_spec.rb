@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 describe Rip::Parser do
@@ -78,6 +80,52 @@ describe Rip::Parser do
         expect(full[:numbers][1][:integer]).to eq('2')
         expect(full[:numbers][2][:integer]).to eq('3')
       end
+    end
+  end
+
+  describe '#reference' do
+    it 'recognizes valid references' do
+      [
+        'name',
+        'Person',
+        '==',
+        'save!',
+        'valid?',
+        'long_ref-name',
+        '*/-+<>&$~%',
+        'one_9',
+        'É¹ÇÊ‡É¹oÔ€uÉlâˆ€â„¢'
+      ].each do |reference|
+        expect(parser.reference.parse(reference)[:reference]).to eq(reference)
+      end
+    end
+
+    it 'skips invalid references' do
+      [
+        'one.two',
+        '999',
+        '6teen',
+        'rip rocks',
+        'key:value'
+      ].each do |reference|
+        expect do
+          parser.reference.parse(reference)
+        end.to raise_error(Parslet::ParseFailed) # Rip::ParseError
+      end
+    end
+
+    it 'recognizes special references' do
+      expect(parser.reference.parse('nilly')[:reference].to_s).to eql('nilly')
+      expect(parser.reference.parse('nil')[:reference][:nil].to_s).to eql('nil')
+      expect(parser.reference.parse('true')[:reference][:true].to_s).to eql('true')
+      expect(parser.reference.parse('false')[:reference][:false].to_s).to eql('false')
+      expect(parser.reference.parse('Kernel')[:reference][:kernel].to_s).to eql('Kernel')
+    end
+
+    it 'assigns to a reference' do
+      assignment = parser.assignment.parse('favorite_language = :rip')
+      expect(assignment[:assignment][:reference]).to eq('favorite_language')
+      expect(assignment[:assignment][:value][:string]).to eq('rip')
     end
   end
 end
