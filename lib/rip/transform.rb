@@ -6,6 +6,7 @@ require 'rip/nodes/decimal'
 require 'rip/nodes/integer'
 require 'rip/nodes/nil'
 require 'rip/nodes/string'
+require 'rip/nodes/regular_expression'
 
 module Rip
   # FIXME remove :property_chain nonsense
