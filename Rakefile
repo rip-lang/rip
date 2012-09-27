@@ -1,11 +1,6 @@
 require 'pathname'
-require 'rake/testtask'
 
-task :default => [ :tests ]
-
-Rake::TestTask.new :tests do |t|
-  t.pattern = 'tests/**/*_test.rb'
-end
+task :default => [ :notes ]
 
 desc 'Enumerate annotations. Optionally takes a pipe-separated list of tags to process'
 task :notes, :types do |t, args|
