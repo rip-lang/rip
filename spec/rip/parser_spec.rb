@@ -11,7 +11,7 @@ describe Rip::Parser do
       expect(empty).to eq('')
     end
 
-    it 'parses comments' do
+    it 'recognizes comments' do
       expect(comment[:comment]).to eq(' this is a comment')
     end
 
@@ -69,7 +69,7 @@ describe Rip::Parser do
       let(:double_list) { parser.thing_list(parser.object).as(:label).parse(':one, :two') }
       let(:full) { parser.thing_list(parser.integer, '**').as(:numbers).parse('1 ** 2 ** 3') }
 
-      it 'parses an arbitrary list of tokens' do
+      it 'recognizes an arbitrary list of tokens' do
         expect(empty[:list]).to eq([])
         expect(single[:label].first[:string]).to eq('single')
 
@@ -130,8 +130,6 @@ describe Rip::Parser do
     end
   end
 
-  end
-
   describe 'property chains' do
     let(:chain_property) { parser.object.parse('0.one.two.three') }
     let(:change_invocation) { parser.object.parse('zero().one().two().three()') }
@@ -174,17 +172,17 @@ describe Rip::Parser do
     let(:lambda_block_parameter_default) { parser.lambda_literal.parse('-> (name = :rip) {}') }
     let(:lambda_block_parameter_parameter_default) { parser.lambda_literal.parse('-> (platform, name = :rip) {}') }
 
-    it 'parses empty blocks' do
+    it 'recognizes empty blocks' do
       expect(empty_block[:body]).to eq([])
     end
 
-    it 'parses useful blocks' do
+    it 'recognizes useful blocks' do
       expect(generic_block[:body].count).to be(2)
       expect(generic_block[:body].first[:comment]).to eq(' comment')
       expect(generic_block[:body].last[:string]).to eq('words')
     end
 
-    it 'recognizes class' do
+    it 'recognizes classes' do
       expect(class_block[:class][:ancestors]).to be_nil
       expect(class_block[:class][:body]).to eq([])
 
@@ -192,11 +190,11 @@ describe Rip::Parser do
       expect(class_block_empty[:class][:body]).to eq([])
     end
 
-    it 'recognizes class_with_parent' do
+    it 'recognizes classes with parent' do
       expect(class_block_parent[:class][:ancestors].count).to eq(1)
     end
 
-    it 'recognizes lambda' do
+    it 'recognizes lambdas' do
       expect(lambda_block[:lambda][:parameters]).to be_nil
       expect(lambda_block[:lambda][:body]).to eq([])
 
@@ -204,18 +202,18 @@ describe Rip::Parser do
       expect(lambda_block_empty[:lambda][:body]).to eq([])
     end
 
-    it 'recognizes lambda_with_parameter' do
+    it 'recognizes lambdas with parameter' do
       expect(lambda_block_parameter[:lambda][:parameters].count).to eq(1)
       expect(lambda_block_parameter[:lambda][:parameters].first[:reference]).to eq('name')
     end
 
-    it 'recognizes lambda_with_parameter_default' do
+    it 'recognizes lambdas with default parameter' do
       expect(lambda_block_parameter_default[:lambda][:parameters].count).to eq(1)
       expect(lambda_block_parameter_default[:lambda][:parameters].first[:assignment][:reference]).to eq('name')
       expect(lambda_block_parameter_default[:lambda][:parameters].first[:assignment][:value][:string]).to eq('rip')
     end
 
-    it 'recognizes lambda_with_parameter_and_parameter_default' do
+    it 'recognizes lambdas with parameter and default parameter' do
       expect(lambda_block_parameter_parameter_default[:lambda][:parameters].count).to eq(2)
       expect(lambda_block_parameter_parameter_default[:lambda][:parameters].first[:reference]).to eq('platform')
       expect(lambda_block_parameter_parameter_default[:lambda][:parameters].last[:assignment][:reference]).to eq('name')
@@ -432,7 +430,7 @@ finally {
       parser.exception_handling.parse(rip.strip)
     end
 
-    it 'recognizes if_prefix' do
+    it 'recognizes if prefixes' do
       expect(if_prefix[:if_prefix][:binary_condition][:reference][:true]).to eq('true')
       expect(if_prefix[:if_prefix][:body]).to eq([])
 
@@ -440,7 +438,7 @@ finally {
       expect(if_else_prefix[:if_prefix][:else][:body]).to eq([])
     end
 
-    it 'recognizes unless_prefix' do
+    it 'recognizes unless prefixes' do
       expect(unless_prefix[:unless_prefix][:binary_condition][:reference][:true]).to eq('true')
       expect(unless_prefix[:unless_prefix][:body]).to eq([])
 
@@ -448,14 +446,14 @@ finally {
       expect(unless_else_prefix[:unless_prefix][:else][:body]).to eq([])
     end
 
-    it 'recognizes switch' do
+    it 'recognizes switches' do
       expect(switch[:switch][:switch_test]).to be_nil
       expect(switch[:switch][:body].count).to eq(1)
       expect(switch[:switch][:body].first[:case][:case_qualifiers].first[:string]).to eq('rip')
       expect(switch[:switch][:body].first[:case][:body]).to eq([])
     end
 
-    it 'recognizes switch_full' do
+    it 'recognizes full switches' do
       expect(switch_full[:switch][:switch_test][:reference]).to eq('favorite_language')
       expect(switch_full[:switch][:body].count).to eq(2)
       expect(switch_full[:switch][:body].first[:case][:case_qualifiers].first[:string]).to eq('rip')
@@ -463,7 +461,7 @@ finally {
       expect(switch_full[:switch][:body].last[:else][:body]).to eq([])
     end
 
-    it 'recognizes exception_handling' do
+    it 'recognizes exception handling' do
       expect(tcf[:exception_handling][0][:try][:body]).to eq([])
       expect(tcf[:exception_handling][1][:catch][:key][:reference]).to eq('Exception')
       expect(tcf[:exception_handling][1][:catch][:value][:reference]).to eq('e')
@@ -478,15 +476,15 @@ finally {
     let(:condition_a) { parser.binary_condition.parse('(:rip)') }
     let(:condition_b) { parser.binary_condition.parse('(l())') }
 
-    it 'recognizes if_condition' do
+    it 'recognizes if conditions' do
       expect(if_condition[:binary_condition][:reference][:true]).to eq('true')
     end
 
-    it 'recognizes unless_condition' do
+    it 'recognizes unless conditions' do
       expect(unless_condition[:binary_condition][:reference][:false]).to eq('false')
     end
 
-    it 'recognizes binary_condition' do
+    it 'recognizes binary conditions' do
       expect(condition_a[:binary_condition][:string]).to eq('rip')
 
       expect(condition_b[:binary_condition][:invocation][:reference]).to eq('l')
