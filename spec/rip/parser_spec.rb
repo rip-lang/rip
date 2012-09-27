@@ -130,6 +130,20 @@ describe Rip::Parser do
     end
   end
 
+  describe 'parenthesis' do
+    let(:parens) { parser.expression.parse('((((((l((1 + (((2 - 3)))))))))))') }
+
+    # it 'recognizes anything surrounded by parenthesis', :failing do
+    #   puts; puts "parens => #{parens.inspect}"
+    #   expect(parens[:invocation][:reference]).to eq('l')
+    #   expect(parens[:invocation][:parameters][0][:operator_invocation][:operand]).to eq('1')
+    #   expect(parens[:invocation][:parameters][0][:operator_invocation][:operator]).to eq('+')
+    #   expect(parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:operand]).to eq('2')
+    #   expect(parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:operator]).to eq('-')
+    #   expect(parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:argument]).to eq('3')
+    # end
+  end
+
   describe 'property chains' do
     let(:chain_property) { parser.object.parse('0.one.two.three') }
     let(:change_invocation) { parser.object.parse('zero().one().two().three()') }
@@ -149,10 +163,32 @@ describe Rip::Parser do
       expect(change_invocation[:property_chain][1][:invocation][:reference]).to eq('two')
       expect(change_invocation[:property_chain][2][:invocation][:reference]).to eq('three')
     end
+
+    # it 'recognizes chaining with properies and invocations', :failing do
+    #   puts; puts "chain_property_invocation => #{chain_property_invocation.inspect}"
+    #   expect(chain_property_invocation[:integer]).to eq('0')
+    #   expect(chain_property_invocation[:invocation][:reference]).to eq('one')
+    #   expect(chain_property_invocation[:invocation][:parameters]).to eq([])
+    #   expect(chain_property_invocation[:invocation][:property][:reference]).to eq('two')
+    #   expect(chain_property_invocation[:invocation][:property][:invocation][:reference]).to eq('three')
+    #   expect(chain_property_invocation[:invocation][:property][:invocation][:parameters]).to eq([])
+    #   expect(chain_property_invocation[:invocation][:property][:invocation][:property]).to be_nil
+    # end
+
+    # it 'recognizes chaining off opererators', :failing do
+    #   puts; puts "operator_chain => #{operator_chain.inspect}"
+    #   expect(operator_chain[:operator_invocation][:operand]).to eq('1')
+    #   expect(operator_chain[:operator_invocation][:operator]).to eq('-')
+    #   expect(operator_chain[:operator_invocation][:argument]).to eq('2')
+    #   expect(operator_chain[:operator_invocation][:invocation][:reference]).to eq('zero')
+    #   expect(operator_chain[:operator_invocation][:invocation][:parameters]).to eq([])
+    #   expect(operator_chain[:operator_invocation][:invocation][:property]).to be_nil
+    # end
   end
 
   describe '#block' do
     let(:empty_block) { parser.block.parse('{}') }
+    # let(:empty_block) { parser.block.parse('-> {}') }
     let(:generic_block) do
       rip_block = <<-RIP_LIST
 {
@@ -163,6 +199,13 @@ describe Rip::Parser do
       parser.block.parse(rip_block.strip)
     end
 
+    # let(:block_empty_parameters) { parser.block.parse('=> () {}')[:block] }
+    # let(:block_block_parameter) { parser.block.parse('class (class () {}) {}')[:block] }
+    # let(:block_parameter) { parser.block.parse('unless (name) {}')[:block] }
+    # let(:block_super_parameter) { parser.block.parse(rip_block.strip)[:block] }
+    # let(:block_paramter_default) { parser.block.parse('-> (name = :rip) {}')[:block] }
+    # let(:block_multiple_parameters) { parser.block.parse(rip_block.strip)[:block] }
+    # let(:block_parameter_parameter_default) { parser.block.parse('=> (platform, name = :rip) {}')[:block] }
     let(:class_block) { parser.class_literal.parse('class {}') }
     let(:class_block_empty) { parser.class_literal.parse('class () {}') }
     let(:class_block_parent) { parser.class_literal.parse('class (class () {}) {}') }
@@ -181,6 +224,59 @@ describe Rip::Parser do
       expect(generic_block[:body].first[:comment]).to eq(' comment')
       expect(generic_block[:body].last[:string]).to eq('words')
     end
+
+    # it 'recognizes blocks with empty parameters', :failing do
+    #   puts; puts "block_empty_parameters => #{block_empty_parameters.inspect}"
+    #   expect(block_empty_parameters[:lambda_fat]).to eq('=>')
+    #   expect(block_empty_parameters[:parameters]).to eq([])
+    #   expect(block_empty_parameters[:body]).to eq([])
+    # end
+
+    # it 'recognizes blocks with block parameters', :failing do
+    #   puts; puts "block_block_parameter => #{block_block_parameter.inspect}"
+    #   expect(block_block_parameter[:class]).to eq('class')
+    #   expect(block_block_parameter[:parameters].count).to eq(1)
+    #   expect(block_block_parameter[:parameters].first[:block][:class]).to eq('class')
+    # end
+
+    # it 'recognizes blocks with parameters', :failing do
+    #   puts; puts "block_parameter => #{block_parameter.inspect}"
+    #   expect(block_parameter[:parameters].count).to eq(1)
+    #   expect(block_parameter[:parameters].first[:unless]).to eq('unless')
+
+    #   rip_block = <<-RIP_LIST
+# class (super) {
+# }
+    #   RIP_LIST
+    #   puts; puts "block_super_parameter => #{block_super_parameter.inspect}"
+    #   expect(block_super_parameter[:parameters].count).to eq(1)
+    #   expect(block_super_parameter[:parameters].first[:reference]).to eq('super')
+    # end
+
+    # it 'recognizes blocks with default parameter', :failing do
+    #   puts; puts "block_paramter_default => #{block_paramter_default.inspect}"
+    #   expect(block_paramter_default[:parameters].count).to eq(1)
+    #   expect(block_paramter_default[:parameters].first[:assignment][:reference]).to eq('name')
+    #   expect(block_paramter_default[:parameters].first[:assignment][:value][:string]).to eq('rip')
+    # end
+
+    # it 'recognizes blocks with multiple parameters', :failing do
+    #   rip_block = <<-RIP_LIST
+# class (one, two) {
+# }
+    #   RIP_LIST
+    #   puts; puts "block_multiple_parameters => #{block_multiple_parameters.inspect}"
+    #   expect(block_multiple_parameters[:parameters].count).to eq(2)
+    #   expect(block_multiple_parameters[:parameters].first[:reference]).to eq('one')
+    #   expect(block_multiple_parameters[:parameters].last[:reference]).to eq('two')
+    # end
+
+    # it 'recognizes blocks with parameter and default parameter', :failing do
+    #   puts; puts block_parameter_parameter_default => #{block_parameter_parameter_default.inspect}"
+    #   expect(block_parameter_parameter_default[:parameters].count).to eq(2)
+    #   expect(block_parameter_parameter_default[:parameters].first[:reference]).to eq('platform')
+    #   expect(block_parameter_parameter_default[:parameters].last[:assignment][:reference]).to eq('name')
+    # end
 
     it 'recognizes classes' do
       expect(class_block[:class][:ancestors]).to be_nil
