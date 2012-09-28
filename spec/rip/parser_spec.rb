@@ -138,18 +138,7 @@ describe Rip::Parser do
   end
 
   describe '#block' do
-    let(:empty_block) { parser.block.parse('{}') }
-    # let(:empty_block) { parser.block.parse('-> {}') }
-    let(:generic_block) do
-      rip_block = <<-RIP_LIST
-{
-  # comment
-  :words
-}
-      RIP_LIST
-      parser.block.parse(rip_block.strip)
-    end
-
+    # let(:block_empty) { parser.block.parse('-> {}') }
     # let(:block_empty_parameters) { parser.block.parse('=> () {}')[:block] }
     # let(:block_block_parameter) { parser.block.parse('class (class () {}) {}')[:block] }
     # let(:block_parameter) { parser.block.parse('unless (name) {}')[:block] }
@@ -166,15 +155,9 @@ describe Rip::Parser do
     let(:lambda_block_parameter_default) { parser.lambda_literal.parse('-> (name = :rip) {}') }
     let(:lambda_block_parameter_parameter_default) { parser.lambda_literal.parse('-> (platform, name = :rip) {}') }
 
-    it 'recognizes empty blocks' do
-      expect(empty_block[:body]).to eq([])
-    end
-
-    it 'recognizes useful blocks' do
-      expect(generic_block[:body].count).to be(2)
-      expect(generic_block[:body].first[:comment]).to eq(' comment')
-      expect(generic_block[:body].last[:string]).to eq('words')
-    end
+    # it 'recognizes empty blocks' do
+    #   expect(block_empty[:body]).to eq([])
+    # end
 
     # it 'recognizes blocks with empty parameters', :failing do
     #   puts; puts "block_empty_parameters => #{block_empty_parameters.inspect}"

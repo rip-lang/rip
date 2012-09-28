@@ -50,12 +50,12 @@ module Rip
 
     rule(:class_literal) do
       ancestors = parens(comma_list(class_literal | reference).as(:ancestors).maybe)
-      (class_keyword >> whitespaces? >> ancestors.maybe >> whitespaces? >> block).as(:class)
+      (class_keyword >> whitespaces? >> ancestors.maybe >> whitespaces? >> block_body).as(:class)
     end
 
     rule(:lambda_literal) do
       parameters = parens(comma_list(assignment | reference).as(:parameters))
-      (lambda_keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block).as(:lambda)
+      (lambda_keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block_body).as(:lambda)
     end
 
     #---------------------------------------------
@@ -68,30 +68,30 @@ module Rip
 
     #---------------------------------------------
 
-    rule(:if_block) { (if_postfix >> whitespaces? >> block).as(:if) }
-    rule(:unless_block) { (unless_postfix >> whitespaces? >> block).as(:unless) }
+    rule(:if_block) { (if_postfix >> whitespaces? >> block_body).as(:if) }
+    rule(:unless_block) { (unless_postfix >> whitespaces? >> block_body).as(:unless) }
 
-    rule(:else_block) { (else_keyword >> whitespaces? >> block).as(:else) }
+    rule(:else_block) { (else_keyword >> whitespaces? >> block_body).as(:else) }
 
     #---------------------------------------------
 
     rule(:switch) do
       switch_test = parens(object.as(:switch_test).maybe)
       cases = case_block.repeat(1) >> whitespaces? >> else_block.maybe
-      (switch_keyword >> spaces? >> switch_test.maybe >> spaces? >> block(cases)).as(:switch)
+      (switch_keyword >> spaces? >> switch_test.maybe >> spaces? >> block_body(cases)).as(:switch)
     end
 
     rule(:case_block) do
       case_qualifiers = parens(comma_list(object).as(:case_qualifiers).maybe)
-      (case_keyword >> whitespaces? >> case_qualifiers.maybe >> whitespaces? >> block).as(:case)
+      (case_keyword >> whitespaces? >> case_qualifiers.maybe >> whitespaces? >> block_body).as(:case)
     end
 
     #---------------------------------------------
 
     rule(:exception_handling) do
-      try_block = (try_keyword >> whitespaces? >> block).as(:try)
-      catch_block = (catch_keyword >> whitespaces? >> parens(key_value_pair) >> whitespaces? >> block).as(:catch)
-      finally = (finally_keyword >> whitespaces? >> block).as(:finally)
+      try_block = (try_keyword >> whitespaces? >> block_body).as(:try)
+      catch_block = (catch_keyword >> whitespaces? >> parens(key_value_pair) >> whitespaces? >> block_body).as(:catch)
+      finally = (finally_keyword >> whitespaces? >> block_body).as(:finally)
 
       (try_block >> whitespaces? >> catch_block.repeat(1) >> whitespaces? >> finally.maybe).as(:exception_handling)
     end
@@ -297,9 +297,9 @@ module Rip
 
     #---------------------------------------------
 
-    # protected
+    protected
 
-    def block(body = statements)
+    def block_body(body = statements)
       surround_with(brace_open, body.as(:body), brace_close)
     end
 
