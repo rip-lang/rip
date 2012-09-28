@@ -35,34 +35,6 @@ describe Rip::Parser do
   end
 
   context 'utilities' do
-    describe '#surround_with' do
-      let(:surrounded) { parser.surround_with('(', parser.object.as(:object), ')').parse('(:one)') }
-
-      let(:rip_list) do
-        <<-RIP_LIST
-[
-  :one
-]
-        RIP_LIST
-      end
-      let(:list) { parser.surround_with('[', parser.object.as(:list), ']').parse(rip_list.strip) }
-
-      let(:rip_block) do
-        <<-RIP_LIST
-{
-  # comment
-}
-        RIP_LIST
-      end
-      let(:block) { parser.surround_with('{', parser.statement.as(:body), '}').parse(rip_block.strip) }
-
-      it 'surrounds arbitrary tokens' do
-        expect(surrounded[:object][:string]).to eq('one')
-        expect(list[:list][:string]).to eq('one')
-        expect(block[:body][:comment]).to eq(' comment')
-      end
-    end
-
     describe '#thing_list' do
       let(:empty) { parser.thing_list(parser.object, parser.whitespaces?).as(:list).parse('') }
       let(:single) { parser.thing_list(parser.object).as(:label).parse(':single') }
