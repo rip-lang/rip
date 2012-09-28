@@ -47,12 +47,12 @@ module Rip
     #---------------------------------------------
 
     rule(:class_literal) do
-      ancestors = surround_with(parenthesis_open, thing_list(class_literal | reference).as(:ancestors).maybe, parenthesis_close)
+      ancestors = parens(comma_list(class_literal | reference).as(:ancestors).maybe)
       (class_keyword >> whitespaces? >> ancestors.maybe >> whitespaces? >> block).as(:class)
     end
 
     rule(:lambda_literal) do
-      parameters = surround_with(parenthesis_open, thing_list(assignment | simple_reference.as(:reference)).as(:parameters), parenthesis_close)
+      parameters = parens(comma_list(assignment | simple_reference.as(:reference)).as(:parameters))
       (lambda_keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block).as(:lambda)
     end
 
@@ -62,7 +62,7 @@ module Rip
     rule(:unless_condition) { unless_keyword >> spaces? >> binary_condition }
 
     # NOTE phrase is defined in Rip::Parsers::SimpleExpression and will be available when needed
-    rule(:binary_condition) { surround_with(parenthesis_open, phrase.as(:binary_condition), parenthesis_close) }
+    rule(:binary_condition) { parens(phrase.as(:binary_condition)) }
 
     #---------------------------------------------
 
@@ -84,13 +84,13 @@ module Rip
     #---------------------------------------------
 
     rule(:switch) do
-      switch_test = surround_with(parenthesis_open, object.as(:switch_test).maybe, parenthesis_close)
+      switch_test = parens(object.as(:switch_test).maybe)
       cases = case_block.repeat(1) >> whitespaces? >> else_block.maybe
       (switch_keyword >> spaces? >> switch_test.maybe >> spaces? >> block(cases)).as(:switch)
     end
 
     rule(:case_block) do
-      case_qualifiers = surround_with(parenthesis_open, thing_list(object, comma).as(:case_qualifiers).maybe, parenthesis_close)
+      case_qualifiers = parens(comma_list(object).as(:case_qualifiers).maybe)
       (case_keyword >> whitespaces? >> case_qualifiers.maybe >> whitespaces? >> block).as(:case)
     end
 
@@ -98,7 +98,7 @@ module Rip
 
     rule(:exception_handling) do
       try_block = (try_keyword >> whitespaces? >> block).as(:try)
-      catch_block = (catch_keyword >> whitespaces? >> surround_with(parenthesis_open, key_value_pair, parenthesis_close) >> whitespaces? >> block).as(:catch)
+      catch_block = (catch_keyword >> whitespaces? >> parens(key_value_pair) >> whitespaces? >> block).as(:catch)
       finally = (finally_keyword >> whitespaces? >> block).as(:finally)
 
       (try_block >> whitespaces? >> catch_block.repeat(1) >> whitespaces? >> finally.maybe).as(:exception_handling)
@@ -107,7 +107,7 @@ module Rip
     #---------------------------------------------
 
     rule(:invocation) { regular_invocation | operator_invocation }
-    rule(:regular_invocation) { ((lambda_literal | reference) >> surround_with(parenthesis_open, thing_list(object).as(:arguments), parenthesis_close)).as(:invocation) }
+    rule(:regular_invocation) { ((lambda_literal | reference) >> parens(comma_list(object).as(:arguments))).as(:invocation) }
     rule(:operator_invocation) { (object.as(:operand) >> spaces >> reference.as(:operator) >> spaces >> object.as(:argument)).as(:invocation) }
 
     # TODO consider multiple assignment
@@ -306,10 +306,10 @@ module Rip
 
     # NOTE a hash is just a list with only key_value_pairs allowed in it
     # TODO allow type restriction (to be passed on to key value pairs and list)
-    rule(:hash_literal) { surround_with(brace_open, thing_list(key_value_pair | reference).as(:hash), brace_close) }
+    rule(:hash_literal) { surround_with(brace_open, comma_list(key_value_pair | reference).as(:hash), brace_close) }
 
     # TODO allow type restriction
-    rule(:list) { surround_with(bracket_open, thing_list(object).as(:list), bracket_close) }
+    rule(:list) { surround_with(bracket_open, comma_list(object).as(:list), bracket_close) }
 
     #---------------------------------------------
 
@@ -325,13 +325,29 @@ module Rip
       surround_with(brace_open, body.as(:body), brace_close)
     end
 
+    def parens(center)
+      surround_with(parenthesis_open, center, parenthesis_close)
+    end
+
+    def maybe_parens(center)
+      maybe_surround_with(parenthesis_open, center, parenthesis_close)
+    end
+
     def surround_with(left, center, right = left)
       left >> whitespaces? >> center >> whitespaces? >> right
     end
 
+    def maybe_surround_with(left, center, right = left)
+      surround_with(left, center, right) | center
+    end
+
+    def comma_list(thing)
+      thing_list thing, comma
+    end
+
     # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil) at http://kschiess.github.com/parslet/parser.html
-    def thing_list(thing, separator = ',')
-      (thing >> (whitespaces? >> (separator.is_a?(String) ? str(separator) : separator) >> whitespaces? >> thing).repeat).repeat(0, nil)
+    def thing_list(thing, separator)
+      (thing >> (whitespaces? >> separator >> whitespaces? >> thing).repeat).repeat
     end
   end
 end
