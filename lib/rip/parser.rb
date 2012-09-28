@@ -229,13 +229,13 @@ module Rip
     #---------------------------------------------
 
     # WARNING order is important here: decimal must be before integer or the integral part of a decimal could be interpreted as a integer followed by a decimal starting with a dot
-    rule(:numeric) { decimal | integer }
+    rule(:numeric) { sign.maybe >> (decimal | integer) }
 
-    rule(:decimal) { (sign.maybe >> digits.maybe >> dot >> digits).as(:decimal) }
+    rule(:decimal) { (digits.maybe >> dot >> digits).as(:decimal) }
 
-    rule(:integer) { (sign.maybe >> digits).as(:integer) }
+    rule(:integer) { digits.as(:integer) }
 
-    rule(:sign) { match['+-'] }
+    rule(:sign) { match['+-'].as(:sign) }
 
     rule(:digit) { match['0-9'] }
 

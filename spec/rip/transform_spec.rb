@@ -38,7 +38,7 @@ HERE_DOC
     it 'transforms numbers' do
       expect(integer).to eq(Rip::Nodes::Integer.new('42'))
       expect(decimal).to eq(Rip::Nodes::Decimal.new('4.2'))
-      expect(negative).to eq(Rip::Nodes::Integer.new('-3'))
+      expect(negative).to eq(Rip::Nodes::Integer.new('3', '-'))
       expect(long).to eq(Rip::Nodes::Integer.new('123_456_789'))
     end
 

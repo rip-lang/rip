@@ -328,7 +328,8 @@ HERE_DOC
     it 'recognizes numbers' do
       expect(integer[:integer]).to eq('42')
       expect(decimal[:decimal]).to eq('4.2')
-      expect(negative[:integer]).to eq('-3')
+      expect(negative[:integer]).to eq('3')
+      expect(negative[:sign]).to eq('-')
       expect(long[:integer]).to eq('123_456_789')
     end
 
