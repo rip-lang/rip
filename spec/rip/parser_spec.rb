@@ -69,10 +69,10 @@ describe Rip::Parser do
 
     it 'recognizes special references' do
       expect(parser.reference.parse('nilly')[:reference]).to eq('nilly')
-      expect(parser.reference.parse('nil')[:reference][:nil]).to eq('nil')
-      expect(parser.reference.parse('true')[:reference][:true]).to eq('true')
-      expect(parser.reference.parse('false')[:reference][:false]).to eq('false')
-      expect(parser.reference.parse('Kernel')[:reference][:kernel]).to eq('Kernel')
+      expect(parser.reference.parse('nil')[:reference]).to eq('nil')
+      expect(parser.reference.parse('true')[:reference]).to eq('true')
+      expect(parser.reference.parse('false')[:reference]).to eq('false')
+      expect(parser.reference.parse('Kernel')[:reference]).to eq('Kernel')
     end
 
     it 'assigns to a reference' do
@@ -292,9 +292,9 @@ describe Rip::Parser do
 
     it 'recognizes keyword followed by postfix' do
       expect(keyword_postfix_a[:return_keyword]).to eq('return')
-      expect(keyword_postfix_a[:unless_postfix][:binary_condition][:reference][:false]).to eq('false')
+      expect(keyword_postfix_a[:unless_postfix][:binary_condition][:reference]).to eq('false')
 
-      expect(keyword_postfix_b[:reference][:nil]).to eq('nil')
+      expect(keyword_postfix_b[:reference]).to eq('nil')
       expect(keyword_postfix_b[:if_postfix][:binary_condition][:invocation][:reference]).to eq('empty')
       expect(keyword_postfix_b[:if_postfix][:binary_condition][:invocation][:arguments]).to eq([])
     end
@@ -479,7 +479,7 @@ finally {
     end
 
     it 'recognizes if prefixes' do
-      expect(if_prefix[:if_prefix][:binary_condition][:reference][:true]).to eq('true')
+      expect(if_prefix[:if_prefix][:binary_condition][:reference]).to eq('true')
       expect(if_prefix[:if_prefix][:body]).to eq([])
 
       expect(if_else_prefix[:if_prefix][:body]).to eq([])
@@ -487,7 +487,7 @@ finally {
     end
 
     it 'recognizes unless prefixes' do
-      expect(unless_prefix[:unless_prefix][:binary_condition][:reference][:true]).to eq('true')
+      expect(unless_prefix[:unless_prefix][:binary_condition][:reference]).to eq('true')
       expect(unless_prefix[:unless_prefix][:body]).to eq([])
 
       expect(unless_else_prefix[:unless_prefix][:body]).to eq([])
@@ -525,11 +525,11 @@ finally {
     let(:condition_b) { parser.binary_condition.parse('(l())') }
 
     it 'recognizes if conditions' do
-      expect(if_condition[:binary_condition][:reference][:true]).to eq('true')
+      expect(if_condition[:binary_condition][:reference]).to eq('true')
     end
 
     it 'recognizes unless conditions' do
-      expect(unless_condition[:binary_condition][:reference][:false]).to eq('false')
+      expect(unless_condition[:binary_condition][:reference]).to eq('false')
     end
 
     it 'recognizes binary conditions' do

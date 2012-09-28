@@ -52,7 +52,7 @@ module Rip
     end
 
     rule(:lambda_literal) do
-      parameters = parens(comma_list(assignment | simple_reference.as(:reference)).as(:parameters))
+      parameters = parens(comma_list(assignment | reference).as(:parameters))
       (lambda_keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block).as(:lambda)
     end
 
@@ -208,23 +208,10 @@ module Rip
 
     #---------------------------------------------
 
-    rule(:reference) { (special_reference | simple_reference).as(:reference) }
-
-    rule(:special_reference) { (nil_literal | true_literal | false_literal | kernel_literal) >> reference_legal.absent? }
-
     # http://www.rubular.com/r/sTue8ePXW9
-    rule(:simple_reference) { reference_legal.repeat(1) >> (reference_legal | digit).repeat }
-
     rule(:reference_legal) { match['^.,;:\d\s()\[\]{}'] }
 
-    #---------------------------------------------
-
-    rule(:nil_literal) { str('nil').as(:nil) }
-
-    rule(:true_literal) { str('true').as(:true) }
-    rule(:false_literal) { str('false').as(:false) }
-
-    rule(:kernel_literal) { str('Kernel').as(:kernel) }
+    rule(:reference) { (reference_legal.repeat(1) >> (reference_legal | digit).repeat).as(:reference) }
 
     #---------------------------------------------
 
