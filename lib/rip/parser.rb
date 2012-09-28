@@ -232,8 +232,7 @@ module Rip
 
     #---------------------------------------------
 
-    # FIXME should match any single printable unicode character
-    rule(:character) { backtick >> match['0-9a-zA-Z_'].as(:character) }
+    rule(:character) { backtick >> (digit | reference_legal).as(:character) }
 
     #---------------------------------------------
 

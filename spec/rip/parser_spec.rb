@@ -309,7 +309,8 @@ describe Rip::Parser do
     let(:decimal) { parser.numeric.parse('4.2') }
     let(:negative) { parser.numeric.parse('-3') }
     let(:long) { parser.numeric.parse('123_456_789') }
-    let(:character) { parser.character.parse('`f') }
+    let(:character_digit) { parser.character.parse('`9') }
+    let(:character_alpha) { parser.character.parse('`f') }
     let(:symbol_string) { parser.string.parse(':one') }
     let(:single_string) { parser.string.parse('\'two\'') }
     let(:double_string) { parser.string.parse('"three"') }
@@ -334,7 +335,8 @@ HERE_DOC
     end
 
     it 'recognizes characters' do
-      expect(character[:character]).to eq('f')
+      expect(character_digit[:character]).to eq('9')
+      expect(character_alpha[:character]).to eq('f')
     end
 
     it 'recognizes strings' do
