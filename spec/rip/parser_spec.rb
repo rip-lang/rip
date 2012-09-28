@@ -271,6 +271,8 @@ describe Rip::Parser do
     let(:keyword) { parser.simple_expression.parse('return;') }
     let(:postfix_postfix) { parser.simple_expression.parse('exit 1 if (:error)') }
     let(:postfix) { parser.simple_expression.parse('exit 0') }
+    let(:postfix_if) { parser.simple_expression.parse('if (true);') }
+    let(:postfix_unless) { parser.simple_expression.parse('unless false') }
     let(:keyword_postfix_a) { parser.simple_expression.parse('return unless (false);') }
     let(:keyword_postfix_b) { parser.simple_expression.parse('nil if (empty());') }
     let(:list) { parser.simple_expression.parse('[]') }
@@ -288,6 +290,16 @@ describe Rip::Parser do
     it 'recognizes postfix' do
       expect(postfix[:exit_keyword]).to eq('exit')
       expect(postfix[:integer]).to eq('0')
+    end
+
+    it 'recognizes if postfix' do
+      expect(postfix_if[:if_postfix][:if_keyword]).to eq('if')
+      expect(postfix_if[:if_postfix][:binary_condition][:reference]).to eq('true')
+    end
+
+    it 'recognizes unless postfix' do
+      expect(postfix_unless[:unless_postfix][:unless_keyword]).to eq('unless')
+      expect(postfix_unless[:unless_postfix][:binary_condition][:reference]).to eq('false')
     end
 
     it 'recognizes keyword followed by postfix' do
@@ -450,11 +462,11 @@ HERE_DOC
   end
 
   describe 'flow controls' do
-    let(:if_prefix) { parser.if_prefix.parse('if (true) {}') }
-    let(:if_else_prefix) { parser.if_prefix.parse('if (true) {} else {}') }
-    let(:unless_prefix) { parser.unless_prefix.parse('unless (true) {}') }
-    let(:unless_else_prefix) { parser.unless_prefix.parse('unless (true) {} else {}') }
-    let(:switch) { parser.switch.parse('switch { case (:rip) {} }') }
+    let(:if_block) { parser.conditional.parse('if (true) {}') }
+    let(:if_else_block) { parser.conditional.parse('if (true) {} else {}') }
+    let(:unless_block) { parser.conditional.parse('unless (true) {}') }
+    let(:unless_else_block) { parser.conditional.parse('unless (true) {} else {}') }
+    let(:switch) { parser.conditional.parse('switch { case (:rip) {} }') }
 
     let(:switch_full) do
       rip_switch = <<-RIP_SWITCH
@@ -465,7 +477,7 @@ switch (favorite_language) {
   }
 }
       RIP_SWITCH
-      parser.switch.parse(rip_switch.strip)
+      parser.conditional.parse(rip_switch.strip)
     end
 
     let(:tcf) do
@@ -480,20 +492,22 @@ finally {
       parser.exception_handling.parse(rip.strip)
     end
 
-    it 'recognizes if prefixes' do
-      expect(if_prefix[:if_prefix][:binary_condition][:reference]).to eq('true')
-      expect(if_prefix[:if_prefix][:body]).to eq([])
+    it 'recognizes if blocks' do
+      expect(if_block[:if][:if_keyword]).to eq('if')
+      expect(if_block[:if][:binary_condition][:reference]).to eq('true')
+      expect(if_block[:if][:body]).to eq([])
 
-      expect(if_else_prefix[:if_prefix][:body]).to eq([])
-      expect(if_else_prefix[:if_prefix][:else][:body]).to eq([])
+      expect(if_else_block[:else][:else_keyword]).to eq('else')
+      expect(if_else_block[:else][:body]).to eq([])
     end
 
-    it 'recognizes unless prefixes' do
-      expect(unless_prefix[:unless_prefix][:binary_condition][:reference]).to eq('true')
-      expect(unless_prefix[:unless_prefix][:body]).to eq([])
+    it 'recognizes unless blocks' do
+      expect(unless_block[:unless][:unless_keyword]).to eq('unless')
+      expect(unless_block[:unless][:binary_condition][:reference]).to eq('true')
+      expect(unless_block[:unless][:body]).to eq([])
 
-      expect(unless_else_prefix[:unless_prefix][:body]).to eq([])
-      expect(unless_else_prefix[:unless_prefix][:else][:body]).to eq([])
+      expect(unless_else_block[:else][:else_keyword]).to eq('else')
+      expect(unless_else_block[:else][:body]).to eq([])
     end
 
     it 'recognizes switches' do
@@ -517,28 +531,6 @@ finally {
       expect(tcf[:exception_handling][1][:catch][:value][:reference]).to eq('e')
       expect(tcf[:exception_handling][1][:catch][:body]).to eq([])
       expect(tcf[:exception_handling][2][:finally][:body]).to eq([])
-    end
-  end
-
-  describe 'conditionals' do
-    let(:if_condition) { parser.if_condition.parse('if (true)') }
-    let(:unless_condition) { parser.unless_condition.parse('unless (false)') }
-    let(:condition_a) { parser.binary_condition.parse('(:rip)') }
-    let(:condition_b) { parser.binary_condition.parse('(l())') }
-
-    it 'recognizes if conditions' do
-      expect(if_condition[:binary_condition][:reference]).to eq('true')
-    end
-
-    it 'recognizes unless conditions' do
-      expect(unless_condition[:binary_condition][:reference]).to eq('false')
-    end
-
-    it 'recognizes binary conditions' do
-      expect(condition_a[:binary_condition][:string]).to eq('rip')
-
-      expect(condition_b[:binary_condition][:invocation][:reference]).to eq('l')
-      expect(condition_b[:binary_condition][:invocation][:arguments]).to eq([])
     end
   end
 end

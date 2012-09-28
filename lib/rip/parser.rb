@@ -32,17 +32,15 @@ module Rip
 
     # NOTE anything that might be followed by an expression terminator
     rule(:simple_expression) do
-      ((exiter >> spaces >> phrase) | exiter | phrase) >> (spaces >> postfix).maybe >> spaces? >> expression_terminator?
+      ((((exiter >> spaces >> phrase) | exiter | phrase) >> (spaces >> postfix).maybe) | postfix) >> spaces? >> expression_terminator?
     end
 
     # TODO allow parenthesis around phrase to arbitrary levels
     rule(:phrase) { (exiter | postfix).absent? >> (assignment | invocation | object) }
 
-    [:if, :unless].each do |cond|
-      name = "#{cond}_postfix".to_sym
-      rule(name) { send("#{cond}_condition").as(name) }
-    end
-    rule(:postfix) { (if_postfix | unless_postfix) }
+    rule(:if_postfix) { if_keyword >> spaces >> maybe_parens(phrase.as(:binary_condition)) }
+    rule(:unless_postfix) { unless_keyword >> spaces >> maybe_parens(phrase.as(:binary_condition)) }
+    rule(:postfix) { (if_postfix.as(:if_postfix) | unless_postfix.as(:unless_postfix)) }
 
     #---------------------------------------------
 
@@ -58,26 +56,16 @@ module Rip
 
     #---------------------------------------------
 
-    rule(:if_condition) { if_keyword >> spaces? >> binary_condition }
-    rule(:unless_condition) { unless_keyword >> spaces? >> binary_condition }
-
-    # NOTE phrase is defined in Rip::Parsers::SimpleExpression and will be available when needed
-    rule(:binary_condition) { parens(phrase.as(:binary_condition)) }
-
-    #---------------------------------------------
-
     # NOTE anything that should not be followed by an expression terminator
     # TODO rule for loop_block (maybe)
     rule(:block_expression) { conditional | exception_handling }
 
-    rule(:conditional) { if_prefix | unless_prefix | switch }
+    rule(:conditional) { ((if_block | unless_block) >> whitespaces? >> else_block.maybe) | switch }
 
     #---------------------------------------------
 
-    [:if, :unless].each do |cond|
-      name = "#{cond}_prefix".to_sym
-      rule(name) { (send("#{cond}_condition") >> spaces? >> block  >> whitespaces? >> else_block.maybe).as(name) }
-    end
+    rule(:if_block) { (if_postfix >> whitespaces? >> block).as(:if) }
+    rule(:unless_block) { (unless_postfix >> whitespaces? >> block).as(:unless) }
 
     rule(:else_block) { (else_keyword >> whitespaces? >> block).as(:else) }
 
