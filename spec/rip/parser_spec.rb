@@ -271,6 +271,7 @@ describe Rip::Parser do
     let(:keyword) { parser.simple_expression.parse('return;') }
     let(:postfix_postfix) { parser.simple_expression.parse('exit 1 if (:error)') }
     let(:postfix) { parser.simple_expression.parse('exit 0') }
+    let(:postfix_parens) { parser.simple_expression.parse('exit (0)') }
     let(:postfix_if) { parser.simple_expression.parse('if (true);') }
     let(:postfix_unless) { parser.simple_expression.parse('unless false') }
     let(:keyword_postfix_a) { parser.simple_expression.parse('return unless (false);') }
@@ -282,33 +283,38 @@ describe Rip::Parser do
     end
 
     it 'recognizes postfix followed by postfix' do
-      expect(postfix_postfix[:exit_keyword]).to eq('exit')
-      expect(postfix_postfix[:integer]).to eq('1')
-      expect(postfix_postfix[:if_postfix][:binary_condition][:string]).to eq('error')
+      expect(postfix_postfix[:postfix][:exit_keyword]).to eq('exit')
+      expect(postfix_postfix[:postfix][:postfix_argument][:integer]).to eq('1')
+      expect(postfix_postfix[:if_postfix][:postfix_argument][:string]).to eq('error')
     end
 
     it 'recognizes postfix' do
-      expect(postfix[:exit_keyword]).to eq('exit')
-      expect(postfix[:integer]).to eq('0')
+      expect(postfix[:postfix][:exit_keyword]).to eq('exit')
+      expect(postfix[:postfix][:postfix_argument][:integer]).to eq('0')
+    end
+
+    it 'recognizes postfix with parenthesis around argument' do
+      expect(postfix_parens[:postfix][:exit_keyword]).to eq('exit')
+      expect(postfix_parens[:postfix][:postfix_argument][:integer]).to eq('0')
     end
 
     it 'recognizes if postfix' do
       expect(postfix_if[:if_postfix][:if_keyword]).to eq('if')
-      expect(postfix_if[:if_postfix][:binary_condition][:reference]).to eq('true')
+      expect(postfix_if[:if_postfix][:postfix_argument][:reference]).to eq('true')
     end
 
     it 'recognizes unless postfix' do
       expect(postfix_unless[:unless_postfix][:unless_keyword]).to eq('unless')
-      expect(postfix_unless[:unless_postfix][:binary_condition][:reference]).to eq('false')
+      expect(postfix_unless[:unless_postfix][:postfix_argument][:reference]).to eq('false')
     end
 
     it 'recognizes keyword followed by postfix' do
       expect(keyword_postfix_a[:return_keyword]).to eq('return')
-      expect(keyword_postfix_a[:unless_postfix][:binary_condition][:reference]).to eq('false')
+      expect(keyword_postfix_a[:unless_postfix][:postfix_argument][:reference]).to eq('false')
 
       expect(keyword_postfix_b[:reference]).to eq('nil')
-      expect(keyword_postfix_b[:if_postfix][:binary_condition][:invocation][:reference]).to eq('empty')
-      expect(keyword_postfix_b[:if_postfix][:binary_condition][:invocation][:arguments]).to eq([])
+      expect(keyword_postfix_b[:if_postfix][:postfix_argument][:invocation][:reference]).to eq('empty')
+      expect(keyword_postfix_b[:if_postfix][:postfix_argument][:invocation][:arguments]).to eq([])
     end
 
     it 'recognizes list expression' do
@@ -494,7 +500,7 @@ finally {
 
     it 'recognizes if blocks' do
       expect(if_block[:if][:if_keyword]).to eq('if')
-      expect(if_block[:if][:binary_condition][:reference]).to eq('true')
+      expect(if_block[:if][:postfix_argument][:reference]).to eq('true')
       expect(if_block[:if][:body]).to eq([])
 
       expect(if_else_block[:else][:else_keyword]).to eq('else')
@@ -503,7 +509,7 @@ finally {
 
     it 'recognizes unless blocks' do
       expect(unless_block[:unless][:unless_keyword]).to eq('unless')
-      expect(unless_block[:unless][:binary_condition][:reference]).to eq('true')
+      expect(unless_block[:unless][:postfix_argument][:reference]).to eq('true')
       expect(unless_block[:unless][:body]).to eq([])
 
       expect(unless_else_block[:else][:else_keyword]).to eq('else')

@@ -32,15 +32,19 @@ module Rip
 
     # NOTE anything that might be followed by an expression terminator
     rule(:simple_expression) do
-      ((((exiter >> spaces >> phrase) | exiter | phrase) >> (spaces >> postfix).maybe) | postfix) >> spaces? >> expression_terminator?
+      (((postfix | exiter | phrase) >> (spaces >> postfix).maybe) | postfix) >> spaces? >> expression_terminator?
     end
 
     # TODO allow parenthesis around phrase to arbitrary levels
     rule(:phrase) { (exiter | postfix).absent? >> (assignment | invocation | object) }
 
-    rule(:if_postfix) { if_keyword >> spaces >> maybe_parens(phrase.as(:binary_condition)) }
-    rule(:unless_postfix) { unless_keyword >> spaces >> maybe_parens(phrase.as(:binary_condition)) }
-    rule(:postfix) { (if_postfix.as(:if_postfix) | unless_postfix.as(:unless_postfix)) }
+    rule(:if_postfix) { if_keyword >> spaces >> maybe_parens(phrase.as(:postfix_argument)) }
+    rule(:unless_postfix) { unless_keyword >> spaces >> maybe_parens(phrase.as(:postfix_argument)) }
+
+    rule(:postfix) do
+      generic_postfix = exiter >> spaces >> maybe_parens(phrase.as(:postfix_argument))
+      if_postfix.as(:if_postfix) | unless_postfix.as(:unless_postfix) | generic_postfix.as(:postfix)
+    end
 
     #---------------------------------------------
 
