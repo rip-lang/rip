@@ -329,7 +329,8 @@ describe Rip::Parser do
     let(:long) { parser.numeric.parse('123_456_789') }
     let(:character_digit) { parser.character.parse('`9') }
     let(:character_alpha) { parser.character.parse('`f') }
-    let(:symbol_string) { parser.string.parse(':one') }
+    let(:symbol_string_digit) { parser.string.parse(':0') }
+    let(:symbol_string_alpha) { parser.string.parse(':one') }
     let(:single_string) { parser.string.parse('\'two\'') }
     let(:double_string) { parser.string.parse('"three"') }
 
@@ -358,7 +359,8 @@ HERE_DOC
     end
 
     it 'recognizes strings' do
-      expect(symbol_string[:string]).to eq('one')
+      expect(symbol_string_digit[:string]).to eq('0')
+      expect(symbol_string_alpha[:string]).to eq('one')
       expect(single_string[:string]).to eq('two')
       expect(double_string[:string]).to eq('three')
       expect(here_doc[:string]).to eq("here docs are good for multi-line strings\n")
