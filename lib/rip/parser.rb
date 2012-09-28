@@ -301,7 +301,7 @@ module Rip
 
     rule(:range) do
       rangable_object = integer | character | reference
-      rangable_object.as(:start) >> str('..') >> dot.maybe.as(:exclusivity) >> rangable_object.as(:end)
+      rangable_object.as(:start) >> dot >> dot >> dot.maybe.as(:exclusivity) >> rangable_object.as(:end)
     end
 
     # NOTE a hash is just a list with only key_value_pairs allowed in it
