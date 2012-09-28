@@ -259,11 +259,11 @@ module Rip
     # TODO expand regular expression pattern
     rule(:regular_expression) { slash_forward >> (slash_forward.absent? >> any).repeat.as(:regex) >> slash_forward }
 
-    #rule(:system) { backtick ( !backtick . / '\`' )* backtick }
+    # rule(:system) { backtick ( !backtick . / '\`' )* backtick }
 
-    #rule(:version) do
-    #  (str('v') >> integer.as(:major) >> dot >> integer.as(:minor) >> dot >> integer.as(:patch)).as(:version)
-    #end
+    # rule(:version) do
+    #   (str('v') >> integer.as(:major) >> dot >> integer.as(:minor) >> dot >> integer.as(:patch)).as(:version)
+    # end
 
     #---------------------------------------------
 
