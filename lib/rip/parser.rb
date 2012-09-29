@@ -1,6 +1,8 @@
 require 'parslet'
 require 'pathname'
 
+require 'rip/keywords'
+
 module Rip
   class Parser < Parslet::Parser
     root(:statements)
@@ -31,17 +33,17 @@ module Rip
 
     # NOTE anything that might be followed by an expression terminator
     rule(:simple_expression) do
-      (((postfix | exiter | phrase) >> (spaces >> postfix).maybe) | postfix) >> spaces? >> expression_terminator?
+      (((postfix | keyword | phrase) >> (spaces >> postfix).maybe) | postfix) >> spaces? >> expression_terminator?
     end
 
     # TODO allow parenthesis around phrase to arbitrary levels
-    rule(:phrase) { (exiter | postfix).absent? >> (assignment | invocation | object) }
+    rule(:phrase) { (keyword | postfix).absent? >> (assignment | invocation | object) }
 
     rule(:if_postfix) { if_keyword >> spaces >> maybe_parens(phrase.as(:postfix_argument)) }
     rule(:unless_postfix) { unless_keyword >> spaces >> maybe_parens(phrase.as(:postfix_argument)) }
 
     rule(:postfix) do
-      generic_postfix = exiter >> spaces >> maybe_parens(phrase.as(:postfix_argument))
+      generic_postfix = keyword >> spaces >> maybe_parens(phrase.as(:postfix_argument))
       if_postfix.as(:if_postfix) | unless_postfix.as(:unless_postfix) | generic_postfix.as(:postfix)
     end
 
@@ -126,31 +128,16 @@ module Rip
 
     #---------------------------------------------
 
-    def self.make_keywords(*keywords)
-      keywords.each do |keyword|
-        name = "#{keyword}_keyword".to_sym
-        rule(name) { str(keyword).as(name) }
-      end
+    Rip::Keywords.all.each do |keyword|
+      rule(keyword.rule) { str(keyword.keyword).as(keyword.name) }
     end
 
-    rule(:keyword) { object_keyword | conditional_keyword | exit_keyword | exception_keyword | reserved_keyword }
-
-    rule(:object_keyword) { class_keyword | lambda_keyword }
-
-    make_keywords :class
-    rule(:lambda_keyword) { dash_rocket.as(:lambda_dash) | fat_rocket.as(:lambda_fat) }
-
-    rule(:conditional_keyword) { if_keyword | unless_keyword | switch_keyword | case_keyword | else_keyword }
-    make_keywords :if, :unless, :switch, :case, :else
-
-    rule(:exiter) { exit_keyword | return_keyword | throw_keyword | break_keyword | next_keyword }
-    make_keywords :exit, :return, :throw, :break, :next
-
-    rule(:exception_keyword) { try_keyword | catch_keyword | finally_keyword }
-    make_keywords :try, :catch, :finally
-
-    rule(:reserved_keyword) { from_keyword | as_keyword | join_keyword | union_keyword | on_keyword | where_keyword | order_keyword | select_keyword | limit_keyword | take_keyword }
-    make_keywords :from, :as, :join, :union, :on, :where, :order, :select, :limit, :take
+    rule(:keyword) do
+      keyword_atoms = Rip::Keywords.all.map { |keyword| send(keyword.rule) }
+      keyword_atoms.inject(keyword_atoms.pop) do |memo, keyword|
+        memo | keyword
+      end
+    end
 
     #---------------------------------------------
 

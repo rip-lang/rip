@@ -151,12 +151,12 @@ describe Rip::Parser do
       expect(block_empty[:block][:lambda_dash]).to eq('->')
       expect(block_empty[:block][:body]).to eq([])
 
-      expect(block_empty_parens[:block][:class_keyword]).to eq('class')
+      expect(block_empty_parens[:block][:class]).to eq('class')
       expect(block_empty_parens[:block][:body]).to eq([])
     end
 
     it 'recognizes blocks with parameter' do
-      expect(block_parameter[:block][:unless_keyword]).to eq('unless')
+      expect(block_parameter[:block][:unless]).to eq('unless')
       expect(block_parameter[:block][:parameters].count).to eq(1)
       expect(block_parameter[:block][:parameters].first[:string]).to eq('name')
     end
@@ -180,9 +180,9 @@ describe Rip::Parser do
     end
 
     it 'recognizes blocks with block parameters' do
-      expect(block_block_parameter[:block][:class_keyword]).to eq('class')
+      expect(block_block_parameter[:block][:class]).to eq('class')
       expect(block_block_parameter[:block][:parameters].count).to eq(1)
-      expect(block_block_parameter[:block][:parameters].first[:block][:class_keyword]).to eq('class')
+      expect(block_block_parameter[:block][:parameters].first[:block][:class]).to eq('class')
     end
   end
 
@@ -198,37 +198,37 @@ describe Rip::Parser do
     let(:list) { parser.simple_expression.parse('[]') }
 
     it 'recognizes keyword' do
-      expect(keyword[:return_keyword]).to eq('return')
+      expect(keyword[:return]).to eq('return')
     end
 
     it 'recognizes postfix followed by postfix' do
-      expect(postfix_postfix[:postfix][:exit_keyword]).to eq('exit')
+      expect(postfix_postfix[:postfix][:exit]).to eq('exit')
       expect(postfix_postfix[:postfix][:postfix_argument][:integer]).to eq('1')
       expect(postfix_postfix[:if_postfix][:postfix_argument][:string]).to eq('error')
     end
 
     it 'recognizes postfix' do
-      expect(postfix[:postfix][:exit_keyword]).to eq('exit')
+      expect(postfix[:postfix][:exit]).to eq('exit')
       expect(postfix[:postfix][:postfix_argument][:integer]).to eq('0')
     end
 
     it 'recognizes postfix with parenthesis around argument' do
-      expect(postfix_parens[:postfix][:exit_keyword]).to eq('exit')
+      expect(postfix_parens[:postfix][:exit]).to eq('exit')
       expect(postfix_parens[:postfix][:postfix_argument][:integer]).to eq('0')
     end
 
     it 'recognizes if postfix' do
-      expect(postfix_if[:if_postfix][:if_keyword]).to eq('if')
+      expect(postfix_if[:if_postfix][:if]).to eq('if')
       expect(postfix_if[:if_postfix][:postfix_argument][:reference]).to eq('true')
     end
 
     it 'recognizes unless postfix' do
-      expect(postfix_unless[:unless_postfix][:unless_keyword]).to eq('unless')
+      expect(postfix_unless[:unless_postfix][:unless]).to eq('unless')
       expect(postfix_unless[:unless_postfix][:postfix_argument][:reference]).to eq('false')
     end
 
     it 'recognizes keyword followed by postfix' do
-      expect(keyword_postfix_a[:return_keyword]).to eq('return')
+      expect(keyword_postfix_a[:return]).to eq('return')
       expect(keyword_postfix_a[:unless_postfix][:postfix_argument][:reference]).to eq('false')
 
       expect(keyword_postfix_b[:reference]).to eq('nil')
