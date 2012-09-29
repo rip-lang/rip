@@ -39,12 +39,9 @@ module Rip
     # TODO allow parenthesis around phrase to arbitrary levels
     rule(:phrase) { (keyword | postfix).absent? >> (assignment | invocation | object) }
 
-    rule(:if_postfix) { if_keyword >> spaces >> maybe_parens(phrase.as(:postfix_argument)) }
-    rule(:unless_postfix) { unless_keyword >> spaces >> maybe_parens(phrase.as(:postfix_argument)) }
-
     rule(:postfix) do
-      generic_postfix = keyword >> spaces >> maybe_parens(phrase.as(:postfix_argument))
-      if_postfix.as(:if_postfix) | unless_postfix.as(:unless_postfix) | generic_postfix.as(:postfix)
+      postfix_tail = spaces >> maybe_parens(phrase.as(:postfix_argument))
+      (if_keyword >> postfix_tail).as(:if_postfix) | (unless_keyword >> postfix_tail).as(:unless_postfix) | (keyword >> postfix_tail).as(:postfix)
     end
 
     #---------------------------------------------
