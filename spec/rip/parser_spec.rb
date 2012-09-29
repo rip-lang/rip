@@ -137,120 +137,56 @@ describe Rip::Parser do
     # end
   end
 
-  describe '#block' do
-    # let(:block_empty) { parser.block.parse('-> {}') }
-    # let(:block_empty_parameters) { parser.block.parse('=> () {}')[:block] }
-    # let(:block_block_parameter) { parser.block.parse('class (class () {}) {}')[:block] }
-    # let(:block_parameter) { parser.block.parse('unless (name) {}')[:block] }
-    # let(:block_super_parameter) { parser.block.parse(rip_block.strip)[:block] }
-    # let(:block_paramter_default) { parser.block.parse('-> (name = :rip) {}')[:block] }
-    # let(:block_multiple_parameters) { parser.block.parse(rip_block.strip)[:block] }
-    # let(:block_parameter_parameter_default) { parser.block.parse('=> (platform, name = :rip) {}')[:block] }
-    let(:class_block) { parser.class_literal.parse('class {}') }
-    let(:class_block_empty) { parser.class_literal.parse('class () {}') }
-    let(:class_block_parent) { parser.class_literal.parse('class (class () {}) {}') }
-    let(:lambda_block) { parser.lambda_literal.parse('-> {}') }
-    let(:lambda_block_empty) { parser.lambda_literal.parse('-> () {}') }
-    let(:lambda_block_parameter) { parser.lambda_literal.parse('-> (name) {}') }
-    let(:lambda_block_parameter_default) { parser.lambda_literal.parse('-> (name = :rip) {}') }
-    let(:lambda_block_parameter_parameter_default) { parser.lambda_literal.parse('-> (platform, name = :rip) {}') }
+  describe '#block_expression' do
+    let(:block_empty) { parser.block_expression.parse('-> {}') }
+    let(:block_empty_parens) { parser.block_expression.parse('class () {}') }
 
-    # it 'recognizes empty blocks' do
-    #   expect(block_empty[:body]).to eq([])
-    # end
+    let(:block_parameter) { parser.block_expression.parse('unless (:name) {}') }
+    let(:block_paramter_default) { parser.block_expression.parse('-> (name = :rip) {}') }
+    let(:block_multiple_parameters) { parser.block_expression.parse('case (one, two) {}') }
+    let(:block_parameter_parameter_default) { parser.block_expression.parse('=> (platform, name = :rip) {}') }
+    let(:block_block_parameter) { parser.block_expression.parse('class (class () {}) {}') }
 
-    # it 'recognizes blocks with empty parameters', :failing do
-    #   puts; puts "block_empty_parameters => #{block_empty_parameters.inspect}"
-    #   expect(block_empty_parameters[:lambda_fat]).to eq('=>')
-    #   expect(block_empty_parameters[:parameters]).to eq([])
-    #   expect(block_empty_parameters[:body]).to eq([])
-    # end
+    it 'recognizes empty blocks' do
+      expect(block_empty[:block][:lambda_dash]).to eq('->')
+      expect(block_empty[:block][:body]).to eq([])
 
-    # it 'recognizes blocks with block parameters', :failing do
-    #   puts; puts "block_block_parameter => #{block_block_parameter.inspect}"
-    #   expect(block_block_parameter[:class]).to eq('class')
-    #   expect(block_block_parameter[:parameters].count).to eq(1)
-    #   expect(block_block_parameter[:parameters].first[:block][:class]).to eq('class')
-    # end
-
-    # it 'recognizes blocks with parameters', :failing do
-    #   puts; puts "block_parameter => #{block_parameter.inspect}"
-    #   expect(block_parameter[:parameters].count).to eq(1)
-    #   expect(block_parameter[:parameters].first[:unless]).to eq('unless')
-
-    #   rip_block = <<-RIP_LIST
-# class (super) {
-# }
-    #   RIP_LIST
-    #   puts; puts "block_super_parameter => #{block_super_parameter.inspect}"
-    #   expect(block_super_parameter[:parameters].count).to eq(1)
-    #   expect(block_super_parameter[:parameters].first[:reference]).to eq('super')
-    # end
-
-    # it 'recognizes blocks with default parameter', :failing do
-    #   puts; puts "block_paramter_default => #{block_paramter_default.inspect}"
-    #   expect(block_paramter_default[:parameters].count).to eq(1)
-    #   expect(block_paramter_default[:parameters].first[:assignment][:reference]).to eq('name')
-    #   expect(block_paramter_default[:parameters].first[:assignment][:value][:string]).to eq('rip')
-    # end
-
-    # it 'recognizes blocks with multiple parameters', :failing do
-    #   rip_block = <<-RIP_LIST
-# class (one, two) {
-# }
-    #   RIP_LIST
-    #   puts; puts "block_multiple_parameters => #{block_multiple_parameters.inspect}"
-    #   expect(block_multiple_parameters[:parameters].count).to eq(2)
-    #   expect(block_multiple_parameters[:parameters].first[:reference]).to eq('one')
-    #   expect(block_multiple_parameters[:parameters].last[:reference]).to eq('two')
-    # end
-
-    # it 'recognizes blocks with parameter and default parameter', :failing do
-    #   puts; puts block_parameter_parameter_default => #{block_parameter_parameter_default.inspect}"
-    #   expect(block_parameter_parameter_default[:parameters].count).to eq(2)
-    #   expect(block_parameter_parameter_default[:parameters].first[:reference]).to eq('platform')
-    #   expect(block_parameter_parameter_default[:parameters].last[:assignment][:reference]).to eq('name')
-    # end
-
-    it 'recognizes classes' do
-      expect(class_block[:class][:ancestors]).to be_nil
-      expect(class_block[:class][:body]).to eq([])
-
-      expect(class_block_empty[:class][:ancestors]).to eq([])
-      expect(class_block_empty[:class][:body]).to eq([])
+      expect(block_empty_parens[:block][:class_keyword]).to eq('class')
+      expect(block_empty_parens[:block][:body]).to eq([])
     end
 
-    it 'recognizes classes with parent' do
-      expect(class_block_parent[:class][:ancestors].count).to eq(1)
+    it 'recognizes blocks with parameter' do
+      expect(block_parameter[:block][:unless_keyword]).to eq('unless')
+      expect(block_parameter[:block][:parameters].count).to eq(1)
+      expect(block_parameter[:block][:parameters].first[:string]).to eq('name')
     end
 
-    it 'recognizes lambdas' do
-      expect(lambda_block[:lambda][:parameters]).to be_nil
-      expect(lambda_block[:lambda][:body]).to eq([])
-
-      expect(lambda_block_empty[:lambda][:parameters]).to eq([])
-      expect(lambda_block_empty[:lambda][:body]).to eq([])
+    it 'recognizes blocks with default parameter' do
+      expect(block_paramter_default[:block][:parameters].count).to eq(1)
+      expect(block_paramter_default[:block][:parameters].first[:assignment][:reference]).to eq('name')
+      expect(block_paramter_default[:block][:parameters].first[:assignment][:value][:string]).to eq('rip')
     end
 
-    it 'recognizes lambdas with parameter' do
-      expect(lambda_block_parameter[:lambda][:parameters].count).to eq(1)
-      expect(lambda_block_parameter[:lambda][:parameters].first[:reference]).to eq('name')
+    it 'recognizes blocks with multiple parameters' do
+      expect(block_multiple_parameters[:block][:parameters].count).to eq(2)
+      expect(block_multiple_parameters[:block][:parameters].first[:reference]).to eq('one')
+      expect(block_multiple_parameters[:block][:parameters].last[:reference]).to eq('two')
     end
 
-    it 'recognizes lambdas with default parameter' do
-      expect(lambda_block_parameter_default[:lambda][:parameters].count).to eq(1)
-      expect(lambda_block_parameter_default[:lambda][:parameters].first[:assignment][:reference]).to eq('name')
-      expect(lambda_block_parameter_default[:lambda][:parameters].first[:assignment][:value][:string]).to eq('rip')
+    it 'recognizes blocks with parameter and default parameter' do
+      expect(block_parameter_parameter_default[:block][:parameters].count).to eq(2)
+      expect(block_parameter_parameter_default[:block][:parameters].first[:reference]).to eq('platform')
+      expect(block_parameter_parameter_default[:block][:parameters].last[:assignment][:reference]).to eq('name')
     end
 
-    it 'recognizes lambdas with parameter and default parameter' do
-      expect(lambda_block_parameter_parameter_default[:lambda][:parameters].count).to eq(2)
-      expect(lambda_block_parameter_parameter_default[:lambda][:parameters].first[:reference]).to eq('platform')
-      expect(lambda_block_parameter_parameter_default[:lambda][:parameters].last[:assignment][:reference]).to eq('name')
+    it 'recognizes blocks with block parameters' do
+      expect(block_block_parameter[:block][:class_keyword]).to eq('class')
+      expect(block_block_parameter[:block][:parameters].count).to eq(1)
+      expect(block_block_parameter[:block][:parameters].first[:block][:class_keyword]).to eq('class')
     end
   end
 
-  describe 'simple expressions' do
+  describe '#simple_expression' do
     let(:keyword) { parser.simple_expression.parse('return;') }
     let(:postfix_postfix) { parser.simple_expression.parse('exit 1 if (:error)') }
     let(:postfix) { parser.simple_expression.parse('exit 0') }
@@ -449,79 +385,6 @@ HERE_DOC
       expect(invocation_operator[:invocation][:operand][:integer]).to eq('2')
       expect(invocation_operator[:invocation][:operator][:reference]).to eq('+')
       expect(invocation_operator[:invocation][:argument][:integer]).to eq('2')
-    end
-  end
-
-  describe 'flow controls' do
-    let(:if_block) { parser.conditional.parse('if (true) {}') }
-    let(:if_else_block) { parser.conditional.parse('if (true) {} else {}') }
-    let(:unless_block) { parser.conditional.parse('unless (true) {}') }
-    let(:unless_else_block) { parser.conditional.parse('unless (true) {} else {}') }
-    let(:switch) { parser.conditional.parse('switch { case (:rip) {} }') }
-
-    let(:switch_full) do
-      rip_switch = <<-RIP_SWITCH
-switch (favorite_language) {
-  case (:rip) {
-  }
-  else {
-  }
-}
-      RIP_SWITCH
-      parser.conditional.parse(rip_switch.strip)
-    end
-
-    let(:tcf) do
-      rip = <<-RIP
-try {
-}
-catch (Exception: e) {
-}
-finally {
-}
-      RIP
-      parser.exception_handling.parse(rip.strip)
-    end
-
-    it 'recognizes if blocks' do
-      expect(if_block[:if][:if_keyword]).to eq('if')
-      expect(if_block[:if][:postfix_argument][:reference]).to eq('true')
-      expect(if_block[:if][:body]).to eq([])
-
-      expect(if_else_block[:else][:else_keyword]).to eq('else')
-      expect(if_else_block[:else][:body]).to eq([])
-    end
-
-    it 'recognizes unless blocks' do
-      expect(unless_block[:unless][:unless_keyword]).to eq('unless')
-      expect(unless_block[:unless][:postfix_argument][:reference]).to eq('true')
-      expect(unless_block[:unless][:body]).to eq([])
-
-      expect(unless_else_block[:else][:else_keyword]).to eq('else')
-      expect(unless_else_block[:else][:body]).to eq([])
-    end
-
-    it 'recognizes switches' do
-      expect(switch[:switch][:switch_test]).to be_nil
-      expect(switch[:switch][:body].count).to eq(1)
-      expect(switch[:switch][:body].first[:case][:case_qualifiers].first[:string]).to eq('rip')
-      expect(switch[:switch][:body].first[:case][:body]).to eq([])
-    end
-
-    it 'recognizes full switches' do
-      expect(switch_full[:switch][:switch_test][:reference]).to eq('favorite_language')
-      expect(switch_full[:switch][:body].count).to eq(2)
-      expect(switch_full[:switch][:body].first[:case][:case_qualifiers].first[:string]).to eq('rip')
-      expect(switch_full[:switch][:body].first[:case][:body]).to eq([])
-      expect(switch_full[:switch][:body].last[:else][:body]).to eq([])
-    end
-
-    it 'recognizes exception handling' do
-      expect(tcf[:exception_handling][0][:try][:body]).to eq([])
-      expect(tcf[:exception_handling][1][:catch][:key][:reference]).to eq('Exception')
-      expect(tcf[:exception_handling][1][:catch][:value][:reference]).to eq('e')
-      expect(tcf[:exception_handling][1][:catch][:body]).to eq([])
-      expect(tcf[:exception_handling][2][:finally][:body]).to eq([])
     end
   end
 end

@@ -9,7 +9,7 @@ module Rip
     #   comment
     #   expression (literal, invocation or reference eg: 2 + 2, full_name())
     #   assignment (reference = expression eg: answer = 2 + 2, name = full_name())
-    #   block (if, unless, switch, case, try)
+    #   block (if, unless, switch, case, try, class, lambda et cetera)
     #   (expression | assignment | block) comment
 
     # in rip everything looks like one of the following
@@ -18,7 +18,6 @@ module Rip
     #   list, map
     #   block
     #   reference
-    #   reference followed by parameter
     #   reference followed by parameter list
 
     rule(:statement) { (comment | expression) >> spaces? >> comment.maybe }
@@ -48,58 +47,15 @@ module Rip
 
     #---------------------------------------------
 
-    rule(:class_literal) do
-      ancestors = parens(comma_list(class_literal | reference).as(:ancestors).maybe)
-      (class_keyword >> whitespaces? >> ancestors.maybe >> whitespaces? >> block_body).as(:class)
-    end
-
-    rule(:lambda_literal) do
-      parameters = parens(comma_list(assignment | reference).as(:parameters))
-      (lambda_keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block_body).as(:lambda)
-    end
-
-    #---------------------------------------------
+    rule(:parameters) { parens(comma_list(assignment | object).as(:parameters)) }
 
     # NOTE anything that should not be followed by an expression terminator
-    # TODO rule for loop_block (maybe)
-    rule(:block_expression) { conditional | exception_handling }
-
-    rule(:conditional) { ((if_block | unless_block) >> whitespaces? >> else_block.maybe) | switch }
-
-    #---------------------------------------------
-
-    rule(:if_block) { (if_postfix >> whitespaces? >> block_body).as(:if) }
-    rule(:unless_block) { (unless_postfix >> whitespaces? >> block_body).as(:unless) }
-
-    rule(:else_block) { (else_keyword >> whitespaces? >> block_body).as(:else) }
-
-    #---------------------------------------------
-
-    rule(:switch) do
-      switch_test = parens(object.as(:switch_test).maybe)
-      cases = case_block.repeat(1) >> whitespaces? >> else_block.maybe
-      (switch_keyword >> spaces? >> switch_test.maybe >> spaces? >> block_body(cases)).as(:switch)
-    end
-
-    rule(:case_block) do
-      case_qualifiers = parens(comma_list(object).as(:case_qualifiers).maybe)
-      (case_keyword >> whitespaces? >> case_qualifiers.maybe >> whitespaces? >> block_body).as(:case)
-    end
-
-    #---------------------------------------------
-
-    rule(:exception_handling) do
-      try_block = (try_keyword >> whitespaces? >> block_body).as(:try)
-      catch_block = (catch_keyword >> whitespaces? >> parens(key_value_pair) >> whitespaces? >> block_body).as(:catch)
-      finally = (finally_keyword >> whitespaces? >> block_body).as(:finally)
-
-      (try_block >> whitespaces? >> catch_block.repeat(1) >> whitespaces? >> finally.maybe).as(:exception_handling)
-    end
+    rule(:block_expression) { (keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block_body).as(:block) }
 
     #---------------------------------------------
 
     rule(:invocation) { regular_invocation | operator_invocation }
-    rule(:regular_invocation) { ((lambda_literal | reference) >> parens(comma_list(object).as(:arguments))).as(:invocation) }
+    rule(:regular_invocation) { ((block_expression | reference) >> parens(comma_list(object).as(:arguments))).as(:invocation) }
     rule(:operator_invocation) { (object.as(:operand) >> spaces >> reference.as(:operator) >> spaces >> object.as(:argument)).as(:invocation) }
 
     # TODO consider multiple assignment
@@ -109,7 +65,7 @@ module Rip
     #---------------------------------------------
 
     # FIXME invocation instead of regular_invocation
-    rule(:object) { (recursive_object | simple_object | structural_object | regular_invocation | reference) >> property.repeat.as(:property_chain) }
+    rule(:object) { (block_expression | recursive_object | simple_object | regular_invocation | reference) >> property.repeat.as(:property_chain) }
 
     rule(:property) { dot >> (regular_invocation | reference) }
 
@@ -117,8 +73,6 @@ module Rip
     rule(:simple_object) { numeric | character | string | regular_expression }
 
     rule(:recursive_object) { key_value_pair | range | hash_literal | list }
-
-    rule(:structural_object) { class_literal | lambda_literal }
 
     #---------------------------------------------
 
@@ -184,7 +138,7 @@ module Rip
     rule(:object_keyword) { class_keyword | lambda_keyword }
 
     make_keywords :class
-    rule(:lambda_keyword) { (dash_rocket | fat_rocket).as(:lambda_keyword) }
+    rule(:lambda_keyword) { dash_rocket.as(:lambda_dash) | fat_rocket.as(:lambda_fat) }
 
     rule(:conditional_keyword) { if_keyword | unless_keyword | switch_keyword | case_keyword | else_keyword }
     make_keywords :if, :unless, :switch, :case, :else
