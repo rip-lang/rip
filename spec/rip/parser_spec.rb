@@ -138,51 +138,53 @@ describe Rip::Parser do
   end
 
   describe '#block_expression' do
-    let(:block_empty) { parser.block_expression.parse('-> {}') }
-    let(:block_empty_parens) { parser.block_expression.parse('class () {}') }
+    context 'parameters' do
+      let(:block_empty) { parser.block_expression.parse('-> {}') }
+      let(:block_empty_parens) { parser.block_expression.parse('class () {}') }
 
-    let(:block_parameter) { parser.block_expression.parse('unless (:name) {}') }
-    let(:block_paramter_default) { parser.block_expression.parse('-> (name = :rip) {}') }
-    let(:block_multiple_parameters) { parser.block_expression.parse('case (one, two) {}') }
-    let(:block_parameter_parameter_default) { parser.block_expression.parse('=> (platform, name = :rip) {}') }
-    let(:block_block_parameter) { parser.block_expression.parse('class (class () {}) {}') }
+      let(:block_parameter) { parser.block_expression.parse('unless (:name) {}') }
+      let(:block_paramter_default) { parser.block_expression.parse('-> (name = :rip) {}') }
+      let(:block_multiple_parameters) { parser.block_expression.parse('case (one, two) {}') }
+      let(:block_parameter_parameter_default) { parser.block_expression.parse('=> (platform, name = :rip) {}') }
+      let(:block_block_parameter) { parser.block_expression.parse('class (class () {}) {}') }
 
-    it 'recognizes empty blocks' do
-      expect(block_empty[:block][:lambda_dash]).to eq('->')
-      expect(block_empty[:block][:body]).to eq([])
+      it 'recognizes empty blocks' do
+        expect(block_empty[:block][:lambda_dash]).to eq('->')
+        expect(block_empty[:block][:body]).to eq([])
 
-      expect(block_empty_parens[:block][:class]).to eq('class')
-      expect(block_empty_parens[:block][:body]).to eq([])
-    end
+        expect(block_empty_parens[:block][:class]).to eq('class')
+        expect(block_empty_parens[:block][:body]).to eq([])
+      end
 
-    it 'recognizes blocks with parameter' do
-      expect(block_parameter[:block][:unless]).to eq('unless')
-      expect(block_parameter[:block][:parameters].count).to eq(1)
-      expect(block_parameter[:block][:parameters].first[:string]).to eq('name')
-    end
+      it 'recognizes blocks with parameter' do
+        expect(block_parameter[:block][:unless]).to eq('unless')
+        expect(block_parameter[:block][:parameters].count).to eq(1)
+        expect(block_parameter[:block][:parameters].first[:string]).to eq('name')
+      end
 
-    it 'recognizes blocks with default parameter' do
-      expect(block_paramter_default[:block][:parameters].count).to eq(1)
-      expect(block_paramter_default[:block][:parameters].first[:assignment][:reference]).to eq('name')
-      expect(block_paramter_default[:block][:parameters].first[:assignment][:value][:string]).to eq('rip')
-    end
+      it 'recognizes blocks with default parameter' do
+        expect(block_paramter_default[:block][:parameters].count).to eq(1)
+        expect(block_paramter_default[:block][:parameters].first[:assignment][:reference]).to eq('name')
+        expect(block_paramter_default[:block][:parameters].first[:assignment][:value][:string]).to eq('rip')
+      end
 
-    it 'recognizes blocks with multiple parameters' do
-      expect(block_multiple_parameters[:block][:parameters].count).to eq(2)
-      expect(block_multiple_parameters[:block][:parameters].first[:reference]).to eq('one')
-      expect(block_multiple_parameters[:block][:parameters].last[:reference]).to eq('two')
-    end
+      it 'recognizes blocks with multiple parameters' do
+        expect(block_multiple_parameters[:block][:parameters].count).to eq(2)
+        expect(block_multiple_parameters[:block][:parameters].first[:reference]).to eq('one')
+        expect(block_multiple_parameters[:block][:parameters].last[:reference]).to eq('two')
+      end
 
-    it 'recognizes blocks with parameter and default parameter' do
-      expect(block_parameter_parameter_default[:block][:parameters].count).to eq(2)
-      expect(block_parameter_parameter_default[:block][:parameters].first[:reference]).to eq('platform')
-      expect(block_parameter_parameter_default[:block][:parameters].last[:assignment][:reference]).to eq('name')
-    end
+      it 'recognizes blocks with parameter and default parameter' do
+        expect(block_parameter_parameter_default[:block][:parameters].count).to eq(2)
+        expect(block_parameter_parameter_default[:block][:parameters].first[:reference]).to eq('platform')
+        expect(block_parameter_parameter_default[:block][:parameters].last[:assignment][:reference]).to eq('name')
+      end
 
-    it 'recognizes blocks with block parameters' do
-      expect(block_block_parameter[:block][:class]).to eq('class')
-      expect(block_block_parameter[:block][:parameters].count).to eq(1)
-      expect(block_block_parameter[:block][:parameters].first[:block][:class]).to eq('class')
+      it 'recognizes blocks with block parameters' do
+        expect(block_block_parameter[:block][:class]).to eq('class')
+        expect(block_block_parameter[:block][:parameters].count).to eq(1)
+        expect(block_block_parameter[:block][:parameters].first[:block][:class]).to eq('class')
+      end
     end
   end
 
