@@ -256,12 +256,11 @@ describe Rip::Parser do
     let(:double_string) { parser.string.parse('"three"') }
 
     let(:here_doc) do
-      rip_doc = <<-RIP_DOC
-<<HERE_DOC
-here docs are good for multi-line strings
-HERE_DOC
-      RIP_DOC
-      parser.string.parse(rip_doc)
+      parser.string.parse(<<-RIP.split("\n").map(&:strip).join("\n"))
+                          <<HERE_DOC
+                          here docs are good for multi-line strings
+                          HERE_DOC
+                          RIP
     end
 
     let(:regex) { parser.regular_expression.parse('/hello/') }
@@ -301,25 +300,23 @@ HERE_DOC
     let(:empty_hash) { parser.hash_literal.parse('{}') }
     let(:single_hash) { parser.hash_literal.parse('{:name: :Thomas}') }
     let(:multi_hash) do
-      rip_hash = <<-RIP_HASH
-{
-  :age: 31,
-  :name: :Thomas
-}
-      RIP_HASH
-      parser.hash_literal.parse(rip_hash.strip)
+      parser.hash_literal.parse(<<-RIP.strip)
+                                {
+                                  :age: 31,
+                                  :name: :Thomas
+                                }
+                                RIP
     end
 
     let(:empty_list) { parser.list.parse('[]') }
     let(:single_list) { parser.list.parse('[:Thomas]') }
     let(:multi_list) do
-      rip_list = <<-RIP_LIST
-[
-  31,
-  :Thomas
-]
-      RIP_LIST
-      parser.list.parse(rip_list.strip)
+      parser.list.parse(<<-RIP.strip)
+                        [
+                          31,
+                          :Thomas
+                        ]
+                        RIP
     end
 
     it 'recognizes key-value pairs' do
