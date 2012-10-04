@@ -49,7 +49,10 @@ module Rip
     rule(:parameters) { parens(comma_list(assignment | object).as(:parameters)) }
 
     # NOTE anything that should not be followed by an expression terminator
-    rule(:block_expression) { (keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block_body).as(:block) }
+    rule(:block_expression) do
+      block_body = surround_with(brace_open, statements.as(:body), brace_close)
+      (keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block_body).as(:block)
+    end
 
     #---------------------------------------------
 
@@ -236,10 +239,6 @@ module Rip
     #---------------------------------------------
 
     protected
-
-    def block_body(body = statements)
-      surround_with(brace_open, body.as(:body), brace_close)
-    end
 
     def parens(center)
       surround_with(parenthesis_open, center, parenthesis_close)
