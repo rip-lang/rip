@@ -22,7 +22,7 @@ module Rip
     #   reference
     #   reference followed by parameter list
 
-    rule(:statement) { (comment | expression) >> spaces? >> comment.maybe }
+    rule(:statement) { whitespaces? >> (comment | (expression >> spaces? >> comment.maybe)) >> whitespaces? }
     rule(:statements) { thing_list(statement, whitespaces?) }
 
     rule(:comment) { (pound >> (eol.absent? >> any).repeat.as(:comment)) >> eol.maybe }
