@@ -186,6 +186,48 @@ describe Rip::Parser do
         expect(block_block_parameter[:block][:parameters].first[:block][:class]).to eq('class')
       end
     end
+
+    context 'body' do
+      let(:block_comment) { parser.block_expression.parse(<<-RIP.strip)[:block][:body].first }
+                                                          if (true) {
+                                                            # comment
+                                                          }
+                                                          RIP
+
+      let(:block_reference) { parser.block_expression.parse('if (true) { name }')[:block][:body].first }
+      let(:block_assignment) { parser.block_expression.parse('if (true) { x = :y }')[:block][:body].first }
+      let(:block_invocation) { parser.block_expression.parse('if (true) { run!() }')[:block][:body].first }
+      let(:block_invocation_operator) { parser.block_expression.parse('if (true) { steam will :rise }')[:block][:body].first }
+      let(:block_literal) { parser.block_expression.parse('if (true) { `3 }')[:block][:body].first }
+
+      it 'recognizes comments inside blocks' do
+        expect(block_comment[:comment]).to eq(' comment')
+      end
+
+      it 'recognizes references inside blocks' do
+        expect(block_reference[:reference]).to eq('name')
+      end
+
+      it 'recognizes assignments inside blocks' do
+        expect(block_assignment[:assignment][:reference]).to eq('x')
+        expect(block_assignment[:assignment][:value][:string]).to eq('y')
+      end
+
+      it 'recognizes invocations inside blocks' do
+        expect(block_invocation[:invocation][:reference]).to eq('run!')
+        expect(block_invocation[:invocation][:arguments]).to eq([])
+      end
+
+      it 'recognizes operator invocations inside blocks' do
+        expect(block_invocation_operator[:invocation][:operand][:reference]).to eq('steam')
+        expect(block_invocation_operator[:invocation][:operator][:reference]).to eq('will')
+        expect(block_invocation_operator[:invocation][:argument][:string]).to eq('rise')
+      end
+
+      it 'recognizes literals inside blocks' do
+        expect(block_literal[:character]).to eq('3')
+      end
+    end
   end
 
   describe '#simple_expression' do
