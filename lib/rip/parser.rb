@@ -27,7 +27,7 @@ module Rip
 
     rule(:comment) { (pound >> (eol.absent? >> any).repeat.as(:comment)) >> eol.maybe }
 
-    rule(:expression) { (simple_expression | block_expression) }
+    rule(:expression) { block_expression | simple_expression }
 
     #---------------------------------------------
 
