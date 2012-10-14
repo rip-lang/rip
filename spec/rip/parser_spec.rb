@@ -81,20 +81,6 @@ describe Rip::Parser do
     end
   end
 
-  describe 'parenthesis' do
-    let(:parens) { parser.expression.parse('((((((l((1 + (((2 - 3)))))))))))') }
-
-    # it 'recognizes anything surrounded by parenthesis', :failing do
-    #   puts; puts "parens => #{parens.inspect}"
-    #   expect(parens[:invocation][:reference]).to eq('l')
-    #   expect(parens[:invocation][:parameters][0][:operator_invocation][:operand]).to eq('1')
-    #   expect(parens[:invocation][:parameters][0][:operator_invocation][:operator]).to eq('+')
-    #   expect(parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:operand]).to eq('2')
-    #   expect(parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:operator]).to eq('-')
-    #   expect(parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:argument]).to eq('3')
-    # end
-  end
-
   describe 'property chains' do
     let(:chain_property) { parser.object.parse('0.one.two.three') }
     let(:change_invocation) { parser.object.parse('zero().one().two().three()') }
@@ -282,6 +268,24 @@ describe Rip::Parser do
 
     it 'recognizes list expression' do
       expect(list[:list]).to eq([])
+    end
+
+    context 'nested parenthesis' do
+      let(:parens) { parser.simple_expression.parse('(0)') }
+      let(:gnarly_parens) { parser.simple_expression.parse('((((((l((1 + (((2 - 3)))))))))))') }
+
+      # it 'recognizes anything surrounded by parenthesis', :failing, :focus do
+      #   expect(parens[:phrase][:integer]).to eq('0')
+      # end
+
+      # it 'recognizes anything surrounded by parenthesis with crazy nesting', :failing do
+      #   expect(gnarly_parens[:invocation][:reference]).to eq('l')
+      #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:operand]).to eq('1')
+      #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:operator]).to eq('+')
+      #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:operand]).to eq('2')
+      #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:operator]).to eq('-')
+      #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:argument]).to eq('3')
+      # end
     end
   end
 
