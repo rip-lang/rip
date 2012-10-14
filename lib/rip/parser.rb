@@ -62,7 +62,7 @@ module Rip
 
     # TODO consider multiple assignment
     # TODO rules for visibility (public, protected, private)
-    rule(:assignment) { (reference >> spaces >> equals >> spaces >> expression.as(:value)).as(:assignment) }
+    rule(:assignment) { (reference >> spaces >> equals >> spaces >> phrase.as(:value)).as(:assignment) }
 
     #---------------------------------------------
 
