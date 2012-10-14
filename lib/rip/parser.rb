@@ -228,7 +228,7 @@ module Rip
     rule(:hash_literal) { surround_with(brace_open, comma_list(key_value_pair | reference).as(:hash), brace_close) }
 
     # TODO allow type restriction
-    rule(:list) { surround_with(bracket_open, comma_list(object).as(:list), bracket_close) }
+    rule(:list) { surround_with(bracket_open, comma_list(phrase).as(:list), bracket_close) }
 
     #---------------------------------------------
 
