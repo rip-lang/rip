@@ -41,3 +41,21 @@ RSpec.configure do |config|
     Rip::AST.new(apt(code)).tree
   end
 end
+
+RSpec::Matchers.define :match_tree do |expected_tree|
+  match do |parse_tree|
+    begin
+      parse_keys = parse_tree.keys
+      raise "Not all expected keys present. Expected keys #{expected_tree.keys}, but got #{parse_keys}" unless expected_tree.keys.all? { |key| parse_keys.include? key }
+
+      expected_tree.each do |key, value|
+        raise "Expected #{value} for #{key.inspect}, but got #{parse_tree[key]}" unless parse_tree[key] == value
+      end
+
+      true
+    rescue => e
+      puts e.message
+      false
+    end
+  end
+end

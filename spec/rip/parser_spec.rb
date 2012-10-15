@@ -12,7 +12,7 @@ describe Rip::Parser do
     end
 
     it 'recognizes comments' do
-      expect(comment[:comment]).to eq(' this is a comment')
+      expect(comment).to match_tree(:comment => ' this is a comment')
     end
 
     it 'recognizes various whitespace sequences' do
@@ -49,7 +49,7 @@ describe Rip::Parser do
         'one_9',
         'É¹ÇÊ‡É¹oÔ€uÉlâˆ€â„¢'
       ].each do |reference|
-        expect(parser.reference.parse(reference)[:reference]).to eq(reference)
+        expect(parser.reference.parse(reference)).to match_tree(:reference => reference)
       end
     end
 
@@ -68,11 +68,15 @@ describe Rip::Parser do
     end
 
     it 'recognizes special references' do
-      expect(parser.reference.parse('nilly')[:reference]).to eq('nilly')
-      expect(parser.reference.parse('nil')[:reference]).to eq('nil')
-      expect(parser.reference.parse('true')[:reference]).to eq('true')
-      expect(parser.reference.parse('false')[:reference]).to eq('false')
-      expect(parser.reference.parse('Kernel')[:reference]).to eq('Kernel')
+      [
+        'nilly',
+        'nil',
+        'true',
+        'false',
+        'Kernel'
+      ].each do |reference|
+        expect(parser.reference.parse(reference)).to match_tree(:reference => reference)
+      end
     end
 
     it 'assigns to a reference' do
@@ -312,28 +316,27 @@ describe Rip::Parser do
     let(:regex) { parser.regular_expression.parse('/hello/') }
 
     it 'recognizes numbers' do
-      expect(integer[:integer]).to eq('42')
-      expect(decimal[:decimal]).to eq('4.2')
-      expect(negative[:integer]).to eq('3')
-      expect(negative[:sign]).to eq('-')
-      expect(long[:integer]).to eq('123_456_789')
+      expect(integer).to match_tree(:integer => '42')
+      expect(decimal).to match_tree(:decimal => '4.2')
+      expect(negative).to match_tree(:sign => '-', :integer => '3')
+      expect(long).to match_tree(:integer => '123_456_789')
     end
 
     it 'recognizes characters' do
-      expect(character_digit[:character]).to eq('9')
-      expect(character_alpha[:character]).to eq('f')
+      expect(character_digit).to match_tree(:character => '9')
+      expect(character_alpha).to match_tree(:character => 'f')
     end
 
     it 'recognizes strings' do
-      expect(symbol_string_digit[:string]).to eq('0')
-      expect(symbol_string_alpha[:string]).to eq('one')
-      expect(single_string[:string]).to eq('two')
-      expect(double_string[:string]).to eq('three')
-      expect(here_doc[:string]).to eq("here docs are good for multi-line strings\n")
+      expect(symbol_string_digit).to match_tree(:string => '0')
+      expect(symbol_string_alpha).to match_tree(:string => 'one')
+      expect(single_string).to match_tree(:string => 'two')
+      expect(double_string).to match_tree(:string => 'three')
+      expect(here_doc).to match_tree(:string => "here docs are good for multi-line strings\n")
     end
 
     it 'recognizes regular expressions' do
-      expect(regex[:regex]).to eq('hello')
+      expect(regex).to match_tree(:regex => 'hello')
     end
   end
 
