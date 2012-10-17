@@ -278,7 +278,7 @@ describe Rip::Parser do
       let(:parens) { parser.simple_expression.parse('(0)') }
       let(:gnarly_parens) { parser.simple_expression.parse('((((((l((1 + (((2 - 3)))))))))))') }
 
-      # it 'recognizes anything surrounded by parenthesis', :failing, :focus do
+      # it 'recognizes anything surrounded by parenthesis', :failing do
       #   expect(parens[:phrase][:integer]).to eq('0')
       # end
 
