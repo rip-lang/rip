@@ -80,8 +80,7 @@ describe Rip::Parser do
     end
 
     it 'assigns to a reference' do
-      expect(assignment[:assignment][:reference]).to eq('favorite_language')
-      expect(assignment[:assignment][:value][:string]).to eq('rip')
+      expect(assignment).to match_tree(:assignment => {:reference => 'favorite_language', :value => {:string => 'rip'}})
     end
   end
 
@@ -92,17 +91,19 @@ describe Rip::Parser do
     let(:operator_chain) { parser.object.parse('(1 - 2).zero?()') }
 
     it 'recognizes property chains' do
-      expect(chain_property[:integer]).to eq('0')
-      expect(chain_property[:property_chain][0][:reference]).to eq('one')
-      expect(chain_property[:property_chain][1][:reference]).to eq('two')
-      expect(chain_property[:property_chain][2][:reference]).to eq('three')
+      expect(chain_property).to match_tree(:integer => '0', :property_chain => [{:reference => 'one'}, {:reference => 'two'}, {:reference => 'three'}])
     end
 
     it 'recognizes property chains with invocations' do
-      expect(change_invocation[:invocation][:reference]).to eq('zero')
-      expect(change_invocation[:property_chain][0][:invocation][:reference]).to eq('one')
-      expect(change_invocation[:property_chain][1][:invocation][:reference]).to eq('two')
-      expect(change_invocation[:property_chain][2][:invocation][:reference]).to eq('three')
+      expected = {
+        :invocation => {:reference => 'zero'},
+        :property_chain => [
+          {:invocation => {:reference => 'one'}},
+          {:invocation => {:reference => 'two'}},
+          {:invocation => {:reference => 'three'}}
+        ]
+      }
+      expect(change_invocation).to match_tree(expected)
     end
 
     # it 'recognizes chaining with properies and invocations', :failing do
@@ -139,8 +140,7 @@ describe Rip::Parser do
       let(:block_block_parameter) { parser.block_expression.parse('class (class () {}) {}') }
 
       it 'recognizes empty blocks' do
-        expect(block_empty[:block][:lambda_dash]).to eq('->')
-        expect(block_empty[:block][:body]).to eq([])
+        expect(block_empty).to match_tree(:block => {:lambda_dash => '->', :body => []})
 
         expect(block_empty_parens[:block][:class]).to eq('class')
         expect(block_empty_parens[:block][:body]).to eq([])

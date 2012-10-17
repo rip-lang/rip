@@ -43,13 +43,23 @@ RSpec.configure do |config|
 end
 
 RSpec::Matchers.define :match_tree do |expected_tree|
-  match do |parse_tree|
+  tree_matcher = lambda do |parse_tree, expected = expected_tree|
     begin
       parse_keys = parse_tree.keys
-      raise "Not all expected keys present. Expected keys #{expected_tree.keys}, but got #{parse_keys}" unless expected_tree.keys.all? { |key| parse_keys.include? key }
+      raise "Not all expected keys present. Expected keys #{expected.keys}, but got #{parse_keys}" unless expected.keys.all? { |key| parse_keys.include? key }
 
-      expected_tree.each do |key, value|
-        raise "Expected #{value} for #{key.inspect}, but got #{parse_tree[key]}" unless parse_tree[key] == value
+      expected.each do |key, value|
+        case value
+        when Array
+          raise "#{parse_tree[key]} expected have the same number of entries as #{value}" unless parse_tree[key].count == value.count
+          value.each_with_index do |ev, i|
+            tree_matcher.call parse_tree[key][i], ev
+          end
+        when Hash
+          tree_matcher.call parse_tree[key], value
+        else
+          raise "Expected #{value} for #{key.inspect}, but got #{parse_tree[key]}" unless parse_tree[key] == value
+        end
       end
 
       true
@@ -58,4 +68,6 @@ RSpec::Matchers.define :match_tree do |expected_tree|
       false
     end
   end
+
+  match &tree_matcher
 end
