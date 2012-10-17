@@ -134,46 +134,34 @@ describe Rip::Parser do
       let(:block_empty_parens) { parser.block_expression.parse('class () {}') }
 
       let(:block_parameter) { parser.block_expression.parse('unless (:name) {}') }
-      let(:block_paramter_default) { parser.block_expression.parse('-> (name = :rip) {}') }
+      let(:block_parameter_default) { parser.block_expression.parse('-> (name = :rip) {}') }
       let(:block_multiple_parameters) { parser.block_expression.parse('case (one, two) {}') }
       let(:block_parameter_parameter_default) { parser.block_expression.parse('=> (platform, name = :rip) {}') }
       let(:block_block_parameter) { parser.block_expression.parse('class (class () {}) {}') }
 
       it 'recognizes empty blocks' do
         expect(block_empty).to match_tree(:block => {:lambda_dash => '->', :body => []})
-
-        expect(block_empty_parens[:block][:class]).to eq('class')
-        expect(block_empty_parens[:block][:body]).to eq([])
+        expect(block_empty_parens).to match_tree(:block => {:class => 'class', :body => []})
       end
 
       it 'recognizes blocks with parameter' do
-        expect(block_parameter[:block][:unless]).to eq('unless')
-        expect(block_parameter[:block][:parameters].count).to eq(1)
-        expect(block_parameter[:block][:parameters].first[:string]).to eq('name')
+        expect(block_parameter).to match_tree(:block => {:unless => 'unless', :parameters => [{:string => 'name'}]})
       end
 
       it 'recognizes blocks with default parameter' do
-        expect(block_paramter_default[:block][:parameters].count).to eq(1)
-        expect(block_paramter_default[:block][:parameters].first[:assignment][:reference]).to eq('name')
-        expect(block_paramter_default[:block][:parameters].first[:assignment][:value][:string]).to eq('rip')
+        expect(block_parameter_default).to match_tree(:block => {:parameters => [{:assignment => {:reference => 'name', :value => {:string => 'rip'}}}]})
       end
 
       it 'recognizes blocks with multiple parameters' do
-        expect(block_multiple_parameters[:block][:parameters].count).to eq(2)
-        expect(block_multiple_parameters[:block][:parameters].first[:reference]).to eq('one')
-        expect(block_multiple_parameters[:block][:parameters].last[:reference]).to eq('two')
+        expect(block_multiple_parameters).to match_tree(:block => {:parameters => [{:reference => 'one'}, {:reference => 'two'}]})
       end
 
       it 'recognizes blocks with parameter and default parameter' do
-        expect(block_parameter_parameter_default[:block][:parameters].count).to eq(2)
-        expect(block_parameter_parameter_default[:block][:parameters].first[:reference]).to eq('platform')
-        expect(block_parameter_parameter_default[:block][:parameters].last[:assignment][:reference]).to eq('name')
+        expect(block_parameter_parameter_default).to match_tree(:block => {:parameters => [{:reference => 'platform'}, {:assignment => {:reference => 'name'}}]})
       end
 
       it 'recognizes blocks with block parameters' do
-        expect(block_block_parameter[:block][:class]).to eq('class')
-        expect(block_block_parameter[:block][:parameters].count).to eq(1)
-        expect(block_block_parameter[:block][:parameters].first[:block][:class]).to eq('class')
+        expect(block_block_parameter).to match_tree(:block => {:class => 'class', :parameters => [{:block => {:class => 'class'}}]})
       end
     end
 
