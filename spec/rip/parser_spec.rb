@@ -179,31 +179,27 @@ describe Rip::Parser do
       let(:block_literal) { parser.block_expression.parse('if (true) { `3 }')[:block][:body].first }
 
       it 'recognizes comments inside blocks' do
-        expect(block_comment[:comment]).to eq(' comment')
+        expect(block_comment).to match_tree(:comment => ' comment')
       end
 
       it 'recognizes references inside blocks' do
-        expect(block_reference[:reference]).to eq('name')
+        expect(block_reference).to match_tree(:reference => 'name')
       end
 
       it 'recognizes assignments inside blocks' do
-        expect(block_assignment[:assignment][:reference]).to eq('x')
-        expect(block_assignment[:assignment][:value][:string]).to eq('y')
+        expect(block_assignment).to match_tree(:assignment => {:reference => 'x', :value => {:string => 'y'}})
       end
 
       it 'recognizes invocations inside blocks' do
-        expect(block_invocation[:invocation][:reference]).to eq('run!')
-        expect(block_invocation[:invocation][:arguments]).to eq([])
+        expect(block_invocation).to match_tree(:invocation => {:reference => 'run!', :arguments => []})
       end
 
       it 'recognizes operator invocations inside blocks' do
-        expect(block_invocation_operator[:invocation][:operand][:reference]).to eq('steam')
-        expect(block_invocation_operator[:invocation][:operator][:reference]).to eq('will')
-        expect(block_invocation_operator[:invocation][:argument][:string]).to eq('rise')
+        expect(block_invocation_operator).to match_tree(:invocation => {:operand => {:reference => 'steam'}, :operator => {:reference => 'will'}, :argument => {:string => 'rise'}})
       end
 
       it 'recognizes literals inside blocks' do
-        expect(block_literal[:character]).to eq('3')
+        expect(block_literal).to match_tree(:character => '3')
       end
     end
   end
@@ -220,46 +216,37 @@ describe Rip::Parser do
     let(:list) { parser.simple_expression.parse('[]') }
 
     it 'recognizes keyword' do
-      expect(keyword[:return]).to eq('return')
+      expect(keyword).to match_tree(:return => 'return')
     end
 
     it 'recognizes postfix followed by postfix' do
-      expect(postfix_postfix[:postfix][:exit]).to eq('exit')
-      expect(postfix_postfix[:postfix][:postfix_argument][:integer]).to eq('1')
-      expect(postfix_postfix[:if_postfix][:postfix_argument][:string]).to eq('error')
+      expect(postfix_postfix).to match_tree(:postfix => {:exit => 'exit', :postfix_argument => {:integer => '1'}}, :if_postfix => {:postfix_argument => {:string => 'error'}})
     end
 
     it 'recognizes postfix' do
-      expect(postfix[:postfix][:exit]).to eq('exit')
-      expect(postfix[:postfix][:postfix_argument][:integer]).to eq('0')
+      expect(postfix).to match_tree(:postfix => {:exit => 'exit', :postfix_argument => {:integer => '0'}})
     end
 
     it 'recognizes postfix with parenthesis around argument' do
-      expect(postfix_parens[:postfix][:exit]).to eq('exit')
-      expect(postfix_parens[:postfix][:postfix_argument][:integer]).to eq('0')
+      expect(postfix_parens).to match_tree(:postfix => {:exit => 'exit', :postfix_argument => {:integer => '0'}})
     end
 
     it 'recognizes if postfix' do
-      expect(postfix_if[:if_postfix][:if]).to eq('if')
-      expect(postfix_if[:if_postfix][:postfix_argument][:reference]).to eq('true')
+      expect(postfix_if).to match_tree(:if_postfix => {:if => 'if', :postfix_argument => {:reference => 'true'}})
     end
 
     it 'recognizes unless postfix' do
-      expect(postfix_unless[:unless_postfix][:unless]).to eq('unless')
-      expect(postfix_unless[:unless_postfix][:postfix_argument][:reference]).to eq('false')
+      expect(postfix_unless).to match_tree(:unless_postfix => {:unless => 'unless', :postfix_argument => {:reference => 'false'}})
     end
 
     it 'recognizes keyword followed by postfix' do
-      expect(keyword_postfix_a[:return]).to eq('return')
-      expect(keyword_postfix_a[:unless_postfix][:postfix_argument][:reference]).to eq('false')
+      expect(keyword_postfix_a).to match_tree(:return => 'return', :unless_postfix => {:postfix_argument => {:reference => 'false'}})
 
-      expect(keyword_postfix_b[:reference]).to eq('nil')
-      expect(keyword_postfix_b[:if_postfix][:postfix_argument][:invocation][:reference]).to eq('empty')
-      expect(keyword_postfix_b[:if_postfix][:postfix_argument][:invocation][:arguments]).to eq([])
+      expect(keyword_postfix_b).to match_tree(:reference => 'nil', :if_postfix => {:postfix_argument => {:invocation => {:reference => 'empty', :arguments => []}}})
     end
 
     it 'recognizes list expression' do
-      expect(list[:list]).to eq([])
+      expect(list).to match_tree(:list => [])
     end
 
     context 'nested parenthesis' do
@@ -357,42 +344,31 @@ describe Rip::Parser do
     end
 
     it 'recognizes key-value pairs' do
-      expect(kvp[:key][:integer]).to eq('5')
-      expect(kvp[:value][:string]).to eq('five')
+      expect(kvp).to match_tree(:key => {:integer => '5'}, :value => {:string => 'five'})
 
-      expect(reference_kvp[:key][:reference]).to eq('Exception')
-      expect(reference_kvp[:value][:reference]).to eq('e')
+      expect(reference_kvp).to match_tree(:key => {:reference => 'Exception'}, :value => {:reference => 'e'})
     end
 
     it 'recognizes ranges' do
-      expect(range[:start][:integer]).to eq('1')
-      expect(range[:end][:integer]).to eq('3')
-      expect(range[:exclusivity]).to be_nil
+      expect(range).to match_tree(:start => {:integer => '1'}, :end => {:integer => '3'}, :exclusivity => nil)
 
-      expect(reference_range[:start][:integer]).to eq('1')
-      expect(reference_range[:end][:reference]).to eq('age')
-      expect(reference_range[:exclusivity]).to eq('.')
+      expect(reference_range).to match_tree(:start => {:integer => '1'}, :end => {:reference => 'age'}, :exclusivity => '.')
     end
 
     it 'recognizes hashes' do
-      expect(empty_hash[:hash]).to eq([])
+      expect(empty_hash).to match_tree(:hash => [])
 
-      expect(single_hash[:hash].first[:key][:string]).to eq('name')
-      expect(single_hash[:hash].first[:value][:string]).to eq('Thomas')
+      expect(single_hash).to match_tree(:hash => [{:key => {:string => 'name'}, :value => {:string => 'Thomas'}}])
 
-      expect(multi_hash[:hash].first[:key][:string]).to eq('age')
-      expect(multi_hash[:hash].first[:value][:integer]).to eq('31')
-      expect(multi_hash[:hash].last[:key][:string]).to eq('name')
-      expect(multi_hash[:hash].last[:value][:string]).to eq('Thomas')
+      expect(multi_hash).to match_tree(:hash => [{:key => {:string => 'age'}, :value => {:integer => '31'}}, {:key => {:string => 'name'}, :value => {:string => 'Thomas'}}])
     end
 
     it 'recognizes lists' do
-      expect(empty_list[:list]).to eq([])
+      expect(empty_list).to match_tree(:list => [])
 
-      expect(single_list[:list].first[:string]).to eq('Thomas')
+      expect(single_list).to match_tree(:list => [{:string => 'Thomas'}])
 
-      expect(multi_list[:list].first[:integer]).to eq('31')
-      expect(multi_list[:list].last[:string]).to eq('Thomas')
+      expect(multi_list).to match_tree(:list => [{:integer => '31'}, {:string => 'Thomas'}])
     end
   end
 
@@ -403,24 +379,19 @@ describe Rip::Parser do
     let(:invocation_operator) { parser.invocation.parse('2 + 2') }
 
     it 'recognizes lambda literal invocation' do
-      expect(invocation_literal[:invocation][:arguments]).to eq([])
+      expect(invocation_literal).to match_tree(:invocation => {:arguments => []})
     end
 
     it 'recognizes lambda reference invocation' do
-      expect(invocation_reference[:invocation][:reference]).to eq('full_name')
-      expect(invocation_reference[:invocation][:arguments]).to eq([])
+      expect(invocation_reference).to match_tree(:invocation => {:reference => 'full_name', :arguments => []})
     end
 
     it 'recognizes lambda reference invocation arguments' do
-      expect(invocation_reference_arguments[:invocation][:reference]).to eq('full_name')
-      expect(invocation_reference_arguments[:invocation][:arguments].first[:string]).to eq('Thomas')
-      expect(invocation_reference_arguments[:invocation][:arguments].last[:string]).to eq('Ingram')
+      expect(invocation_reference_arguments).to match_tree(:invocation => {:reference => 'full_name', :arguments => [{:string => 'Thomas'}, {:string => 'Ingram'}]})
     end
 
     it 'recognizes operator invocation' do
-      expect(invocation_operator[:invocation][:operand][:integer]).to eq('2')
-      expect(invocation_operator[:invocation][:operator][:reference]).to eq('+')
-      expect(invocation_operator[:invocation][:argument][:integer]).to eq('2')
+      expect(invocation_operator).to match_tree(:invocation => {:operand => {:integer => '2'}, :operator => {:reference => '+'}, :argument => {:integer => '2'}})
     end
   end
 end
