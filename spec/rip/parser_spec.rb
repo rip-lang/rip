@@ -84,50 +84,6 @@ describe Rip::Parser do
     end
   end
 
-  describe 'property chains' do
-    let(:chain_property) { parser.object.parse('0.one.two.three') }
-    let(:change_invocation) { parser.object.parse('zero().one().two().three()') }
-    let(:chain_property_invocation) { parser.object.parse('0.one().two.three()') }
-    let(:operator_chain) { parser.object.parse('(1 - 2).zero?()') }
-
-    it 'recognizes property chains' do
-      expect(chain_property).to match_tree(:integer => '0', :property_chain => [{:reference => 'one'}, {:reference => 'two'}, {:reference => 'three'}])
-    end
-
-    it 'recognizes property chains with invocations' do
-      expected = {
-        :invocation => {:reference => 'zero'},
-        :property_chain => [
-          {:invocation => {:reference => 'one'}},
-          {:invocation => {:reference => 'two'}},
-          {:invocation => {:reference => 'three'}}
-        ]
-      }
-      expect(change_invocation).to match_tree(expected)
-    end
-
-    # it 'recognizes chaining with properies and invocations', :failing do
-    #   puts; puts "chain_property_invocation => #{chain_property_invocation.inspect}"
-    #   expect(chain_property_invocation[:integer]).to eq('0')
-    #   expect(chain_property_invocation[:invocation][:reference]).to eq('one')
-    #   expect(chain_property_invocation[:invocation][:parameters]).to eq([])
-    #   expect(chain_property_invocation[:invocation][:property][:reference]).to eq('two')
-    #   expect(chain_property_invocation[:invocation][:property][:invocation][:reference]).to eq('three')
-    #   expect(chain_property_invocation[:invocation][:property][:invocation][:parameters]).to eq([])
-    #   expect(chain_property_invocation[:invocation][:property][:invocation][:property]).to be_nil
-    # end
-
-    # it 'recognizes chaining off opererators', :failing do
-    #   puts; puts "operator_chain => #{operator_chain.inspect}"
-    #   expect(operator_chain[:operator_invocation][:operand]).to eq('1')
-    #   expect(operator_chain[:operator_invocation][:operator]).to eq('-')
-    #   expect(operator_chain[:operator_invocation][:argument]).to eq('2')
-    #   expect(operator_chain[:operator_invocation][:invocation][:reference]).to eq('zero')
-    #   expect(operator_chain[:operator_invocation][:invocation][:parameters]).to eq([])
-    #   expect(operator_chain[:operator_invocation][:invocation][:property]).to be_nil
-    # end
-  end
-
   describe '#block_expression' do
     context 'parameters' do
       let(:block_empty) { parser.block_expression.parse('-> {}') }
@@ -253,17 +209,62 @@ describe Rip::Parser do
       let(:parens) { parser.simple_expression.parse('(0)') }
       let(:gnarly_parens) { parser.simple_expression.parse('((((((l((1 + (((2 - 3)))))))))))') }
 
-      # it 'recognizes anything surrounded by parenthesis', :failing do
-      #   expect(parens[:phrase][:integer]).to eq('0')
+      # it 'recognizes anything surrounded by parenthesis', :focus do
+      #   expect(parens).to match_tree(:phrase => { :integer => '0' })
       # end
 
-      # it 'recognizes anything surrounded by parenthesis with crazy nesting', :failing do
+      # it 'recognizes anything surrounded by parenthesis with crazy nesting', :focus do
+      #   puts; puts '((((((l((1 + (((2 - 3)))))))))))'; puts :gnarly_parens, gnarly_parens.inspect
       #   expect(gnarly_parens[:invocation][:reference]).to eq('l')
       #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:operand]).to eq('1')
       #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:operator]).to eq('+')
       #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:operand]).to eq('2')
       #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:operator]).to eq('-')
       #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:argument]).to eq('3')
+      # end
+    end
+
+    describe 'property chaining' do
+      let(:chain_property) { parser.simple_expression.parse('0.one.two.three') }
+      let(:change_invocation) { parser.object.parse('zero().one().two().three()') }
+      let(:chain_property_invocation) { parser.simple_expression.parse('0.one().two.three()') }
+      let(:operator_chain) { parser.simple_expression.parse('(1 - 2).zero?()') }
+
+      it 'recognizes property chains' do
+        expect(chain_property).to match_tree(:integer => '0', :property_chain => [{:reference => 'one'}, {:reference => 'two'}, {:reference => 'three'}])
+      end
+
+      it 'recognizes property chains with invocations' do
+        expected = {
+          :invocation => {:reference => 'zero'},
+          :property_chain => [
+            {:invocation => {:reference => 'one'}},
+            {:invocation => {:reference => 'two'}},
+            {:invocation => {:reference => 'three'}}
+          ]
+        }
+        expect(change_invocation).to match_tree(expected)
+      end
+
+      # it 'recognizes chaining with properies and invocations', :focus do
+      #   puts; puts '0.one().two.three()'; puts "chain_property_invocation => #{chain_property_invocation.inspect}"
+      #   expect(chain_property_invocation[:integer]).to eq('0')
+      #   expect(chain_property_invocation[:invocation][:reference]).to eq('one')
+      #   expect(chain_property_invocation[:invocation][:parameters]).to eq([])
+      #   expect(chain_property_invocation[:invocation][:property][:reference]).to eq('two')
+      #   expect(chain_property_invocation[:invocation][:property][:invocation][:reference]).to eq('three')
+      #   expect(chain_property_invocation[:invocation][:property][:invocation][:parameters]).to eq([])
+      #   expect(chain_property_invocation[:invocation][:property][:invocation][:property]).to be_nil
+      # end
+
+      # it 'recognizes chaining off opererators', :focus do
+      #   puts; puts '(1 - 2).zero?()'; puts "operator_chain => #{operator_chain.inspect}"
+      #   expect(operator_chain[:operator_invocation][:operand]).to eq('1')
+      #   expect(operator_chain[:operator_invocation][:operator]).to eq('-')
+      #   expect(operator_chain[:operator_invocation][:argument]).to eq('2')
+      #   expect(operator_chain[:operator_invocation][:invocation][:reference]).to eq('zero')
+      #   expect(operator_chain[:operator_invocation][:invocation][:parameters]).to eq([])
+      #   expect(operator_chain[:operator_invocation][:invocation][:property]).to be_nil
       # end
     end
   end
