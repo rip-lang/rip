@@ -34,6 +34,68 @@ describe Rip::Parser do
     end
   end
 
+  describe '#parse' do
+    let(:if_else) do
+      parser.parse(<<-RIP)
+                   if (true) {
+                     lambda = -> {
+                       # comment
+                     }
+                     lambda()
+                   } else {
+                     1 + 2
+                   }
+                   RIP
+    end
+
+    it 'recognizes several statements together' do
+      expect(if_else.count).to be(2)
+
+      expected = [
+        {
+          :block => {
+            :if => 'if',
+            :parameters => [ {:reference => 'true'} ],
+            :body => [
+              {
+                :invocation => {
+                  :operand => {:reference => 'lambda'},
+                  :operator => {:reference => '='},
+                  :argument => {
+                    :block => {
+                      :lambda_dash => '->',
+                      :body => [ {:comment => ' comment'} ]
+                    }
+                  }
+                }
+              },
+              {
+                :invocation => {:reference => 'lambda', :arguments => []}
+              }
+            ]
+          }
+        },
+        {
+          :block => {
+            :else => 'else',
+            :body => [
+              {
+                :invocation => {
+                  :operand => {:integer => '1'},
+                  :operator => {:reference => '+'},
+                  :argument => {:integer => '2'}
+                }
+              }
+            ]
+          }
+        }
+      ]
+
+      expect(if_else.first).to match_tree(expected.first)
+      expect(if_else.last).to match_tree(expected.last)
+    end
+  end
+
   describe '#reference' do
     let(:assignment) { parser.assignment.parse('favorite_language = :rip') }
 
@@ -133,6 +195,7 @@ describe Rip::Parser do
       let(:block_invocation) { parser.block_expression.parse('if (true) { run!() }')[:block][:body].first }
       let(:block_invocation_operator) { parser.block_expression.parse('if (true) { steam will :rise }')[:block][:body].first }
       let(:block_literal) { parser.block_expression.parse('if (true) { `3 }')[:block][:body].first }
+      let(:block_block) { parser.block_expression.parse('if (true) { unless (false) { } }')[:block][:body].first }
 
       it 'recognizes comments inside blocks' do
         expect(block_comment).to match_tree(:comment => ' comment')
@@ -156,6 +219,19 @@ describe Rip::Parser do
 
       it 'recognizes literals inside blocks' do
         expect(block_literal).to match_tree(:character => '3')
+      end
+
+      it 'recognizes blocks inside blocks' do
+        expect(block_block).to_not have_key(:postfix), 'unless block should not be parsed as postfix'
+
+        expected = {
+          :block => {
+            :unless => 'unless',
+            :parameters => [ {:reference => 'false'} ],
+            :body => []
+          }
+        }
+        expect(block_block).to match_tree(expected)
       end
     end
   end
