@@ -232,111 +232,140 @@ describe Rip::Parser do
 
   describe '#simple_expression' do
     let(:keyword) { parser.simple_expression.parse('return;') }
-    let(:postfix_postfix) { parser.simple_expression.parse('exit 1 if (:error)') }
-    let(:postfix) { parser.simple_expression.parse('exit 0') }
-    let(:postfix_parens) { parser.simple_expression.parse('exit (0)') }
-    let(:postfix_if) { parser.simple_expression.parse('if (true);') }
-    let(:postfix_unless) { parser.simple_expression.parse('unless false') }
-    let(:keyword_postfix_a) { parser.simple_expression.parse('return unless (false);') }
-    let(:keyword_postfix_b) { parser.simple_expression.parse('nil if (empty());') }
+    let(:keyword_phrase_postfix) { parser.simple_expression.parse('exit 1 if (:error)') }
+    let(:keyword_phrase) { parser.simple_expression.parse('exit 0') }
+    let(:keyword_phrase_parens) { parser.simple_expression.parse('exit (0)') }
+    let(:keyword_postfix) { parser.simple_expression.parse('return unless (false);') }
+    let(:phrase_postfix) { parser.simple_expression.parse('nil if (empty());') }
     let(:list) { parser.simple_expression.parse('[]') }
 
-    it 'recognizes keyword' do
-      expect(keyword).to match_tree(:return => 'return')
-    end
+    # it 'recognizes keyword' do
+    #   expect(keyword).to match_tree(:keyword => {:return => 'return'})
+    # end
 
-    it 'recognizes postfix followed by postfix' do
-      expect(postfix_postfix).to match_tree(:postfix => {:exit => 'exit', :postfix_argument => {:integer => '1'}}, :if_postfix => {:postfix_argument => {:string => 'error'}})
-    end
+    # it 'recognizes keyword followed by phrase followed by postfix', :focus do
+    #   expect(keyword_phrase_postfix).to match_tree(:keyword => {:exit => 'exit'}, :integer => '1', :postfix => {:string => 'error'})
+    # end
 
-    it 'recognizes postfix' do
-      expect(postfix).to match_tree(:postfix => {:exit => 'exit', :postfix_argument => {:integer => '0'}})
-    end
+    # it 'recognizes keyword followed by phrase', :focus do
+    #   expect(keyword_phrase).to match_tree(:keyword => {:exit => 'exit'}, :integer => '0')
+    # end
 
-    it 'recognizes postfix with parenthesis around argument' do
-      expect(postfix_parens).to match_tree(:postfix => {:exit => 'exit', :postfix_argument => {:integer => '0'}})
-    end
+    # it 'recognizes keyword followed by parenthesis around phrase', :focus do
+    #   expect(keyword_phrase_parens).to match_tree(:keyword => {:exit => 'exit'}, :integer => '0')
+    # end
 
-    it 'recognizes if postfix' do
-      expect(postfix_if).to match_tree(:if_postfix => {:if => 'if', :postfix_argument => {:reference => 'true'}})
-    end
+    # it 'recognizes keyword followed by postfix', :focus do
+    #   expect(keyword_postfix).to match_tree(:keyword => {:return => 'return'}, :postfix => {:unless => 'unless', :reference => 'false'})
+    # end
 
-    it 'recognizes unless postfix' do
-      expect(postfix_unless).to match_tree(:unless_postfix => {:unless => 'unless', :postfix_argument => {:reference => 'false'}})
-    end
+    # it 'recognizes phrase followed by postfix', :focus do
+    #   expect(phrase_postfix).to match_tree(:reference => 'nil', :postfix => {:if => 'if', :invocation => {:reference => 'empty', :arguments => []}})
+    # end
 
-    it 'recognizes keyword followed by postfix' do
-      expect(keyword_postfix_a).to match_tree(:return => 'return', :unless_postfix => {:postfix_argument => {:reference => 'false'}})
-
-      expect(keyword_postfix_b).to match_tree(:reference => 'nil', :if_postfix => {:postfix_argument => {:invocation => {:reference => 'empty', :arguments => []}}})
-    end
-
-    it 'recognizes list expression' do
-      expect(list).to match_tree(:list => [])
-    end
+    # it 'recognizes list expression', :focus do
+    #   expect(list).to match_tree(:list => [])
+    # end
   end
 
   describe '#phrase' do
     context 'nested parenthesis' do
-      let(:parens) { parser.simple_expression.parse('(0)') }
-      let(:gnarly_parens) { parser.simple_expression.parse('((((((l((1 + (((2 - 3)))))))))))') }
+      let(:parens) { parser.phrase.parse('(0)') }
+      let(:gnarly_parens) { parser.phrase.parse('((((((l((1 + (((2 - 3)))))))))))') }
 
       # it 'recognizes anything surrounded by parenthesis', :focus do
-      #   expect(parens).to match_tree(:phrase => { :integer => '0' })
+      #   expect(parens).to match_tree(:integer => '0')
       # end
 
       # it 'recognizes anything surrounded by parenthesis with crazy nesting', :focus do
       #   puts; puts '((((((l((1 + (((2 - 3)))))))))))'; puts :gnarly_parens, gnarly_parens.inspect
-      #   expect(gnarly_parens[:invocation][:reference]).to eq('l')
-      #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:operand]).to eq('1')
-      #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:operator]).to eq('+')
-      #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:operand]).to eq('2')
-      #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:operator]).to eq('-')
-      #   expect(gnarly_parens[:invocation][:parameters][0][:operator_invocation][:argument][:operator_invocation][:argument]).to eq('3')
+      #   expected = {
+      #     :invocation => {
+      #       :reference => 'l',
+      #       :arguments => [
+      #         {
+      #           :operator_invocation => {
+      #             :operand => '1',
+      #             :operator => '+',
+      #             :argument => {
+      #               :operator_invocation => {
+      #                 :operand => '2',
+      #                 :operator => '-',
+      #                 :argument => { :integer => '3' }
+      #               }
+      #             }
+      #           }
+      #         }
+      #       ]
+      #     }
+      #   }
+      #   expect(gnarly_parens).to match_tree(expected)
       # end
     end
 
     context 'property chaining' do
-      let(:chain_property) { parser.simple_expression.parse('0.one.two.three') }
-      let(:change_invocation) { parser.object.parse('zero().one().two().three()') }
-      let(:chain_property_invocation) { parser.simple_expression.parse('0.one().two.three()') }
-      let(:operator_chain) { parser.simple_expression.parse('(1 - 2).zero?()') }
+      let(:chain_property) { parser.phrase.parse('0.one.two.three') }
+      let(:change_invocation) { parser.phrase.parse('zero().one().two().three()') }
+      let(:chain_property_invocation) { parser.phrase.parse('0.one().two.three()') }
+      let(:operator_chain) { parser.phrase.parse('(1 - 2).zero?()') }
 
-      it 'recognizes property chains' do
-        expect(chain_property).to match_tree(:integer => '0', :property_chain => [{:reference => 'one'}, {:reference => 'two'}, {:reference => 'three'}])
-      end
+      # it 'recognizes property chains', :focus do
+      #   expected = {
+      #     :integer => '0',
+      #     :property => {
+      #       :reference => 'one',
+      #       :property => {
+      #         :reference => 'two',
+      #         :property => { :reference => 'three' }
+      #       }
+      #     }
+      #   }
+      #   expect(chain_property).to match_tree(expected)
+      # end
 
-      it 'recognizes property chains with invocations' do
-        expected = {
-          :invocation => {:reference => 'zero'},
-          :property_chain => [
-            {:invocation => {:reference => 'one'}},
-            {:invocation => {:reference => 'two'}},
-            {:invocation => {:reference => 'three'}}
-          ]
-        }
-        expect(change_invocation).to match_tree(expected)
-      end
+      # it 'recognizes property chains with invocations', :focus do
+      #   expected = {
+      #     :invocation => {
+      #       :reference => 'zero',
+      #       :invocation => {
+      #         :reference => 'one',
+      #         :invocation => {
+      #           :reference => 'two',
+      #           :invocation => { :reference => 'three' }
+      #         }
+      #       }
+      #     }
+      #   }
+      #   expect(change_invocation).to match_tree(expected)
+      # end
 
       # it 'recognizes chaining with properies and invocations', :focus do
       #   puts; puts '0.one().two.three()'; puts "chain_property_invocation => #{chain_property_invocation.inspect}"
-      #   expect(chain_property_invocation[:integer]).to eq('0')
-      #   expect(chain_property_invocation[:invocation][:reference]).to eq('one')
-      #   expect(chain_property_invocation[:invocation][:parameters]).to eq([])
-      #   expect(chain_property_invocation[:invocation][:property][:reference]).to eq('two')
-      #   expect(chain_property_invocation[:invocation][:property][:invocation][:reference]).to eq('three')
-      #   expect(chain_property_invocation[:invocation][:property][:invocation][:parameters]).to eq([])
-      #   expect(chain_property_invocation[:invocation][:property][:invocation][:property]).to be_nil
+      #   expected = {
+      #     :integer => '0',
+      #     :invocation => {:reference => 'one', :arguments => []},
+      #     :property => {
+      #       :reference => 'two',
+      #       :invocation => {:reference => 'three', :arguments => []}
+      #     }
+      #   }
+      #   expect(chain_property_invocation).to match_tree(expected)
       # end
 
       # it 'recognizes chaining off opererators', :focus do
       #   puts; puts '(1 - 2).zero?()'; puts "operator_chain => #{operator_chain.inspect}"
-      #   expect(operator_chain[:operator_invocation][:operand]).to eq('1')
-      #   expect(operator_chain[:operator_invocation][:operator]).to eq('-')
-      #   expect(operator_chain[:operator_invocation][:argument]).to eq('2')
-      #   expect(operator_chain[:operator_invocation][:invocation][:reference]).to eq('zero')
-      #   expect(operator_chain[:operator_invocation][:invocation][:parameters]).to eq([])
-      #   expect(operator_chain[:operator_invocation][:invocation][:property]).to be_nil
+      #   expected = {
+      #     :operator_invocation => {
+      #       :operand => '1',
+      #       :operator => '-',
+      #       :argument => { :integer => '2' },
+      #       :invocation => {
+      #         :reference => 'zero?',
+      #         :parameters => []
+      #       }
+      #     }
+      #   }
+      #   expect(operator_chain).to match_tree(expected)
       # end
     end
   end
