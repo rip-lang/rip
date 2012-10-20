@@ -97,8 +97,6 @@ describe Rip::Parser do
   end
 
   describe '#reference' do
-    let(:assignment) { parser.assignment.parse('favorite_language = :rip') }
-
     it 'recognizes valid references including predefined references' do
       [
         'name',
@@ -134,10 +132,6 @@ describe Rip::Parser do
         end.to raise_error(Parslet::ParseFailed) # Rip::ParseError
       end
     end
-
-    it 'assigns to a reference' do
-      expect(assignment).to match_tree(:assignment => {:reference => 'favorite_language', :value => {:string => 'rip'}})
-    end
   end
 
   describe '#block_expression' do
@@ -161,7 +155,7 @@ describe Rip::Parser do
       end
 
       it 'recognizes blocks with default parameter' do
-        expect(block_parameter_default).to match_tree(:block => {:parameters => [{:assignment => {:reference => 'name', :value => {:string => 'rip'}}}]})
+        expect(block_parameter_default).to match_tree(:block => {:parameters => [{:invocation => {:operand => {:reference => 'name'}, :argument => {:string => 'rip'}}}]})
       end
 
       it 'recognizes blocks with multiple parameters' do
@@ -169,7 +163,15 @@ describe Rip::Parser do
       end
 
       it 'recognizes blocks with parameter and default parameter' do
-        expect(block_parameter_parameter_default).to match_tree(:block => {:parameters => [{:reference => 'platform'}, {:assignment => {:reference => 'name'}}]})
+        expected = {
+          :block => {
+            :parameters => [
+              {:reference => 'platform'},
+              {:invocation => {:operand => {:reference => 'name'}, :argument => {:string => 'rip'}}}
+            ]
+          }
+        }
+        expect(block_parameter_parameter_default).to match_tree(expected)
       end
 
       it 'recognizes blocks with block parameters' do
@@ -200,7 +202,7 @@ describe Rip::Parser do
       end
 
       it 'recognizes assignments inside blocks' do
-        expect(block_assignment).to match_tree(:assignment => {:reference => 'x', :value => {:string => 'y'}})
+        expect(block_assignment).to match_tree(:invocation => {:operand => {:reference => 'x'}, :argument => {:string => 'y'}})
       end
 
       it 'recognizes invocations inside blocks' do
@@ -274,6 +276,7 @@ describe Rip::Parser do
       let(:invocation_reference) { parser.phrase.parse('full_name()') }
       let(:invocation_reference_arguments) { parser.phrase.parse('full_name(:Thomas, :Ingram)') }
       let(:invocation_operator) { parser.phrase.parse('2 + 2') }
+      let(:assignment_operator) { parser.phrase.parse('favorite_language = :rip') }
 
       # FIXME should pass with parser.phrase
       it 'recognizes lambda literal invocation' do
@@ -290,6 +293,10 @@ describe Rip::Parser do
 
       it 'recognizes operator invocation' do
         expect(invocation_operator).to match_tree(:invocation => {:operand => {:integer => '2'}, :operator => {:reference => '+'}, :argument => {:integer => '2'}})
+      end
+
+      it 'recognizes assignment as an operator invocation' do
+        expect(assignment_operator).to match_tree(:invocation => {:operand => {:reference => 'favorite_language'}, :argument => {:string => 'rip'}})
       end
     end
 
@@ -380,7 +387,7 @@ describe Rip::Parser do
       #   puts; puts '(1 - 2).zero?()'; puts "operator_chain => #{operator_chain.inspect}"
       #   expected = {
       #     :operator_invocation => {
-      #       :operand => '1',
+      #       :operand => { :integer => '1' },
       #       :operator => '-',
       #       :argument => { :integer => '2' },
       #       :invocation => {

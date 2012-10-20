@@ -37,7 +37,7 @@ module Rip
     end
 
     # TODO allow parenthesis around phrase to arbitrary levels
-    rule(:phrase) { (keyword | postfix).absent? >> (assignment | invocation | object) }
+    rule(:phrase) { (keyword | postfix).absent? >> (invocation | object) }
 
     rule(:postfix) do
       postfix_tail = spaces >> maybe_parens(phrase.as(:postfix_argument))
@@ -46,7 +46,7 @@ module Rip
 
     #---------------------------------------------
 
-    rule(:parameters) { parens(comma_list(assignment | object).as(:parameters)) }
+    rule(:parameters) { parens(comma_list(invocation | object).as(:parameters)) }
 
     # NOTE anything that should not be followed by an expression terminator
     rule(:block_expression) do
@@ -57,12 +57,13 @@ module Rip
     #---------------------------------------------
 
     rule(:invocation) { regular_invocation | operator_invocation }
-    rule(:regular_invocation) { ((block_expression | reference) >> parens(comma_list(object).as(:arguments))).as(:invocation) }
-    rule(:operator_invocation) { (object.as(:operand) >> spaces >> reference.as(:operator) >> spaces >> object.as(:argument)).as(:invocation) }
 
+    rule(:regular_invocation) { ((block_expression | reference) >> parens(comma_list(object).as(:arguments))).as(:invocation) }
+
+    # NOTE assignments are parsed as operator invocation
     # TODO consider multiple assignment
     # TODO rules for visibility (public, protected, private)
-    rule(:assignment) { (reference >> spaces >> equals >> spaces >> phrase.as(:value)).as(:assignment) }
+    rule(:operator_invocation) { (object.as(:operand) >> spaces >> reference.as(:operator) >> spaces >> object.as(:argument)).as(:invocation) }
 
     #---------------------------------------------
 
