@@ -269,6 +269,30 @@ describe Rip::Parser do
   end
 
   describe '#phrase' do
+    context 'invoking lambdas' do
+      let(:invocation_literal) { parser.regular_invocation.parse('-> () {}()') }
+      let(:invocation_reference) { parser.phrase.parse('full_name()') }
+      let(:invocation_reference_arguments) { parser.phrase.parse('full_name(:Thomas, :Ingram)') }
+      let(:invocation_operator) { parser.phrase.parse('2 + 2') }
+
+      # FIXME should pass with parser.phrase
+      it 'recognizes lambda literal invocation' do
+        expect(invocation_literal).to match_tree(:invocation => {:arguments => []})
+      end
+
+      it 'recognizes lambda reference invocation' do
+        expect(invocation_reference).to match_tree(:invocation => {:reference => 'full_name', :arguments => []})
+      end
+
+      it 'recognizes lambda reference invocation arguments' do
+        expect(invocation_reference_arguments).to match_tree(:invocation => {:reference => 'full_name', :arguments => [{:string => 'Thomas'}, {:string => 'Ingram'}]})
+      end
+
+      it 'recognizes operator invocation' do
+        expect(invocation_operator).to match_tree(:invocation => {:operand => {:integer => '2'}, :operator => {:reference => '+'}, :argument => {:integer => '2'}})
+      end
+    end
+
     context 'nested parenthesis' do
       let(:parens) { parser.phrase.parse('(0)') }
       let(:gnarly_parens) { parser.phrase.parse('((((((l((1 + (((2 - 3)))))))))))') }
@@ -471,29 +495,6 @@ describe Rip::Parser do
       expect(single_list).to match_tree(:list => [{:string => 'Thomas'}])
 
       expect(multi_list).to match_tree(:list => [{:integer => '31'}, {:string => 'Thomas'}])
-    end
-  end
-
-  describe '#invocation' do
-    let(:invocation_literal) { parser.invocation.parse('-> () {}()') }
-    let(:invocation_reference) { parser.invocation.parse('full_name()') }
-    let(:invocation_reference_arguments) { parser.invocation.parse('full_name(:Thomas, :Ingram)') }
-    let(:invocation_operator) { parser.invocation.parse('2 + 2') }
-
-    it 'recognizes lambda literal invocation' do
-      expect(invocation_literal).to match_tree(:invocation => {:arguments => []})
-    end
-
-    it 'recognizes lambda reference invocation' do
-      expect(invocation_reference).to match_tree(:invocation => {:reference => 'full_name', :arguments => []})
-    end
-
-    it 'recognizes lambda reference invocation arguments' do
-      expect(invocation_reference_arguments).to match_tree(:invocation => {:reference => 'full_name', :arguments => [{:string => 'Thomas'}, {:string => 'Ingram'}]})
-    end
-
-    it 'recognizes operator invocation' do
-      expect(invocation_operator).to match_tree(:invocation => {:operand => {:integer => '2'}, :operator => {:reference => '+'}, :argument => {:integer => '2'}})
     end
   end
 end
