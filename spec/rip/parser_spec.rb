@@ -99,7 +99,7 @@ describe Rip::Parser do
   describe '#reference' do
     let(:assignment) { parser.assignment.parse('favorite_language = :rip') }
 
-    it 'recognizes valid references' do
+    it 'recognizes valid references including predefined references' do
       [
         'name',
         'Person',
@@ -109,7 +109,13 @@ describe Rip::Parser do
         'long_ref-name',
         '*/-+<>&$~%',
         'one_9',
-        'É¹ÇÊ‡É¹oÔ€uÉlâˆ€â„¢'
+        'É¹ÇÊ‡É¹oÔ€uÉlâˆ€â„¢',
+        'nilly',
+        'nil',
+        'true',
+        'false',
+        'Kernel',
+        'returner'
       ].each do |reference|
         expect(parser.reference.parse(reference)).to match_tree(:reference => reference)
       end
@@ -122,22 +128,10 @@ describe Rip::Parser do
         '6teen',
         'rip rocks',
         'key:value'
-      ].each do |reference|
+      ].each do |non_reference|
         expect do
-          parser.reference.parse(reference)
+          parser.reference.parse(non_reference)
         end.to raise_error(Parslet::ParseFailed) # Rip::ParseError
-      end
-    end
-
-    it 'recognizes special references' do
-      [
-        'nilly',
-        'nil',
-        'true',
-        'false',
-        'Kernel'
-      ].each do |reference|
-        expect(parser.reference.parse(reference)).to match_tree(:reference => reference)
       end
     end
 
