@@ -274,7 +274,9 @@ describe Rip::Parser do
     it 'recognizes list expression' do
       expect(list).to match_tree(:list => [])
     end
+  end
 
+  describe '#phrase' do
     context 'nested parenthesis' do
       let(:parens) { parser.simple_expression.parse('(0)') }
       let(:gnarly_parens) { parser.simple_expression.parse('((((((l((1 + (((2 - 3)))))))))))') }
@@ -294,7 +296,7 @@ describe Rip::Parser do
       # end
     end
 
-    describe 'property chaining' do
+    context 'property chaining' do
       let(:chain_property) { parser.simple_expression.parse('0.one.two.three') }
       let(:change_invocation) { parser.object.parse('zero().one().two().three()') }
       let(:chain_property_invocation) { parser.simple_expression.parse('0.one().two.three()') }
