@@ -31,6 +31,15 @@ module Rip
 
     #---------------------------------------------
 
+    # NOTE anything that should not be followed by an expression terminator
+    rule(:block_expression) do
+      parameters = parens(comma_list(invocation | object).as(:parameters))
+      block_body = surround_with(brace_open, statements.as(:body), brace_close)
+      (keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block_body).as(:block)
+    end
+
+    #---------------------------------------------
+
     # NOTE anything that might be followed by an expression terminator
     rule(:simple_expression) do
       (((postfix | keyword | phrase) >> (spaces >> postfix).maybe) | postfix) >> spaces? >> expression_terminator?
@@ -42,16 +51,6 @@ module Rip
     rule(:postfix) do
       postfix_tail = spaces >> maybe_parens(phrase.as(:postfix_argument))
       (if_keyword >> postfix_tail).as(:if_postfix) | (unless_keyword >> postfix_tail).as(:unless_postfix) | (keyword >> postfix_tail).as(:postfix)
-    end
-
-    #---------------------------------------------
-
-    rule(:parameters) { parens(comma_list(invocation | object).as(:parameters)) }
-
-    # NOTE anything that should not be followed by an expression terminator
-    rule(:block_expression) do
-      block_body = surround_with(brace_open, statements.as(:body), brace_close)
-      (keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block_body).as(:block)
     end
 
     #---------------------------------------------
