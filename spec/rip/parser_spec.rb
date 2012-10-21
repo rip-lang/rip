@@ -372,10 +372,12 @@ describe Rip::Parser do
       it 'recognizes chaining with properies and invocations' do
         expected = {
           :integer => '0',
-          :invocation => {:reference => 'one', :arguments => []},
-          :property => {
-            :reference => 'two',
-            :invocation => {:reference => 'three', :arguments => []}
+          :invocation => {
+            :reference => 'one', :arguments => [],
+            :property => {
+              :reference => 'two',
+              :invocation => {:reference => 'three', :arguments => []}
+            }
           }
         }
         expect(chain_property_invocation).to match_tree(expected)
