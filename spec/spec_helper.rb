@@ -45,6 +45,8 @@ end
 RSpec::Matchers.define :match_tree do |expected_tree|
   tree_matcher = lambda do |parse_tree, expected = expected_tree|
     begin
+      raise "Expected #{expected}, but got nil" if parse_tree.nil?
+
       parse_keys = parse_tree.keys
       raise "Not all expected keys present. Expected keys #{expected.keys}, but got #{parse_keys}" unless expected.keys.all? { |key| parse_keys.include? key }
 
