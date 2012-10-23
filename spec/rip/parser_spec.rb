@@ -424,68 +424,69 @@ describe Rip::Parser do
     end
   end
 
-  # describe '#object' do
-  describe 'atomic literals' do
-    it 'recognizes numbers' do
-      expect(parser.numeric).to parse('42').as(:integer => '42')
-      expect(parser.numeric).to parse('4.2').as(:decimal => '4.2')
-      expect(parser.numeric).to parse('-3').as(:sign => '-', :integer => '3')
-      expect(parser.numeric).to parse('123_456_789').as(:integer => '123_456_789')
+  describe '#object' do
+    context 'atomic literals' do
+      it 'recognizes numbers' do
+        expect(parser.numeric).to parse('42').as(:integer => '42')
+        expect(parser.numeric).to parse('4.2').as(:decimal => '4.2')
+        expect(parser.numeric).to parse('-3').as(:sign => '-', :integer => '3')
+        expect(parser.numeric).to parse('123_456_789').as(:integer => '123_456_789')
+      end
+
+      it 'recognizes characters' do
+        expect(parser.character).to parse('`9').as(:character => '9')
+        expect(parser.character).to parse('`f').as(:character => 'f')
+      end
+
+      it 'recognizes strings' do
+        expect(parser.string).to parse(':0').as(:string => '0')
+        expect(parser.string).to parse(':one').as(:string => 'one')
+        expect(parser.string).to parse('\'two\'').as(:string => 'two')
+        expect(parser.string).to parse('"three"').as(:string => 'three')
+        expect(parser.string).to parse(<<-RIP.split("\n").map(&:strip).join("\n")).as(:here_doc_start => 'HERE_DOC', :string => "here docs are good for multi-line strings\n", :here_doc_end => 'HERE_DOC')
+                                       <<HERE_DOC
+                                       here docs are good for multi-line strings
+                                       HERE_DOC
+                                       RIP
+      end
+
+      it 'recognizes regular expressions' do
+        expect(parser.regular_expression).to parse('/hello/').as(:regex => 'hello')
+      end
     end
 
-    it 'recognizes characters' do
-      expect(parser.character).to parse('`9').as(:character => '9')
-      expect(parser.character).to parse('`f').as(:character => 'f')
-    end
+    context 'molecular literals' do
+      it 'recognizes key-value pairs' do
+        expect(parser.key_value_pair).to parse('5: \'five\'').as(:key => {:integer => '5'}, :value => {:string => 'five', :property_chain => []})
+        expect(parser.key_value_pair).to parse('Exception: e').as(:key => {:reference => 'Exception'}, :value => {:reference => 'e', :property_chain => []})
+      end
 
-    it 'recognizes strings' do
-      expect(parser.string).to parse(':0').as(:string => '0')
-      expect(parser.string).to parse(':one').as(:string => 'one')
-      expect(parser.string).to parse('\'two\'').as(:string => 'two')
-      expect(parser.string).to parse('"three"').as(:string => 'three')
-      expect(parser.string).to parse(<<-RIP.split("\n").map(&:strip).join("\n")).as(:here_doc_start => 'HERE_DOC', :string => "here docs are good for multi-line strings\n", :here_doc_end => 'HERE_DOC')
-                                     <<HERE_DOC
-                                     here docs are good for multi-line strings
-                                     HERE_DOC
+      it 'recognizes ranges' do
+        expect(parser.range).to parse('1..3').as(:start => {:integer => '1'}, :end => {:integer => '3'}, :exclusivity => nil)
+        expect(parser.range).to parse('1...age').as(:start => {:integer => '1'}, :end => {:reference => 'age'}, :exclusivity => '.')
+      end
+
+      it 'recognizes hashes' do
+        expect(parser.hash_literal).to parse('{}').as(:hash => [])
+        expect(parser.hash_literal).to parse('{:name: :Thomas}').as(:hash => [{:key => {:string => 'name'}, :value => {:string => 'Thomas', :property_chain => []}}])
+        expect(parser.hash_literal).to parse(<<-RIP.strip).as(:hash => [{:key => {:string => 'age'}, :value => {:integer => '31', :property_chain => []}}, {:key => {:string => 'name'}, :value => {:string => 'Thomas', :property_chain => []}}])
+                                             {
+                                               :age: 31,
+                                               :name: :Thomas
+                                             }
+                                             RIP
+      end
+
+      it 'recognizes lists' do
+        expect(parser.list).to parse('[]').as(:list => [])
+        expect(parser.list).to parse('[:Thomas]').as(:list => [{:string => 'Thomas', :property_chain => []}])
+        expect(parser.list).to parse(<<-RIP.strip).as(:list => [{:integer => '31', :property_chain => []}, {:string => 'Thomas', :property_chain => []}])
+                                     [
+                                       31,
+                                       :Thomas
+                                     ]
                                      RIP
-    end
-
-    it 'recognizes regular expressions' do
-      expect(parser.regular_expression).to parse('/hello/').as(:regex => 'hello')
-    end
-  end
-
-  describe 'molecular literals' do
-    it 'recognizes key-value pairs' do
-      expect(parser.key_value_pair).to parse('5: \'five\'').as(:key => {:integer => '5'}, :value => {:string => 'five', :property_chain => []})
-      expect(parser.key_value_pair).to parse('Exception: e').as(:key => {:reference => 'Exception'}, :value => {:reference => 'e', :property_chain => []})
-    end
-
-    it 'recognizes ranges' do
-      expect(parser.range).to parse('1..3').as(:start => {:integer => '1'}, :end => {:integer => '3'}, :exclusivity => nil)
-      expect(parser.range).to parse('1...age').as(:start => {:integer => '1'}, :end => {:reference => 'age'}, :exclusivity => '.')
-    end
-
-    it 'recognizes hashes' do
-      expect(parser.hash_literal).to parse('{}').as(:hash => [])
-      expect(parser.hash_literal).to parse('{:name: :Thomas}').as(:hash => [{:key => {:string => 'name'}, :value => {:string => 'Thomas', :property_chain => []}}])
-      expect(parser.hash_literal).to parse(<<-RIP.strip).as(:hash => [{:key => {:string => 'age'}, :value => {:integer => '31', :property_chain => []}}, {:key => {:string => 'name'}, :value => {:string => 'Thomas', :property_chain => []}}])
-                                           {
-                                             :age: 31,
-                                             :name: :Thomas
-                                           }
-                                           RIP
-    end
-
-    it 'recognizes lists' do
-      expect(parser.list).to parse('[]').as(:list => [])
-      expect(parser.list).to parse('[:Thomas]').as(:list => [{:string => 'Thomas', :property_chain => []}])
-      expect(parser.list).to parse(<<-RIP.strip).as(:list => [{:integer => '31', :property_chain => []}, {:string => 'Thomas', :property_chain => []}])
-                                   [
-                                     31,
-                                     :Thomas
-                                   ]
-                                   RIP
+      end
     end
   end
 end
