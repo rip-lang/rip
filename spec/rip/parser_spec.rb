@@ -39,18 +39,17 @@ describe Rip::Parser do
         {
           :block => {
             :if => 'if',
-            :parameters => [ {:reference => 'true', :property_chain => []} ],
+            :parameters => [ {:reference => 'true'} ],
             :body => [
               {
                 :invocation => {
-                  :operand => {:reference => 'lambda', :property_chain => []},
+                  :operand => {:reference => 'lambda'},
                   :operator => {:reference => '='},
                   :argument => {
                     :block => {
                       :lambda_dash => '->',
                       :body => [ {:comment => ' comment'} ]
-                    },
-                    :property_chain => []
+                    }
                   }
                 }
               },
@@ -66,9 +65,9 @@ describe Rip::Parser do
             :body => [
               {
                 :invocation => {
-                  :operand => {:integer => '1', :property_chain => []},
+                  :operand => {:integer => '1'},
                   :operator => {:reference => '+'},
-                  :argument => {:integer => '2', :property_chain => []}
+                  :argument => {:integer => '2'}
                 }
               }
             ]
@@ -133,7 +132,7 @@ describe Rip::Parser do
       end
 
       it 'recognizes blocks with parameter' do
-        expect(parser.block_expression).to parse('unless (:name) {}').as(:block => {:unless => 'unless', :parameters => [{:string => 'name', :property_chain => []}], :body => []})
+        expect(parser.block_expression).to parse('unless (:name) {}').as(:block => {:unless => 'unless', :parameters => [{:string => 'name'}], :body => []})
       end
 
       it 'recognizes blocks with default parameter' do
@@ -143,9 +142,9 @@ describe Rip::Parser do
             :parameters => [
               {
                 :invocation => {
-                  :operand => {:reference => 'name', :property_chain => []},
+                  :operand => {:reference => 'name'},
                   :operator => {:reference => '='},
-                  :argument => {:string => 'rip', :property_chain => []}
+                  :argument => {:string => 'rip'}
                 }
               }
             ],
@@ -156,7 +155,7 @@ describe Rip::Parser do
       end
 
       it 'recognizes blocks with multiple parameters' do
-        expect(parser.block_expression).to parse('case (one, two) {}').as(:block => {:case => 'case', :parameters => [{:reference => 'one', :property_chain => []}, {:reference => 'two', :property_chain => []}], :body => []})
+        expect(parser.block_expression).to parse('case (one, two) {}').as(:block => {:case => 'case', :parameters => [{:reference => 'one'}, {:reference => 'two'}], :body => []})
       end
 
       it 'recognizes blocks with parameter and default parameter' do
@@ -164,12 +163,12 @@ describe Rip::Parser do
           :block => {
             :lambda_fat => '=>',
             :parameters => [
-              {:reference => 'platform', :property_chain => []},
+              {:reference => 'platform'},
               {
                 :invocation => {
-                  :operand => {:reference => 'name', :property_chain => []},
+                  :operand => {:reference => 'name'},
                   :operator => {:reference => '='},
-                  :argument => {:string => 'rip', :property_chain => []}
+                  :argument => {:string => 'rip'}
                 }
               }
             ],
@@ -185,8 +184,7 @@ describe Rip::Parser do
             :class => 'class',
             :parameters => [
               {
-                :block => {:class => 'class', :parameters=>[], :body=>[]},
-                :property_chain => []
+                :block => {:class => 'class', :parameters=>[], :body=>[]}
               }
             ],
             :body => []
@@ -198,7 +196,7 @@ describe Rip::Parser do
 
     context 'body' do
       it 'recognizes comments inside blocks' do
-        expect(parser.block_expression).to parse(<<-RIP.strip).as(:block => {:if => 'if', :parameters => [{:reference => 'true', :property_chain => []}], :body => [{:comment => ' comment'}]})
+        expect(parser.block_expression).to parse(<<-RIP.strip).as(:block => {:if => 'if', :parameters => [{:reference => 'true'}], :body => [{:comment => ' comment'}]})
                                                  if (true) {
                                                    # comment
                                                  }
@@ -206,20 +204,20 @@ describe Rip::Parser do
       end
 
       it 'recognizes references inside blocks' do
-        expect(parser.block_expression).to parse('if (true) { name }').as(:block => {:if => 'if', :parameters => [{:reference => 'true', :property_chain => []}], :body => [{:reference => 'name', :property_chain => []}]})
+        expect(parser.block_expression).to parse('if (true) { name }').as(:block => {:if => 'if', :parameters => [{:reference => 'true'}], :body => [{:reference => 'name'}]})
       end
 
       it 'recognizes assignments inside blocks' do
         expected = {
           :block => {
             :if => 'if',
-            :parameters => [ {:reference => 'true', :property_chain => []} ],
+            :parameters => [ {:reference => 'true'} ],
             :body => [
               {
                 :invocation => {
-                  :operand => {:reference => 'x', :property_chain=>[]},
+                  :operand => {:reference => 'x'},
                   :operator => {:reference => '='},
-                  :argument => {:string =>"y", :property_chain => []}
+                  :argument => {:string =>"y"}
                 }
               }
             ]
@@ -229,7 +227,7 @@ describe Rip::Parser do
       end
 
       it 'recognizes invocations inside blocks' do
-        expect(parser.block_expression).to parse('if (true) { run!() }').as(:block => {:if => 'if', :parameters => [{:reference => 'true', :property_chain => []}], :body => [{:invocation => {:reference => 'run!', :arguments => []}}]})
+        expect(parser.block_expression).to parse('if (true) { run!() }').as(:block => {:if => 'if', :parameters => [{:reference => 'true'}], :body => [{:invocation => {:reference => 'run!', :arguments => []}}]})
       end
 
       it 'recognizes operator invocations inside blocks' do
@@ -237,14 +235,14 @@ describe Rip::Parser do
           :block => {
             :if => 'if',
             :parameters => [
-              {:reference => 'true', :property_chain => []}
+              {:reference => 'true'}
             ],
             :body => [
               {
                 :invocation => {
-                  :operand => {:reference => 'steam', :property_chain => []},
-                  :operator => {:reference => 'will', :property_chain => []},
-                  :argument => {:string => 'rise', :property_chain => []}
+                  :operand => {:reference => 'steam'},
+                  :operator => {:reference => 'will'},
+                  :argument => {:string => 'rise'}
                 }
               }
             ]
@@ -254,19 +252,19 @@ describe Rip::Parser do
       end
 
       it 'recognizes literals inside blocks' do
-        expect(parser.block_expression).to parse('if (true) { `3 }').as(:block => {:if => 'if', :parameters => [{:reference => 'true', :property_chain => []}], :body => [{:character => '3', :property_chain => []}]})
+        expect(parser.block_expression).to parse('if (true) { `3 }').as(:block => {:if => 'if', :parameters => [{:reference => 'true'}], :body => [{:character => '3'}]})
       end
 
       it 'recognizes blocks inside blocks' do
         expected = {
           :block => {
             :if => 'if',
-            :parameters => [ {:reference => 'true', :property_chain => []} ],
+            :parameters => [ {:reference => 'true'} ],
             :body => [
               {
                 :block => {
                   :unless => 'unless',
-                  :parameters => [ {:reference => 'false', :property_chain => []} ],
+                  :parameters => [ {:reference => 'false'} ],
                   :body => []
                 }
               }
@@ -284,33 +282,32 @@ describe Rip::Parser do
     end
 
     it 'recognizes keyword followed by phrase followed by postfix' do
-      expect(parser.simple_expression).to parse('exit 1 if (:error)').as(:postfix => {:exit => 'exit', :postfix_argument => {:integer => '1', :property_chain => []}}, :if_postfix => {:if => 'if', :postfix_argument => {:string => 'error', :property_chain => []}})
+      expect(parser.simple_expression).to parse('exit 1 if (:error)').as(:exit => 'exit', :integer => '1', :postfix => {:string => 'error'})
     end
 
     it 'recognizes keyword followed by phrase' do
-      expect(parser.simple_expression).to parse('exit 0').as(:postfix => {:exit => 'exit', :postfix_argument => {:integer => '0', :property_chain => []}})
+      expect(parser.simple_expression).to parse('exit 0').as(:exit => 'exit', :integer => '0')
     end
 
     it 'recognizes keyword followed by parenthesis around phrase' do
-      expect(parser.simple_expression).to parse('exit (0)').as(:postfix => {:exit => 'exit', :postfix_argument => {:integer => '0', :property_chain => []}})
+      expect(parser.simple_expression).to parse('exit (0)').as(:exit => 'exit', :integer => '0')
     end
 
     it 'recognizes keyword followed by postfix' do
-      expect(parser.simple_expression).to parse('return unless (false);').as(:return => 'return', :unless_postfix => {:unless => 'unless', :postfix_argument => {:reference => 'false', :property_chain => []}})
+      expect(parser.simple_expression).to parse('return unless (false);').as(:return => 'return', :postfix => {:unless => 'unless', :reference => 'false'})
     end
 
     it 'recognizes phrase followed by postfix' do
-      expect(parser.simple_expression).to parse('nil if (empty());').as(:reference => 'nil', :property_chain => [], :if_postfix => {:if => 'if', :postfix_argument => {:invocation => {:reference => 'empty', :arguments => []}}})
+      expect(parser.simple_expression).to parse('nil if (empty());').as(:reference => 'nil', :postfix => {:if => 'if', :invocation => {:reference => 'empty', :arguments => []}})
     end
 
     it 'recognizes list expression' do
-      expect(parser.simple_expression).to parse('[]').as(:list => [], :property_chain => [])
+      expect(parser.simple_expression).to parse('[]').as(:list => [])
     end
   end
 
   describe '#phrase' do
     context 'invoking lambdas' do
-      # FIXME should pass with parser.phrase
       it 'recognizes lambda literal invocation' do
         expect(parser.regular_invocation).to parse('-> () {}()').as(:invocation => {:block => {:lambda_dash => '->', :parameters => [], :body => []}, :arguments => []})
       end
@@ -320,15 +317,15 @@ describe Rip::Parser do
       end
 
       it 'recognizes lambda reference invocation arguments' do
-        expect(parser.phrase).to parse('full_name(:Thomas, :Ingram)').as(:invocation => {:reference => 'full_name', :arguments => [{:string => 'Thomas', :property_chain => []}, {:string => 'Ingram', :property_chain => []}]})
+        expect(parser.phrase).to parse('full_name(:Thomas, :Ingram)').as(:invocation => {:reference => 'full_name', :arguments => [{:string => 'Thomas'}, {:string => 'Ingram'}]})
       end
 
       it 'recognizes operator invocation' do
-        expect(parser.phrase).to parse('2 + 2').as(:invocation => {:operand => {:integer => '2', :property_chain => []}, :operator => {:reference => '+'}, :argument => {:integer => '2', :property_chain => []}})
+        expect(parser.phrase).to parse('2 + 2').as(:invocation => {:operand => {:integer => '2'}, :operator => {:reference => '+'}, :argument => {:integer => '2'}})
       end
 
       it 'recognizes assignment as an operator invocation' do
-        expect(parser.phrase).to parse('favorite_language = :rip').as(:invocation => {:operand => {:reference => 'favorite_language', :property_chain => []}, :operator => {:reference => '='}, :argument => {:string => 'rip', :property_chain => []}})
+        expect(parser.phrase).to parse('favorite_language = :rip').as(:invocation => {:operand => {:reference => 'favorite_language'}, :operator => {:reference => '='}, :argument => {:string => 'rip'}})
       end
     end
 
@@ -457,8 +454,8 @@ describe Rip::Parser do
 
     context 'molecular literals' do
       it 'recognizes key-value pairs' do
-        expect(parser.key_value_pair).to parse('5: \'five\'').as(:key => {:integer => '5'}, :value => {:string => 'five', :property_chain => []})
-        expect(parser.key_value_pair).to parse('Exception: e').as(:key => {:reference => 'Exception'}, :value => {:reference => 'e', :property_chain => []})
+        expect(parser.key_value_pair).to parse('5: \'five\'').as(:key => {:integer => '5'}, :value => {:string => 'five'})
+        expect(parser.key_value_pair).to parse('Exception: e').as(:key => {:reference => 'Exception'}, :value => {:reference => 'e'})
       end
 
       it 'recognizes ranges' do
@@ -468,8 +465,8 @@ describe Rip::Parser do
 
       it 'recognizes hashes' do
         expect(parser.hash_literal).to parse('{}').as(:hash => [])
-        expect(parser.hash_literal).to parse('{:name: :Thomas}').as(:hash => [{:key => {:string => 'name'}, :value => {:string => 'Thomas', :property_chain => []}}])
-        expect(parser.hash_literal).to parse(<<-RIP.strip).as(:hash => [{:key => {:string => 'age'}, :value => {:integer => '31', :property_chain => []}}, {:key => {:string => 'name'}, :value => {:string => 'Thomas', :property_chain => []}}])
+        expect(parser.hash_literal).to parse('{:name: :Thomas}').as(:hash => [{:key => {:string => 'name'}, :value => {:string => 'Thomas'}}])
+        expect(parser.hash_literal).to parse(<<-RIP.strip).as(:hash => [{:key => {:string => 'age'}, :value => {:integer => '31'}}, {:key => {:string => 'name'}, :value => {:string => 'Thomas'}}])
                                              {
                                                :age: 31,
                                                :name: :Thomas
@@ -479,8 +476,8 @@ describe Rip::Parser do
 
       it 'recognizes lists' do
         expect(parser.list).to parse('[]').as(:list => [])
-        expect(parser.list).to parse('[:Thomas]').as(:list => [{:string => 'Thomas', :property_chain => []}])
-        expect(parser.list).to parse(<<-RIP.strip).as(:list => [{:integer => '31', :property_chain => []}, {:string => 'Thomas', :property_chain => []}])
+        expect(parser.list).to parse('[:Thomas]').as(:list => [{:string => 'Thomas'}])
+        expect(parser.list).to parse(<<-RIP.strip).as(:list => [{:integer => '31'}, {:string => 'Thomas'}])
                                      [
                                        31,
                                        :Thomas
