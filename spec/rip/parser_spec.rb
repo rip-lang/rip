@@ -248,7 +248,7 @@ describe Rip::Parser do
             ]
           }
         }
-        expect(parser.block_expression).to parse('if (true) { steam will :rise }').as()
+        expect(parser.block_expression).to parse('if (true) { steam will :rise }').as(expected)
       end
 
       it 'recognizes literals inside blocks' do
