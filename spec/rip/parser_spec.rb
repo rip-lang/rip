@@ -278,31 +278,33 @@ describe Rip::Parser do
 
   describe '#simple_expression' do
     it 'recognizes keyword' do
-      expect(parser.simple_expression).to parse('return;').as(:return => 'return')
-    end
-
-    it 'recognizes keyword followed by phrase followed by postfix' do
-      expect(parser.simple_expression).to parse('exit 1 if (:error)').as(:exit => 'exit', :integer => '1', :postfix => {:string => 'error'})
+      expect(parser.simple_expression).to parse('return;').as(:keyword => {:return => 'return'})
     end
 
     it 'recognizes keyword followed by phrase' do
-      expect(parser.simple_expression).to parse('exit 0').as(:exit => 'exit', :integer => '0')
+      expect(parser.simple_expression).to parse('exit 0').as(:keyword => {:exit => 'exit'}, :body => {:integer => '0'})
     end
 
     it 'recognizes keyword followed by parenthesis around phrase' do
-      expect(parser.simple_expression).to parse('exit (0)').as(:exit => 'exit', :integer => '0')
-    end
-
-    it 'recognizes keyword followed by postfix' do
-      expect(parser.simple_expression).to parse('return unless (false);').as(:return => 'return', :postfix => {:unless => 'unless', :reference => 'false'})
-    end
-
-    it 'recognizes phrase followed by postfix' do
-      expect(parser.simple_expression).to parse('nil if (empty());').as(:reference => 'nil', :postfix => {:if => 'if', :invocation => {:reference => 'empty', :arguments => []}})
+      expect(parser.simple_expression).to parse('exit (0)').as(:keyword => {:exit => 'exit'}, :body => {:integer => '0'})
     end
 
     it 'recognizes list expression' do
-      expect(parser.simple_expression).to parse('[]').as(:list => [])
+      expect(parser.simple_expression).to parse('[]').as(:body => {:list => []})
+    end
+
+    context 'with a postfix' do
+      it 'recognizes keyword followed by phrase followed by postfix' do
+        expect(parser.simple_expression).to parse('exit 1 if (:error)').as(:keyword => {:exit => 'exit'}, :body => {:integer => '1'}, :postfix => {:if => 'if', :argument => {:string => 'error'}})
+      end
+
+      it 'recognizes keyword followed by postfix' do
+        expect(parser.simple_expression).to parse('return unless (false);').as(:keyword => {:return => 'return'}, :postfix => {:unless => 'unless', :argument => {:reference => 'false'}})
+      end
+
+      it 'recognizes phrase followed by postfix' do
+        expect(parser.simple_expression).to parse('nil if (empty());').as(:body => {:reference => 'nil'}, :postfix => {:if => 'if', :argument => {:invocation => {:reference => 'empty', :arguments => []}}})
+      end
     end
   end
 
