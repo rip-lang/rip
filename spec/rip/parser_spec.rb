@@ -360,36 +360,6 @@ describe Rip::Parser do
     end
 
     context 'property chaining' do
-      it 'recognizes property chains' do
-        expected = {
-          :integer => '0',
-          :property => {
-            :reference => 'one',
-            :property => {
-              :reference => 'two',
-              :property => { :reference => 'three' }
-            }
-          }
-        }
-        expect(parser.phrase).to parse('0.one.two.three').as(expected)
-      end
-
-      it 'recognizes property chains with invocations' do
-        expected = {
-          :invocation => {
-            :reference => 'zero',
-            :invocation => {
-              :reference => 'one',
-              :invocation => {
-                :reference => 'two',
-                :invocation => { :reference => 'three' }
-              }
-            }
-          }
-        }
-        expect(parser.phrase).to parse('zero().one().two().three()').as(expected)
-      end
-
       it 'recognizes chaining with properies and invocations' do
         expected = {
           :integer => '0',
@@ -417,6 +387,29 @@ describe Rip::Parser do
           }
         }
         expect(parser.phrase).to parse('(1 - 2).zero?()').as(expected)
+      end
+
+      it 'recognizes chaining several opererators' do
+        expected = {
+          :operator_invocation => {
+            :operand => {
+              :operator_invocation => {
+                :operand => {
+                  :operator_invocation => {
+                    :operand => {:reference => '1'},
+                    :operator => {:reference => '+'},
+                    :argument => {:reference => '2'}
+                  }
+                },
+                :operator => {:reference => '+'},
+                :argument => {:reference => '3'}
+              }
+            },
+            :operator => {:reference => '+'},
+            :argument => {:reference => '4'}
+          }
+        }
+        expect(parser.phrase).to parse('1 + 2 + 3 + 4').as(expected)
       end
     end
   end
