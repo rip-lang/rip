@@ -142,6 +142,7 @@ module Rip
     #---------------------------------------------
 
     # http://www.rubular.com/r/sTue8ePXW9
+    # rule(:reference_legal) { match['^.,;:\d[[:space:]]()\[\]{}'] }
     rule(:reference_legal) { match['^.,;:\d\s()\[\]{}'] }
 
     rule(:reference) { (reference_legal.repeat(1) >> (reference_legal | digit).repeat).as(:reference) }
