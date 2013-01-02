@@ -1,5 +1,5 @@
-require 'debugger'
 require 'pathname'
+require 'pry'
 
 require_relative '../lib/rip/boot'
 require_relative '../lib/rip/ast'
