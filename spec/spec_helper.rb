@@ -24,6 +24,8 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = 'random'
 
+  config.color = true
+
   def samples_path
     Pathname("#{__FILE__}/../fixtures").expand_path
   end
