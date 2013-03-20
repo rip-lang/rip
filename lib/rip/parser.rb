@@ -143,10 +143,13 @@ module Rip
 
 
     rule(:string) { string_symbol | string_single | string_double }
+
     rule(:string_symbol) { colon >> (escape_advanced | character_legal.as(:raw_string)).repeat(1).as(:string) }
-    rule(:string_single) { quote_single       >> (quote_single.absent?  >> (escape_simple | any.as(:raw_string))).repeat.as(:string)                   >> quote_single }
-    rule(:string_double) { quote_double       >> (quote_double.absent?  >> (escape_advanced | interpolation | any.as(:raw_string))).repeat.as(:string) >> quote_double }
-    rule(:regular_expression) { slash_forward >> (slash_forward.absent? >> (escape_regex | interpolation | any.as(:raw_regex))).repeat.as(:regex)      >> slash_forward }
+
+    rule(:string_single) { string_parser(quote_single, escape_simple) }
+    rule(:string_double) { string_parser(quote_double, escape_advanced | interpolation) }
+
+    rule(:regular_expression) { string_parser(slash_forward, escape_regex | interpolation, :regex, :raw_regex) }
 
 
     rule(:interpolation) { interpolation_start >> ((interpolation_end.absent? >> phrase.repeat).repeat.as(:interpolation)) >> interpolation_end }
@@ -165,6 +168,10 @@ module Rip
     # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil) at http://kschiess.github.com/parslet/parser.html
     def csv(value)
       (value >> (whitespaces? >> comma >> whitespaces? >> value).repeat).maybe
+    end
+
+    def string_parser(delimiter, inner_special, delimited_flag = :string, any_flag = :raw_string)
+      delimiter >> (delimiter.absent? >> (inner_special | any.as(any_flag))).repeat.as(delimited_flag) >> delimiter
     end
   end
 end
