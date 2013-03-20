@@ -1,7 +1,4 @@
-require 'rip/nodes/nil'
-require 'rip/transform'
-
-module Rip
+module Rip::Compiler
   class AST
     attr_reader :tree
 
@@ -11,7 +8,7 @@ module Rip
       else
         parse_tree
       end
-      @tree = Rip::Transform.new.apply parse
+      @tree = Rip::Transform.new.apply(parse)
     end
 
     # TODO recurse tree

@@ -1,10 +1,6 @@
 require 'pathname'
 require 'thor'
 
-require 'rip/ast'
-require 'rip/parser'
-require 'rip/version'
-
 module Rip
   class CLI < Thor
     class_option :verbose, :type => :boolean, :default => false, :desc => 'Make Rip chatty'
@@ -60,11 +56,11 @@ Usage:
     protected
 
     def make_parse_tree(filename)
-      Rip::Parser.new.parse_file(Rip.project_path.join(filename).expand_path)
+      Rip::Compiler::Parser.new.parse_file(Rip.project_path.join(filename).expand_path)
     end
 
     def make_syntax_tree(filename)
-      Rip::AST.new make_parse_tree(filename)
+      Rip::Compiler::AST.new(make_parse_tree(filename))
     end
 
     def wip(command)

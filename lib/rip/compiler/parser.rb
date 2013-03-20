@@ -1,9 +1,7 @@
 require 'parslet'
 require 'pathname'
 
-require 'rip/keywords'
-
-module Rip
+module Rip::Compiler
   class Parser < Parslet::Parser
     root(:lines)
 

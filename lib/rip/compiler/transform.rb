@@ -1,14 +1,6 @@
 require 'parslet'
 
-require 'rip/nodes/character'
-require 'rip/nodes/comment'
-require 'rip/nodes/decimal'
-require 'rip/nodes/integer'
-require 'rip/nodes/nil'
-require 'rip/nodes/string'
-require 'rip/nodes/regular_expression'
-
-module Rip
+module Rip::Compiler
   # FIXME remove :property_chain nonsense
   class Transform < Parslet::Transform
     rule(:comment => simple(:comment)) { Rip::Nodes::Comment.new comment.to_s }

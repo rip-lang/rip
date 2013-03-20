@@ -1,4 +1,4 @@
 module Rip::Nodes
-  class Integer < Number
+  class Lambda < Block
   end
 end

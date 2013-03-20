@@ -1,18 +1,15 @@
-require 'rip/nodes'
-
 module Rip::Nodes
-  class Character
+  class Character < Base
     attr_reader :data
 
-    def initialize(data)
+    def initialize(location, data)
+      super(location)
       @data = data.to_sym
     end
 
     def ==(other)
-      data == other.data
-    end
-
-    def evaluate
+      super &&
+        (data == other.data)
     end
   end
 end

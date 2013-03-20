@@ -1,4 +1,4 @@
-module Rip
+module Rip::Utilities
   module Keywords
     class Keyword < Struct.new(:name, :keyword, :rule)
       def initialize(name, keyword = name, rule = name)

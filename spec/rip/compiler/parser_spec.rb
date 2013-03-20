@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Rip::Parser do
+describe Rip::Compiler::Parser do
   context 'some basics' do
     it 'parses an empty module' do
       expect(parser).to parse('').as('')

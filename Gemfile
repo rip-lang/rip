@@ -1,6 +1,6 @@
 source 'https://rubygems.org/'
 
-gem 'aruba', :require => false
+gem 'aruba'
 gem 'parslet'
 gem 'pry'
 gem 'rake'

@@ -1,12 +1,12 @@
+require_relative '../lib/rip'
+
 require 'pathname'
 require 'parslet'
 require 'parslet/convenience'
 require 'parslet/rig/rspec'
 require 'pry'
 
-require_relative '../lib/rip/boot'
-require_relative '../lib/rip/ast'
-require_relative '../lib/rip/parser'
+Dir[Pathname(__dir__).join('support', '**', '*.rb')].each { |f| require f }
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
@@ -26,25 +26,5 @@ RSpec.configure do |config|
 
   config.color = true
 
-  def samples_path
-    Pathname("#{__FILE__}/../fixtures").expand_path
-  end
-
-  def parser
-    Rip::Parser.new
-  end
-
-  def apt(code)
-    Rip::Parser.new.parse(code)
-  end
-
-  def ast(code)
-    Rip::AST.new(apt(code)).tree
-  end
-
-  def rip_parsed_string(string)
-    string.split('').map do |s|
-      { :raw_string => s }
-    end
-  end
+  config.include RSpecHelpers
 end
