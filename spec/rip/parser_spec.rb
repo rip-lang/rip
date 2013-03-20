@@ -305,7 +305,7 @@ describe Rip::Parser do
     end
 
     it 'recognizes keyword followed by phrase' do
-      expect(parser.expression).to parse('exit 0').as(:keyword => {:exit => 'exit'}, :body => {:integer => '0'})
+      expect(parser.expression).to parse('exit 0').as(:keyword => {:exit => 'exit'}, :payload => {:integer => '0'})
     end
 
     it 'recognizes keyword followed by parenthesis around phrase' do

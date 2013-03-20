@@ -58,7 +58,7 @@ module Rip
 
     rule(:expression) { base_expression >> spaces? >> expression_terminator? }
 
-    rule(:base_expression) { (keyword.as(:keyword) >> spaces >> phrase) | keyword.as(:keyword) | phrase }
+    rule(:base_expression) { (keyword.as(:keyword) >> spaces >> phrase.as(:payload)) | keyword.as(:keyword) | phrase }
 
     rule(:keyword) { str('return').as(:return) | str('exit').as(:exit) }
 
