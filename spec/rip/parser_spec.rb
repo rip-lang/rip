@@ -316,20 +316,6 @@ describe Rip::Parser do
       expect(parser.expression).to parse('[]').as(:list => [])
     end
 
-    context 'with a postfix' do
-      it 'recognizes keyword followed by phrase followed by postfix' do
-        expect(parser.expression).to parse('exit 1 if (:error)').as(:keyword => {:exit => 'exit'}, :body => {:integer => '1'}, :postfix => {:if => 'if', :argument => {:string => 'error'}})
-      end
-
-      it 'recognizes keyword followed by postfix' do
-        expect(parser.expression).to parse('return unless (false);').as(:keyword => {:return => 'return'}, :postfix => {:unless => 'unless', :argument => {:reference => 'false'}})
-      end
-
-      it 'recognizes phrase followed by postfix' do
-        expect(parser.expression).to parse('nil if (empty());').as(:body => {:reference => 'nil'}, :postfix => {:if => 'if', :argument => {:invocation => {:reference => 'empty', :arguments => []}}})
-      end
-    end
-
     context 'invoking lambdas' do
       it 'recognizes lambda literal invocation' do
         expect(parser.expression).to parse('-> () {}()').as(:invocation => {:block => {:lambda_dash => '->', :parameters => [], :body => []}, :arguments => []})
