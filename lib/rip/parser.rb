@@ -56,9 +56,9 @@ module Rip
 
     rule(:comment) { pound >> (line_break.absent? >> any).repeat.as(:comment) >> line_break.maybe }
 
-    rule(:expression) { base_expression >> spaces? >> expression_terminator? }
+    rule(:expression) { expression_base >> spaces? >> expression_terminator? }
 
-    rule(:base_expression) { (keyword.as(:keyword) >> spaces >> phrase.as(:payload)) | keyword.as(:keyword) | phrase }
+    rule(:expression_base) { (keyword.as(:keyword) >> spaces >> phrase.as(:payload)) | keyword.as(:keyword) | phrase }
 
     rule(:keyword) { str('return').as(:return) | str('exit').as(:exit) }
 
