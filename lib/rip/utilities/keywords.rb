@@ -1,9 +1,22 @@
 module Rip::Utilities
+  class Keyword
+    attr_reader :name
+    attr_reader :keyword
+
+    def initialize(name, keyword = name)
+      @name = name.to_sym
+      @keyword = keyword.to_sym
+    end
+
+    def ==(other)
+      keyword == other.keyword
+    end
+  end
+
   module Keywords
-    class Keyword < Struct.new(:name, :keyword, :rule)
-      def initialize(name, keyword = name, rule = name)
-        super name, keyword, "#{rule}_keyword".to_sym
-      end
+    def self.[](keyword)
+      _keyword = keyword.to_sym
+      all.detect { |keyword| keyword.keyword == _keyword }
     end
 
     def self.all
@@ -17,6 +30,7 @@ module Rip::Utilities
     end
 
     def self.object
+      # make_keywords(:class, '->'.to_sym, '=>'.to_sym)
       [
         Keyword.new(:class),
         Keyword.new(:lambda_dash, '->'),
@@ -25,19 +39,19 @@ module Rip::Utilities
     end
 
     def self.conditional
-      make_keywords :if, :unless, :switch, :case, :else
+      make_keywords(:if, :unless, :switch, :case, :else)
     end
 
     def self.exiter
-      make_keywords :exit, :return, :throw, :break, :next
+      make_keywords(:exit, :return, :throw, :break, :next)
     end
 
     def self.exceptional
-      make_keywords :try, :catch, :finally
+      make_keywords(:try, :catch, :finally)
     end
 
     def self.reserved
-      make_keywords :from, :as, :join, :union, :on, :where, :order, :select, :limit, :take
+      make_keywords(:from, :as, :join, :union, :on, :where, :order, :select, :limit, :take)
     end
 
     protected
