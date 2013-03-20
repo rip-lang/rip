@@ -143,7 +143,7 @@ describe Rip::Parser do
           :block_sequence => {
             :unless_block => {
               :unless => 'unless',
-              :argument => {:string => 'name'},
+              :argument => { :string => rip_parsed_string('name') },
               :body => []
             },
             :else_block => {
@@ -181,7 +181,7 @@ describe Rip::Parser do
             :optional_parameters => [
               {
                 :parameter => {:reference => 'name'},
-                :default_value => {:string => 'rip'}
+                :default_value => { :string => rip_parsed_string('rip') }
               }
             ],
             :body => []
@@ -238,13 +238,13 @@ describe Rip::Parser do
         expected = {
           :block => {
             :if => 'if',
-            :argument => {:reference => 'true'},
+            :argument => { :reference => 'true' },
             :body => [
               {
                 :invocation => {
-                  :operand => {:reference => 'x'},
-                  :operator => {:reference => '='},
-                  :argument => {:string =>"y"}
+                  :operand => { :reference => 'x' },
+                  :operator => { :reference => '=' },
+                  :argument => { :string => rip_parsed_string('y') }
                 }
               }
             ]
@@ -265,9 +265,9 @@ describe Rip::Parser do
             :body => [
               {
                 :invocation => {
-                  :operand => {:reference => 'steam'},
-                  :operator => {:reference => 'will'},
-                  :argument => {:string => 'rise'}
+                  :operand => { :reference => 'steam' },
+                  :operator => { :reference => 'will' },
+                  :argument => { :string => rip_parsed_string('rise') }
                 }
               }
             ]
@@ -326,7 +326,16 @@ describe Rip::Parser do
       end
 
       it 'recognizes lambda reference invocation arguments' do
-        expect(parser.expression).to parse('full_name(:Thomas, :Ingram)').as(:invocation => {:reference => 'full_name', :arguments => [{:string => 'Thomas'}, {:string => 'Ingram'}]})
+        expected = {
+          :invocation => {
+            :reference => 'full_name',
+            :arguments => [
+              { :string => rip_parsed_string('Thomas') },
+              { :string => rip_parsed_string('Ingram') }
+            ]
+          }
+        }
+        expect(parser.expression).to parse('full_name(:Thomas, :Ingram)').as(expected)
       end
 
       it 'recognizes operator invocation' do
@@ -334,7 +343,14 @@ describe Rip::Parser do
       end
 
       it 'recognizes assignment as an operator invocation' do
-        expect(parser.expression).to parse('favorite_language = :rip').as(:invocation => {:operand => {:reference => 'favorite_language'}, :operator => {:reference => '='}, :argument => {:string => 'rip'}})
+        expected = {
+          :invocation => {
+            :operand => { :reference => 'favorite_language' },
+            :operator => { :reference => '=' },
+            :argument => { :string => rip_parsed_string('rip') }
+          }
+        }
+        expect(parser.expression).to parse('favorite_language = :rip').as(expected)
       end
     end
 
@@ -505,7 +521,10 @@ describe Rip::Parser do
       # end
 
       it 'recognizes interpolation in double-quoted strings' do
-        expect(parser.expression).to parse('"hello, #{world}"').as(:string => [{:raw_string => 'h'}, {:raw_string => 'e'}, {:raw_string => 'l'}, {:raw_string => 'l'}, {:raw_string => 'o'}, {:raw_string => ','}, {:raw_string => ' '}, {:interpolation => [{:reference => 'world'}]}])
+        expected = {
+          :string => rip_parsed_string('hello, ') + [{ :interpolation => [{ :reference => 'world' }] }]
+        }
+        expect(parser.expression).to parse('"hello, #{world}"').as(expected)
       end
 
       it 'recognizes regular expressions' do
@@ -519,7 +538,11 @@ describe Rip::Parser do
 
     context 'molecular literals' do
       it 'recognizes key-value pairs' do
-        expect(parser.expression).to parse('5: \'five\'').as(:key => {:integer => '5'}, :value => {:string => 'five'})
+        expected = {
+          :key => { :integer => '5' },
+          :value => { :string => rip_parsed_string('five') }
+        }
+        expect(parser.expression).to parse('5: \'five\'').as(expected)
         expect(parser.expression).to parse('Exception: e').as(:key => {:reference => 'Exception'}, :value => {:reference => 'e'})
       end
 
@@ -530,8 +553,30 @@ describe Rip::Parser do
 
       it 'recognizes hashes' do
         expect(parser.expression).to parse('{}').as(:hash => [])
-        expect(parser.expression).to parse('{:name: :Thomas}').as(:hash => [{:key => {:string => 'name'}, :value => {:string => 'Thomas'}}])
-        expect(parser.expression).to parse(<<-RIP.strip).as(:hash => [{:key => {:string => 'age'}, :value => {:integer => '31'}}, {:key => {:string => 'name'}, :value => {:string => 'Thomas'}}])
+
+        expected_2 = {
+          :hash => [
+            {
+              :key => { :string => rip_parsed_string('name')},
+              :value => { :string => rip_parsed_string('Thomas') }
+            }
+          ]
+        }
+        expect(parser.expression).to parse('{:name: :Thomas}').as(expected_2)
+
+        expected_3 = {
+          :hash => [
+            {
+              :key => { :string => rip_parsed_string('age') },
+              :value => { :integer => '31' }
+            },
+            {
+              :key => { :string => rip_parsed_string('name') },
+              :value => { :string => rip_parsed_string('Thomas') }
+            }
+          ]
+        }
+        expect(parser.expression).to parse(<<-RIP.strip).as(expected_3)
                                            {
                                              :age: 31,
                                              :name: :Thomas
@@ -541,8 +586,21 @@ describe Rip::Parser do
 
       it 'recognizes lists' do
         expect(parser.expression).to parse('[]').as(:list => [])
-        expect(parser.expression).to parse('[:Thomas]').as(:list => [{:string => 'Thomas'}])
-        expect(parser.expression).to parse(<<-RIP.strip).as(:list => [{:integer => '31'}, {:string => 'Thomas'}])
+
+        expected_2 = {
+          :list => [
+            { :string => rip_parsed_string('Thomas') }
+          ]
+        }
+        expect(parser.expression).to parse('[:Thomas]').as(expected_2)
+
+        expected_3 = {
+          :list => [
+            { :integer => '31' },
+            { :string => rip_parsed_string('Thomas') }
+          ]
+        }
+        expect(parser.expression).to parse(<<-RIP.strip).as(expected_3)
                                            [
                                              31,
                                              :Thomas

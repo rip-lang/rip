@@ -41,4 +41,10 @@ RSpec.configure do |config|
   def ast(code)
     Rip::AST.new(apt(code)).tree
   end
+
+  def rip_parsed_string(string)
+    string.split('').map do |s|
+      { :raw_string => s }
+    end
+  end
 end
