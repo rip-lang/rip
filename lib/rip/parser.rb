@@ -5,98 +5,37 @@ require 'rip/keywords'
 
 module Rip
   class Parser < Parslet::Parser
-    root(:statements)
+    root(:lines)
 
-    # statement
-    #   comment
-    #   expression (literal, invocation or reference eg: 2 + 2, full_name())
-    #   assignment (reference = expression eg: answer = 2 + 2, name = full_name())
-    #   block (if, unless, switch, case, try, class, lambda et cetera)
-    #   (expression | assignment | block) comment
 
-    # in rip everything looks like one of the following
-    #   comment
-    #   string, number, regular expression etc
-    #   list, map
-    #   block
-    #   reference
-    #   reference followed by parameter list
+    rule(:whitespace) { space | line_break }
+    rule(:whitespaces) { whitespace.repeat(1) }
+    rule(:whitespaces?) { whitespaces.maybe }
 
-    rule(:statement) { whitespaces? >> (comment | (expression >> spaces? >> comment.maybe)) >> whitespaces? }
-    rule(:statements) { thing_list(statement, whitespaces?) }
+    rule(:space) { str(' ') | str("\t") }
+    rule(:spaces) { space.repeat(1) }
+    rule(:spaces?) { spaces.maybe }
 
-    rule(:comment) { (pound >> (eol.absent? >> any).repeat.as(:comment)) >> eol.maybe }
+    rule(:line_break) { str("\r\n") | str("\n") | str("\r") }
+    rule(:line_breaks) { line_break.repeat }
 
-    rule(:expression) { block_expression | simple_expression }
 
-    #---------------------------------------------
+    rule(:expression_terminator) { semicolon | line_break }
+    rule(:expression_terminator?) { expression_terminator.maybe }
 
-    # NOTE anything that should not be followed by an expression terminator
-    rule(:block_expression) do
-      parameters = parens(comma_list(invocation | object).as(:parameters))
-      block_body = surround_with(brace_open, statements.as(:body), brace_close)
-      (keyword >> whitespaces? >> parameters.maybe >> whitespaces? >> block_body).as(:block)
-    end
-
-    #---------------------------------------------
-
-    # NOTE anything that might be followed by an expression terminator
-    rule(:simple_expression) do
-      (((postfix | keyword | phrase) >> (spaces >> postfix).maybe) | postfix) >> spaces? >> expression_terminator?
-    end
-
-    # TODO allow parenthesis around phrase to arbitrary levels
-    rule(:phrase) { (keyword | postfix).absent? >> (invocation | object) }
-
-    rule(:postfix) do
-      postfix_tail = spaces >> maybe_parens(phrase.as(:postfix_argument))
-      (if_keyword >> postfix_tail).as(:if_postfix) | (unless_keyword >> postfix_tail).as(:unless_postfix) | (keyword >> postfix_tail).as(:postfix)
-    end
-
-    #---------------------------------------------
-
-    rule(:invocation) { regular_invocation | operator_invocation }
-
-    rule(:regular_invocation) { ((block_expression | reference) >> parens(comma_list(object).as(:arguments))).as(:invocation) }
-
-    # NOTE assignments are parsed as operator invocation
-    # TODO consider multiple assignment
-    # TODO rules for visibility (public, protected, private)
-    rule(:operator_invocation) { (object.as(:operand) >> spaces >> reference.as(:operator) >> spaces >> object.as(:argument)).as(:invocation) }
-
-    #---------------------------------------------
-
-    # FIXME invocation instead of regular_invocation
-    rule(:object) { (block_expression | recursive_object | simple_object | regular_invocation | reference) >> property.repeat.as(:property_chain) }
-
-    rule(:property) { dot >> (regular_invocation | reference) }
-
-    # TODO rules for system, date, time, datetime, version, units?
-    rule(:simple_object) { numeric | character | string | regular_expression }
-
-    rule(:recursive_object) { key_value_pair | range | hash_literal | list }
-
-    #---------------------------------------------
-
-    rule(:pound) { str('#') }
 
     rule(:dot) { str('.') }
     rule(:comma) { str(',') }
-
-    rule(:equals) { str('=') }
-    rule(:colon) { str(':') }
     rule(:semicolon) { str(';') }
-
-    rule(:dash) { str('-') }
+    rule(:colon) { str(':') }
+    rule(:pound) { str('#') }
     rule(:underscore) { str('_') }
+
+    rule(:slash_back) { str('\\') }
     rule(:slash_forward) { str('/') }
 
-    rule(:dash_rocket) { str('->') }
-    rule(:fat_rocket) { str('=>') }
-
-    rule(:backtick) { str('`') }
-    rule(:quote) { str("'") }
-    rule(:double_quote) { str('"') }
+    rule(:angled_open) { str('<') }
+    rule(:angled_close) { str('>') }
 
     rule(:brace_open) { str('{') }
     rule(:brace_close) { str('}') }
@@ -107,163 +46,125 @@ module Rip
     rule(:parenthesis_open) { str('(') }
     rule(:parenthesis_close) { str(')') }
 
-    rule(:angled_open) { str('<') }
-    rule(:angled_closed) { str('>') }
+    rule(:quote_single) { str('\'') }
+    rule(:quote_double) { str('"') }
+    rule(:backtick) { str('`') }
 
-    #---------------------------------------------
 
-    rule(:whitespace) { space | eol }
-    rule(:whitespaces) { whitespace.repeat(1) }
-    rule(:whitespaces?) { whitespaces.maybe }
+    rule(:lines) { line.repeat }
+    rule(:line) { whitespaces? >> (comment | expression | (expression >> whitespaces? >> comment)) }
 
-    rule(:space) { str(' ') | str("\t") }
-    rule(:spaces) { space.repeat(1) }
-    rule(:spaces?) { spaces.maybe }
+    rule(:comment) { pound >> (line_break.absent? >> any).repeat.as(:comment) >> line_break.maybe }
 
-    rule(:eol) { str("\r\n") | str("\n") | str("\r") }
-    rule(:eols) { eol.repeat }
+    rule(:expression) { base_expression >> spaces? >> expression_terminator? }
 
-    rule(:expression_terminator) { semicolon | eol }
-    rule(:expression_terminator?) { expression_terminator.maybe }
+    rule(:base_expression) { (keyword.as(:keyword) >> spaces >> phrase) | keyword.as(:keyword) | phrase }
 
-    #---------------------------------------------
+    rule(:keyword) { str('return').as(:return) | str('exit').as(:exit) }
 
-    Rip::Keywords.all.each do |keyword|
-      rule(keyword.rule) { str(keyword.keyword).as(keyword.name) }
+    rule(:phrase) { property | phrase_base }
+
+    rule(:property) { (phrase_base | property) >> dot >> property_name.as(:property) }
+    rule(:property_name) { reference | str('[]') }
+
+    rule(:phrase_base) do
+      condition_block_sequence.as(:block_sequence) |
+      exception_block_sequence.as(:block_sequence) |
+      class_block |
+      lambda_block |
+      switch_block |
+      object
     end
 
-    rule(:keyword) do
-      keyword_atoms = Rip::Keywords.all.map { |keyword| send(keyword.rule) }
-      keyword_atoms.inject(keyword_atoms.pop) do |memo, keyword|
-        memo | keyword
-      end
+    rule(:condition_block_sequence) { (if_block | unless_block) >> whitespaces? >> else_block.maybe }
+
+    rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat >> whitespaces? >> finally_block.maybe }
+
+    rule(:lambda_block) { ((str('->').as(:dash_rocket) | str('=>').as(:fat_rocket)) >> spaces? >> parameters.as(:parameters).maybe >> block_body).as(:lambda_block) }
+
+    rule(:class_block) { (str('class').as(:class) >> spaces? >> multiple_arguments.maybe >> block_body).as(:class_block) }
+    rule(:case_block)  { (str('case').as(:case)   >> spaces? >> multiple_arguments.maybe >> block_body).as(:case_block) }
+
+    rule(:catch_block)  { (str('catch').as(:catch)   >> spaces? >> single_argument >> block_body).as(:catch_block) }
+    rule(:if_block)     { (str('if').as(:if)         >> spaces? >> single_argument >> block_body).as(:if_block) }
+    rule(:unless_block) { (str('unless').as(:unless) >> spaces? >> single_argument >> block_body).as(:unless_block) }
+    rule(:switch_block) { (str('switch').as(:switch) >> spaces? >> single_argument >> block_body_switch).as(:switch_block) }
+
+    rule(:try_block)     { (str('try').as(:try)         >> block_body).as(:try_block) }
+    rule(:finally_block) { (str('finally').as(:finally) >> block_body).as(:finally_block) }
+    rule(:else_block)    { (str('else').as(:else)       >> block_body).as(:else_block) }
+
+    rule(:parameters) do
+      required = csv(required_parameter).as(:required_paramters)
+      optional = csv(optional_parameter).as(:optional_parameters)
+      parenthesis_open >> whitespaces? >>
+        ((required >> whitespaces? >> comma >> whitespaces? >> optional) | required | optional) >>
+        whitespaces? >> parenthesis_close
     end
+    rule(:required_parameter) { reference.as(:parameter) }
+    rule(:optional_parameter) { reference.as(:parameter) >> spaces >> equals >> spaces >> phrase.as(:default_value) }
 
-    #---------------------------------------------
+    rule(:multiple_arguments) { parenthesis_open >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
 
-    # http://www.rubular.com/r/sTue8ePXW9
-    # rule(:reference_legal) { match['^.,;:\d[[:space:]]()\[\]{}'] }
-    rule(:reference_legal) { match['^.,;:\d\s()\[\]{}'] }
+    rule(:single_argument) { parenthesis_open >> whitespaces? >> phrase.as(:argument) >> whitespaces? >> parenthesis_close }
 
-    rule(:reference) { (reference_legal.repeat(1) >> (reference_legal | digit).repeat).as(:reference) }
+    rule(:block_body) { whitespaces? >> brace_open >> whitespaces? >> lines.as(:block_body) >> whitespaces? >> brace_close }
+    rule(:block_body_switch) { (case_block.repeat(1) >> whitespaces? >> else_block.maybe).as(:block_body) }
 
-    #---------------------------------------------
+    rule(:object) { number | character | string | regular_expression | reference }
+
 
     # WARNING order is important here: decimal must be before integer or the integral part of a decimal could be interpreted as a integer followed by a decimal starting with a dot
-    rule(:numeric) { sign.maybe >> (decimal | integer) }
+    rule(:number) { sign.maybe >> (decimal | integer) }
 
     rule(:decimal) { (digits.maybe >> dot >> digits).as(:decimal) }
-
     rule(:integer) { digits.as(:integer) }
 
     rule(:sign) { match['+-'].as(:sign) }
 
     rule(:digit) { match['0-9'] }
-
-    # allow _ to be used to group digits ( 3_423_752 )
-    # _ may not come first or last
     rule(:digits) { digit.repeat(1) >> (underscore.maybe >> digit.repeat(1)).repeat }
 
-    #---------------------------------------------
 
-    rule(:character_legal) { digit | reference_legal }
-    rule(:character) { backtick >> character_legal.as(:character) }
+    rule(:character) { backtick >> (escape_advanced | character_legal).as(:character) }
+    rule(:character_legal) { digit | word_legal }
 
-    #---------------------------------------------
 
-    # NOTE a string is just a list with characters allowed in it
-    rule(:string) { symbol_string | single_quoted_string | double_quoted_string | here_doc }
+    rule(:escape_simple)   { escape_token_quote_single  | escape_token_slash_back }
+    rule(:escape_regex)    { escape_token_slash_forward | escape_token_slash_back }
+    rule(:escape_advanced) { escape_token_unicode       | escape_token_any }
 
-    rule(:symbol_string) { colon >> character_legal.repeat(1).as(:string) }
+    rule(:escape_token_quote_single)  { slash_back >> quote_single.as(:escaped_quote_single) }
+    rule(:escape_token_double)        { slash_back >> quote_double.as(:escaped_quote_double) }
+    rule(:escape_token_slash_back)    { slash_back >> slash_back.as(:escaped_slash_back) }
+    rule(:escape_token_slash_forward) { slash_back >> slash_forward.as(:escaped_slash_forward) }
+    rule(:escape_token_unicode)       { slash_back >> str('u') >> match['0-9a-f'].repeat(4, 4).as(:escaped_unicode) }
+    rule(:escape_token_any)           { slash_back >> any.as(:escaped_any) }
 
-    rule(:single_quoted_string) { quote >> (quote.absent? >> any).repeat.as(:string) >> quote }
 
-    rule(:double_quoted_string) { double_quote >> (double_quote.absent? >> any).repeat.as(:string) >> double_quote }
+    rule(:string) { string_symbol | string_single | string_double }
+    rule(:string_symbol) { colon >> (escape_advanced | character_legal.as(:raw_string)).repeat(1).as(:string) }
+    rule(:string_single) { quote_single       >> (quote_single.absent?  >> (escape_simple | any.as(:raw_string))).repeat.as(:string)                   >> quote_single }
+    rule(:string_double) { quote_double       >> (quote_double.absent?  >> (escape_advanced | interpolation | any.as(:raw_string))).repeat.as(:string) >> quote_double }
+    rule(:regular_expression) { slash_forward >> (slash_forward.absent? >> (escape_regex | interpolation | any.as(:raw_regex))).repeat.as(:regex)      >> slash_forward }
 
-    rule(:here_doc) do
-      label = match['A-Z_'].repeat(1)
-      start = angled_open.repeat(2, 2) >> label.as(:here_doc_start) >> eol
-      content = (label.absent? >> any).repeat.as(:string)
-      finish = label.as(:here_doc_end) >> eol.maybe
-      start >> content >> finish
-    end
 
-    #---------------------------------------------
+    rule(:interpolation) { interpolation_start >> ((interpolation_end.absent? >> phrase.repeat).repeat.as(:interpolation)) >> interpolation_end }
+    rule(:interpolation_start) { pound >> brace_open }
+    rule(:interpolation_end) { brace_close }
 
-    # TODO expand regular expression pattern
-    rule(:regular_expression) { slash_forward >> (slash_forward.absent? >> any).repeat.as(:regex) >> slash_forward }
 
-    # rule(:system) { backtick ( !backtick . / '\`' )* backtick }
+    rule(:reference) { (word | slash_forward).repeat(1).as(:reference) }
 
-    # rule(:version) do
-    #   (str('v') >> integer.as(:major) >> dot >> integer.as(:minor) >> dot >> integer.as(:patch)).as(:version)
-    # end
+    rule(:word) { word_legal >> (word_legal | digit).repeat }
+    rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
 
-    #---------------------------------------------
-
-    #rule(:datetime) { date >> str('T') >> time }
-
-    #rule(:date) do
-    #  (digit.repeat(4, 4).as(:year) >> dash >> digit.repeat(2, 2).as(:month) >> dash >> digit.repeat(2, 2).as(:day)).as(:date)
-    #end
-
-    ## TODO make second optional
-    ## TODO handle fractional seconds (optional) and time zone offset (optional)
-    #rule(:time) do
-    #  (digit.repeat(2, 2).as(:hour) >> colon >> digit.repeat(2, 2).as(:minute) >> colon >> digit.repeat(2, 2).as(:second)).as(:time)
-    #end
-
-    #---------------------------------------------
-
-    # TODO allow type restriction
-    # FIXME allow more types to be used as the key
-    rule(:key_value_pair) { (simple_object | reference).as(:key) >> spaces? >> colon >> spaces? >> object.as(:value) }
-
-    rule(:range) do
-      rangable_object = integer | character | reference
-      rangable_object.as(:start) >> dot >> dot >> dot.maybe.as(:exclusivity) >> rangable_object.as(:end)
-    end
-
-    # NOTE a hash is just a list with only key_value_pairs allowed in it
-    # TODO allow type restriction (to be passed on to key value pairs and list)
-    rule(:hash_literal) { surround_with(brace_open, comma_list(key_value_pair | reference).as(:hash), brace_close) }
-
-    # TODO allow type restriction
-    rule(:list) { surround_with(bracket_open, comma_list(phrase).as(:list), bracket_close) }
-
-    #---------------------------------------------
-
-    def parse_file(path)
-      parse(path.read)
-    end
-
-    #---------------------------------------------
 
     protected
 
-    def parens(center)
-      surround_with(parenthesis_open, center, parenthesis_close)
-    end
-
-    def maybe_parens(center)
-      maybe_surround_with(parenthesis_open, center, parenthesis_close)
-    end
-
-    def surround_with(left, center, right = left)
-      left >> whitespaces? >> center >> whitespaces? >> right
-    end
-
-    def maybe_surround_with(left, center, right = left)
-      surround_with(left, center, right) | center
-    end
-
-    def comma_list(thing)
-      thing_list thing, comma
-    end
-
     # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil) at http://kschiess.github.com/parslet/parser.html
-    def thing_list(thing, separator)
-      (thing >> (whitespaces? >> separator >> whitespaces? >> thing).repeat).repeat
+    def csv(value)
+      (value >> (whitespaces? >> comma >> whitespaces? >> value).repeat).maybe
     end
   end
 end
