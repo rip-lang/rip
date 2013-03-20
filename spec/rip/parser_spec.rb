@@ -385,28 +385,73 @@ describe Rip::Parser do
     context 'property chaining' do
       it 'recognizes chaining with properies and invocations' do
         expected = {
-          :integer => '0',
           :invocation => {
-            :reference => 'one', :arguments => [],
-            :property => {
-              :reference => 'two',
-              :invocation => {:reference => 'three', :arguments => []}
-            }
+            :callable => {
+              :property => {
+                :object => {
+                  :property => {
+                    :object => {
+                      :invocation => {
+                        :callable => {
+                          :property => {
+                            :object => { :integer => '0' },
+                            :reference => 'one'
+                          }
+                        },
+                        :arguments => []
+                      }
+                    },
+                    :reference => 'two'
+                  }
+                },
+                :reference => 'three'
+              }
+            },
+            :arguments => []
           }
         }
         expect(parser.expression).to parse('0.one().two.three()').as(expected)
       end
 
       it 'recognizes chaining off opererators' do
+        # expected = {
+        #   :invocation => {
+        #     :callable => {
+        #       :property => {
+        #         :object => {
+        #           :invocation => {
+        #             :callable => {
+        #               :property => {
+        #                 :object => {
+        #                   :integer => '1'
+        #                 },
+        #                 :reference => '-'
+        #               }
+        #             },
+        #             :argument => { :integer => '2' }
+        #           }
+        #         },
+        #         :reference => 'zero?'
+        #       }
+        #     },
+        #     :arguments => []
+        #   }
+        # }
         expected = {
-          :operator_invocation => {
-            :operand => { :integer => '1' },
-            :operator => { :reference => '-' },
-            :argument => { :integer => '2' },
-            :invocation => {
-              :reference => 'zero?',
-              :arguments => []
-            }
+          :invocation => {
+            :callable => {
+              :property => {
+                :object => {
+                  :operator_invocation => {
+                    :operand => { :integer => '1' },
+                    :operator => { :reference => '-' },
+                    :argument => { :integer => '2' }
+                  }
+                },
+                :reference => 'zero?'
+              }
+            },
+            :arguments => []
           }
         }
         expect(parser.expression).to parse('(1 - 2).zero?()').as(expected)
@@ -419,17 +464,17 @@ describe Rip::Parser do
               :operator_invocation => {
                 :operand => {
                   :operator_invocation => {
-                    :operand => {:reference => '1'},
-                    :operator => {:reference => '+'},
-                    :argument => {:reference => '2'}
+                    :operand => { :integer => '1' },
+                    :operator => '+',
+                    :argument => { :integer => '2' }
                   }
                 },
-                :operator => {:reference => '+'},
-                :argument => {:reference => '3'}
+                :operator => '+',
+                :argument => { :integer => '3' }
               }
             },
-            :operator => {:reference => '+'},
-            :argument => {:reference => '4'}
+            :operator => '+',
+            :argument => { :integer => '4' }
           }
         }
         expect(parser.expression).to parse('1 + 2 + 3 + 4').as(expected)
