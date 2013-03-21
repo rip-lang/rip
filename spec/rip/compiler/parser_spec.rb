@@ -231,7 +231,18 @@ describe Rip::Compiler::Parser do
       end
 
       it 'recognizes references inside block body' do
-        expect(parser.expression).to parse('if (true) { name }').as(:block => {:if => 'if', :argument => {:reference => 'true'}, :body => [{:reference => 'name'}]})
+        expected = {
+          :block_sequence => {
+            :if_block => {
+              :if => 'if',
+              :argument => { :reference => 'true' },
+              :body => [
+                { :reference => 'name' }
+              ]
+            }
+          }
+        }
+        expect(parser.expression).to parse('if (true) { name }').as(expected)
       end
 
       it 'recognizes assignments inside block body' do
@@ -254,7 +265,23 @@ describe Rip::Compiler::Parser do
       end
 
       it 'recognizes invocations inside block body' do
-        expect(parser.expression).to parse('if (true) { run!() }').as(:block => {:if => 'if', :argument => {:reference => 'true'}, :body => [{:invocation => {:reference => 'run!', :arguments => []}}]})
+        expected = {
+          :block_sequence => {
+            :if_block => {
+              :if => 'if',
+              :argument => { :reference => 'true' },
+              :body => [
+                {
+                  :invocation => {
+                    :callable => { :reference => 'run!' },
+                    :arguments => []
+                  }
+                }
+              ]
+            }
+          }
+        }
+        expect(parser.expression).to parse('if (true) { run!() }').as(expected)
       end
 
       it 'recognizes operator invocations inside block body' do
@@ -277,7 +304,18 @@ describe Rip::Compiler::Parser do
       end
 
       it 'recognizes literals inside block body' do
-        expect(parser.expression).to parse('if (true) { `3 }').as(:block => {:if => 'if', :argument => {:reference => 'true'}, :body => [{:character => '3'}]})
+        expected = {
+          :block_sequence => {
+            :if_block => {
+              :if => 'if',
+              :argument => { :reference => 'true' },
+              :body => [
+                { :character => '3' }
+              ]
+            }
+          }
+        }
+        expect(parser.expression).to parse('if (true) { `3 }').as(expected)
       end
 
       it 'recognizes blocks inside block body' do
@@ -301,15 +339,26 @@ describe Rip::Compiler::Parser do
     end
 
     it 'recognizes keyword' do
-      expect(parser.expression).to parse('return;').as(:keyword => {:return => 'return'})
+      expected = {
+        :keyword => { :return => 'return' }
+      }
+      expect(parser.expression).to parse('return;').as(expected)
     end
 
     it 'recognizes keyword followed by phrase' do
-      expect(parser.expression).to parse('exit 0').as(:keyword => {:exit => 'exit'}, :payload => {:integer => '0'})
+      expected = {
+        :keyword => { :exit => 'exit' },
+        :payload => { :integer => '0' }
+      }
+      expect(parser.expression).to parse('exit 0').as(expected)
     end
 
     it 'recognizes keyword followed by parenthesis around phrase' do
-      expect(parser.expression).to parse('exit (0)').as(:keyword => {:exit => 'exit'}, :body => {:integer => '0'})
+      expected = {
+      :keyword => { :exit => 'exit' },
+      :payload => { :integer => '0' }
+      }
+      expect(parser.expression).to parse('exit (0)').as(expected)
     end
 
     it 'recognizes list expression' do
@@ -318,11 +367,29 @@ describe Rip::Compiler::Parser do
 
     context 'invoking lambdas' do
       it 'recognizes lambda literal invocation' do
-        expect(parser.expression).to parse('-> () {}()').as(:invocation => {:block => {:lambda_dash => '->', :parameters => [], :body => []}, :arguments => []})
+        expected = {
+          :invocation => {
+            :callable => {
+              :lambda_block => {
+                :lambda_dash => '->',
+                :parameters => [],
+                :body => []
+              },
+              :arguments => []
+            }
+          }
+        }
+        expect(parser.expression).to parse('-> () {}()').as(expected)
       end
 
       it 'recognizes lambda reference invocation' do
-        expect(parser.expression).to parse('full_name()').as(:invocation => {:reference => 'full_name', :arguments => []})
+        expected = {
+          :invocation => {
+            :callable => { :reference => 'full_name' },
+            :arguments => []
+          }
+        }
+        expect(parser.expression).to parse('full_name()').as(expected)
       end
 
       it 'recognizes lambda reference invocation arguments' do
@@ -339,7 +406,14 @@ describe Rip::Compiler::Parser do
       end
 
       it 'recognizes operator invocation' do
-        expect(parser.expression).to parse('2 + 2').as(:invocation => {:operand => {:integer => '2'}, :operator => {:reference => '+'}, :argument => {:integer => '2'}})
+        expected = {
+          :operator_invocation => {
+            :operand => { :integer => '2' },
+            :operator => { :reference => '+' },
+            :argument => { :integer => '2' }
+          }
+        }
+        expect(parser.expression).to parse('2 + 2').as(expected)
       end
 
       it 'recognizes assignment as an operator invocation' do
@@ -498,14 +572,48 @@ describe Rip::Compiler::Parser do
       end
 
       it 'recognizes strings' do
-        expect(parser.expression).to parse(':0').as(:string => [{:raw_string => '0'}])
-        expect(parser.expression).to parse(':on\e').as(:string => [{:raw_string=>'o'}, {:raw_string => 'n'}, {:escaped_any => 'e'}])
-        expect(parser.expression).to parse('\'two\'').as(:string => [{:raw_string => 't'}, {:raw_string => 'w'}, {:raw_string => 'o'}])
-        expect(parser.expression).to parse('"three"').as(:string => [{:raw_string => 't'}, {:raw_string => 'h'}, {:raw_string => 'r'}, {:raw_string => 'e'}, {:raw_string => 'e'}])
+        expected_1 = {
+          :string => [{ :raw_string => '0' }]
+        }
+        expect(parser.expression).to parse(':0').as(expected_1)
+
+        expected_2 = {
+          :string => [
+            { :raw_string=>'o' },
+            { :raw_string => 'n' },
+            { :escaped_any => 'e' }
+          ]
+        }
+        expect(parser.expression).to parse(':on\e').as(expected_2)
+
+        expected_3 = {
+          :string => [
+            { :raw_string => 't' },
+            { :raw_string => 'w' },
+            { :raw_string => 'o' }
+          ]
+        }
+        expect(parser.expression).to parse('\'two\'').as(expected_3)
+
+        expected_4 = {
+          :string => [
+            { :raw_string => 't' },
+            { :raw_string => 'h' },
+            { :raw_string => 'r' },
+            { :raw_string => 'e' },
+            { :raw_string => 'e' }
+          ]
+        }
+        expect(parser.expression).to parse('"three"').as(expected_4)
       end
 
       # it 'recognizes heredocs' do
-      #   expect(parser.expression).to parse(<<-RIP.split("\n").map(&:strip).join("\n")).as(:here_doc_start => 'HERE_DOC', :string => "here docs are good for multi-line strings\n", :here_doc_end => 'HERE_DOC')
+      #   expected = {
+      #     :here_doc_start => 'HERE_DOC',
+      #     :string => rip_parsed_string("here docs are good for multi-line strings\n"),
+      #     :here_doc_end => 'HERE_DOC'
+      #   }
+      #   expect(parser.expression).to parse(<<-RIP.split("\n").map(&:strip).join("\n")).as(expected)
       #                                      <<HERE_DOC
       #                                      here docs are good for multi-line strings
       #                                      HERE_DOC
@@ -513,7 +621,12 @@ describe Rip::Compiler::Parser do
       # end
 
       # it 'recognizes heredocs with interpolation' do
-      #   expect(parser.expression).to parse(<<-RIP.split("\n").map(&:strip).join("\n")).as(:here_doc_start => 'HERE_DOC', :string => "here docs are good for multi-line strings\n", :here_doc_end => 'HERE_DOC')
+      #   expected = {
+      #     :here_doc_start => 'HERE_DOC',
+      #     :string => rip_parsed_string('here docs are good for multi-line ') + [{ :interpolation => [{ :reference => 'strings' }] }] + rip_parsed_string("\n")
+      #     :here_doc_end => 'HERE_DOC'
+      #   }
+      #   expect(parser.expression).to parse(<<-RIP.split("\n").map(&:strip).join("\n")).as(expected)
       #                                      <<HERE_DOC
       #                                      here docs are good for multi-line #{strings}
       #                                      HERE_DOC
@@ -528,27 +641,60 @@ describe Rip::Compiler::Parser do
       end
 
       it 'recognizes regular expressions' do
-        expect(parser.expression).to parse('/hello/').as(:regex => [{:raw_regex => 'h'}, {:raw_regex => 'e'}, {:raw_regex => 'l'}, {:raw_regex => 'l'}, {:raw_regex => 'o'}])
+        expected = {
+          :regex => [
+            { :raw_regex => 'h' },
+            { :raw_regex => 'e' },
+            { :raw_regex => 'l' },
+            { :raw_regex => 'l' },
+            { :raw_regex => 'o' }
+          ]
+        }
+        expect(parser.expression).to parse('/hello/').as(expected)
       end
 
       it 'recognizes interpolation in regular expression' do
-        expect(parser.expression).to parse('/he#{ll}o/').as(:regex => [{:raw_regex => 'h'}, {:raw_regex => 'e'}, {:interpolation => [{:reference => 'll'}]}, {:raw_regex => 'o'}])
+        expected = {
+          :regex => [
+            { :raw_regex => 'h' },
+            { :raw_regex => 'e' },
+            { :interpolation => [{ :reference => 'll' }] },
+            { :raw_regex => 'o' }
+          ]
+        }
+        expect(parser.expression).to parse('/he#{ll}o/').as(expected)
       end
     end
 
     context 'molecular literals' do
       it 'recognizes key-value pairs' do
-        expected = {
+        expected_1 = {
           :key => { :integer => '5' },
           :value => { :string => rip_parsed_string('five') }
         }
-        expect(parser.expression).to parse('5: \'five\'').as(expected)
-        expect(parser.expression).to parse('Exception: e').as(:key => {:reference => 'Exception'}, :value => {:reference => 'e'})
+        expect(parser.expression).to parse('5: \'five\'').as(expected_1)
+
+        expected_2 = {
+          :key => { :reference => 'Exception' },
+          :value => { :reference => 'e' }
+        }
+        expect(parser.expression).to parse('Exception: e').as(expected_2)
       end
 
       it 'recognizes ranges' do
-        expect(parser.expression).to parse('1..3').as(:start => {:integer => '1'}, :end => {:integer => '3'}, :exclusivity => nil)
-        expect(parser.expression).to parse('1...age').as(:start => {:integer => '1'}, :end => {:reference => 'age'}, :exclusivity => '.')
+        expected_1 = {
+          :start => { :integer => '1' },
+          :end => { :integer => '3' },
+          :exclusivity => nil
+        }
+        expect(parser.expression).to parse('1..3').as(expected_1)
+
+        expected_2 = {
+          :start => { :integer => '1' },
+          :end => { :reference => 'age' },
+          :exclusivity => '.'
+        }
+        expect(parser.expression).to parse('1...age').as(expected_2)
       end
 
       it 'recognizes hashes' do
