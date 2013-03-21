@@ -112,7 +112,8 @@ module Rip::Compiler
     rule(:object) { number | character | string | regular_expression | reference }
 
 
-    # WARNING order is important here: decimal must be before integer or the integral part of a decimal could be interpreted as a integer followed by a decimal starting with a dot
+    # WARNING order is important here: decimal must be before integer or the integral part of
+    #   a decimal could be interpreted as a integer followed by a decimal starting with a dot
     rule(:number) { sign.maybe >> (decimal | integer) }
 
     rule(:decimal) { (digits.maybe >> dot >> digits).as(:decimal) }
@@ -163,7 +164,8 @@ module Rip::Compiler
 
     protected
 
-    # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil) at http://kschiess.github.com/parslet/parser.html
+    # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil)
+    #   at http://kschiess.github.com/parslet/parser.html
     def csv(value)
       (value >> (whitespaces? >> comma >> whitespaces? >> value).repeat).maybe
     end
