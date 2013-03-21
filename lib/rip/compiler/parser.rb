@@ -58,7 +58,7 @@ module Rip::Compiler
 
     rule(:expression_base) { (keyword.as(:keyword) >> spaces >> phrase.as(:payload)) | keyword.as(:keyword) | phrase }
 
-    rule(:keyword) { str('return').as(:return) | str('exit').as(:exit) }
+    rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) }.inject(:|) }
 
     rule(:phrase) { property | phrase_base }
 
