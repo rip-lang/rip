@@ -109,6 +109,10 @@ module Rip::Compiler
     rule(:block_body) { whitespaces? >> brace_open >> whitespaces? >> lines.as(:block_body) >> whitespaces? >> brace_close }
     rule(:block_body_switch) { (case_block.repeat(1) >> whitespaces? >> else_block.maybe).as(:block_body) }
 
+    # TODO literals for heredoc
+    # TODO literals for list, map, key-value pair, range
+    # TODO literals for datetime, date, time, version (maybe)
+    # TODO literals for unit
     rule(:object) { number | character | string | regular_expression | reference }
 
 
