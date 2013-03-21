@@ -27,4 +27,6 @@ RSpec.configure do |config|
   config.color = true
 
   config.include RSpecHelpers
+
+  config.extend RSpecHelpers
 end

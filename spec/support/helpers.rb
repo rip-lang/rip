@@ -1,4 +1,13 @@
 module RSpecHelpers
+  def recognizes_as_expected(description, *flags, &block)
+    context description, *flags do
+      instance_exec &block
+      specify do
+        expect(parser.expression).to parse(strip_heredoc(rip)).as(expected)
+      end
+    end
+  end
+
   def samples_path
     Pathname("#{__FILE__}/../fixtures").expand_path
   end
