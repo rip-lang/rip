@@ -30,6 +30,19 @@ describe Rip::Compiler::Parser do
   end
 
   describe '#parse' do
+    let(:rip) do
+      strip_heredoc(<<-RIP)
+        if (true) {
+          lambda = -> {
+            # comment
+          }
+          lambda()
+        } else {
+          1 + 2
+        }
+      RIP
+    end
+
     it 'recognizes several statements together' do
       expected = [
         {
@@ -74,16 +87,7 @@ describe Rip::Compiler::Parser do
         }
       ]
 
-      expect(parser).to parse(<<-RIP).as(expected)
-                              if (true) {
-                                lambda = -> {
-                                  # comment
-                                }
-                                lambda()
-                              } else {
-                                1 + 2
-                              }
-                              RIP
+      expect(parser).to parse(rip).as(expected)
     end
   end
 
