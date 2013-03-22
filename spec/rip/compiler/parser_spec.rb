@@ -31,6 +31,15 @@ describe Rip::Compiler::Parser do
         end
       end
     end
+
+    it 'recognizes multiple arugments' do
+      expected_1 = { :integer => '1' }
+      expected_2 = { :integer => '2' }
+      expect(parser.multiple_arguments).to parse('()').as(:arguments => [])
+      expect(parser.multiple_arguments).to parse('(1)').as(:arguments => [expected_1])
+      expect(parser.multiple_arguments).to parse('(1, 2)').as(:arguments => [expected_1, expected_2])
+      expect(parser.multiple_arguments).to_not parse('(1 2)')
+    end
   end
 
   describe '#parse' do

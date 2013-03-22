@@ -171,7 +171,7 @@ module Rip::Compiler
     # NOTE see "Repetition and its Special Cases" note about #maybe versus #repeat(0, nil)
     #   at http://kschiess.github.com/parslet/parser.html
     def csv(value)
-      (value >> (whitespaces? >> comma >> whitespaces? >> value).repeat).maybe
+      (value >> (whitespaces? >> comma >> whitespaces? >> value).repeat).repeat
     end
 
     def string_parser(delimiter, inner_special, delimited_flag = :string, any_flag = :raw_string)
