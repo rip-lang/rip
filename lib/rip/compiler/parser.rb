@@ -106,8 +106,8 @@ module Rip::Compiler
 
     rule(:single_argument) { parenthesis_open >> whitespaces? >> phrase.as(:argument) >> whitespaces? >> parenthesis_close }
 
-    rule(:block_body) { whitespaces? >> brace_open >> whitespaces? >> lines.as(:block_body) >> whitespaces? >> brace_close }
-    rule(:block_body_switch) { (case_block.repeat(1) >> whitespaces? >> else_block.maybe).as(:block_body) }
+    rule(:block_body) { whitespaces? >> brace_open >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }
+    rule(:block_body_switch) { (case_block.repeat(1) >> whitespaces? >> else_block.maybe).as(:body) }
 
     # TODO literals for heredoc
     # TODO literals for list, map, key-value pair, range

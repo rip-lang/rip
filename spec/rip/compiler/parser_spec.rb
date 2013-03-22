@@ -208,7 +208,7 @@ describe Rip::Compiler::Parser do
                 {
                   :class_block => {
                     :class => 'class',
-                    :arguments =>[],
+                    :arguments => [],
                     :body => []
                   }
                 }
