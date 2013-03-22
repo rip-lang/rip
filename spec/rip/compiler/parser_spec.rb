@@ -152,7 +152,7 @@ describe Rip::Compiler::Parser do
               :unless_block => {
                 :unless => 'unless',
                 :argument => { :string => rip_parsed_string('name') },
-                # :body => []
+                :body => []
               },
               :else_block => {
                 :else => 'else',
@@ -269,18 +269,20 @@ describe Rip::Compiler::Parser do
         let(:rip) { 'if (true) { x = :y }' }
         let(:expected) do
           {
-            :block => {
-              :if => 'if',
-              :argument => { :reference => 'true' },
-              :body => [
-                {
-                  :invocation => {
-                    :operand => { :reference => 'x' },
-                    :operator => { :reference => '=' },
-                    :argument => { :string => rip_parsed_string('y') }
+            :block_sequence => {
+              :if_block => {
+                :if => 'if',
+                :argument => { :reference => 'true' },
+                :body => [
+                  {
+                    :invocation => {
+                      :operand => { :reference => 'x' },
+                      :operator => { :reference => '=' },
+                      :argument => { :string => rip_parsed_string('y') }
+                    }
                   }
-                }
-              ]
+                ]
+              }
             }
           }
         end
@@ -312,18 +314,20 @@ describe Rip::Compiler::Parser do
         let(:rip) { 'if (true) { steam will :rise }' }
         let(:expected) do
           {
-            :block => {
-              :if => 'if',
-              :argument => {:reference => 'true'},
-              :body => [
-                {
-                  :invocation => {
-                    :operand => { :reference => 'steam' },
-                    :operator => { :reference => 'will' },
-                    :argument => { :string => rip_parsed_string('rise') }
+            :block_sequence => {
+              :if_block => {
+                :if => 'if',
+                :argument => {:reference => 'true'},
+                :body => [
+                  {
+                    :invocation => {
+                      :operand => { :reference => 'steam' },
+                      :operator => { :reference => 'will' },
+                      :argument => { :string => rip_parsed_string('rise') }
+                    }
                   }
-                }
-              ]
+                ]
+              }
             }
           }
         end
@@ -350,18 +354,22 @@ describe Rip::Compiler::Parser do
         let(:rip) { 'if (true) { unless (false) { } }' }
         let(:expected) do
           {
-            :block => {
-              :if => 'if',
-              :argument => {:reference => 'true'},
-              :body => [
-                {
-                  :block => {
-                    :unless => 'unless',
-                    :argument => {:reference => 'false'},
-                    :body => []
+            :block_sequence => {
+              :if_block => {
+                :if => 'if',
+                :argument => {:reference => 'true'},
+                :body => [
+                  {
+                    :block_sequence => {
+                      :unless_block => {
+                        :unless => 'unless',
+                        :argument => {:reference => 'false'},
+                        :body => []
+                      }
+                    }
                   }
-                }
-              ]
+                ]
+              }
             }
           }
         end
