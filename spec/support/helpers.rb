@@ -8,6 +8,30 @@ module RSpecHelpers
     end
   end
 
+  def profile_parslet(rip, parslet = :lines)
+    result = RubyProf.profile do
+      parser.send(parslet).parse(rip)
+    end
+
+    result.eliminate_methods!([
+      /Array/,
+      /Class/,
+      /Enumerable/,
+      /Fixnum/,
+      /Hash/,
+      /Kernel/,
+      /Module/,
+      /Object/,
+      /Proc/,
+      /Regexp/,
+      /String/,
+      /Symbol/
+    ])
+
+    tree = RubyProf::CallInfoPrinter.new(result)
+    tree.print(STDOUT)
+  end
+
   def samples_path
     Pathname("#{__FILE__}/../fixtures").expand_path
   end

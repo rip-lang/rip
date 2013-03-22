@@ -5,6 +5,7 @@ require 'parslet'
 require 'parslet/convenience'
 require 'parslet/rig/rspec'
 require 'pry'
+require 'ruby-prof'
 
 Dir[Pathname(__dir__).join('support', '**', '*.rb')].each { |f| require f }
 
