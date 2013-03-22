@@ -6,6 +6,10 @@ describe Rip::Compiler::Parser do
       expect(parser).to parse('').as('')
     end
 
+    it 'parses an empty string module' do
+      expect(parser).to parse('       ').as('       ')
+    end
+
     it 'recognizes comments' do
       expect(parser.comment).to parse('# this is a comment').as(:comment => ' this is a comment')
     end

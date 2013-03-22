@@ -49,8 +49,8 @@ module Rip::Compiler
     rule(:backtick) { str('`') }
 
 
-    rule(:lines) { line.repeat }
-    rule(:line) { whitespaces? >> (comment | expression | (expression >> whitespaces? >> comment)) }
+    rule(:lines) { (whitespaces | line).repeat }
+    rule(:line) { expression | comment | (expression >> spaces? >> comment) }
 
     rule(:comment) { pound >> (line_break.absent? >> any).repeat.as(:comment) >> line_break.maybe }
 
