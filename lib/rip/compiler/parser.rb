@@ -60,7 +60,7 @@ module Rip::Compiler
 
     rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) }.inject(:|) }
 
-    rule(:phrase) { property | phrase_base }
+    rule(:phrase) { phrase_base }
 
     rule(:property) { (phrase_base | property) >> dot >> property_name.as(:property) }
     rule(:property_name) { reference | str('[]') }
