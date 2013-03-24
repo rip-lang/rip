@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Rip::Compiler::Transform do
+describe Rip::Compiler::Transform, :blur do
   describe 'some basics' do
     let(:empty) { ast('').first }
     let(:comment) { ast('# this is a comment').first }
