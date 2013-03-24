@@ -60,9 +60,15 @@ module Rip::Compiler
 
     rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) }.inject(:|) }
 
-    rule(:phrase) { phrase_base }
 
-    rule(:property) { (phrase_base | property) >> dot >> property_name.as(:property) }
+    rule(:phrase) { invocation | operator_invocation | property | phrase_base }
+
+    rule(:invocation) { ((property.as(:callable) >> multiple_arguments) | (phrase_base.as(:callable) >> multiple_arguments)).as(:invocation) }
+
+    rule(:operator_invocation) { (phrase_base.as(:operand) >> reference.as(:operator) >> phrase.as(:argument)).as(:operator_invocation) }
+
+    rule(:property) { ((phrase_base.as(:object) >> property_property) | (phrase.as(:object) >> property_property)).as(:property) }
+    rule(:property_property) { dot >> property_name }
     rule(:property_name) { reference | str('[]') }
 
     rule(:phrase_base) do
@@ -73,6 +79,7 @@ module Rip::Compiler
       switch_block |
       object
     end
+
 
     rule(:condition_block_sequence) { (if_block | unless_block) >> whitespaces? >> else_block.maybe }
 
