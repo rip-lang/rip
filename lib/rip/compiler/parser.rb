@@ -68,7 +68,7 @@ module Rip::Compiler
     rule(:operator_invocation) { (phrase_base.as(:operand) >> reference.as(:operator) >> phrase.as(:argument)).as(:operator_invocation) }
 
     rule(:property) { ((phrase_base.as(:object) >> property_property) | (phrase.as(:object) >> property_property)).as(:property) }
-    rule(:property_property) { dot >> property_name }
+    rule(:property_property) { dot >> property_name.as(:property_name) }
     rule(:property_name) { reference | str('[]') }
 
     rule(:phrase_base) do

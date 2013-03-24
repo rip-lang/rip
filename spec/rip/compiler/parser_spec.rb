@@ -541,16 +541,16 @@ describe Rip::Compiler::Parser do
                           :callable => {
                             :property => {
                               :object => { :integer => '0' },
-                              :reference => 'one'
+                              :property_name => { :reference => 'one' }
                             }
                           },
                           :arguments => []
                         }
                       },
-                      :reference => 'two'
+                      :property_name => { :reference => 'two' }
                     }
                   },
-                  :reference => 'three'
+                  :property_name => { :reference => 'three' }
                 }
               },
               :arguments => []
@@ -570,16 +570,14 @@ describe Rip::Compiler::Parser do
         #             :invocation => {
         #               :callable => {
         #                 :property => {
-        #                   :object => {
-        #                     :integer => '1'
-        #                   },
-        #                   :reference => '-'
+        #                   :object => { :integer => '1' },
+        #                   :property_name => { :reference => '-' }
         #                 }
         #               },
         #               :argument => { :integer => '2' }
         #             }
         #           },
-        #           :reference => 'zero?'
+        #           :property_name => { :reference => 'zero?' }
         #         }
         #       },
         #       :arguments => []
@@ -598,7 +596,7 @@ describe Rip::Compiler::Parser do
                       :argument => { :integer => '2' }
                     }
                   },
-                  :reference => 'zero?'
+                  :property_name => { :reference => 'zero?' }
                 }
               },
               :arguments => []
