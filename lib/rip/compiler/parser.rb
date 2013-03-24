@@ -23,6 +23,8 @@ module Rip::Compiler
     rule(:expression_terminator?) { expression_terminator.maybe }
 
 
+    rule(:eof) { any.absent? }
+
     rule(:dot) { str('.') }
     rule(:comma) { str(',') }
     rule(:semicolon) { str(';') }
@@ -53,7 +55,7 @@ module Rip::Compiler
     rule(:lines) { (whitespaces | line).repeat }
     rule(:line) { expression | comment | (expression >> spaces? >> comment) }
 
-    rule(:comment) { pound >> (line_break.absent? >> any).repeat.as(:comment) >> line_break.maybe }
+    rule(:comment) { pound >> (line_break.absent? >> any).repeat.as(:comment) >> (line_break | eof) }
 
     rule(:expression) { expression_base >> spaces? >> expression_terminator? }
 
