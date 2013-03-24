@@ -23,7 +23,8 @@ describe Rip::Compiler::Parser do
         [' ', "\t\t", "  \t  \t  "]     => :spaces,
         ['', ' ', "  \t  \t  "]         => :spaces?,
         ["\n", "\r", "\r\n"]            => :line_break,
-        ['', "\n", "\r\r"]              => :line_breaks
+        ["\r\n\r\n", "\n\n"]            => :line_breaks,
+        ['', "\r\n\r\n", "\n\n"]        => :line_breaks?
       }.each do |whitespaces, method|
         space_parser = parser.send(method)
         whitespaces.each do |space|

@@ -15,7 +15,8 @@ module Rip::Compiler
     rule(:spaces?) { spaces.maybe }
 
     rule(:line_break) { str("\r\n") | str("\n") | str("\r") }
-    rule(:line_breaks) { line_break.repeat }
+    rule(:line_breaks) { line_break.repeat(1) }
+    rule(:line_breaks?) { line_breaks.maybe }
 
 
     rule(:expression_terminator) { semicolon | line_break }
