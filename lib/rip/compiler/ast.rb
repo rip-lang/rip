@@ -8,7 +8,7 @@ module Rip::Compiler
       else
         parse_tree
       end
-      @tree = Rip::Transform.new.apply(parse)
+      @tree = Rip::Compiler::Transform.new.apply(parse)
     end
 
     # TODO recurse tree
