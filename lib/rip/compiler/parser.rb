@@ -165,7 +165,7 @@ module Rip::Compiler
     rule(:regular_expression) { string_parser(slash_forward, escape_regex | interpolation, :regex, :raw_regex) }
 
 
-    rule(:interpolation) { interpolation_start >> ((interpolation_end.absent? >> phrase.repeat).repeat.as(:interpolation)) >> interpolation_end }
+    rule(:interpolation) { interpolation_start >> (interpolation_end.absent? >> phrase.repeat(1)).repeat.as(:interpolation) >> interpolation_end }
     rule(:interpolation_start) { pound >> brace_open }
     rule(:interpolation_end) { brace_close }
 
