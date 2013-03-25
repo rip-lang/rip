@@ -52,8 +52,8 @@ module Rip::Compiler
     rule(:backtick) { str('`') }
 
 
-    rule(:lines) { (whitespaces | line).repeat }
-    rule(:line) { expression | comment | (expression >> spaces? >> comment) }
+    rule(:lines) { line.repeat }
+    rule(:line) { whitespaces | expression | comment }
 
     rule(:comment) { pound >> (line_break.absent? >> any).repeat.as(:comment) >> (line_break | eof) }
 
@@ -165,7 +165,7 @@ module Rip::Compiler
     rule(:regular_expression) { string_parser(slash_forward, escape_regex | interpolation, :regex, :raw_regex) }
 
 
-    rule(:interpolation) { interpolation_start >> (interpolation_end.absent? >> phrase.repeat(1)).repeat.as(:interpolation) >> interpolation_end }
+    rule(:interpolation) { interpolation_start >> (interpolation_end.absent? >> line.repeat(1)).repeat.as(:interpolation) >> interpolation_end }
     rule(:interpolation_start) { pound >> brace_open }
     rule(:interpolation_end) { brace_close }
 
