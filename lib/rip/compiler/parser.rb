@@ -31,6 +31,7 @@ module Rip::Compiler
     rule(:colon) { str(':') }
     rule(:pound) { str('#') }
     rule(:underscore) { str('_') }
+    rule(:equals) { str('=') }
 
     rule(:slash_back) { str('\\') }
     rule(:slash_forward) { str('/') }
