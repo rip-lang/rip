@@ -33,13 +33,17 @@ describe Rip::Compiler::Parser do
       end
     end
 
-    it 'recognizes multiple arugments' do
-      expected_1 = { :integer => '1' }
-      expected_2 = { :integer => '2' }
-      expect(parser.multiple_arguments).to parse('()').as(:arguments => [])
-      expect(parser.multiple_arguments).to parse('(1)').as(:arguments => [expected_1])
-      expect(parser.multiple_arguments).to parse('(1, 2)').as(:arguments => [expected_1, expected_2])
-      expect(parser.multiple_arguments).to_not parse('(1 2)')
+    context 'comma-separation' do
+      let(:csv_parser) { parser.send(:csv, parser.send(:str, 'x').as(:x)).as(:csv) }
+      let(:expected_x) { { :x => 'x' } }
+
+      it 'recognizes comma-separated atoms' do
+        expect(csv_parser).to parse('').as(:csv => [])
+        expect(csv_parser).to parse('x').as(:csv => [expected_x])
+        expect(csv_parser).to parse('x,x,x').as(:csv => [expected_x, expected_x, expected_x])
+        expect(csv_parser).to_not parse('xx')
+        expect(csv_parser).to_not parse('x,xx')
+      end
     end
   end
 
