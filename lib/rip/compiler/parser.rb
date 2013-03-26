@@ -83,7 +83,8 @@ module Rip::Compiler
       class_block |
       lambda_block |
       switch_block |
-      object
+      object |
+      parenthesis_open >> phrase >> parenthesis_close
     end
 
 
