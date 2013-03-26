@@ -82,7 +82,7 @@ describe Rip::Compiler::Parser do
                   }
                 },
                 {
-                  :invocation => {
+                  :regular_invocation => {
                     :callable => { :reference => 'lambda' },
                     :arguments => []
                   }
@@ -316,7 +316,7 @@ describe Rip::Compiler::Parser do
                 :argument => { :reference => 'true' },
                 :body => [
                   {
-                    :invocation => {
+                    :regular_invocation => {
                       :callable => { :reference => 'run!' },
                       :arguments => []
                     }
@@ -428,7 +428,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { '-> () {}()' }
         let(:expected) do
           {
-            :invocation => {
+            :regular_invocation => {
               :callable => {
                 :lambda_block => {
                   :lambda_dash => '->',
@@ -446,7 +446,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { 'full_name()' }
         let(:expected) do
           {
-            :invocation => {
+            :regular_invocation => {
               :callable => { :reference => 'full_name' },
               :arguments => []
             }
@@ -458,7 +458,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { 'full_name(:Thomas, :Ingram)' }
         let(:expected) do
           {
-            :invocation => {
+            :regular_invocation => {
               :callable => { :reference => 'full_name' },
               :arguments => [
                 { :string => rip_parsed_string('Thomas') },
@@ -508,7 +508,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { '((((((l((1 + (((2 - 3)))))))))))' }
         let(:expected) do
           {
-            :invocation => {
+            :regular_invocation => {
               :callable => { :reference => 'l' },
               :arguments => [
                 {
@@ -536,13 +536,13 @@ describe Rip::Compiler::Parser do
         let(:rip) { '0.one().two.three()' }
         let(:expected) do
           {
-            :invocation => {
+            :regular_invocation => {
               :callable => {
                 :property => {
                   :object => {
                     :property => {
                       :object => {
-                        :invocation => {
+                        :regular_invocation => {
                           :callable => {
                             :property => {
                               :object => { :integer => '0' },
@@ -568,11 +568,11 @@ describe Rip::Compiler::Parser do
         let(:rip) { '(1 - 2).zero?()' }
         # let(:expected) do
         #   {
-        #     :invocation => {
+        #     :regular_invocation => {
         #       :callable => {
         #         :property => {
         #           :object => {
-        #             :invocation => {
+        #             :regular_invocation => {
         #               :callable => {
         #                 :property => {
         #                   :object => { :integer => '1' },
@@ -591,7 +591,7 @@ describe Rip::Compiler::Parser do
         # end
         let(:expected) do
           {
-            :invocation => {
+            :regular_invocation => {
               :callable => {
                 :property => {
                   :object => {
