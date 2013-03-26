@@ -65,10 +65,12 @@ module Rip::Compiler
     rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) }.inject(:|) }
 
 
-    rule(:phrase) { regular_invocation | operator_invocation | property | phrase_base }
+    rule(:phrase) { regular_invocation | special_invocation | property | phrase_base }
 
     rule(:regular_invocation) { ((property.as(:callable) >> multiple_arguments) | (phrase_base.as(:callable) >> multiple_arguments)).as(:regular_invocation) }
 
+    rule(:special_invocation) { index_invocation | operator_invocation }
+    rule(:index_invocation) { (phrase.as(:object) >> bracket_open >> csv(phrase).as(:arguments) >> bracket_close).as(:index_invocation) }
     rule(:operator_invocation) { (phrase_base.as(:operand) >> reference.as(:operator) >> phrase.as(:argument)).as(:operator_invocation) }
 
     rule(:property) { ((phrase_base.as(:object) >> property_property) | (phrase.as(:object) >> property_property)).as(:property) }
