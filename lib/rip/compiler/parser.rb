@@ -86,7 +86,7 @@ module Rip::Compiler
     # x.y
     rule(:property) { ((phrase_base.as(:object) >> property_property) | (phrase.as(:object) >> property_property)).as(:property) }
     rule(:property_property) { dot >> property_name.as(:property_name) }
-    rule(:property_name) { reference | str('[]') }
+    rule(:property_name) { reference | (bracket_open >> bracket_close) }
 
     rule(:phrase_base) do
       condition_block_sequence.as(:block_sequence) |
