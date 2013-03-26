@@ -293,7 +293,7 @@ describe Rip::Compiler::Parser do
                 :argument => { :reference => 'true' },
                 :body => [
                   {
-                    :invocation => {
+                    :operator_invocation => {
                       :operand => { :reference => 'x' },
                       :operator => { :reference => '=' },
                       :argument => { :string => rip_parsed_string('y') }
@@ -338,7 +338,7 @@ describe Rip::Compiler::Parser do
                 :argument => {:reference => 'true'},
                 :body => [
                   {
-                    :invocation => {
+                    :operator_invocation => {
                       :operand => { :reference => 'steam' },
                       :operator => { :reference => 'will' },
                       :argument => { :string => rip_parsed_string('rise') }
@@ -486,7 +486,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { 'favorite_language = :rip' }
         let(:expected) do
           {
-            :invocation => {
+            :operator_invocation => {
               :operand => { :reference => 'favorite_language' },
               :operator => { :reference => '=' },
               :argument => { :string => rip_parsed_string('rip') }
