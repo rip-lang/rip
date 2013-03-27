@@ -71,7 +71,7 @@ module Rip::Compiler
     # x()
     # x.y()
     # -> {}()
-    # anything that can resolve to a lambda can be invoked by adding parenttheses afterwards
+    # anything that can resolve to a lambda can be invoked by adding parentheses afterwards
     rule(:regular_invocation) { ((property.as(:callable) >> multiple_arguments) | (phrase_base.as(:callable) >> multiple_arguments)).as(:regular_invocation) }
 
     rule(:special_invocation) { index_invocation | operator_invocation }
