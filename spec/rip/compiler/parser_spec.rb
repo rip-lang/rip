@@ -64,42 +64,54 @@ describe Rip::Compiler::Parser do
     it 'recognizes several statements together' do
       expected = [
         {
-          :block_sequence => {
-            :if_block => {
-              :if => 'if',
-              :argument => { :reference => 'true' },
-              :body => [
-                {
-                  :operator_invocation => {
-                    :operand => { :reference => 'lambda' },
-                    :operator => { :reference => '=' },
-                    :argument => {
-                      :block => {
-                        :lambda_dash => '->',
-                        :body => [ {:comment => ' comment'} ]
+          :phrase => {
+            :block_sequence => {
+              :if_block => {
+                :if => 'if',
+                :argument => { :phrase => { :reference => 'true' } },
+                :body => [
+                  {
+                    :phrase => [
+                      { :reference => 'lambda' },
+                      {
+                        :operator_invocation => {
+                          :operator => { :reference => '=' },
+                          :argument => {
+                            :phrase => {
+                              :lambda_block => {
+                                :dash_rocket => '->',
+                                :body => [ { :comment => ' comment' } ]
+                              }
+                            }
+                          }
+                        }
                       }
-                    }
+                    ]
+                  },
+                  {
+                    :phrase => [
+                      { :reference => 'lambda' },
+                      { :regular_invocation => { :arguments => [] } }
+                    ]
                   }
-                },
-                {
-                  :regular_invocation => {
-                    :callable => { :reference => 'lambda' },
-                    :arguments => []
+                ]
+              },
+              :else_block => {
+                :else => 'else',
+                :body => [
+                  {
+                    :phrase => [
+                      { :integer => '1' },
+                      {
+                        :operator_invocation => {
+                          :operator => { :reference => '+' },
+                          :argument => { :phrase => { :integer => '2' } }
+                        }
+                      }
+                    ]
                   }
-                }
-              ]
-            },
-            :else_block => {
-              :else => 'else',
-              :body => [
-                {
-                  :operator_invocation => {
-                    :operand => { :integer => '1' },
-                    :operator => { :reference => '+' },
-                    :argument => { :integer => '2' }
-                  }
-                }
-              ]
+                ]
+              }
             }
           }
         }
@@ -508,23 +520,58 @@ describe Rip::Compiler::Parser do
         let(:rip) { '((((((l((1 + (((2 - 3)))))))))))' }
         let(:expected) do
           {
-            :regular_invocation => {
-              :callable => { :reference => 'l' },
-              :arguments => [
-                {
-                  :operator_invocation => {
-                    :operand => { :integer => '1' },
-                    :operator => { :reference => '+' },
-                    :argument => {
-                      :operator_invocation => {
-                        :operand => { :integer => '2' },
-                        :operator => { :reference => '-' },
-                        :argument => { :integer => '3' }
+            :phrase=> {
+              :phrase=> {
+                :phrase=> {
+                  :phrase=> {
+                    :phrase=> {
+                      :phrase=> {
+                        :phrase=> [
+                          {:reference=>"l"},
+                          {
+                            :regular_invocation=> {
+                              :arguments=> [
+                                {
+                                  :phrase=> {
+                                    :phrase=> [
+                                      {:integer=>"1"},
+                                      {
+                                        :operator_invocation=> {
+                                          :operator=>{:reference=>"+"},
+                                          :argument=> {
+                                            :phrase=> {
+                                              :phrase=> {
+                                                :phrase=> {
+                                                  :phrase=> [
+                                                    {:integer=>"2"},
+                                                    {
+                                                      :operator_invocation=>
+                                                      {
+                                                        :operator=>{:reference=>"-"},
+                                                        :argument=> {
+                                                          :phrase=> {:integer=> "3"}
+                                                        }
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       }
                     }
                   }
                 }
-              ]
+              }
             }
           }
         end
