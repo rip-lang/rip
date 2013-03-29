@@ -201,13 +201,15 @@ describe Rip::Compiler::Parser do
         let(:rip) { 'class (one, two) {}' }
         let(:expected) do
           {
-            :class_block => {
-              :class => 'class',
-              :arguments => [
-                { :reference => 'one' },
-                { :reference => 'two' }
-              ],
-              :body => []
+            :phrase => {
+              :class_block => {
+                :class => 'class',
+                :arguments => [
+                  { :phrase => { :reference => 'one' } },
+                  { :phrase => { :reference => 'two' } }
+                ],
+                :body => []
+              }
             }
           }
         end
@@ -508,13 +510,17 @@ describe Rip::Compiler::Parser do
         let(:rip) { 'full_name(:Thomas, :Ingram)' }
         let(:expected) do
           {
-            :regular_invocation => {
-              :callable => { :reference => 'full_name' },
-              :arguments => [
-                { :string => rip_parsed_string('Thomas') },
-                { :string => rip_parsed_string('Ingram') }
-              ]
-            }
+            :phrase => [
+              { :reference => 'full_name' },
+              {
+                :regular_invocation => {
+                  :arguments => [
+                    { :phrase => { :string => rip_parsed_string('Thomas') } },
+                    { :phrase => { :string => rip_parsed_string('Ingram') } }
+                  ]
+                }
+              }
+            ]
           }
         end
       end
