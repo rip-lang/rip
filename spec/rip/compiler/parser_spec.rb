@@ -532,7 +532,7 @@ describe Rip::Compiler::Parser do
     end
 
     context 'property chaining' do
-      recognizes_as_expected 'chaining with properies and invocations', :focus do
+      recognizes_as_expected 'chaining with properies and invocations' do
         let(:rip) { '0.one().two.three()' }
         let(:expected) do
           {
@@ -571,7 +571,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'chaining several opererators', :focus do
+      recognizes_as_expected 'chaining several opererators' do
         let(:rip) { '1 + 2 + 3 + 4' }
         let(:expected) do
           {
