@@ -220,21 +220,17 @@ describe Rip::Compiler::Parser do
             :phrase => {
               :lambda_block => {
                 :fat_rocket => '=>',
-                :parameters => {
-                  :required_paramters => [
+                :parameters => [
                     {
                       :parameter => { :reference => 'platform' }
-                    }
-                  ],
-                  :optional_parameters => [
+                    },
                     {
                       :parameter => { :reference => 'name' },
                       :default_value => {
                         :phrase => { :string => rip_parsed_string('rip') }
                       }
                     }
-                  ]
-                },
+                  ],
                 :body => []
               }
             }
@@ -486,9 +482,7 @@ describe Rip::Compiler::Parser do
               {
                 :lambda_block => {
                   :dash_rocket => '->',
-                  :parameters => {
-                    :required_paramters => []
-                  },
+                  :parameters => '()',
                   :body => []
                 }
               },

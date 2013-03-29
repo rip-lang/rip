@@ -106,8 +106,8 @@ module Rip::Compiler
     rule(:else_block)    { (str('else').as(:else)       >> block_body).as(:else_block) }
 
     rule(:parameters) do
-      required = csv(required_parameter).as(:required_paramters)
-      optional = csv(optional_parameter).as(:optional_parameters)
+      required = csv(required_parameter)
+      optional = csv(optional_parameter)
       parenthesis_open >> whitespaces? >>
         ((required >> whitespaces? >> comma >> whitespaces? >> optional) | required | optional) >>
         whitespaces? >> parenthesis_close
