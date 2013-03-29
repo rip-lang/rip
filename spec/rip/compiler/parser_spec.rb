@@ -893,10 +893,14 @@ describe Rip::Compiler::Parser do
         let(:rip) { '5: \'five\'' }
         let(:expected) do
           {
-            :key_value_pair => {
-              :key => { :integer => '5' },
-              :value => { :string => rip_parsed_string('five') }
-            }
+            :phrase => [
+              { :integer => '5' },
+              {
+                :key_value_pair => {
+                  :value => { :phrase => { :string => rip_parsed_string('five') } }
+                }
+              }
+            ]
           }
         end
       end
@@ -905,11 +909,15 @@ describe Rip::Compiler::Parser do
         let(:rip) { '1..3' }
         let(:expected) do
           {
-            :range => {
-              :start => { :integer => '1' },
-              :end => { :integer => '3' },
-              :exclusivity => nil
-            }
+            :phrase => [
+              { :integer => '1' },
+              {
+                :range => {
+                  :end => { :phrase => { :integer => '3' } },
+                  :exclusivity => nil
+                }
+              }
+            ]
           }
         end
       end
@@ -918,11 +926,15 @@ describe Rip::Compiler::Parser do
         let(:rip) { '1...age' }
         let(:expected) do
           {
-            :range => {
-              :start => { :integer => '1' },
-              :end => { :reference => 'age' },
-              :exclusivity => '.'
-            }
+            :phrase => [
+              { :integer => '1' },
+              {
+                :range => {
+                  :end => { :phrase => { :reference => 'age' } },
+                  :exclusivity => '.'
+                }
+              }
+            ]
           }
         end
       end
