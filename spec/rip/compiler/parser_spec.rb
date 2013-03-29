@@ -197,7 +197,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'block with multiple arguments' do
+      recognizes_as_expected 'block with multiple arguments', :broken do
         let(:rip) { 'class (one, two) {}' }
         let(:expected) do
           {
@@ -506,7 +506,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda reference invocation arguments' do
+      recognizes_as_expected 'lambda reference invocation arguments', :broken do
         let(:rip) { 'full_name(:Thomas, :Ingram)' }
         let(:expected) do
           {
