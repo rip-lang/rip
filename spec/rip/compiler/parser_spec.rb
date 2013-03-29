@@ -939,14 +939,14 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'empty hash' do
+      recognizes_as_expected 'empty map' do
         let(:rip) { '{}' }
         let(:expected) do
-          { :hash => [] }
+          { :map => [] }
         end
       end
 
-      recognizes_as_expected 'hash with content' do
+      recognizes_as_expected 'map with content' do
         let(:rip) do
           <<-RIP
             {
@@ -957,7 +957,7 @@ describe Rip::Compiler::Parser do
         end
         let(:expected) do
           {
-            :hash => [
+            :map => [
               {
                 :key => { :string => rip_parsed_string('age') },
                 :value => { :integer => '31' }
