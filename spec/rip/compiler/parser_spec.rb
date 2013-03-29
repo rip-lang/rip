@@ -223,16 +223,16 @@ describe Rip::Compiler::Parser do
               :lambda_block => {
                 :fat_rocket => '=>',
                 :parameters => [
-                    {
-                      :parameter => { :reference => 'platform' }
-                    },
-                    {
-                      :parameter => { :reference => 'name' },
-                      :default_value => {
-                        :phrase => { :string => rip_parsed_string('rip') }
-                      }
+                  {
+                    :parameter => { :reference => 'platform' }
+                  },
+                  {
+                    :parameter => { :reference => 'name' },
+                    :default_value => {
+                      :phrase => { :string => rip_parsed_string('rip') }
                     }
-                  ],
+                  }
+                ],
                 :body => []
               }
             }
