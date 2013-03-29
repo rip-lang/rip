@@ -191,7 +191,8 @@ module Rip::Compiler
 
     # "borrowed" from http://jmettraux.wordpress.com/2011/05/11/parslet-and-json/
     def csv(value)
-      (value >> (comma >> value).repeat).repeat(0, 1)
+      _value = whitespaces? >> value >> whitespaces?
+      (_value >> (comma >> _value).repeat).repeat(0, 1)
     end
 
     def string_parser(delimiter, inner_special, delimited_flag = :string, any_flag = :raw_string)

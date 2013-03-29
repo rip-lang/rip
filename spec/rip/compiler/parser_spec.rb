@@ -197,7 +197,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'block with multiple arguments', :broken do
+      recognizes_as_expected 'block with multiple arguments' do
         let(:rip) { 'class (one, two) {}' }
         let(:expected) do
           {
@@ -215,7 +215,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with parameter and default parameter' do
+      recognizes_as_expected 'lambda with parameter and default parameter', :regression do
         let(:rip) { '=> (platform, name = :rip) {}' }
         let(:expected) do
           {
@@ -506,7 +506,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda reference invocation arguments', :broken do
+      recognizes_as_expected 'lambda reference invocation arguments' do
         let(:rip) { 'full_name(:Thomas, :Ingram)' }
         let(:expected) do
           {
@@ -888,7 +888,7 @@ describe Rip::Compiler::Parser do
       end
     end
 
-    context 'molecular literals', :blur do
+    context 'molecular literals' do
       recognizes_as_expected 'key-value pairs' do
         let(:rip) { '5: \'five\'' }
         let(:expected) do
@@ -957,16 +957,30 @@ describe Rip::Compiler::Parser do
         end
         let(:expected) do
           {
-            :map => [
-              {
-                :key => { :string => rip_parsed_string('age') },
-                :value => { :integer => '31' }
-              },
-              {
-                :key => { :string => rip_parsed_string('name') },
-                :value => { :string => rip_parsed_string('Thomas') }
-              }
-            ]
+            :phrase => {
+              :map => [
+                {
+                  :phrase => [
+                    { :string => rip_parsed_string('age') },
+                    {
+                      :key_value_pair => {
+                        :value => { :phrase => { :integer => '31' } }
+                      }
+                    }
+                  ]
+                },
+                {
+                  :phrase => [
+                    { :string => rip_parsed_string('name') },
+                    {
+                      :key_value_pair => {
+                        :value => { :phrase => { :string => rip_parsed_string('Thomas') } }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
           }
         end
       end
@@ -989,10 +1003,12 @@ describe Rip::Compiler::Parser do
         end
         let(:expected) do
           {
-            :list => [
-              { :integer => '31' },
-              { :string => rip_parsed_string('Thomas') }
-            ]
+            :phrase => {
+              :list => [
+                { :phrase => { :integer => '31' } },
+                { :phrase => { :string => rip_parsed_string('Thomas') } }
+              ]
+            }
           }
         end
       end
