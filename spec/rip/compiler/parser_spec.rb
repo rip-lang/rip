@@ -536,59 +536,20 @@ describe Rip::Compiler::Parser do
         let(:rip) { '0.one().two.three()' }
         let(:expected) do
           {
-            :regular_invocation => {
-              :callable => {
-                :property => {
-                  :object => {
-                    :property => {
-                      :object => {
-                        :regular_invocation => {
-                          :callable => {
-                            :property => {
-                              :object => { :integer => '0' },
-                              :property_name => { :reference => 'one' }
-                            }
-                          },
-                          :arguments => []
-                        }
-                      },
-                      :property_name => { :reference => 'two' }
-                    }
-                  },
-                  :property_name => { :reference => 'three' }
-                }
-              },
-              :arguments => []
-            }
+            :phrase => [
+              { :integer => '0'},
+              { :property_name => { :reference => 'one' } },
+              { :regular_invocation => { :arguments => [] } },
+              { :property_name => { :reference => 'two' } },
+              { :property_name => { :reference => 'three' } },
+              { :regular_invocation => { :arguments=> [] } }
+            ]
           }
         end
       end
 
       recognizes_as_expected 'chaining off opererators' do
         let(:rip) { '(1 - 2).zero?()' }
-        # let(:expected) do
-        #   {
-        #     :regular_invocation => {
-        #       :callable => {
-        #         :property => {
-        #           :object => {
-        #             :regular_invocation => {
-        #               :callable => {
-        #                 :property => {
-        #                   :object => { :integer => '1' },
-        #                   :property_name => { :reference => '-' }
-        #                 }
-        #               },
-        #               :argument => { :integer => '2' }
-        #             }
-        #           },
-        #           :property_name => { :reference => 'zero?' }
-        #         }
-        #       },
-        #       :arguments => []
-        #     }
-        #   }
-        # end
         let(:expected) do
           {
             :regular_invocation => {
@@ -614,23 +575,27 @@ describe Rip::Compiler::Parser do
         let(:rip) { '1 + 2 + 3 + 4' }
         let(:expected) do
           {
-            :operator_invocation => {
-              :operand => {
+            :phrase => [
+              { :integer => '1' },
+              {
                 :operator_invocation => {
-                  :operand => {
-                    :operator_invocation => {
-                      :operand => { :integer => '1' },
-                      :operator => '+',
-                      :argument => { :integer => '2' }
-                    }
-                  },
-                  :operator => '+',
-                  :argument => { :integer => '3' }
+                  :operator => { :reference => '+' },
+                  :argument => { :phrase => [
+                    { :integer => '2' },
+                    { :operator_invocation => {
+                      :operator => { :reference => '+' },
+                      :argument => { :phrase => [
+                        { :integer => '3' },
+                        { :operator_invocation => {
+                          :operator => { :reference => '+' },
+                          :argument => { :phrase => { :integer => '4' }}
+                        }}
+                      ]}
+                    }}
+                  ]}
                 }
-              },
-              :operator => '+',
-              :argument => { :integer => '4' }
-            }
+              }
+            ]
           }
         end
       end

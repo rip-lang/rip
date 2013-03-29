@@ -65,27 +65,15 @@ module Rip::Compiler
     rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) }.inject(:|) }
 
 
-    # http://stackoverflow.com/questions/13374121/non-left-recursive-peg-grammar-for-an-expression
-    rule(:phrase) { regular_invocation | special_invocation | property | phrase_base }
+    rule(:phrase) { (phrase_base >> (operator_invocation | regular_invocation | index_invocation | property).repeat).as(:phrase) }
 
-    # x()
-    # x.y()
-    # -> {}()
-    # anything that can resolve to a lambda can be invoked by adding parentheses afterwards
-    rule(:regular_invocation) { ((property.as(:callable) >> multiple_arguments) | (phrase_base.as(:callable) >> multiple_arguments)).as(:regular_invocation) }
+    rule(:regular_invocation) { multiple_arguments.as(:regular_invocation) }
 
-    rule(:special_invocation) { index_invocation | operator_invocation }
+    rule(:index_invocation) { (bracket_open >> csv(phrase).as(:arguments) >> bracket_close).as(:index_invocation) }
 
-    # x[0] is shorthand for x.[](0)
-    rule(:index_invocation) { (phrase.as(:object) >> bracket_open >> csv(phrase).as(:arguments) >> bracket_close).as(:index_invocation) }
+    rule(:operator_invocation) { (whitespaces >> reference.as(:operator) >> whitespaces >> phrase.as(:argument)).as(:operator_invocation) }
 
-    # x op y is shorthand for x.op(y)
-    # x and y are (mostly) arbitrary phrases and op is any valid reference
-    rule(:operator_invocation) { (phrase_base.as(:operand) >> reference.as(:operator) >> phrase.as(:argument)).as(:operator_invocation) }
-
-    # x.y
-    rule(:property) { ((phrase_base.as(:object) >> property_property) | (phrase.as(:object) >> property_property)).as(:property) }
-    rule(:property_property) { dot >> property_name.as(:property_name) }
+    rule(:property) { dot >> property_name.as(:property_name) }
     rule(:property_name) { reference | (bracket_open >> bracket_close) }
 
     rule(:phrase_base) do
