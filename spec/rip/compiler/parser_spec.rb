@@ -942,7 +942,7 @@ describe Rip::Compiler::Parser do
       recognizes_as_expected 'empty map' do
         let(:rip) { '{}' }
         let(:expected) do
-          { :map => [] }
+          { :phrase => { :map => [] } }
         end
       end
 
@@ -974,7 +974,7 @@ describe Rip::Compiler::Parser do
       recognizes_as_expected 'empty list' do
         let(:rip) { '[]' }
         let(:expected) do
-          { :list => [] }
+          { :phrase => { :list => [] } }
         end
       end
 

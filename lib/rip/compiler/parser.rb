@@ -127,10 +127,9 @@ module Rip::Compiler
     rule(:block_body_switch) { (case_block.repeat(1) >> whitespaces? >> else_block.maybe).as(:body) }
 
     # TODO literals for heredoc
-    # TODO literals for list, map, key-value pair, range
     # TODO literals for datetime, date, time, version (maybe)
     # TODO literals for unit
-    rule(:object) { number | character | string | regular_expression | reference }
+    rule(:object) { number | character | string | regular_expression | map | list | reference }
 
 
     # WARNING order is important here: decimal must be before integer or the integral part of
@@ -181,6 +180,11 @@ module Rip::Compiler
 
     rule(:word) { word_legal >> (word_legal | digit).repeat }
     rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
+
+
+    rule(:map) { brace_open >> whitespaces? >> csv(phrase).as(:map) >> whitespaces? >> brace_close }
+
+    rule(:list) { bracket_open >> whitespaces? >> csv(phrase).as(:list) >> whitespaces? >> bracket_close }
 
 
     protected
