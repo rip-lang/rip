@@ -1,18 +1,10 @@
-require 'rip/nodes'
-
 module Rip::Nodes
-  class Comment
+  class Comment < Base
     attr_reader :text
 
-    def initialize(text)
+    def initialize(location, text)
+      super(location)
       @text = text
-    end
-
-    def ==(other)
-      text == other.text
-    end
-
-    def evaluate
     end
   end
 end

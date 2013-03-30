@@ -1,3 +1,13 @@
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
+
+if File.exists?(ENV['BUNDLE_GEMFILE'])
+  require 'bundler'
+
+  Bundler.setup
+end
+
+$LOAD_PATH.unshift(File.expand_path(__dir__ + '/../lib'))
+
 require 'pathname'
 
 module Rip
@@ -13,3 +23,12 @@ module Rip
     Pathname File.expand_path('..', __FILE__)
   end
 end
+
+require 'rip/cli'
+
+require 'rip/exception'
+require 'rip/utilities'
+
+require 'rip/compiler'
+require 'rip/nodes'
+require 'rip/version'

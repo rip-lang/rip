@@ -1,18 +1,15 @@
-require 'rip/nodes'
-
 module Rip::Nodes
-  class List
+  class List < Base
     attr_reader :items
 
-    def initialize(*items)
+    def initialize(location, items)
+      super(location)
       @items = items
     end
 
     def ==(other)
-      other.respond_to?(:items) && (items == other.items)
-    end
-
-    def evaluate
+      super &&
+        (items == other.items)
     end
   end
 end

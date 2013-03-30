@@ -4,7 +4,7 @@ require 'pathname'
 require 'rip/keywords'
 
 module Rip
-  class Parser < Parslet::Parser
+  class ParserOld < Parslet::Parser
     root(:statements)
 
     # statement
