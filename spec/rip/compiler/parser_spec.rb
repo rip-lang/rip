@@ -589,6 +589,24 @@ describe Rip::Compiler::Parser do
         end
       end
 
+      recognizes_as_expected 'index invocation' do
+        let(:rip) { 'list[0]' }
+        let(:expected) do
+          {
+            :phrase => [
+              { :reference => 'list' },
+              {
+                :index_invocation => {
+                  :arguments => [
+                    { :phrase => { :integer => '0' } }
+                  ]
+                }
+              }
+            ]
+          }
+        end
+      end
+
       recognizes_as_expected 'operator invocation' do
         let(:rip) { '2 + 2' }
         let(:expected) do
