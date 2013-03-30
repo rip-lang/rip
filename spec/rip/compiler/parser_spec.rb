@@ -3,15 +3,15 @@ require 'spec_helper'
 describe Rip::Compiler::Parser do
   context 'some basics' do
     it 'parses an empty module' do
-      expect(parser).to parse('').as('')
+      expect(parser('')).to parse_as('')
     end
 
     it 'parses an empty string module' do
-      expect(parser).to parse('       ').as('       ')
+      expect(parser('       ')).to parse_as('       ')
     end
 
     it 'recognizes comments' do
-      expect(parser.comment).to parse('# this is a comment').as(:comment => ' this is a comment')
+      expect(parser('# this is a comment')).to parse_first_as(:comment => ' this is a comment')
     end
 
     it 'recognizes various whitespace sequences' do
@@ -26,7 +26,7 @@ describe Rip::Compiler::Parser do
         ["\r\n\r\n", "\n\n"]            => :line_breaks,
         ['', "\r\n\r\n", "\n\n"]        => :line_breaks?
       }.each do |whitespaces, method|
-        space_parser = parser.send(method)
+        space_parser = parser(nil).send(method)
         whitespaces.each do |space|
           expect(space_parser).to parse(space).as(space)
         end
@@ -34,7 +34,7 @@ describe Rip::Compiler::Parser do
     end
 
     context 'comma-separation' do
-      let(:csv_parser) { parser.send(:csv, parser.send(:str, 'x').as(:x)).as(:csv) }
+      let(:csv_parser) { parser(nil).send(:csv, parser(nil).send(:str, 'x').as(:x)).as(:csv) }
       let(:expected_x) { { :x => 'x' } }
 
       it 'recognizes comma-separated atoms' do
@@ -110,7 +110,7 @@ describe Rip::Compiler::Parser do
         }
       ]
 
-      expect(parser).to parse(rip).as(expected)
+      expect(parser(rip)).to parse_as(expected)
     end
   end
 
@@ -134,7 +134,7 @@ describe Rip::Compiler::Parser do
         'Kernel',
         'returner'
       ].each do |reference|
-        expect(parser.reference).to parse(reference).as(:reference => reference)
+        expect(parser(reference)).to parse_first_as(:phrase => { :reference => reference })
       end
     end
 
@@ -146,7 +146,7 @@ describe Rip::Compiler::Parser do
         'rip rocks',
         'key:value'
       ].each do |non_reference|
-        expect(parser.reference).to_not parse(non_reference)
+        expect(parser(non_reference)).to_not parse_first_as(:phrase => { :reference => non_reference })
       end
     end
   end

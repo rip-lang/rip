@@ -3,6 +3,19 @@ require 'pathname'
 
 module Rip::Compiler
   class Parser < Parslet::Parser
+    attr_reader :origin
+    attr_reader :source_code
+
+    def initialize(origin, source_code)
+      @origin = origin
+      @source_code = source_code
+    end
+
+    def parse_tree
+      parse(source_code)
+    end
+
+
     root(:lines)
 
 

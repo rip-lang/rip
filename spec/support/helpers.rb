@@ -3,14 +3,14 @@ module RSpecHelpers
     context description, *flags do
       instance_exec &block
       specify do
-        expect(parser.expression).to parse(strip_heredoc(rip)).as(expected)
+        expect(parser(rip)).to parse_first_as(expected)
       end
     end
   end
 
   def profile_parslet(rip, parslet = :lines)
     result = RubyProf.profile do
-      parser.send(parslet).parse(rip)
+      parser(rip).send(parslet).parse_tree
     end
 
     result.eliminate_methods!([
@@ -48,8 +48,8 @@ module RSpecHelpers
     new_location(origin, absolute_position, line, position)
   end
 
-  def parser
-    Rip::Compiler::Parser.new
+  def parser(source_code)
+    Rip::Compiler::Parser.new(:rspec, source_code)
   end
 
   def apt(code)
