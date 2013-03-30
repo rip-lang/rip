@@ -208,6 +208,56 @@ describe Rip::Compiler::Parser do
         end
       end
 
+      recognizes_as_expected 'lambda with multiple required parameters', :broken do
+        let(:rip) { '-> (one, two) {}' }
+        let(:expected) do
+          {
+            :phrase => {
+              :lambda_block => {
+                :dash_rocket => '->',
+                :parameters => [
+                  { :required_parameter => { :reference => 'one' } },
+                  { :required_parameter => { :reference => 'two' } }
+                ],
+                :body => []
+              }
+            }
+          }
+        end
+      end
+
+      recognizes_as_expected 'lambda with multiple optional parameters', :broken do
+        let(:rip) { '-> (one = 1, two = 2) {}' }
+        let(:expected) do
+          {
+            :phrase => {
+              :lambda_block => {
+                :dash_rocket => '->',
+                :parameters => [
+                  {
+                    :optional_parameter => {
+                      :reference_assignment => {
+                        :reference => 'one',
+                        :phrase => { :integer => '1' }
+                      }
+                    }
+                  },
+                  {
+                    :optional_parameter => {
+                      :reference_assignment => {
+                        :reference => 'two',
+                        :phrase => { :integer => '2' }
+                      }
+                    }
+                  }
+                ],
+                :body => []
+              }
+            }
+          }
+        end
+      end
+
       recognizes_as_expected 'lambda with required parameter and optional parameter' do
         let(:rip) { '=> (platform, name = :rip) {}' }
         let(:expected) do
@@ -222,6 +272,40 @@ describe Rip::Compiler::Parser do
                       :reference_assignment => {
                         :reference => 'name',
                         :phrase => { :string => rip_parsed_string('rip') }
+                      }
+                    }
+                  }
+                ],
+                :body => []
+              }
+            }
+          }
+        end
+      end
+
+      recognizes_as_expected 'lambda with multiple required parameter and multiple optional parameter', :broken do
+        let(:rip) { '-> (abc, xyz, one = 1, two = 2) {}' }
+        let(:expected) do
+          {
+            :phrase => {
+              :lambda_block => {
+                :dash_rocket => '->',
+                :parameters => [
+                  { :required_parameter => { :reference => 'abc' } },
+                  { :required_parameter => { :reference => 'xyz' } },
+                  {
+                    :optional_parameter => {
+                      :reference_assignment => {
+                        :reference => 'one',
+                        :phrase => { :integer => '1' }
+                      }
+                    }
+                  },
+                  {
+                    :optional_parameter => {
+                      :reference_assignment => {
+                        :reference => 'two',
+                        :phrase => { :integer => '2' }
                       }
                     }
                   }
