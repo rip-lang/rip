@@ -216,8 +216,8 @@ describe Rip::Compiler::Parser do
               :lambda_block => {
                 :dash_rocket => '->',
                 :parameters => [
-                  { :required_parameter => { :reference => 'one' } },
-                  { :required_parameter => { :reference => 'two' } }
+                  { :reference => 'one' },
+                  { :reference => 'two' }
                 ],
                 :body => []
               }
@@ -235,19 +235,15 @@ describe Rip::Compiler::Parser do
                 :dash_rocket => '->',
                 :parameters => [
                   {
-                    :optional_parameter => {
-                      :reference_assignment => {
-                        :reference => 'one',
-                        :phrase => { :integer => '1' }
-                      }
+                    :reference_assignment => {
+                      :reference => 'one',
+                      :phrase => { :integer => '1' }
                     }
                   },
                   {
-                    :optional_parameter => {
-                      :reference_assignment => {
-                        :reference => 'two',
-                        :phrase => { :integer => '2' }
-                      }
+                    :reference_assignment => {
+                      :reference => 'two',
+                      :phrase => { :integer => '2' }
                     }
                   }
                 ],
@@ -266,13 +262,11 @@ describe Rip::Compiler::Parser do
               :lambda_block => {
                 :fat_rocket => '=>',
                 :parameters => [
-                  { :required_parameter => { :reference => 'platform' } },
+                  { :reference => 'platform' },
                   {
-                    :optional_parameter => {
-                      :reference_assignment => {
-                        :reference => 'name',
-                        :phrase => { :string => rip_parsed_string('rip') }
-                      }
+                    :reference_assignment => {
+                      :reference => 'name',
+                      :phrase => { :string => rip_parsed_string('rip') }
                     }
                   }
                 ],
@@ -291,22 +285,18 @@ describe Rip::Compiler::Parser do
               :lambda_block => {
                 :dash_rocket => '->',
                 :parameters => [
-                  { :required_parameter => { :reference => 'abc' } },
-                  { :required_parameter => { :reference => 'xyz' } },
+                  { :reference => 'abc' },
+                  { :reference => 'xyz' },
                   {
-                    :optional_parameter => {
-                      :reference_assignment => {
-                        :reference => 'one',
-                        :phrase => { :integer => '1' }
-                      }
+                    :reference_assignment => {
+                      :reference => 'one',
+                      :phrase => { :integer => '1' }
                     }
                   },
                   {
-                    :optional_parameter => {
-                      :reference_assignment => {
-                        :reference => 'two',
-                        :phrase => { :integer => '2' }
-                      }
+                    :reference_assignment => {
+                      :reference => 'two',
+                      :phrase => { :integer => '2' }
                     }
                   }
                 ],

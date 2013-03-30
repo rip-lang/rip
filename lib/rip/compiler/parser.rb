@@ -120,8 +120,8 @@ module Rip::Compiler
         ((required >> whitespaces? >> comma >> whitespaces? >> optional) | required | optional) >>
         whitespaces? >> parenthesis_close
     end
-    rule(:required_parameter) { reference.as(:required_parameter) }
-    rule(:optional_parameter) { reference_assignment.as(:optional_parameter) }
+    rule(:required_parameter) { reference }
+    rule(:optional_parameter) { reference_assignment }
 
     rule(:multiple_arguments) { parenthesis_open >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
 
