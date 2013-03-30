@@ -254,7 +254,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with required parameter and optional parameter' do
+      recognizes_as_expected 'lambda with required parameter and optional parameter', :broken do
         let(:rip) { '=> (platform, name = :rip) {}' }
         let(:expected) do
           {
