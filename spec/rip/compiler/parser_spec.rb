@@ -208,7 +208,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with multiple required parameters', :broken do
+      recognizes_as_expected 'lambda with multiple required parameters' do
         let(:rip) { '-> (one, two) {}' }
         let(:expected) do
           {
@@ -226,7 +226,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with multiple optional parameters', :broken do
+      recognizes_as_expected 'lambda with multiple optional parameters' do
         let(:rip) { '-> (one = 1, two = 2) {}' }
         let(:expected) do
           {
@@ -254,7 +254,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with required parameter and optional parameter', :broken do
+      recognizes_as_expected 'lambda with required parameter and optional parameter' do
         let(:rip) { '=> (platform, name = :rip) {}' }
         let(:expected) do
           {
@@ -277,7 +277,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with multiple required parameter and multiple optional parameter', :broken do
+      recognizes_as_expected 'lambda with multiple required parameter and multiple optional parameter' do
         let(:rip) { '-> (abc, xyz, one = 1, two = 2) {}' }
         let(:expected) do
           {

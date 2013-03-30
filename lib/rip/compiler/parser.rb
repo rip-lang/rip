@@ -112,14 +112,7 @@ module Rip::Compiler
     rule(:finally_block) { (str('finally').as(:finally) >> block_body).as(:finally_block) }
     rule(:else_block)    { (str('else').as(:else)       >> block_body).as(:else_block) }
 
-    # TODO find out why csv_raw works, but csv does not
-    rule(:parameters) do
-      required = csv_raw(required_parameter)
-      optional = csv(optional_parameter)
-      parenthesis_open >> whitespaces? >>
-        ((required >> whitespaces? >> comma >> whitespaces? >> optional) | required | optional) >>
-        whitespaces? >> parenthesis_close
-    end
+    rule(:parameters) { parenthesis_open >> whitespaces? >> csv(optional_parameter | required_parameter) >> whitespaces? >> parenthesis_close }
     rule(:required_parameter) { reference }
     rule(:optional_parameter) { reference_assignment }
 
@@ -195,11 +188,8 @@ module Rip::Compiler
 
     # "borrowed" from http://jmettraux.wordpress.com/2011/05/11/parslet-and-json/
     def csv(value)
-      csv_raw(whitespaces? >> value >> whitespaces?)
-    end
-
-    def csv_raw(value)
-      (value >> (comma >> value).repeat).repeat(0, 1)
+      _value = whitespaces? >> value >> whitespaces?
+      (_value >> (comma >> _value).repeat).repeat(0, 1)
     end
 
     def string_parser(delimiter, inner_special, delimited_flag = :string, any_flag = :raw_string)
