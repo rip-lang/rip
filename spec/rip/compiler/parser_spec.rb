@@ -71,22 +71,15 @@ describe Rip::Compiler::Parser do
                 :argument => { :phrase => { :reference => 'true' } },
                 :body => [
                   {
-                    :phrase => [
-                      { :reference => 'lambda' },
-                      {
-                        :operator_invocation => {
-                          :operator => { :reference => '=' },
-                          :argument => {
-                            :phrase => {
-                              :lambda_block => {
-                                :dash_rocket => '->',
-                                :body => [ { :comment => ' comment' } ]
-                              }
-                            }
-                          }
+                    :reference_assignment => {
+                      :reference => 'lambda',
+                      :phrase => {
+                        :lambda_block => {
+                          :dash_rocket => '->',
+                          :body => [ { :comment => ' comment' } ]
                         }
                       }
-                    ]
+                    }
                   },
                   {
                     :phrase => [
@@ -215,7 +208,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with parameter and default parameter', :regression do
+      recognizes_as_expected 'lambda with required parameter and optional parameter' do
         let(:rip) { '=> (platform, name = :rip) {}' }
         let(:expected) do
           {
@@ -223,13 +216,13 @@ describe Rip::Compiler::Parser do
               :lambda_block => {
                 :fat_rocket => '=>',
                 :parameters => [
+                  { :required_parameter => { :reference => 'platform' } },
                   {
-                    :parameter => { :reference => 'platform' }
-                  },
-                  {
-                    :parameter => { :reference => 'name' },
-                    :default_value => {
-                      :phrase => { :string => rip_parsed_string('rip') }
+                    :optional_parameter => {
+                      :reference_assignment => {
+                        :reference => 'name',
+                        :phrase => { :string => rip_parsed_string('rip') }
+                      }
                     }
                   }
                 ],
@@ -322,13 +315,10 @@ describe Rip::Compiler::Parser do
                   :argument => { :phrase => { :reference => 'true' } },
                   :body => [
                     {
-                      :phrase => [
-                        { :reference => 'x' },
-                        :operator_invocation => {
-                          :operator => { :reference => '=' },
-                          :argument => { :phrase => { :string => rip_parsed_string('y') } }
-                        }
-                      ]
+                      :reference_assignment => {
+                        :reference => 'x',
+                        :phrase => { :string => rip_parsed_string('y') }
+                      }
                     }
                   ]
                 }
@@ -546,13 +536,10 @@ describe Rip::Compiler::Parser do
         let(:rip) { 'favorite_language = :rip' }
         let(:expected) do
           {
-            :phrase => [
-              { :reference => 'favorite_language' },
-              :operator_invocation => {
-                :operator => { :reference => '=' },
-                :argument => { :phrase => { :string => rip_parsed_string('rip') } }
-              }
-            ]
+            :reference_assignment => {
+              :reference => 'favorite_language',
+              :phrase => { :string => rip_parsed_string('rip') }
+            }
           }
         end
       end

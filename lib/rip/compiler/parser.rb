@@ -60,12 +60,15 @@ module Rip::Compiler
 
     rule(:expression) { expression_base >> spaces? >> expression_terminator? }
 
-    rule(:expression_base) { (keyword.as(:keyword) >> spaces >> phrase.as(:payload)) | keyword.as(:keyword) | phrase }
+    rule(:expression_base) { (keyword.as(:keyword) >> spaces >> (reference_assignment | phrase).as(:payload)) | keyword.as(:keyword) | reference_assignment | phrase }
 
     rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) }.inject(:|) }
 
 
+    rule(:reference_assignment) { (reference >> whitespaces? >> equals >> whitespaces? >> phrase).as(:reference_assignment) }
+
     rule(:phrase) { (phrase_base >> (key_value_pair | range | operator_invocation | regular_invocation | index_invocation | property).repeat).as(:phrase) }
+
 
     rule(:regular_invocation) { multiple_arguments.as(:regular_invocation) }
 
@@ -109,15 +112,16 @@ module Rip::Compiler
     rule(:finally_block) { (str('finally').as(:finally) >> block_body).as(:finally_block) }
     rule(:else_block)    { (str('else').as(:else)       >> block_body).as(:else_block) }
 
+    # TODO find out why csv_raw works, but csv does not
     rule(:parameters) do
-      required = csv(required_parameter)
+      required = csv_raw(required_parameter)
       optional = csv(optional_parameter)
       parenthesis_open >> whitespaces? >>
         ((required >> whitespaces? >> comma >> whitespaces? >> optional) | required | optional) >>
         whitespaces? >> parenthesis_close
     end
-    rule(:required_parameter) { reference.as(:parameter) }
-    rule(:optional_parameter) { reference.as(:parameter) >> spaces >> equals >> spaces >> phrase.as(:default_value) }
+    rule(:required_parameter) { reference.as(:required_parameter) }
+    rule(:optional_parameter) { reference_assignment.as(:optional_parameter) }
 
     rule(:multiple_arguments) { parenthesis_open >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
 
@@ -191,8 +195,11 @@ module Rip::Compiler
 
     # "borrowed" from http://jmettraux.wordpress.com/2011/05/11/parslet-and-json/
     def csv(value)
-      _value = whitespaces? >> value >> whitespaces?
-      (_value >> (comma >> _value).repeat).repeat(0, 1)
+      csv_raw(whitespaces? >> value >> whitespaces?)
+    end
+
+    def csv_raw(value)
+      (value >> (comma >> value).repeat).repeat(0, 1)
     end
 
     def string_parser(delimiter, inner_special, delimited_flag = :string, any_flag = :raw_string)
