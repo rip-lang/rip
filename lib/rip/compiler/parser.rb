@@ -72,7 +72,7 @@ module Rip::Compiler
 
     rule(:regular_invocation) { multiple_arguments.as(:regular_invocation) }
 
-    rule(:index_invocation) { (bracket_open >> csv(phrase).as(:arguments) >> bracket_close).as(:index_invocation) }
+    rule(:index_invocation) { (bracket_open.as(:open) >> csv(phrase).as(:arguments) >> bracket_close.as(:close)).as(:index_invocation) }
 
     rule(:key_value_pair) { (whitespaces? >> colon >> whitespaces? >> phrase.as(:value)).as(:key_value_pair) }
 

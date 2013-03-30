@@ -597,9 +597,11 @@ describe Rip::Compiler::Parser do
               { :reference => 'list' },
               {
                 :index_invocation => {
+                  :open => '[',
                   :arguments => [
                     { :phrase => { :integer => '0' } }
-                  ]
+                  ],
+                  :close => ']'
                 }
               }
             ]
