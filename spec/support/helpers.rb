@@ -3,7 +3,7 @@ module RSpecHelpers
     context description, *flags do
       instance_exec &block
       specify do
-        expect(parser(rip)).to parse_first_as(expected)
+        expect(parser(rip)).to parse_as(expected)
       end
     end
   end

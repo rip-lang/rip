@@ -11,7 +11,7 @@ describe Rip::Compiler::Parser do
     end
 
     it 'recognizes comments' do
-      expect(parser('# this is a comment')).to parse_first_as(:comment => ' this is a comment')
+      expect(parser('# this is a comment')).to parse_as([ { :comment => ' this is a comment' } ])
     end
 
     it 'recognizes various whitespace sequences' do
@@ -134,7 +134,7 @@ describe Rip::Compiler::Parser do
         'Kernel',
         'returner'
       ].each do |reference|
-        expect(parser(reference)).to parse_first_as(:phrase => { :reference => reference })
+        expect(parser(reference)).to parse_as([ { :phrase => { :reference => reference } } ])
       end
     end
 
@@ -146,7 +146,7 @@ describe Rip::Compiler::Parser do
         'rip rocks',
         'key:value'
       ].each do |non_reference|
-        expect(parser(non_reference)).to_not parse_first_as(:phrase => { :reference => non_reference })
+        expect(parser(non_reference)).to_not parse_as([ { :phrase => { :reference => non_reference } } ])
       end
     end
   end
@@ -156,179 +156,195 @@ describe Rip::Compiler::Parser do
       recognizes_as_expected 'empty block' do
         let(:rip) { 'try {}' }
         let(:expected) do
-          {
-            :phrase => {
-              :block_sequence => {
-                :try_block => {
-                  :try => 'try',
-                  :body => []
+          [
+            {
+              :phrase => {
+                :block_sequence => {
+                  :try_block => {
+                    :try => 'try',
+                    :body => []
+                  }
                 }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'block with argument' do
         let(:rip) { 'unless (:name) {} else {}' }
         let(:expected) do
-          {
-            :phrase => {
-              :block_sequence => {
-                :unless_block => {
-                  :unless => 'unless',
-                  :argument => { :phrase => { :string => rip_parsed_string('name') } },
-                  :body => []
-                },
-                :else_block => {
-                  :else => 'else',
-                  :body => []
+          [
+            {
+              :phrase => {
+                :block_sequence => {
+                  :unless_block => {
+                    :unless => 'unless',
+                    :argument => { :phrase => { :string => rip_parsed_string('name') } },
+                    :body => []
+                  },
+                  :else_block => {
+                    :else => 'else',
+                    :body => []
+                  }
                 }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'block with multiple arguments' do
         let(:rip) { 'class (one, two) {}' }
         let(:expected) do
-          {
-            :phrase => {
-              :class_block => {
-                :class => 'class',
-                :arguments => [
-                  { :phrase => { :reference => 'one' } },
-                  { :phrase => { :reference => 'two' } }
-                ],
-                :body => []
+          [
+            {
+              :phrase => {
+                :class_block => {
+                  :class => 'class',
+                  :arguments => [
+                    { :phrase => { :reference => 'one' } },
+                    { :phrase => { :reference => 'two' } }
+                  ],
+                  :body => []
+                }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'lambda with multiple required parameters' do
         let(:rip) { '-> (one, two) {}' }
         let(:expected) do
-          {
-            :phrase => {
-              :lambda_block => {
-                :dash_rocket => '->',
-                :parameters => [
-                  { :reference => 'one' },
-                  { :reference => 'two' }
-                ],
-                :body => []
+          [
+            {
+              :phrase => {
+                :lambda_block => {
+                  :dash_rocket => '->',
+                  :parameters => [
+                    { :reference => 'one' },
+                    { :reference => 'two' }
+                  ],
+                  :body => []
+                }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'lambda with multiple optional parameters' do
         let(:rip) { '-> (one = 1, two = 2) {}' }
         let(:expected) do
-          {
-            :phrase => {
-              :lambda_block => {
-                :dash_rocket => '->',
-                :parameters => [
-                  {
-                    :reference_assignment => {
-                      :reference => 'one',
-                      :phrase => { :integer => '1' }
+          [
+            {
+              :phrase => {
+                :lambda_block => {
+                  :dash_rocket => '->',
+                  :parameters => [
+                    {
+                      :reference_assignment => {
+                        :reference => 'one',
+                        :phrase => { :integer => '1' }
+                      }
+                    },
+                    {
+                      :reference_assignment => {
+                        :reference => 'two',
+                        :phrase => { :integer => '2' }
+                      }
                     }
-                  },
-                  {
-                    :reference_assignment => {
-                      :reference => 'two',
-                      :phrase => { :integer => '2' }
-                    }
-                  }
-                ],
-                :body => []
+                  ],
+                  :body => []
+                }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'lambda with required parameter and optional parameter' do
         let(:rip) { '=> (platform, name = :rip) {}' }
         let(:expected) do
-          {
-            :phrase => {
-              :lambda_block => {
-                :fat_rocket => '=>',
-                :parameters => [
-                  { :reference => 'platform' },
-                  {
-                    :reference_assignment => {
-                      :reference => 'name',
-                      :phrase => { :string => rip_parsed_string('rip') }
+          [
+            {
+              :phrase => {
+                :lambda_block => {
+                  :fat_rocket => '=>',
+                  :parameters => [
+                    { :reference => 'platform' },
+                    {
+                      :reference_assignment => {
+                        :reference => 'name',
+                        :phrase => { :string => rip_parsed_string('rip') }
+                      }
                     }
-                  }
-                ],
-                :body => []
+                  ],
+                  :body => []
+                }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'lambda with multiple required parameter and multiple optional parameter' do
         let(:rip) { '-> (abc, xyz, one = 1, two = 2) {}' }
         let(:expected) do
-          {
-            :phrase => {
-              :lambda_block => {
-                :dash_rocket => '->',
-                :parameters => [
-                  { :reference => 'abc' },
-                  { :reference => 'xyz' },
-                  {
-                    :reference_assignment => {
-                      :reference => 'one',
-                      :phrase => { :integer => '1' }
+          [
+            {
+              :phrase => {
+                :lambda_block => {
+                  :dash_rocket => '->',
+                  :parameters => [
+                    { :reference => 'abc' },
+                    { :reference => 'xyz' },
+                    {
+                      :reference_assignment => {
+                        :reference => 'one',
+                        :phrase => { :integer => '1' }
+                      }
+                    },
+                    {
+                      :reference_assignment => {
+                        :reference => 'two',
+                        :phrase => { :integer => '2' }
+                      }
                     }
-                  },
-                  {
-                    :reference_assignment => {
-                      :reference => 'two',
-                      :phrase => { :integer => '2' }
-                    }
-                  }
-                ],
-                :body => []
+                  ],
+                  :body => []
+                }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'blocks with block arguments' do
         let(:rip) { 'class (class () {}) {}' }
         let(:expected) do
-          {
-            :phrase => {
-              :class_block => {
-                :class => 'class',
-                :arguments => [
-                  {
-                    :phrase => {
-                      :class_block => {
-                        :class => 'class',
-                        :arguments => [],
-                        :body => []
+          [
+            {
+              :phrase => {
+                :class_block => {
+                  :class => 'class',
+                  :arguments => [
+                    {
+                      :phrase => {
+                        :class_block => {
+                          :class => 'class',
+                          :arguments => [],
+                          :body => []
+                        }
                       }
                     }
-                  }
-                ],
-                :body => []
+                  ],
+                  :body => []
+                }
               }
             }
-          }
+          ]
         end
       end
     end
@@ -343,163 +359,177 @@ describe Rip::Compiler::Parser do
           RIP
         end
         let(:expected) do
-          {
-            :phrase => {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :phrase => { :reference => 'true' } },
-                  :body => [
-                    { :comment => ' comment' }
-                  ]
+          [
+            {
+              :phrase => {
+                :block_sequence => {
+                  :if_block => {
+                    :if => 'if',
+                    :argument => { :phrase => { :reference => 'true' } },
+                    :body => [
+                      { :comment => ' comment' }
+                    ]
+                  }
                 }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'references inside block body' do
         let(:rip) { 'if (true) { name }' }
         let(:expected) do
-          {
-            :phrase => {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :phrase => { :reference => 'true' } },
-                  :body => [
-                    { :phrase => { :reference => 'name' } }
-                  ]
+          [
+            {
+              :phrase => {
+                :block_sequence => {
+                  :if_block => {
+                    :if => 'if',
+                    :argument => { :phrase => { :reference => 'true' } },
+                    :body => [
+                      { :phrase => { :reference => 'name' } }
+                    ]
+                  }
                 }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'assignments inside block body' do
         let(:rip) { 'if (true) { x = :y }' }
         let(:expected) do
-          {
-            :phrase => {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :phrase => { :reference => 'true' } },
-                  :body => [
-                    {
-                      :reference_assignment => {
-                        :reference => 'x',
-                        :phrase => { :string => rip_parsed_string('y') }
+          [
+            {
+              :phrase => {
+                :block_sequence => {
+                  :if_block => {
+                    :if => 'if',
+                    :argument => { :phrase => { :reference => 'true' } },
+                    :body => [
+                      {
+                        :reference_assignment => {
+                          :reference => 'x',
+                          :phrase => { :string => rip_parsed_string('y') }
+                        }
                       }
-                    }
-                  ]
+                    ]
+                  }
                 }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'invocations inside block body' do
         let(:rip) { 'if (true) { run!() }' }
         let(:expected) do
-          {
-            :phrase => {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :phrase => { :reference => 'true' } },
-                  :body => [
-                    {
-                      :phrase => [
-                        { :reference => 'run!' },
-                        { :regular_invocation => { :arguments => [] } }
-                      ]
-                    }
-                  ]
+          [
+            {
+              :phrase => {
+                :block_sequence => {
+                  :if_block => {
+                    :if => 'if',
+                    :argument => { :phrase => { :reference => 'true' } },
+                    :body => [
+                      {
+                        :phrase => [
+                          { :reference => 'run!' },
+                          { :regular_invocation => { :arguments => [] } }
+                        ]
+                      }
+                    ]
+                  }
                 }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'operator invocations inside block body' do
         let(:rip) { 'if (true) { steam will :rise }' }
         let(:expected) do
-          {
-            :phrase => {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :phrase => { :reference => 'true' } },
-                  :body => [
-                    {
-                      :phrase => [
-                        { :reference => 'steam' },
-                        {
-                          :operator_invocation => {
-                            :operator => { :reference => 'will' },
-                            :argument => { :phrase => { :string => rip_parsed_string('rise') } }
+          [
+            {
+              :phrase => {
+                :block_sequence => {
+                  :if_block => {
+                    :if => 'if',
+                    :argument => { :phrase => { :reference => 'true' } },
+                    :body => [
+                      {
+                        :phrase => [
+                          { :reference => 'steam' },
+                          {
+                            :operator_invocation => {
+                              :operator => { :reference => 'will' },
+                              :argument => { :phrase => { :string => rip_parsed_string('rise') } }
+                            }
                           }
-                        }
-                      ]
-                    }
-                  ]
+                        ]
+                      }
+                    ]
+                  }
                 }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'literals inside block body' do
         let(:rip) { 'if (true) { `3 }' }
         let(:expected) do
-          {
-            :phrase => {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :phrase => { :reference => 'true' } },
-                  :body => [
-                    { :phrase => { :character => '3' } }
-                  ]
+          [
+            {
+              :phrase => {
+                :block_sequence => {
+                  :if_block => {
+                    :if => 'if',
+                    :argument => { :phrase => { :reference => 'true' } },
+                    :body => [
+                      { :phrase => { :character => '3' } }
+                    ]
+                  }
                 }
               }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'blocks inside block body' do
         let(:rip) { 'if (true) { unless (false) { } }' }
         let(:expected) do
-          {
-            :phrase => {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :phrase => { :reference => 'true' } },
-                  :body => [
-                    {
-                      :phrase => {
-                        :block_sequence => {
-                          :unless_block => {
-                            :unless => 'unless',
-                            :argument => { :phrase => { :reference => 'false' } },
-                            :body => []
+          [
+            {
+              :phrase => {
+                :block_sequence => {
+                  :if_block => {
+                    :if => 'if',
+                    :argument => { :phrase => { :reference => 'true' } },
+                    :body => [
+                      {
+                        :phrase => {
+                          :block_sequence => {
+                            :unless_block => {
+                              :unless => 'unless',
+                              :argument => { :phrase => { :reference => 'false' } },
+                              :body => []
+                            }
                           }
                         }
                       }
-                    }
-                  ]
+                    ]
+                  }
                 }
               }
             }
-          }
+          ]
         end
       end
     end
@@ -507,35 +537,41 @@ describe Rip::Compiler::Parser do
     recognizes_as_expected 'keyword' do
       let(:rip) { 'return;' }
       let(:expected) do
-        {
-          :keyword => { :return => 'return' }
-        }
+        [
+          {
+            :keyword => { :return => 'return' }
+          }
+        ]
       end
     end
 
     recognizes_as_expected 'keyword followed by phrase' do
       let(:rip) { 'exit 0' }
       let(:expected) do
-        {
-          :keyword => { :exit => 'exit' },
-          :payload => {
-            :phrase => { :integer => '0' }
+        [
+          {
+            :keyword => { :exit => 'exit' },
+            :payload => {
+              :phrase => { :integer => '0' }
+            }
           }
-        }
+        ]
       end
     end
 
     recognizes_as_expected 'keyword followed by parenthesis around phrase' do
       let(:rip) { 'exit (0)' }
       let(:expected) do
-        {
-          :keyword => { :exit => 'exit' },
-          :payload => {
-            :phrase => {
-              :phrase => { :integer => '0' }
+        [
+          {
+            :keyword => { :exit => 'exit' },
+            :payload => {
+              :phrase => {
+                :phrase => { :integer => '0' }
+              }
             }
           }
-        }
+        ]
       end
     end
 
@@ -543,98 +579,110 @@ describe Rip::Compiler::Parser do
       recognizes_as_expected 'lambda literal invocation' do
         let(:rip) { '-> () {}()' }
         let(:expected) do
-          {
-            :phrase => [
-              {
-                :lambda_block => {
-                  :dash_rocket => '->',
-                  :parameters => '()',
-                  :body => []
-                }
-              },
-              :regular_invocation => { :arguments => [] }
-            ]
-          }
+          [
+            {
+              :phrase => [
+                {
+                  :lambda_block => {
+                    :dash_rocket => '->',
+                    :parameters => '()',
+                    :body => []
+                  }
+                },
+                :regular_invocation => { :arguments => [] }
+              ]
+            }
+          ]
         end
       end
 
       recognizes_as_expected 'lambda reference invocation' do
         let(:rip) { 'full_name()' }
         let(:expected) do
-          {
-            :phrase => [
-              { :reference => 'full_name' },
-              { :regular_invocation => { :arguments => [] } }
-            ]
-          }
+          [
+            {
+              :phrase => [
+                { :reference => 'full_name' },
+                { :regular_invocation => { :arguments => [] } }
+              ]
+            }
+          ]
         end
       end
 
       recognizes_as_expected 'lambda reference invocation arguments' do
         let(:rip) { 'full_name(:Thomas, :Ingram)' }
         let(:expected) do
-          {
-            :phrase => [
-              { :reference => 'full_name' },
-              {
-                :regular_invocation => {
-                  :arguments => [
-                    { :phrase => { :string => rip_parsed_string('Thomas') } },
-                    { :phrase => { :string => rip_parsed_string('Ingram') } }
-                  ]
+          [
+            {
+              :phrase => [
+                { :reference => 'full_name' },
+                {
+                  :regular_invocation => {
+                    :arguments => [
+                      { :phrase => { :string => rip_parsed_string('Thomas') } },
+                      { :phrase => { :string => rip_parsed_string('Ingram') } }
+                    ]
+                  }
                 }
-              }
-            ]
-          }
+              ]
+            }
+          ]
         end
       end
 
       recognizes_as_expected 'index invocation' do
         let(:rip) { 'list[0]' }
         let(:expected) do
-          {
-            :phrase => [
-              { :reference => 'list' },
-              {
-                :index_invocation => {
-                  :open => '[',
-                  :arguments => [
-                    { :phrase => { :integer => '0' } }
-                  ],
-                  :close => ']'
+          [
+            {
+              :phrase => [
+                { :reference => 'list' },
+                {
+                  :index_invocation => {
+                    :open => '[',
+                    :arguments => [
+                      { :phrase => { :integer => '0' } }
+                    ],
+                    :close => ']'
+                  }
                 }
-              }
-            ]
-          }
+              ]
+            }
+          ]
         end
       end
 
       recognizes_as_expected 'operator invocation' do
         let(:rip) { '2 + 2' }
         let(:expected) do
-          {
-            :phrase => [
-              { :integer => '2' },
-              {
-                :operator_invocation => {
-                  :operator => { :reference => '+' },
-                  :argument => { :phrase => { :integer => '2' } }
+          [
+            {
+              :phrase => [
+                { :integer => '2' },
+                {
+                  :operator_invocation => {
+                    :operator => { :reference => '+' },
+                    :argument => { :phrase => { :integer => '2' } }
+                  }
                 }
-              }
-            ]
-          }
+              ]
+            }
+          ]
         end
       end
 
       recognizes_as_expected 'assignment as an operator invocation' do
         let(:rip) { 'favorite_language = :rip' }
         let(:expected) do
-          {
-            :reference_assignment => {
-              :reference => 'favorite_language',
-              :phrase => { :string => rip_parsed_string('rip') }
+          [
+            {
+              :reference_assignment => {
+                :reference => 'favorite_language',
+                :phrase => { :string => rip_parsed_string('rip') }
+              }
             }
-          }
+          ]
         end
       end
     end
@@ -643,68 +691,72 @@ describe Rip::Compiler::Parser do
       recognizes_as_expected 'anything surrounded by parenthesis' do
         let(:rip) { '(0)' }
         let(:expected) do
-          { :phrase => { :phrase => { :integer => '0' } } }
+          [
+            { :phrase => { :phrase => { :integer => '0' } } }
+          ]
         end
       end
 
       recognizes_as_expected 'anything surrounded by parenthesis with crazy nesting' do
         let(:rip) { '((((((l((1 + (((2 - 3)))))))))))' }
         let(:expected) do
-          {
-            :phrase=> {
+          [
+            {
               :phrase=> {
                 :phrase=> {
                   :phrase=> {
                     :phrase=> {
                       :phrase=> {
-                        :phrase=> [
-                          {:reference=>"l"},
-                          {
-                            :regular_invocation=> {
-                              :arguments=> [
-                                {
-                                  :phrase=> {
-                                    :phrase=> [
-                                      {:integer=>"1"},
-                                      {
-                                        :operator_invocation=> {
-                                          :operator=>{:reference=>"+"},
-                                          :argument=> {
-                                            :phrase=> {
+                        :phrase=> {
+                          :phrase=> [
+                            {:reference=>"l"},
+                            {
+                              :regular_invocation=> {
+                                :arguments=> [
+                                  {
+                                    :phrase=> {
+                                      :phrase=> [
+                                        {:integer=>"1"},
+                                        {
+                                          :operator_invocation=> {
+                                            :operator=>{:reference=>"+"},
+                                            :argument=> {
                                               :phrase=> {
                                                 :phrase=> {
-                                                  :phrase=> [
-                                                    {:integer=>"2"},
-                                                    {
-                                                      :operator_invocation=>
+                                                  :phrase=> {
+                                                    :phrase=> [
+                                                      {:integer=>"2"},
                                                       {
-                                                        :operator=>{:reference=>"-"},
-                                                        :argument=> {
-                                                          :phrase=> {:integer=> "3"}
+                                                        :operator_invocation=>
+                                                        {
+                                                          :operator=>{:reference=>"-"},
+                                                          :argument=> {
+                                                            :phrase=> {:integer=> "3"}
+                                                          }
                                                         }
                                                       }
-                                                    }
-                                                  ]
+                                                    ]
+                                                  }
                                                 }
                                               }
                                             }
                                           }
                                         }
-                                      }
-                                    ]
+                                      ]
+                                    }
                                   }
-                                }
-                              ]
+                                ]
+                              }
                             }
-                          }
-                        ]
+                          ]
+                        }
                       }
                     }
                   }
                 }
               }
             }
-          }
+          ]
         end
       end
     end
@@ -713,68 +765,74 @@ describe Rip::Compiler::Parser do
       recognizes_as_expected 'chaining with properies and invocations' do
         let(:rip) { '0.one().two.three()' }
         let(:expected) do
-          {
-            :phrase => [
-              { :integer => '0'},
-              { :property_name => { :reference => 'one' } },
-              { :regular_invocation => { :arguments => [] } },
-              { :property_name => { :reference => 'two' } },
-              { :property_name => { :reference => 'three' } },
-              { :regular_invocation => { :arguments=> [] } }
-            ]
-          }
+          [
+            {
+              :phrase => [
+                { :integer => '0'},
+                { :property_name => { :reference => 'one' } },
+                { :regular_invocation => { :arguments => [] } },
+                { :property_name => { :reference => 'two' } },
+                { :property_name => { :reference => 'three' } },
+                { :regular_invocation => { :arguments=> [] } }
+              ]
+            }
+          ]
         end
       end
 
       recognizes_as_expected 'chaining off opererators' do
         let(:rip) { '(1 - 2).zero?()' }
         let(:expected) do
-          {
-            :phrase => [
-              {
-                :phrase => [
-                  { :integer => '1' },
-                  {
-                    :operator_invocation => {
-                      :operator => { :reference => '-' },
-                      :argument => { :phrase => { :integer => '2' } }
+          [
+            {
+              :phrase => [
+                {
+                  :phrase => [
+                    { :integer => '1' },
+                    {
+                      :operator_invocation => {
+                        :operator => { :reference => '-' },
+                        :argument => { :phrase => { :integer => '2' } }
+                      }
                     }
-                  }
-                ]
-              },
-              { :property_name => {:reference => 'zero?'} },
-              { :regular_invocation => { :arguments => [] } }
-            ]
-          }
+                  ]
+                },
+                { :property_name => {:reference => 'zero?'} },
+                { :regular_invocation => { :arguments => [] } }
+              ]
+            }
+          ]
         end
       end
 
       recognizes_as_expected 'chaining several opererators' do
         let(:rip) { '1 + 2 + 3 + 4' }
         let(:expected) do
-          {
-            :phrase => [
-              { :integer => '1' },
-              {
-                :operator_invocation => {
-                  :operator => { :reference => '+' },
-                  :argument => { :phrase => [
-                    { :integer => '2' },
-                    { :operator_invocation => {
-                      :operator => { :reference => '+' },
-                      :argument => { :phrase => [
-                        { :integer => '3' },
-                        { :operator_invocation => {
-                          :operator => { :reference => '+' },
-                          :argument => { :phrase => { :integer => '4' }}
-                        }}
-                      ]}
-                    }}
-                  ]}
+          [
+            {
+              :phrase => [
+                { :integer => '1' },
+                {
+                  :operator_invocation => {
+                    :operator => { :reference => '+' },
+                    :argument => { :phrase => [
+                      { :integer => '2' },
+                      { :operator_invocation => {
+                        :operator => { :reference => '+' },
+                        :argument => { :phrase => [
+                          { :integer => '3' },
+                          { :operator_invocation => {
+                            :operator => { :reference => '+' },
+                            :argument => { :phrase => { :integer => '4' }}
+                          }}
+                        ]}
+                      }}
+                    ]}
+                  }
                 }
-              }
-            ]
-          }
+              ]
+            }
+          ]
         end
       end
     end
@@ -783,117 +841,139 @@ describe Rip::Compiler::Parser do
       recognizes_as_expected 'integer' do
         let(:rip) { '42' }
         let(:expected) do
-          { :phrase => { :integer => '42' } }
+          [
+            { :phrase => { :integer => '42' } }
+          ]
         end
       end
 
       recognizes_as_expected 'decimal' do
         let(:rip) { '4.2' }
         let(:expected) do
-          { :phrase => { :decimal => '4.2' } }
+          [
+            { :phrase => { :decimal => '4.2' } }
+          ]
         end
       end
 
       recognizes_as_expected 'negative number' do
         let(:rip) { '-3' }
         let(:expected) do
-          { :phrase => { :sign => '-', :integer => '3' } }
+          [
+            { :phrase => { :sign => '-', :integer => '3' } }
+          ]
         end
       end
 
       recognizes_as_expected 'large number' do
         let(:rip) { '123_456_789' }
         let(:expected) do
-          { :phrase => { :integer => '123_456_789' } }
+          [
+            { :phrase => { :integer => '123_456_789' } }
+          ]
         end
       end
 
       recognizes_as_expected 'regular character' do
         let(:rip) { '`9' }
         let(:expected) do
-          { :phrase => { :character => '9' } }
+          [
+            { :phrase => { :character => '9' } }
+          ]
         end
       end
 
       recognizes_as_expected 'escaped character' do
         let(:rip) { '`\n' }
         let(:expected) do
-          { :phrase => { :character => { :escaped_any => 'n' } } }
+          [
+            { :phrase => { :character => { :escaped_any => 'n' } } }
+          ]
         end
       end
 
       recognizes_as_expected 'symbol string' do
         let(:rip) { ':0' }
         let(:expected) do
-          {
-            :phrase => {
-              :string => [
-                { :raw_string => '0' }
-              ]
+          [
+            {
+              :phrase => {
+                :string => [
+                  { :raw_string => '0' }
+                ]
+              }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'symbol string with escape' do
         let(:rip) { ':on\e' }
         let(:expected) do
-          {
-            :phrase => {
-              :string => [
-                { :raw_string=>'o' },
-                { :raw_string => 'n' },
-                { :escaped_any => 'e' }
-              ]
+          [
+            {
+              :phrase => {
+                :string => [
+                  { :raw_string=>'o' },
+                  { :raw_string => 'n' },
+                  { :escaped_any => 'e' }
+                ]
+              }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'single-quoted string' do
         let(:rip) { '\'two\'' }
         let(:expected) do
-          {
-            :phrase => {
-              :string => [
-                { :raw_string => 't' },
-                { :raw_string => 'w' },
-                { :raw_string => 'o' }
-              ]
+          [
+            {
+              :phrase => {
+                :string => [
+                  { :raw_string => 't' },
+                  { :raw_string => 'w' },
+                  { :raw_string => 'o' }
+                ]
+              }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'double-quoted string' do
         let(:rip) { '"three"' }
         let(:expected) do
-          {
-            :phrase => {
-              :string => [
-                { :raw_string => 't' },
-                { :raw_string => 'h' },
-                { :raw_string => 'r' },
-                { :raw_string => 'e' },
-                { :raw_string => 'e' }
-              ]
+          [
+            {
+              :phrase => {
+                :string => [
+                  { :raw_string => 't' },
+                  { :raw_string => 'h' },
+                  { :raw_string => 'r' },
+                  { :raw_string => 'e' },
+                  { :raw_string => 'e' }
+                ]
+              }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'double-quoted string with interpolation' do
         let(:rip) { '"hello, #{world}"' }
         let(:expected) do
-          {
-            :phrase => {
-              :string => rip_parsed_string('hello, ') + [{ :interpolation => [
-                {
-                  :phrase => { :reference => 'world' }
-                }
-              ] }]
+          [
+            {
+              :phrase => {
+                :string => rip_parsed_string('hello, ') + [{ :interpolation => [
+                  {
+                    :phrase => { :reference => 'world' }
+                  }
+                ] }]
+              }
             }
-          }
+          ]
         end
       end
 
@@ -906,11 +986,13 @@ describe Rip::Compiler::Parser do
       #     RIP
       #   end
       #   let(:expected) do
-      #     {
-      #       :here_doc_start => 'HERE_DOC',
-      #       :string => rip_parsed_string("here docs are good for multi-line strings\n"),
-      #       :here_doc_end => 'HERE_DOC'
-      #     }
+      #     [
+      #       {
+      #         :here_doc_start => 'HERE_DOC',
+      #         :string => rip_parsed_string("here docs are good for multi-line strings\n"),
+      #         :here_doc_end => 'HERE_DOC'
+      #       }
+      #     ]
       #   end
       # end
 
@@ -923,48 +1005,54 @@ describe Rip::Compiler::Parser do
       #     RIP
       #   end
       #   let(:expected) do
-      #     {
-      #       :here_doc_start => 'HERE_DOC',
-      #       :string => rip_parsed_string('here docs are good for multi-line ') + [{ :interpolation => [{ :reference => 'strings' }] }] + rip_parsed_string("\n")
-      #       :here_doc_end => 'HERE_DOC'
-      #     }
+      #     [
+      #       {
+      #         :here_doc_start => 'HERE_DOC',
+      #         :string => rip_parsed_string('here docs are good for multi-line ') + [{ :interpolation => [{ :reference => 'strings' }] }] + rip_parsed_string("\n")
+      #         :here_doc_end => 'HERE_DOC'
+      #       }
+      #     ]
       #   end
       # end
 
       recognizes_as_expected 'regular expression' do
         let(:rip) { '/hello/' }
         let(:expected) do
-          {
-            :phrase => {
-              :regex => [
-                { :raw_regex => 'h' },
-                { :raw_regex => 'e' },
-                { :raw_regex => 'l' },
-                { :raw_regex => 'l' },
-                { :raw_regex => 'o' }
-              ]
+          [
+            {
+              :phrase => {
+                :regex => [
+                  { :raw_regex => 'h' },
+                  { :raw_regex => 'e' },
+                  { :raw_regex => 'l' },
+                  { :raw_regex => 'l' },
+                  { :raw_regex => 'o' }
+                ]
+              }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'regular expression with interpolation' do
         let(:rip) { '/he#{ll}o/' }
         let(:expected) do
-          {
-            :phrase => {
-              :regex => [
-                { :raw_regex => 'h' },
-                { :raw_regex => 'e' },
-                { :interpolation => [
-                  {
-                    :phrase => { :reference => 'll' }
-                  }
-                ] },
-                { :raw_regex => 'o' }
-              ]
+          [
+            {
+              :phrase => {
+                :regex => [
+                  { :raw_regex => 'h' },
+                  { :raw_regex => 'e' },
+                  { :interpolation => [
+                    {
+                      :phrase => { :reference => 'll' }
+                    }
+                  ] },
+                  { :raw_regex => 'o' }
+                ]
+              }
             }
-          }
+          ]
         end
       end
     end
@@ -973,57 +1061,65 @@ describe Rip::Compiler::Parser do
       recognizes_as_expected 'key-value pairs' do
         let(:rip) { '5: \'five\'' }
         let(:expected) do
-          {
-            :phrase => [
-              { :integer => '5' },
-              {
-                :key_value_pair => {
-                  :value => { :phrase => { :string => rip_parsed_string('five') } }
+          [
+            {
+              :phrase => [
+                { :integer => '5' },
+                {
+                  :key_value_pair => {
+                    :value => { :phrase => { :string => rip_parsed_string('five') } }
+                  }
                 }
-              }
-            ]
-          }
+              ]
+            }
+          ]
         end
       end
 
       recognizes_as_expected 'ranges' do
         let(:rip) { '1..3' }
         let(:expected) do
-          {
-            :phrase => [
-              { :integer => '1' },
-              {
-                :range => {
-                  :end => { :phrase => { :integer => '3' } },
-                  :exclusivity => nil
+          [
+            {
+              :phrase => [
+                { :integer => '1' },
+                {
+                  :range => {
+                    :end => { :phrase => { :integer => '3' } },
+                    :exclusivity => nil
+                  }
                 }
-              }
-            ]
-          }
+              ]
+            }
+          ]
         end
       end
 
       recognizes_as_expected 'exclusive ranges' do
         let(:rip) { '1...age' }
         let(:expected) do
-          {
-            :phrase => [
-              { :integer => '1' },
-              {
-                :range => {
-                  :end => { :phrase => { :reference => 'age' } },
-                  :exclusivity => '.'
+          [
+            {
+              :phrase => [
+                { :integer => '1' },
+                {
+                  :range => {
+                    :end => { :phrase => { :reference => 'age' } },
+                    :exclusivity => '.'
+                  }
                 }
-              }
-            ]
-          }
+              ]
+            }
+          ]
         end
       end
 
       recognizes_as_expected 'empty map' do
         let(:rip) { '{}' }
         let(:expected) do
-          { :phrase => { :map => [] } }
+          [
+            { :phrase => { :map => [] } }
+          ]
         end
       end
 
@@ -1037,39 +1133,43 @@ describe Rip::Compiler::Parser do
           RIP
         end
         let(:expected) do
-          {
-            :phrase => {
-              :map => [
-                {
-                  :phrase => [
-                    { :string => rip_parsed_string('age') },
-                    {
-                      :key_value_pair => {
-                        :value => { :phrase => { :integer => '31' } }
+          [
+            {
+              :phrase => {
+                :map => [
+                  {
+                    :phrase => [
+                      { :string => rip_parsed_string('age') },
+                      {
+                        :key_value_pair => {
+                          :value => { :phrase => { :integer => '31' } }
+                        }
                       }
-                    }
-                  ]
-                },
-                {
-                  :phrase => [
-                    { :string => rip_parsed_string('name') },
-                    {
-                      :key_value_pair => {
-                        :value => { :phrase => { :string => rip_parsed_string('Thomas') } }
+                    ]
+                  },
+                  {
+                    :phrase => [
+                      { :string => rip_parsed_string('name') },
+                      {
+                        :key_value_pair => {
+                          :value => { :phrase => { :string => rip_parsed_string('Thomas') } }
+                        }
                       }
-                    }
-                  ]
-                }
-              ]
+                    ]
+                  }
+                ]
+              }
             }
-          }
+          ]
         end
       end
 
       recognizes_as_expected 'empty list' do
         let(:rip) { '[]' }
         let(:expected) do
-          { :phrase => { :list => [] } }
+          [
+            { :phrase => { :list => [] } }
+          ]
         end
       end
 
@@ -1083,14 +1183,16 @@ describe Rip::Compiler::Parser do
           RIP
         end
         let(:expected) do
-          {
-            :phrase => {
-              :list => [
-                { :phrase => { :integer => '31' } },
-                { :phrase => { :string => rip_parsed_string('Thomas') } }
-              ]
+          [
+            {
+              :phrase => {
+                :list => [
+                  { :phrase => { :integer => '31' } },
+                  { :phrase => { :string => rip_parsed_string('Thomas') } }
+                ]
+              }
             }
-          }
+          ]
         end
       end
     end
