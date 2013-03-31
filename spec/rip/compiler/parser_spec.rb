@@ -47,7 +47,7 @@ describe Rip::Compiler::Parser do
     end
   end
 
-  describe '#parse' do
+  recognizes_as_expected 'several statements together' do
     let(:rip) do
       strip_heredoc(<<-RIP)
         if (true) {
@@ -60,9 +60,8 @@ describe Rip::Compiler::Parser do
         }
       RIP
     end
-
-    it 'recognizes several statements together' do
-      expected = [
+    let(:expected) do
+      [
         {
           :phrase => {
             :block_sequence => {
@@ -109,8 +108,6 @@ describe Rip::Compiler::Parser do
           }
         }
       ]
-
-      expect(parser(rip)).to parse_as(expected)
     end
   end
 
