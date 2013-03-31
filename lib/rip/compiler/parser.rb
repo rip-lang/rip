@@ -3,6 +3,19 @@ require 'pathname'
 
 module Rip::Compiler
   class Parser < Parslet::Parser
+    attr_reader :origin
+    attr_reader :source_code
+
+    def initialize(origin, source_code)
+      @origin = origin
+      @source_code = source_code
+    end
+
+    def parse_tree
+      parse(source_code)
+    end
+
+
     root(:lines)
 
 
@@ -62,7 +75,7 @@ module Rip::Compiler
 
     rule(:expression_base) { (keyword.as(:keyword) >> spaces >> (reference_assignment | phrase).as(:payload)) | keyword.as(:keyword) | reference_assignment | phrase }
 
-    rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) }.inject(:|) }
+    rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) >> reference.absent? }.inject(:|) }
 
 
     rule(:reference_assignment) { (reference >> whitespaces? >> equals >> whitespaces? >> phrase).as(:reference_assignment) }
@@ -72,7 +85,7 @@ module Rip::Compiler
 
     rule(:regular_invocation) { multiple_arguments.as(:regular_invocation) }
 
-    rule(:index_invocation) { (bracket_open >> csv(phrase).as(:arguments) >> bracket_close).as(:index_invocation) }
+    rule(:index_invocation) { (bracket_open.as(:open) >> csv(phrase).as(:arguments) >> bracket_close.as(:close)).as(:index_invocation) }
 
     rule(:key_value_pair) { (whitespaces? >> colon >> whitespaces? >> phrase.as(:value)).as(:key_value_pair) }
 
@@ -123,6 +136,7 @@ module Rip::Compiler
     rule(:block_body) { whitespaces? >> brace_open >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }
     rule(:block_body_switch) { (case_block.repeat(1) >> whitespaces? >> else_block.maybe).as(:body) }
 
+    # https://github.com/kschiess/parslet/blob/master/example/capture.rb
     # TODO literals for heredoc
     # TODO literals for datetime, date, time, version (maybe)
     # TODO literals for unit
