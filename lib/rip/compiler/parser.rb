@@ -16,6 +16,10 @@ module Rip::Compiler
     end
 
     def parse_tree
+      Rip::Compiler::ParseTreeNormalizer.new.apply(raw_parse_tree)
+    end
+
+    def raw_parse_tree
       parse(source_code)
     end
 
