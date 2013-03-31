@@ -6,16 +6,16 @@ RSpec::Matchers.define :parse_as do |expected|
   end
 
   failure_message_for_should do |actual|
-    strip_heredoc(<<-MESSAGE)
-      Expected parse tree to be #{expected}, but was #{@actual} instead. Source was:
-      #{@source_code}
+    <<-MESSAGE
+Expected parse tree to be #{expected}, but was #{@actual} instead. Source was:
+#{@source_code}
     MESSAGE
   end
 
   failure_message_for_should_not do |actual|
-    strip_heredoc(<<-MESSAGE)
-      Expected parse tree to not be #{expected}, but it was. Source was:
-      #{@source_code}
+    <<-MESSAGE
+Expected parse tree to not be #{expected}, but it was. Source was:
+#{@source_code}
     MESSAGE
   end
 end
