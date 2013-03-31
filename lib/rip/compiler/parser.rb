@@ -62,7 +62,7 @@ module Rip::Compiler
 
     rule(:expression_base) { (keyword.as(:keyword) >> spaces >> (reference_assignment | phrase).as(:payload)) | keyword.as(:keyword) | reference_assignment | phrase }
 
-    rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) }.inject(:|) }
+    rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) >> reference.absent? }.inject(:|) }
 
 
     rule(:reference_assignment) { (reference >> whitespaces? >> equals >> whitespaces? >> phrase).as(:reference_assignment) }
