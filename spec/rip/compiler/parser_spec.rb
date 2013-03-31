@@ -60,7 +60,7 @@ describe Rip::Compiler::Parser do
         }
       RIP
     end
-    let(:expected) do
+    let(:expected_raw) do
       [
         {
           :phrase => {
@@ -131,7 +131,7 @@ describe Rip::Compiler::Parser do
         'Kernel',
         'returner'
       ].each do |reference|
-        expect(parser(reference)).to parse_as([ { :phrase => { :reference => reference } } ])
+        expect(parser(reference)).to parse_raw_as([ { :phrase => { :reference => reference } } ])
       end
     end
 
@@ -143,7 +143,7 @@ describe Rip::Compiler::Parser do
         'rip rocks',
         'key:value'
       ].each do |non_reference|
-        expect(parser(non_reference)).to_not parse_as([ { :phrase => { :reference => non_reference } } ])
+        expect(parser(non_reference)).to_not parse_raw_as([ { :phrase => { :reference => non_reference } } ])
       end
     end
   end
@@ -152,7 +152,7 @@ describe Rip::Compiler::Parser do
     context 'block' do
       recognizes_as_expected 'empty block' do
         let(:rip) { 'try {}' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -170,7 +170,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'block with argument' do
         let(:rip) { 'unless (:name) {} else {}' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -193,7 +193,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'block with multiple arguments' do
         let(:rip) { 'class (one, two) {}' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -213,7 +213,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'lambda with multiple required parameters' do
         let(:rip) { '-> (one, two) {}' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -233,7 +233,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'lambda with multiple optional parameters' do
         let(:rip) { '-> (one = 1, two = 2) {}' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -263,7 +263,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'lambda with required parameter and optional parameter' do
         let(:rip) { '=> (platform, name = :rip) {}' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -288,7 +288,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'lambda with multiple required parameter and multiple optional parameter' do
         let(:rip) { '-> (abc, xyz, one = 1, two = 2) {}' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -320,7 +320,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'blocks with block arguments' do
         let(:rip) { 'class (class () {}) {}' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -355,7 +355,7 @@ describe Rip::Compiler::Parser do
           }
           RIP
         end
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -376,7 +376,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'references inside block body' do
         let(:rip) { 'if (true) { name }' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -397,7 +397,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'assignments inside block body' do
         let(:rip) { 'if (true) { x = :y }' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -423,7 +423,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'invocations inside block body' do
         let(:rip) { 'if (true) { run!() }' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -449,7 +449,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'operator invocations inside block body' do
         let(:rip) { 'if (true) { steam will :rise }' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -480,7 +480,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'literals inside block body' do
         let(:rip) { 'if (true) { `3 }' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -501,7 +501,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'blocks inside block body' do
         let(:rip) { 'if (true) { unless (false) { } }' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -533,7 +533,7 @@ describe Rip::Compiler::Parser do
 
     recognizes_as_expected 'keyword' do
       let(:rip) { 'return;' }
-      let(:expected) do
+      let(:expected_raw) do
         [
           {
             :keyword => { :return => 'return' }
@@ -544,7 +544,7 @@ describe Rip::Compiler::Parser do
 
     recognizes_as_expected 'keyword followed by phrase' do
       let(:rip) { 'exit 0' }
-      let(:expected) do
+      let(:expected_raw) do
         [
           {
             :keyword => { :exit => 'exit' },
@@ -558,7 +558,7 @@ describe Rip::Compiler::Parser do
 
     recognizes_as_expected 'keyword followed by parenthesis around phrase' do
       let(:rip) { 'exit (0)' }
-      let(:expected) do
+      let(:expected_raw) do
         [
           {
             :keyword => { :exit => 'exit' },
@@ -575,7 +575,7 @@ describe Rip::Compiler::Parser do
     context 'invoking lambdas' do
       recognizes_as_expected 'lambda literal invocation' do
         let(:rip) { '-> () {}()' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -595,7 +595,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'lambda reference invocation' do
         let(:rip) { 'full_name()' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -609,7 +609,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'lambda reference invocation arguments' do
         let(:rip) { 'full_name(:Thomas, :Ingram)' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -630,7 +630,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'index invocation' do
         let(:rip) { 'list[0]' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -652,7 +652,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'operator invocation' do
         let(:rip) { '2 + 2' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -671,7 +671,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'assignment as an operator invocation' do
         let(:rip) { 'favorite_language = :rip' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :reference_assignment => {
@@ -687,7 +687,7 @@ describe Rip::Compiler::Parser do
     context 'nested parenthesis' do
       recognizes_as_expected 'anything surrounded by parenthesis' do
         let(:rip) { '(0)' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             { :phrase => { :phrase => { :integer => '0' } } }
           ]
@@ -696,7 +696,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'anything surrounded by parenthesis with crazy nesting' do
         let(:rip) { '((((((l((1 + (((2 - 3)))))))))))' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase=> {
@@ -761,7 +761,7 @@ describe Rip::Compiler::Parser do
     context 'property chaining' do
       recognizes_as_expected 'chaining with properies and invocations' do
         let(:rip) { '0.one().two.three()' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -779,7 +779,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'chaining off opererators' do
         let(:rip) { '(1 - 2).zero?()' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -804,7 +804,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'chaining several opererators' do
         let(:rip) { '1 + 2 + 3 + 4' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -837,7 +837,7 @@ describe Rip::Compiler::Parser do
     context 'atomic literals' do
       recognizes_as_expected 'integer' do
         let(:rip) { '42' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             { :phrase => { :integer => '42' } }
           ]
@@ -846,7 +846,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'decimal' do
         let(:rip) { '4.2' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             { :phrase => { :decimal => '4.2' } }
           ]
@@ -855,7 +855,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'negative number' do
         let(:rip) { '-3' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             { :phrase => { :sign => '-', :integer => '3' } }
           ]
@@ -864,7 +864,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'large number' do
         let(:rip) { '123_456_789' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             { :phrase => { :integer => '123_456_789' } }
           ]
@@ -873,7 +873,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'regular character' do
         let(:rip) { '`9' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             { :phrase => { :character => '9' } }
           ]
@@ -882,7 +882,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'escaped character' do
         let(:rip) { '`\n' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             { :phrase => { :character => { :escaped_any => 'n' } } }
           ]
@@ -891,7 +891,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'symbol string' do
         let(:rip) { ':0' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -906,7 +906,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'symbol string with escape' do
         let(:rip) { ':on\e' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -923,7 +923,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'single-quoted string' do
         let(:rip) { '\'two\'' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -940,7 +940,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'double-quoted string' do
         let(:rip) { '"three"' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -959,7 +959,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'double-quoted string with interpolation' do
         let(:rip) { '"hello, #{world}"' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -982,7 +982,7 @@ describe Rip::Compiler::Parser do
       #       HERE_DOC
       #     RIP
       #   end
-      #   let(:expected) do
+      #   let(:expected_raw) do
       #     [
       #       {
       #         :here_doc_start => 'HERE_DOC',
@@ -1001,7 +1001,7 @@ describe Rip::Compiler::Parser do
       #       HERE_DOC
       #     RIP
       #   end
-      #   let(:expected) do
+      #   let(:expected_raw) do
       #     [
       #       {
       #         :here_doc_start => 'HERE_DOC',
@@ -1014,7 +1014,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'regular expression' do
         let(:rip) { '/hello/' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -1033,7 +1033,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'regular expression with interpolation' do
         let(:rip) { '/he#{ll}o/' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -1057,7 +1057,7 @@ describe Rip::Compiler::Parser do
     context 'molecular literals' do
       recognizes_as_expected 'key-value pairs' do
         let(:rip) { '5: \'five\'' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -1075,7 +1075,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'ranges' do
         let(:rip) { '1..3' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -1094,7 +1094,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'exclusive ranges' do
         let(:rip) { '1...age' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => [
@@ -1113,7 +1113,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'empty map' do
         let(:rip) { '{}' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             { :phrase => { :map => [] } }
           ]
@@ -1129,7 +1129,7 @@ describe Rip::Compiler::Parser do
             }
           RIP
         end
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
@@ -1163,7 +1163,7 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'empty list' do
         let(:rip) { '[]' }
-        let(:expected) do
+        let(:expected_raw) do
           [
             { :phrase => { :list => [] } }
           ]
@@ -1179,7 +1179,7 @@ describe Rip::Compiler::Parser do
             ]
           RIP
         end
-        let(:expected) do
+        let(:expected_raw) do
           [
             {
               :phrase => {
