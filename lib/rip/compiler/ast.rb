@@ -1,21 +1,17 @@
-module Rip::Compiler
-  class AST
-    attr_reader :tree
+require 'parslet'
 
-    def initialize(parse_tree)
-      parse = if parse_tree.empty?
-        [Rip::Nodes::Nil]
-      else
-        parse_tree
-      end
-      @tree = Rip::Compiler::Transform.new.apply(parse)
+module Rip::Compiler
+  class AST < Parslet::Transform
+    attr_reader :origin
+
+    def initialize(origin)
+      @origin = origin
     end
 
-    # TODO recurse tree
-    def evaluate
-      tree.each do |node|
-        puts node.inspect
-      end
+    protected
+
+    def location_for(slice)
+      slice.line_and_column
     end
   end
 end
