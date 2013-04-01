@@ -36,12 +36,12 @@ Usage:
       wip :do
     end
 
-    desc 'version', 'Print the version and exit'
+    desc 'version', 'Print the version'
     def version
       puts Rip::Version.to_s(options[:verbose])
     end
 
-    desc 'debug [file]', 'Print the compiler information for [file] (or standard in) and exit'
+    desc 'debug [file]', 'Print the compiler information for [file] (or standard in)'
     option :tree, :required => true, :aliases => ['-t'], :desc => 'Type of tree to output. Must be one of `parse`, `syntax`'
     def debug(file = nil)
       valid_trees = Hash.new do |valid, unknown_tree|
