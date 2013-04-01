@@ -11,6 +11,10 @@ module Rip::Compiler
       @source_code = source_code
     end
 
+    def syntax_tree
+      Rip::Compiler::AST.new(origin).apply(parse_tree)
+    end
+
     def parse_tree
       parse(source_code)
     end

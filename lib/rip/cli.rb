@@ -9,13 +9,13 @@ module Rip
 
     map '--version' => :version
 
-    desc '<file>', 'Read and execute <file>'
+    desc '[file]', 'Read and execute [file] (or standard in)'
     def execute(file = nil)
       wip :execute
-      file ? make_syntax_tree(file).evaluate : repl
+      puts parse_tree(file).inspect
     end
 
-    desc '[repl]', 'Enter read, evaluate, print loop'
+    desc 'repl', 'Enter read, evaluate, print loop'
     def repl
       wip :repl
     end
@@ -36,31 +36,49 @@ Usage:
       wip :do
     end
 
-    desc 'version', 'Print the version and exit'
+    desc 'version', 'Print the version'
     def version
       puts Rip::Version.to_s(options[:verbose])
     end
 
-    desc 'parse_tree <file>', 'Print the parse tree for <file> and exit'
-    def parse_tree(file)
-      wip :parse_tree
-      puts make_parse_tree(file).inspect
-    end
+    desc 'debug [file]', 'Print the compiler information for [file] (or standard in)'
+    option :tree, :required => true, :aliases => ['-t'], :desc => 'Type of tree to output. Must be one of `parse`, `syntax`'
+    def debug(file = nil)
+      valid_trees = Hash.new do |valid, unknown_tree|
+        warn "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
+        exit 1
+      end.merge({
+        'parse'  => :parse_tree,
+        'syntax' => :syntaxt_tree,
+      })
 
-    desc 'syntax_tree <file>', 'Print the syntax tree for <file> and exit'
-    def syntax_tree(file)
-      wip :syntax_tree
-      puts make_syntax_tree(file).inspect
+      puts send(valid_trees[options[:tree]], file).inspect
     end
 
     protected
 
-    def make_parse_tree(filename)
-      Rip::Compiler::Parser.new.parse_file(Rip.project_path.join(filename).expand_path)
+    def load_source_code(origin)
+      resolve_origin(origin).read
     end
 
-    def make_syntax_tree(filename)
-      Rip::Compiler::AST.new(make_parse_tree(filename))
+    def resolve_origin(origin)
+      if origin.nil?
+        STDIN
+      else
+        Rip.project_path.join(origin).expand_path
+      end
+    end
+
+    def parser(origin)
+      Rip::Compiler::Parser.new(resolve_origin(origin), load_source_code(origin))
+    end
+
+    def parse_tree(origin)
+      parser(origin).parse_tree
+    end
+
+    def syntax_tree(origin)
+      parser(origin).syntax_tree
     end
 
     def wip(command)
