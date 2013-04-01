@@ -42,7 +42,7 @@ Usage:
     end
 
     desc 'debug [file]', 'Print the compiler information for [file] (or standard in) and exit'
-    option :tree, :required => true, :desc => 'Type of tree to output. Must be one of `parse`, `syntax`'
+    option :tree, :required => true, :aliases => ['-t'], :desc => 'Type of tree to output. Must be one of `parse`, `syntax`'
     def debug(file = nil)
       valid_trees = Hash.new do |valid, unknown_tree|
         warn "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
