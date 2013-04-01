@@ -9,13 +9,13 @@ module Rip
 
     map '--version' => :version
 
-    desc '<file>', 'Read and execute <file>'
+    desc '[file]', 'Read and execute [file] (or standard in)'
     def execute(file = nil)
       wip :execute
-      file ? make_syntax_tree(file).evaluate : repl
+      puts parse_tree(file).inspect
     end
 
-    desc '[repl]', 'Enter read, evaluate, print loop'
+    desc 'repl', 'Enter read, evaluate, print loop'
     def repl
       wip :repl
     end
