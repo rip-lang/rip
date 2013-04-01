@@ -48,10 +48,8 @@ Usage:
         warn "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
         exit 1
       end.merge({
-        'parse'       => :parse_tree,
-        'parse_tree'  => :parse_tree,
-        'syntax'      => :syntaxt_tree,
-        'syntax_tree' => :syntaxt_tree
+        'parse'  => :parse_tree,
+        'syntax' => :syntaxt_tree,
       })
 
       puts send(valid_trees[options[:tree]], file).inspect
