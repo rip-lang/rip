@@ -41,14 +41,20 @@ Usage:
       puts Rip::Version.to_s(options[:verbose])
     end
 
-    desc 'parse_tree [file]', 'Print the parse tree for [file] (or standard in) and exit'
-    def parse_tree(file = nil)
-      puts make_parse_tree(file).inspect
-    end
+    desc 'debug [file]', 'Print the compiler information for [file] (or standard in) and exit'
+    option :tree, :required => true
+    def debug(file = nil)
+      valid_trees = Hash.new do |valid, unknown_tree|
+        warn "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
+        exit 1
+      end.merge({
+        'parse'       => :parse_tree,
+        'parse_tree'  => :parse_tree,
+        'syntax'      => :syntaxt_tree,
+        'syntax_tree' => :syntaxt_tree
+      })
 
-    desc 'syntax_tree [file]', 'Print the syntax tree for [file] (or standard in) and exit'
-    def syntax_tree(file = nil)
-      puts make_syntax_tree(file).inspect
+      puts send(valid_trees[options[:tree]], file).inspect
     end
 
     protected
@@ -65,16 +71,16 @@ Usage:
       end
     end
 
-    def make_parser(origin)
+    def parser(origin)
       Rip::Compiler::Parser.new(resolve_origin(origin), load_source_code(origin))
     end
 
-    def make_parse_tree(origin)
-      make_parser(origin).parse_tree
+    def parse_tree(origin)
+      parser(origin).parse_tree
     end
 
-    def make_syntax_tree(origin)
-      make_parser(origin).syntax_tree
+    def syntax_tree(origin)
+      parser(origin).syntax_tree
     end
 
     def wip(command)
