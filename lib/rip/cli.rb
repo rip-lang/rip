@@ -42,12 +42,13 @@ Usage:
     end
 
     desc 'debug [file]', 'Print the compiler information for [file] (or standard in)'
-    option :tree, :required => true, :aliases => ['-t'], :desc => 'Type of tree to output. Must be one of `parse`, `syntax`'
+    option :tree, :required => true, :aliases => ['-t'], :desc => 'Type of tree to output. Must be one of `raw_parse`, `parse`, `syntax`'
     def debug(file = nil)
       valid_trees = Hash.new do |valid, unknown_tree|
         warn "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
         exit 1
       end.merge({
+        'raw_parse'  => :raw_parse_tree,
         'parse'  => :parse_tree,
         'syntax' => :syntax_tree,
       })
@@ -71,6 +72,10 @@ Usage:
 
     def parser(origin)
       Rip::Compiler::Parser.new(resolve_origin(origin), load_source_code(origin))
+    end
+
+    def raw_parse_tree(origin)
+      parser(origin).raw_parse_tree
     end
 
     def parse_tree(origin)
