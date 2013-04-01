@@ -49,7 +49,7 @@ Usage:
         exit 1
       end.merge({
         'parse'  => :parse_tree,
-        'syntax' => :syntaxt_tree,
+        'syntax' => :syntax_tree,
       })
 
       puts send(valid_trees[options[:tree]], file).inspect
