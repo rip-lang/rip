@@ -16,6 +16,10 @@ module Rip::Compiler
     end
 
     def parse_tree
+      Rip::Compiler::ParseTreeNormalizer.new.apply(raw_parse_tree)
+    end
+
+    def raw_parse_tree
       parse(source_code)
     end
 
@@ -149,7 +153,7 @@ module Rip::Compiler
 
     # WARNING order is important here: decimal must be before integer or the integral part of
     #   a decimal could be interpreted as a integer followed by a decimal starting with a dot
-    rule(:number) { sign.maybe >> (decimal | integer) }
+    rule(:number) { (sign.maybe >> (decimal | integer)).as(:number) }
 
     rule(:decimal) { (digits.maybe >> dot >> digits).as(:decimal) }
     rule(:integer) { digits.as(:integer) }
