@@ -572,6 +572,98 @@ describe Rip::Compiler::Parser do
       end
     end
 
+    context 'multiple expressions' do
+      recognizes_as_expected 'terminates expressions properly' do
+        let(:rip) do
+          <<-RIP
+            one
+            two
+            three
+          RIP
+        end
+        let(:expected_raw) do
+          [
+            { :phrase => { :reference => 'one' } },
+            { :phrase => { :reference => 'two' } },
+            { :phrase => { :reference => 'three' } }
+          ]
+        end
+        let(:expected) do
+          [
+            { :reference => 'one' },
+            { :reference => 'two' },
+            { :reference => 'three' }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'allows expressions to take more than one line' do
+        let(:rip) do
+          <<-RIP
+            1 +
+              2 -
+              3
+          RIP
+        end
+        let(:expected_raw) do
+          [
+            {
+              :phrase => [
+                { :number => { :integer => '1' } },
+                {
+                  :operator_invocation => {
+                    :operator => { :reference => '+' },
+                    :argument => {
+                      :phrase => [
+                        { :number => { :integer => '2' } },
+                        {
+                          :operator_invocation => {
+                            :operator => { :reference => '-' },
+                            :argument => {
+                              :phrase => { :number => { :integer => '3' } }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :invocation => {
+                :callable => {
+                  :property => {
+                    :object => { :number => { :integer => '1' } },
+                    :property_name => { :reference => '+' }
+                  }
+                },
+                :arguments => [
+                  {
+                    :invocation => {
+                      :callable => {
+                        :property => {
+                          :object => { :number => { :integer => '2' } },
+                          :property_name => { :reference => '-' }
+                        }
+                      },
+                      :arguments => [
+                        { :number => { :integer => '3' } }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        end
+      end
+    end
+
     context 'invoking lambdas' do
       recognizes_as_expected 'lambda literal invocation' do
         let(:rip) { '-> () {}()' }
