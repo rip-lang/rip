@@ -42,16 +42,16 @@ module RSpecHelpers
     Pathname("#{__FILE__}/../fixtures").expand_path
   end
 
-  def new_location(origin, absolute_position, line, position)
-    Rip::Utilities::Location.new(origin, absolute_position, line, position)
+  def new_location(origin, offset, line, column)
+    Rip::Utilities::Location.new(origin, offset, line, column)
   end
 
   def location_for(options = {})
     origin = options[:origin] || :rspec
-    absolute_position = options[:absolute_position] || 0
+    offset = options[:offset] || 0
     line = options[:line] || 1
-    position = options[:position] || 0
-    new_location(origin, absolute_position, line, position)
+    column = options[:column] || 1
+    new_location(origin, offset, line, column)
   end
 
   def parser(source_code)
