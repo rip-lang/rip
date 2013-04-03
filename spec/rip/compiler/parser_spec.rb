@@ -761,14 +761,24 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'assignment as an operator invocation' do
+      recognizes_as_expected 'reference assignment' do
         let(:rip) { 'favorite_language = :rip' }
         let(:expected_raw) do
           [
             {
-              :reference_assignment => {
-                :reference => 'favorite_language',
-                :phrase => { :string => rip_parsed_string('rip') }
+              :assignment => {
+                :lhs => { :reference => 'favorite_language' },
+                :rhs => { :phrase => { :string => rip_parsed_string('rip') } }
+              }
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :assignment => {
+                :lhs => { :reference => 'favorite_language' },
+                :rhs => { :string => rip_parsed_string('rip') }
               }
             }
           ]
