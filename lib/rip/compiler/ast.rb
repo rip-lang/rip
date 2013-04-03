@@ -4,14 +4,18 @@ module Rip::Compiler
   class AST < Parslet::Transform
     attr_reader :origin
 
-    def initialize(origin)
+    def initialize(origin = nil, &block)
       @origin = origin
+      super(&block)
     end
 
-    protected
+    def apply(tree, context = nil)
+      _context = context ? context : {}
+      super(tree, _context.merge(:origin => origin))
+    end
 
-    def location_for(slice)
-      slice.line_and_column
+    def self.location_for(origin, slice)
+      Rip::Utilities::Location.new(origin, slice.offset, *slice.line_and_column)
     end
   end
 end
