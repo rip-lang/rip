@@ -70,12 +70,14 @@ describe Rip::Compiler::Parser do
                 :argument => { :phrase => { :reference => 'true' } },
                 :body => [
                   {
-                    :reference_assignment => {
-                      :reference => 'lambda',
-                      :phrase => {
-                        :lambda_block => {
-                          :dash_rocket => '->',
-                          :body => [ { :comment => ' comment' } ]
+                    :assignment => {
+                      :lhs => { :reference => 'lambda' },
+                      :rhs => {
+                        :phrase => {
+                          :lambda_block => {
+                            :dash_rocket => '->',
+                            :body => [ { :comment => ' comment' } ]
+                          }
                         }
                       }
                     }
@@ -241,15 +243,15 @@ describe Rip::Compiler::Parser do
                   :dash_rocket => '->',
                   :parameters => [
                     {
-                      :reference_assignment => {
-                        :reference => 'one',
-                        :phrase => { :number => { :integer => '1' } }
+                      :assignment => {
+                        :lhs => { :reference => 'one' },
+                        :rhs => { :phrase => { :number => { :integer => '1' } } }
                       }
                     },
                     {
-                      :reference_assignment => {
-                        :reference => 'two',
-                        :phrase => { :number => { :integer => '2' } }
+                      :assignment => {
+                        :lhs => { :reference => 'two' },
+                        :rhs => { :phrase => { :number => { :integer => '2' } } }
                       }
                     }
                   ],
@@ -272,9 +274,9 @@ describe Rip::Compiler::Parser do
                   :parameters => [
                     { :reference => 'platform' },
                     {
-                      :reference_assignment => {
-                        :reference => 'name',
-                        :phrase => { :string => rip_parsed_string('rip') }
+                      :assignment => {
+                        :lhs => { :reference => 'name' },
+                        :rhs => { :phrase => { :string => rip_parsed_string('rip') } }
                       }
                     }
                   ],
@@ -298,15 +300,15 @@ describe Rip::Compiler::Parser do
                     { :reference => 'abc' },
                     { :reference => 'xyz' },
                     {
-                      :reference_assignment => {
-                        :reference => 'one',
-                        :phrase => { :number => { :integer => '1' } }
+                      :assignment => {
+                        :lhs => { :reference => 'one' },
+                        :rhs => { :phrase => { :number => { :integer => '1' } } }
                       }
                     },
                     {
-                      :reference_assignment => {
-                        :reference => 'two',
-                        :phrase => { :number => { :integer => '2' } }
+                      :assignment => {
+                        :lhs => { :reference => 'two' },
+                        :rhs => { :phrase => { :number => { :integer => '2' } } }
                       }
                     }
                   ],
@@ -407,9 +409,9 @@ describe Rip::Compiler::Parser do
                     :argument => { :phrase => { :reference => 'true' } },
                     :body => [
                       {
-                        :reference_assignment => {
-                          :reference => 'x',
-                          :phrase => { :string => rip_parsed_string('y') }
+                        :assignment => {
+                          :lhs => { :reference => 'x' },
+                          :rhs => { :phrase => { :string => rip_parsed_string('y') } }
                         }
                       }
                     ]
