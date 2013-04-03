@@ -52,6 +52,13 @@ module Rip::Compiler
               :exclusivity => part[:range][:exclusivity]
             }
           }
+        when :property_assignment
+          {
+            :assignment => {
+              :lhs => normalize(phrase_base),
+              :rhs => normalize(part[:property_assignment][:rhs])
+            }
+          }
         when :operator_invocation
           {
             :invocation => {

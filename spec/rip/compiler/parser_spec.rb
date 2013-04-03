@@ -786,6 +786,50 @@ describe Rip::Compiler::Parser do
           ]
         end
       end
+
+      recognizes_as_expected 'property assignment' do
+        let(:rip) { 'favorite.language = :rip.lang' }
+        let(:expected_raw) do
+          [
+            {
+              :phrase => [
+                { :reference => 'favorite' },
+                { :property_name => { :reference => 'language' } },
+                {
+                  :property_assignment => {
+                    :rhs => {
+                      :phrase => [
+                        { :string => rip_parsed_string('rip') },
+                        { :property_name => { :reference => 'lang' } }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :assignment => {
+                :lhs => {
+                  :property => {
+                    :object => { :reference => 'favorite' },
+                    :property_name => 'language'
+                  }
+                },
+                :rhs => {
+                  :property => {
+                    :object => { :string => rip_parsed_string('rip') },
+                    :property_name => 'lang'
+                  }
+                }
+              }
+            }
+          ]
+        end
+      end
     end
 
     context 'nested parenthesis' do

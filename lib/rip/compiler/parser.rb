@@ -88,7 +88,7 @@ module Rip::Compiler
 
     rule(:reference_assignment) { (reference.as(:lhs) >> whitespaces? >> equals >> whitespaces? >> phrase.as(:rhs)).as(:assignment) }
 
-    rule(:phrase) { (phrase_base >> (expression_terminator.absent? >> (key_value_pair | range | operator_invocation | regular_invocation | index_invocation | property)).repeat).as(:phrase) }
+    rule(:phrase) { (phrase_base >> (expression_terminator.absent? >> (key_value_pair | range | property_assignment | operator_invocation | regular_invocation | index_invocation | property)).repeat).as(:phrase) }
 
 
     rule(:regular_invocation) { multiple_arguments.as(:regular_invocation) }
@@ -98,6 +98,8 @@ module Rip::Compiler
     rule(:key_value_pair) { (whitespaces? >> colon >> whitespaces? >> phrase.as(:value)).as(:key_value_pair) }
 
     rule(:range) { (whitespaces? >> dot >> dot >> dot.maybe.as(:exclusivity) >> phrase.as(:end)).as(:range) }
+
+    rule(:property_assignment) { (whitespaces >> equals >> whitespaces >> phrase.as(:rhs)).as(:property_assignment) }
 
     rule(:operator_invocation) { (whitespaces >> reference.as(:operator) >> whitespaces >> phrase.as(:argument)).as(:operator_invocation) }
 
