@@ -3,7 +3,7 @@
   :parse_tree => :parse_as
 }.each do |parse_method, matcher|
   RSpec::Matchers.define matcher do |expected|
-    english = parse_method.to_s.sub('_', ' ').capitalize
+    english = parse_method.to_s.gsub('_', ' ').capitalize
 
     match do |parser|
       @source_code = parser.source_code
