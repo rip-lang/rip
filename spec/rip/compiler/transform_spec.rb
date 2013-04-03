@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Rip::Compiler::Transform, :blur do
   describe 'some basics' do
-    let(:empty) { ast('').first }
-    let(:comment) { ast('# this is a comment').first }
+    let(:empty) { syntax_tree('').first }
+    let(:comment) { syntax_tree('# this is a comment').first }
 
     it 'transforms an empty file' do
       expect(empty).to eq(Rip::Nodes::Nil)
@@ -15,14 +15,14 @@ describe Rip::Compiler::Transform, :blur do
   end
 
   describe 'atomic literals' do
-    let(:integer) { ast('42').first }
-    let(:decimal) { ast('4.2').first }
-    let(:negative) { ast('-3').first }
-    let(:long) { ast('123_456_789').first }
-    let(:character) { ast('`f').first }
-    let(:symbol_string) { ast(':one').first }
-    let(:single_string) { ast('\'two\'').first }
-    let(:double_string) { ast('"three"').first }
+    let(:integer) { syntax_tree('42').first }
+    let(:decimal) { syntax_tree('4.2').first }
+    let(:negative) { syntax_tree('-3').first }
+    let(:long) { syntax_tree('123_456_789').first }
+    let(:character) { syntax_tree('`f').first }
+    let(:symbol_string) { syntax_tree(':one').first }
+    let(:single_string) { syntax_tree('\'two\'').first }
+    let(:double_string) { syntax_tree('"three"').first }
 
     let(:here_doc) do
       rip_doc = <<-RIP_DOC
@@ -30,10 +30,10 @@ describe Rip::Compiler::Transform, :blur do
 here docs are good for multi-line strings
 HERE_DOC
       RIP_DOC
-      ast(rip_doc).first
+      syntax_tree(rip_doc).first
     end
 
-    let(:regex) { ast('/hello/').first }
+    let(:regex) { syntax_tree('/hello/').first }
 
     it 'transforms numbers' do
       expect(integer).to eq(Rip::Nodes::Integer.new('42'))

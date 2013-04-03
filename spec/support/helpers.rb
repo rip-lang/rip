@@ -58,12 +58,8 @@ module RSpecHelpers
     Rip::Compiler::Parser.new(:rspec, source_code)
   end
 
-  def apt(code)
-    parser.parse(code)
-  end
-
-  def ast(code)
-    Rip::Compiler::AST.new(apt(code)).tree
+  def syntax_tree(code)
+    parser(code).syntax_tree
   end
 
   def rip_parsed_string(string)
