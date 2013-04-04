@@ -6,5 +6,10 @@ module Rip::Nodes
       super(location)
       @text = text
     end
+
+    def ==(other)
+      super &&
+        (text == other.text)
+    end
   end
 end
