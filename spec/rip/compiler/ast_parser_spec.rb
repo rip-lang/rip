@@ -26,4 +26,224 @@ describe Rip::Compiler::AST do
       end
     end
   end
+
+  context 'single token module' do
+    let(:rip) { 'rip' }
+    let(:reference_node) { Rip::Nodes::Reference.new(location, rip) }
+
+    it 'finds a single node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'finds a single reference as the first node' do
+      expect(expressions.first).to eq(reference_node)
+    end
+  end
+
+  context 'key-value pair' do
+    subject { expressions.first }
+    let(:rip) { ':key: :value' }
+    let(:key_node) { Rip::Nodes::String.new(location, 'key') }
+    let(:value_node) { Rip::Nodes::String.new(location.add_character(6), 'value') }
+    let(:key_value_node) { Rip::Nodes::KeyValue.new(location, key_node, value_node) }
+
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'finds the key-value node' do
+      expect(expressions.first).to eq(key_value_node)
+    end
+
+    its(:key) { should eq(key_node) }
+    its(:value) { should eq(value_node) }
+  end
+
+  context 'range' do
+    subject { expressions.first }
+    let(:rip) { '`a..`z' }
+    let(:a_node) { Rip::Nodes::Character.new(location, 'a') }
+    let(:z_node) { Rip::Nodes::Character.new(location.add_character(4), 'z') }
+    let(:range_node) { Rip::Nodes::Range.new(location, a_node, z_node) }
+
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'finds the range node' do
+      expect(expressions.first).to eq(range_node)
+    end
+
+    its(:start) { should eq(a_node) }
+    its(:end) { should eq(z_node) }
+  end
+
+  context 'property' do
+    subject { expressions.first }
+    let(:rip) { 'one.two' }
+    let(:object_node) { Rip::Nodes::Reference.new(location, 'one') }
+    let(:property_name_node) { Rip::Nodes::Reference.new(location.add_character(4), 'two') }
+    let(:property_node) { Rip::Nodes::Property.new(location.add_character(3), object_node, property_name_node) }
+
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'finds the property node' do
+      expect(expressions.first).to eq(property_node)
+    end
+
+    its(:object) { should eq(object_node) }
+    its(:property) { should eq(property_name_node) }
+  end
+
+  context 'assignment' do
+    let(:line_two) { new_location(:rspec, 10, 2, 0) }
+    let(:rip) { "# find me\nlanguage = :rip" }
+    let(:comment_node) { Rip::Nodes::Comment.new(location, ' find me') }
+    let(:reference_node) { Rip::Nodes::Reference.new(line_two, 'language') }
+    let(:string_node) { Rip::Nodes::String.new(line_two.add_character(11), 'rip') }
+    let(:assignment_node) { Rip::Nodes::Assignment.new(line_two.add_character(9), reference_node, string_node) }
+
+    let(:comment) { expressions.first }
+    let(:assignment) { expressions.last }
+
+    it 'has two top-level nodes' do
+      expect(expressions.count).to eq(2)
+    end
+
+    it 'knows the first node is a comment' do
+      expect(comment).to eq(comment_node)
+    end
+
+    it 'finds an assignment as the last node' do
+      expect(assignment).to eq(assignment_node)
+      expect(assignment.reference).to eq(reference_node)
+      expect(assignment.value).to eq(string_node)
+    end
+  end
+
+  context 'blocks' do
+    let(:rip) { '-> (other) {}' }
+
+    let(:dash_rocket_node) { Rip::Nodes::Keyword['->'] }
+    let(:parameter_nodes) { [ Rip::Nodes::Reference.new(location.add_character(4), 'other') ] }
+    let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(11), []) }
+    let(:lambda_node) { Rip::Nodes::Lambda.new(location, dash_rocket_node, parameter_nodes, body_node) }
+
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'finds the lambda' do
+      expect(expressions.first).to eq(lambda_node)
+    end
+  end
+
+  context 'invalid lambda parameters' do
+    let(:rip) { '-> (32) {}' }
+
+    it 'complains about the parameter' do
+      expect(syntax_tree(rip)).to have_exception(Rip::Compiler::SyntaxError)
+    end
+  end
+
+  context 'property assignment' do
+    let(:rip) { '@.== = -> (other) {}' }
+
+    let(:prototype_node) { Rip::Nodes::Reference.new(location, '@') }
+    let(:equality_node) { Rip::Nodes::Reference.new(location.add_character(2), '==') }
+    let(:property_node) { Rip::Nodes::Property.new(location.add_character, prototype_node, equality_node) }
+
+    let(:assignment_node) { Rip::Nodes::Assignment.new(location.add_character(5), property_node, lambda_node) }
+
+    let(:dash_rocket_node) { Rip::Nodes::Keyword['->'] }
+    let(:parameter_node) { Rip::Nodes::Reference.new(location.add_character(11), 'other') }
+    let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(18), []) }
+    let(:lambda_node) { Rip::Nodes::Lambda.new(location.add_character(7), dash_rocket_node, [parameter_node], body_node) }
+
+    let(:assignment) { expressions.first }
+    let(:assignee) { assignment.reference }
+    let(:value) { assignment.value }
+
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'finds the assignment' do
+      expect(assignment).to eq(assignment_node)
+    end
+
+    it 'assigns to the == property' do
+      expect(assignee).to eq(property_node)
+    end
+
+    it 'assigns a lambda' do
+      expect(value).to eq(lambda_node)
+    end
+  end
+
+  shared_examples_for 'invocation' do
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'finds the plus invocation' do
+      expect(invocation_plus).to eq(invocation_node_plus)
+      expect(invocation_plus.arguments).to eq([two_node])
+      expect(invocation_plus.callable).to eq(property_node_plus)
+      expect(invocation_plus.callable.object).to eq(one_node)
+      expect(invocation_plus.callable.property).to eq(plus_node)
+    end
+
+    it 'finds the times invocation' do
+      expect(invocation_times).to eq(invocation_node_times)
+      expect(invocation_times.arguments).to eq([three_node])
+      expect(invocation_times.callable).to eq(property_node_times)
+      expect(invocation_times.callable.object).to eq(invocation_plus)
+      expect(invocation_times.callable.property).to eq(times_node)
+    end
+  end
+
+  context 'standard invocation' do
+    let(:rip) { '1.+(2).*(3)' }
+
+    let(:one_node) { Rip::Nodes::Integer.new(location, 1) }
+    let(:two_node) { Rip::Nodes::Integer.new(location.add_character(4), 2) }
+    let(:three_node) { Rip::Nodes::Integer.new(location.add_character(9), 3) }
+
+    let(:plus_node) { Rip::Nodes::Reference.new(location.add_character(2), '+') }
+    let(:property_node_plus) { Rip::Nodes::Property.new(location.add_character(1), one_node, plus_node) }
+    let(:invocation_node_plus) { Rip::Nodes::Invocation.new(location.add_character(3), property_node_plus, [two_node]) }
+
+    let(:times_node) { Rip::Nodes::Reference.new(location.add_character(7), '*') }
+    let(:property_node_times) { Rip::Nodes::Property.new(location.add_character(6), invocation_node_plus, times_node) }
+    let(:invocation_node_times) { Rip::Nodes::Invocation.new(location.add_character(8), property_node_times, [three_node]) }
+
+    let(:invocation_times) { expressions.first }
+    let(:invocation_plus) { invocation_times.callable.object }
+
+    it_behaves_like 'invocation'
+  end
+
+  context 'operator invocation' do
+    let(:rip) { '1 + 2 * 3' }
+
+    let(:one_node) { Rip::Nodes::Integer.new(location, 1) }
+    let(:two_node) { Rip::Nodes::Integer.new(location.add_character(4), 2) }
+    let(:three_node) { Rip::Nodes::Integer.new(location.add_character(8), 3) }
+
+    let(:plus_node) { Rip::Nodes::Reference.new(location.add_character(2), '+') }
+    let(:property_node_plus) { Rip::Nodes::Property.new(location.add_character(2), one_node, plus_node) }
+    let(:invocation_node_plus) { Rip::Nodes::Invocation.new(location.add_character(2), property_node_plus, [two_node]) }
+
+    let(:times_node) { Rip::Nodes::Reference.new(location.add_character(6), '*') }
+    let(:property_node_times) { Rip::Nodes::Property.new(location.add_character(6), invocation_node_plus, times_node) }
+    let(:invocation_node_times) { Rip::Nodes::Invocation.new(location.add_character(6), property_node_times, [three_node]) }
+
+    let(:invocation_times) { expressions.first }
+    let(:invocation_plus) { invocation_times.callable.object }
+
+    it_behaves_like 'invocation'
+  end
 end
