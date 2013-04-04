@@ -2,6 +2,12 @@ require 'parslet'
 
 module Rip::Compiler
   class ParseTreeNormalizer < Parslet::Transform
+    %i[decimal integer].each do |number|
+      rule(number => simple(number)) do |locals|
+        { :sign => '+', number => locals[number] }
+      end
+    end
+
     def apply(tree, context = nil)
       _tree = normalize(tree)
       super(_tree, context)

@@ -640,7 +640,7 @@ describe Rip::Compiler::Parser do
               :invocation => {
                 :callable => {
                   :property => {
-                    :object => { :number => { :integer => '1' } },
+                    :object => { :number => { :sign => '+', :integer => '1' } },
                     :property_name => { :reference => '+' }
                   }
                 },
@@ -649,12 +649,12 @@ describe Rip::Compiler::Parser do
                     :invocation => {
                       :callable => {
                         :property => {
-                          :object => { :number => { :integer => '2' } },
+                          :object => { :number => { :sign => '+', :integer => '2' } },
                           :property_name => { :reference => '-' }
                         }
                       },
                       :arguments => [
-                        { :number => { :integer => '3' } }
+                        { :number => { :sign => '+', :integer => '3' } }
                       ]
                     }
                   }
@@ -993,7 +993,7 @@ describe Rip::Compiler::Parser do
           end
           let(:expected) do
             [
-              { :number => { :integer => '42' } }
+              { :number => { :sign => '+', :integer => '42' } }
             ]
           end
         end
@@ -1007,7 +1007,7 @@ describe Rip::Compiler::Parser do
           end
           let(:expected) do
             [
-              { :number => { :decimal => '4.2' } }
+              { :number => { :sign => '+', :decimal => '4.2' } }
             ]
           end
         end
@@ -1035,7 +1035,7 @@ describe Rip::Compiler::Parser do
           end
           let(:expected) do
             [
-              { :number => { :integer => '123_456_789' } }
+              { :number => { :sign => '+', :integer => '123_456_789' } }
             ]
           end
         end
