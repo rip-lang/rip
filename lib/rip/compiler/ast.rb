@@ -17,5 +17,11 @@ module Rip::Compiler
     def self.location_for(origin, slice)
       Rip::Utilities::Location.new(origin, slice.offset, *slice.line_and_column)
     end
+
+    rule(:comment => simple(:comment)) do |locals|
+      comment = locals[:comment]
+      location = location_for(locals[:origin], comment)
+      Rip::Nodes::Comment.new(location, comment)
+    end
   end
 end

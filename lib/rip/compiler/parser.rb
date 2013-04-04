@@ -11,8 +11,12 @@ module Rip::Compiler
       @source_code = source_code
     end
 
+    # NOTE shouldn't Rip::Compiler::AST create Rip::Nodes::Module?
     def syntax_tree
-      Rip::Compiler::AST.new(origin).apply(parse_tree)
+      location = Rip::Utilities::Location.new(origin, 0, 1, 1)
+      expressions = Rip::Compiler::AST.new(origin).apply(parse_tree)
+      _expressions = expressions.is_a?(String) ? [] : expressions
+      Rip::Nodes::Module.new(location, _expressions)
     end
 
     def parse_tree
