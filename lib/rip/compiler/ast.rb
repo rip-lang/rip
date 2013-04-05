@@ -29,5 +29,23 @@ module Rip::Compiler
       location = location_for(locals[:origin], reference)
       Rip::Nodes::Reference.new(location, reference)
     end
+
+    rule(:sign => simple(:sign), :integer => simple(:integer)) do |locals|
+      sign = locals[:sign]
+      location = location_for(locals[:origin], sign)
+      Rip::Nodes::Integer.new(location, locals[:integer], sign)
+    end
+
+    rule(:sign => simple(:sign), :decimal => simple(:decimal)) do |locals|
+      sign = locals[:sign]
+      location = location_for(locals[:origin], sign)
+      Rip::Nodes::Decimal.new(location, locals[:decimal], sign)
+    end
+
+    rule(:character => simple(:character)) do |locals|
+      character = locals[:character]
+      location = location_for(locals[:origin], character)
+      Rip::Nodes::Character.new(location, character)
+    end
   end
 end
