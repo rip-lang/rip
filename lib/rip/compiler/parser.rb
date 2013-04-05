@@ -159,7 +159,7 @@ module Rip::Compiler
 
     # WARNING order is important here: decimal must be before integer or the integral part of
     #   a decimal could be interpreted as a integer followed by a decimal starting with a dot
-    rule(:number) { (sign.maybe >> (decimal | integer)).as(:number) }
+    rule(:number) { sign.maybe >> (decimal | integer) }
 
     rule(:decimal) { (digits.maybe >> dot >> digits).as(:decimal) }
     rule(:integer) { digits.as(:integer) }
