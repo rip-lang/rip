@@ -1091,7 +1091,7 @@ describe Rip::Compiler::Parser do
             {
               :phrase => {
                 :string => [
-                  { :raw_string=>'o' },
+                  { :raw_string => 'o' },
                   { :raw_string => 'n' },
                   { :location => '\\', :escaped_token => 'e' }
                 ]
