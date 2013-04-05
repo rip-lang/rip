@@ -47,5 +47,10 @@ module Rip::Compiler
       location = location_for(locals[:origin], character)
       Rip::Nodes::Character.new(location, character)
     end
+
+    rule(:string => sequence(:characters)) do |locals|
+      location = locals[:characters].first.location
+      Rip::Nodes::String.new(location, locals[:characters])
+    end
   end
 end
