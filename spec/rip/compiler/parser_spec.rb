@@ -780,7 +780,7 @@ describe Rip::Compiler::Parser do
             {
               :assignment => {
                 :lhs => { :reference => 'favorite_language' },
-                :rhs => { :string => rip_parsed_string('rip') }
+                :rhs => { :string => rip_character_string('rip') }
               }
             }
           ]
@@ -821,7 +821,7 @@ describe Rip::Compiler::Parser do
                 },
                 :rhs => {
                   :property => {
-                    :object => { :string => rip_parsed_string('rip') },
+                    :object => { :string => rip_character_string('rip') },
                     :property_name => 'lang'
                   }
                 }
@@ -1097,6 +1097,18 @@ describe Rip::Compiler::Parser do
                   { :raw_string => 'e' }
                 ]
               }
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :string => [
+                { :character => 'o' },
+                { :character => 'n' },
+                { :character => '\\' },
+                { :character => 'e' }
+              ]
             }
           ]
         end

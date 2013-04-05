@@ -68,6 +68,12 @@ module RSpecHelpers
     end
   end
 
+  def rip_character_string(string)
+    rip_parsed_string(string).map do |c|
+      { :character => c[:raw_string] }
+    end
+  end
+
   # http://apidock.com/rails/String/strip_heredoc
   def strip_heredoc(string)
     indent = string.scan(/^[ \t]*(?=\S)/).min.size
