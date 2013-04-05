@@ -188,7 +188,7 @@ module Rip::Compiler
 
     rule(:string) { string_symbol | string_single | string_double }
 
-    rule(:string_symbol) { colon >> (escape_advanced | character_legal.as(:raw_string)).repeat(1).as(:string) }
+    rule(:string_symbol) { colon >> (escape_simple | character_legal.as(:raw_string)).repeat(1).as(:string) }
 
     rule(:string_single) { string_parser(quote_single, escape_simple) }
     rule(:string_double) { string_parser(quote_double, escape_advanced | interpolation) }

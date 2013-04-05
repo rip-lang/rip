@@ -1093,7 +1093,8 @@ describe Rip::Compiler::Parser do
                 :string => [
                   { :raw_string => 'o' },
                   { :raw_string => 'n' },
-                  { :location => '\\', :escaped_token => 'e' }
+                  { :raw_string => '\\' },
+                  { :raw_string => 'e' }
                 ]
               }
             }
