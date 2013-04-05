@@ -23,5 +23,11 @@ module Rip::Compiler
       location = location_for(locals[:origin], comment)
       Rip::Nodes::Comment.new(location, comment)
     end
+
+    rule(:reference => simple(:reference)) do |locals|
+      reference = locals[:reference]
+      location = location_for(locals[:origin], reference)
+      Rip::Nodes::Reference.new(location, reference)
+    end
   end
 end
