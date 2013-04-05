@@ -1048,13 +1048,23 @@ describe Rip::Compiler::Parser do
             { :phrase => { :character => '9' } }
           ]
         end
+        let(:expected) do
+          [
+            { :character => '9' }
+          ]
+        end
       end
 
       recognizes_as_expected 'escaped character' do
         let(:rip) { '`\n' }
         let(:expected_raw) do
           [
-            { :phrase => { :character => { :escaped_any => 'n' } } }
+            { :phrase => { :character => { :location => '\\', :escaped_token => 'n' } } }
+          ]
+        end
+        let(:expected) do
+          [
+            { :character => "\n" }
           ]
         end
       end
@@ -1083,7 +1093,7 @@ describe Rip::Compiler::Parser do
                 :string => [
                   { :raw_string=>'o' },
                   { :raw_string => 'n' },
-                  { :escaped_any => 'e' }
+                  { :location => '\\', :escaped_token => 'e' }
                 ]
               }
             }

@@ -178,12 +178,12 @@ module Rip::Compiler
     rule(:escape_regex)    { escape_token_slash_forward | escape_token_slash_back }
     rule(:escape_advanced) { escape_token_unicode       | escape_token_any }
 
-    rule(:escape_token_quote_single)  { slash_back >> quote_single.as(:escaped_quote_single) }
-    rule(:escape_token_double)        { slash_back >> quote_double.as(:escaped_quote_double) }
-    rule(:escape_token_slash_back)    { slash_back >> slash_back.as(:escaped_slash_back) }
-    rule(:escape_token_slash_forward) { slash_back >> slash_forward.as(:escaped_slash_forward) }
-    rule(:escape_token_unicode)       { slash_back >> str('u') >> match['0-9a-f'].repeat(4, 4).as(:escaped_unicode) }
-    rule(:escape_token_any)           { slash_back >> any.as(:escaped_any) }
+    rule(:escape_token_quote_single)  { slash_back.as(:location) >> quote_single.as(:escaped_token) }
+    rule(:escape_token_double)        { slash_back.as(:location) >> quote_double.as(:escaped_token) }
+    rule(:escape_token_slash_back)    { slash_back.as(:location) >> slash_back.as(:escaped_token) }
+    rule(:escape_token_slash_forward) { slash_back.as(:location) >> slash_forward.as(:escaped_token) }
+    rule(:escape_token_unicode)       { slash_back.as(:location) >> str('u') >> match['0-9a-f'].repeat(4, 4).as(:escaped_token_unicode) }
+    rule(:escape_token_any)           { slash_back.as(:location) >> any.as(:escaped_token) }
 
 
     rule(:string) { string_symbol | string_single | string_double }

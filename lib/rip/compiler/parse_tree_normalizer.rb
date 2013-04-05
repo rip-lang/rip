@@ -2,11 +2,42 @@ require 'parslet'
 
 module Rip::Compiler
   class ParseTreeNormalizer < Parslet::Transform
+    ESCAPES = {
+      '\'' => '\'',
+      '"' => '"',
+      'b' => "\b",
+      'a' => "\a",
+      'e' => "\e",
+      'f' => "\f",
+      'n' => "\n",
+      '#' => '#',
+      'r' => "\r",
+      't' => "\t"
+    }
+
+    def self.slice(location_slice, text)
+      Parslet::Slice.new(text.to_s, location_slice.offset, location_slice.line_cache)
+    end
+
+
+    rule(:location => simple(:location), :escaped_token => simple(:token)) do |locals|
+      token = locals[:token].to_s
+      slice(locals[:location], ESCAPES[token] || token)
+    end
+
+    rule(:location => simple(:location), :escaped_token_unicode => simple(:unicode)) do |locals|
+      slice(locals[:location], locals[:unicode].to_s.to_i(16).chr('UTF-8'))
+    end
+
     %i[decimal integer].each do |number|
       rule(number => simple(number)) do |locals|
-        { :sign => '+', number => locals[number] }
+        {
+          :sign => slice(locals[number], '+'),
+          number => locals[number]
+        }
       end
     end
+
 
     def apply(tree, context = nil)
       _tree = normalize(tree)
