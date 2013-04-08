@@ -42,6 +42,10 @@ module Rip::Compiler
       { :character => locals[:raw_string] }
     end
 
+    rule(:raw_regex => simple(:raw_regex)) do |locals|
+      locals[:raw_regex]
+    end
+
 
     def apply(tree, context = nil)
       _tree = normalize(tree)
