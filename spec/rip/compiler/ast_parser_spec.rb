@@ -126,7 +126,7 @@ describe Rip::Compiler::AST do
   context 'blocks' do
     let(:rip) { '-> (other) {}' }
 
-    let(:dash_rocket_node) { Rip::Nodes::Keyword['->'] }
+    let(:dash_rocket_node) { Rip::Utilities::Keyword['->'] }
     let(:parameter_nodes) { [ Rip::Nodes::Reference.new(location.add_character(4), 'other') ] }
     let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(11), []) }
     let(:lambda_node) { Rip::Nodes::Lambda.new(location, dash_rocket_node, parameter_nodes, body_node) }
@@ -157,7 +157,7 @@ describe Rip::Compiler::AST do
 
     let(:assignment_node) { Rip::Nodes::Assignment.new(location.add_character(5), property_node, lambda_node) }
 
-    let(:dash_rocket_node) { Rip::Nodes::Keyword['->'] }
+    let(:dash_rocket_node) { Rip::Utilities::Keyword['->'] }
     let(:parameter_node) { Rip::Nodes::Reference.new(location.add_character(11), 'other') }
     let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(18), []) }
     let(:lambda_node) { Rip::Nodes::Lambda.new(location.add_character(7), dash_rocket_node, [parameter_node], body_node) }
