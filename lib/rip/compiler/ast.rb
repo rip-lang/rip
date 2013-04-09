@@ -57,5 +57,10 @@ module Rip::Compiler
       location = location_for(locals[:origin], locals[:pattern].first)
       Rip::Nodes::RegularExpression.new(location, locals[:pattern].join(''))
     end
+
+    rule(:class => simple(:class), :arguments => sequence(:arguments), :body => sequence(:body)) do |locals|
+      location = location_for(locals[:origin], locals[:class])
+      Rip::Nodes::Class.new(location, locals[:class], locals[:arguments], locals[:body])
+    end
   end
 end

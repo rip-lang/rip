@@ -46,6 +46,14 @@ module Rip::Compiler
       locals[:raw_regex]
     end
 
+    rule(:class => simple(:class), :body => sequence(:body)) do |locals|
+      {
+        :class => locals[:class],
+        :arguments => [],
+        :body => locals[:body]
+      }
+    end
+
 
     def apply(tree, context = nil)
       _tree = normalize(tree)
