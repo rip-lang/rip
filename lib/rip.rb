@@ -27,8 +27,8 @@ end
 require 'rip/cli'
 
 require 'rip/exception'
+require 'rip/nodes'
 require 'rip/utilities'
 
 require 'rip/compiler'
-require 'rip/nodes'
 require 'rip/version'

@@ -58,9 +58,37 @@ module Rip::Compiler
       Rip::Nodes::RegularExpression.new(location, locals[:pattern].join(''))
     end
 
-    rule(:class => simple(:class), :arguments => sequence(:arguments), :body => sequence(:body)) do |locals|
-      location = location_for(locals[:origin], locals[:class])
-      Rip::Nodes::Class.new(location, locals[:class], locals[:arguments], locals[:body])
+    {
+      :case => Rip::Nodes::Case,
+      :class => Rip::Nodes::Class
+    }.each do |keyword, klass|
+      rule(keyword => simple(keyword), :arguments => sequence(:arguments), :body => sequence(:body)) do |locals|
+        location = location_for(locals[:origin], locals[keyword])
+        klass.new(location, locals[:arguments], locals[:body])
+      end
+    end
+
+    {
+      :catch => Rip::Nodes::Catch,
+      :if => Rip::Nodes::If,
+      :unless => Rip::Nodes::Unless,
+      :switch => Rip::Nodes::Switch
+    }.each do |keyword, klass|
+      rule(keyword => simple(keyword), :argument => simple(:argument), :body => sequence(:body)) do |locals|
+        location = location_for(locals[:origin], locals[keyword])
+        klass.new(location, locals[:argument], locals[:body])
+      end
+    end
+
+    {
+      :try => Rip::Nodes::Try,
+      :finally => Rip::Nodes::Finally,
+      :else => Rip::Nodes::Else
+    }.each do |keyword, klass|
+      rule(keyword => simple(keyword), :body => sequence(:body)) do |locals|
+        location = location_for(locals[:origin], locals[keyword])
+        klass.new(location, locals[:body])
+      end
     end
   end
 end
