@@ -7,7 +7,6 @@ require 'rip/nodes/base'
 require 'rip/nodes/number'
 
 require 'rip/nodes/assignment'
-require 'rip/nodes/block'
 require 'rip/nodes/block_body'
 require 'rip/nodes/character'
 require 'rip/nodes/class'
