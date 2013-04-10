@@ -130,10 +130,10 @@ module Rip::Compiler
     rule(:class_block) { (str('class').as(:class) >> spaces? >> multiple_arguments.maybe >> block_body).as(:class_block) }
     rule(:case_block)  { (str('case').as(:case)   >> spaces? >> multiple_arguments       >> block_body).as(:case_block) }
 
-    rule(:catch_block)  { (str('catch').as(:catch)   >> spaces? >> single_argument >> block_body).as(:catch_block) }
-    rule(:if_block)     { (str('if').as(:if)         >> spaces? >> single_argument >> block_body).as(:if_block) }
-    rule(:unless_block) { (str('unless').as(:unless) >> spaces? >> single_argument >> block_body).as(:unless_block) }
-    rule(:switch_block) { (str('switch').as(:switch) >> spaces? >> single_argument >> block_body_switch).as(:switch_block) }
+    rule(:catch_block)  { (str('catch').as(:catch)   >> spaces? >> single_argument       >> block_body).as(:catch_block) }
+    rule(:if_block)     { (str('if').as(:if)         >> spaces? >> single_argument       >> block_body).as(:if_block) }
+    rule(:unless_block) { (str('unless').as(:unless) >> spaces? >> single_argument       >> block_body).as(:unless_block) }
+    rule(:switch_block) { (str('switch').as(:switch) >> spaces? >> single_argument.maybe >> block_body_switch).as(:switch_block) }
 
     rule(:try_block)     { (str('try').as(:try)         >> block_body).as(:try_block) }
     rule(:finally_block) { (str('finally').as(:finally) >> block_body).as(:finally_block) }

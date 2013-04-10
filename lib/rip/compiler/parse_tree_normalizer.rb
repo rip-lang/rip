@@ -54,6 +54,15 @@ module Rip::Compiler
       }
     end
 
+    rule(:switch => simple(:switch), :body => sequence(:body)) do |locals|
+      {
+        :switch => locals[:switch],
+        :argument => nil,
+        :body => locals[:body]
+      }
+    end
+
+
 
     def apply(tree, context = nil)
       _tree = normalize(tree)
