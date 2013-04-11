@@ -62,9 +62,9 @@ describe Rip::Compiler::AST do
   context 'range' do
     subject { expressions.first }
     let(:rip) { '`a..`z' }
-    let(:a_node) { Rip::Nodes::Character.new(location, 'a') }
-    let(:z_node) { Rip::Nodes::Character.new(location.add_character(4), 'z') }
-    let(:range_node) { Rip::Nodes::Range.new(location, a_node, z_node) }
+    let(:a_node) { Rip::Nodes::Character.new(location.add_character, 'a') }
+    let(:z_node) { Rip::Nodes::Character.new(location.add_character(5), 'z') }
+    let(:range_node) { Rip::Nodes::Range.new(location.add_character, a_node, z_node) }
 
     it 'has one top-level node' do
       expect(expressions.count).to eq(1)
@@ -76,6 +76,7 @@ describe Rip::Compiler::AST do
 
     its(:start) { should eq(a_node) }
     its(:end) { should eq(z_node) }
+    its(:exclusivity) { should be_false }
   end
 
   context 'property' do

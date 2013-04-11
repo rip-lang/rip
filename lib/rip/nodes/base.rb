@@ -7,7 +7,8 @@ module Rip::Nodes
     end
 
     def ==(other)
-      location == other.location
+      other.respond_to?(:location) &&
+        location == other.location
     end
   end
 end
