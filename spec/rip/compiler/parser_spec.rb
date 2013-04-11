@@ -88,7 +88,7 @@ describe Rip::Compiler::Parser do
                   {
                     :phrase => [
                       { :reference => 'lambda' },
-                      { :regular_invocation => { :arguments => [] } }
+                      { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
                     ]
                   }
                 ]
@@ -208,6 +208,7 @@ describe Rip::Compiler::Parser do
               :phrase => {
                 :class_block => {
                   :class => 'class',
+                  :location_arguments => '(',
                   :arguments => [
                     { :phrase => { :reference => 'one' } },
                     { :phrase => { :reference => 'two' } }
@@ -345,11 +346,13 @@ describe Rip::Compiler::Parser do
               :phrase => {
                 :class_block => {
                   :class => 'class',
+                  :location_arguments => '(',
                   :arguments => [
                     {
                       :phrase => {
                         :class_block => {
                           :class => 'class',
+                          :location_arguments => '(',
                           :arguments => [],
                           :location_body => '{',
                           :body => []
@@ -461,7 +464,7 @@ describe Rip::Compiler::Parser do
                       {
                         :phrase => [
                           { :reference => 'run!' },
-                          { :regular_invocation => { :arguments => [] } }
+                          { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
                         ]
                       }
                     ]
@@ -672,6 +675,7 @@ describe Rip::Compiler::Parser do
                     :property_name => { :reference => '+' }
                   }
                 },
+                :location => '+',
                 :arguments => [
                   {
                     :invocation => {
@@ -681,6 +685,7 @@ describe Rip::Compiler::Parser do
                           :property_name => { :reference => '-' }
                         }
                       },
+                      :location => '-',
                       :arguments => [
                         { :sign => '+', :integer => '3' }
                       ]
@@ -709,7 +714,7 @@ describe Rip::Compiler::Parser do
                     :body => []
                   }
                 },
-                :regular_invocation => { :arguments => [] }
+                :regular_invocation => { :location_arguments => '(', :arguments => [] }
               ]
             }
           ]
@@ -723,7 +728,7 @@ describe Rip::Compiler::Parser do
             {
               :phrase => [
                 { :reference => 'full_name' },
-                { :regular_invocation => { :arguments => [] } }
+                { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
               ]
             }
           ]
@@ -739,6 +744,7 @@ describe Rip::Compiler::Parser do
                 { :reference => 'full_name' },
                 {
                   :regular_invocation => {
+                    :location_arguments => '(',
                     :arguments => [
                       { :phrase => { :string => rip_parsed_string('Thomas') } },
                       { :phrase => { :string => rip_parsed_string('Ingram') } }
@@ -890,6 +896,7 @@ describe Rip::Compiler::Parser do
                             {:reference=>"l"},
                             {
                               :regular_invocation=> {
+                                :location_arguments => '(',
                                 :arguments=> [
                                   {
                                     :phrase=> {
@@ -948,10 +955,10 @@ describe Rip::Compiler::Parser do
               :phrase => [
                 { :integer => '0' },
                 { :property_name => { :reference => 'one' } },
-                { :regular_invocation => { :arguments => [] } },
+                { :regular_invocation => { :location_arguments => '(', :arguments => [] } },
                 { :property_name => { :reference => 'two' } },
                 { :property_name => { :reference => 'three' } },
-                { :regular_invocation => { :arguments=> [] } }
+                { :regular_invocation => { :location_arguments => '(', :arguments=> [] } }
               ]
             }
           ]
@@ -976,7 +983,7 @@ describe Rip::Compiler::Parser do
                   ]
                 },
                 { :property_name => {:reference => 'zero?'} },
-                { :regular_invocation => { :arguments => [] } }
+                { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
               ]
             }
           ]

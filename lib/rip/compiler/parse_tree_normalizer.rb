@@ -133,6 +133,7 @@ module Rip::Compiler
                   :property_name => part[:operator_invocation][:operator]
                 }
               },
+              :location => part[:operator_invocation][:operator][:reference],
               :arguments => [ normalize(part[:operator_invocation][:argument]) ]
             }
           }
@@ -140,6 +141,7 @@ module Rip::Compiler
           {
             :invocation => {
               :callable => phrase_base,
+              :location => part[:regular_invocation][:location_arguments],
               :arguments => normalize(part[:regular_invocation][:arguments])
             }
           }
@@ -152,6 +154,7 @@ module Rip::Compiler
                   :property_name => (part[:index_invocation][:open] + part[:index_invocation][:close])
                 }
               },
+              :location => part[:index_invocation][:open],
               :arguments => normalize(part[:index_invocation][:arguments])
             }
           }
