@@ -175,12 +175,11 @@ describe Rip::Compiler::AST do
     let(:rip) { '@.== = -> (other) {}' }
 
     let(:prototype_node) { Rip::Nodes::Reference.new(location, '@') }
-    let(:equality_node) { Rip::Nodes::Reference.new(location.add_character(2), '==') }
-    let(:property_node) { Rip::Nodes::Property.new(location.add_character, prototype_node, equality_node) }
+    let(:property_node) { Rip::Nodes::Property.new(location.add_character(2), prototype_node, '==') }
 
     let(:assignment_node) { Rip::Nodes::Assignment.new(location.add_character(5), property_node, lambda_node) }
 
-    let(:dash_rocket_node) { Rip::Utilities::Keyword['->'] }
+    let(:dash_rocket_node) { Rip::Utilities::Keywords[:dash_rocket] }
     let(:parameter_node) { Rip::Nodes::Reference.new(location.add_character(11), 'other') }
     let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(18), []) }
     let(:lambda_node) { Rip::Nodes::Lambda.new(location.add_character(7), dash_rocket_node, [parameter_node], body_node) }
