@@ -163,14 +163,6 @@ describe Rip::Compiler::AST do
     end
   end
 
-  context 'invalid lambda parameters' do
-    let(:rip) { '-> (32) {}' }
-
-    it 'complains about the parameter' do
-      expect(syntax_tree(rip)).to have_exception(Rip::Compiler::SyntaxError)
-    end
-  end
-
   context 'property assignment' do
     let(:rip) { '@.== = -> (other) {}' }
 
