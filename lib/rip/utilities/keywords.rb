@@ -14,9 +14,8 @@ module Rip::Utilities
   end
 
   module Keywords
-    def self.[](keyword)
-      _keyword = keyword.to_sym
-      all.detect { |keyword| keyword.keyword == _keyword }
+    def self.[](name)
+      all.detect { |keyword| keyword.name == name }
     end
 
     def self.all
