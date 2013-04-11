@@ -215,7 +215,7 @@ describe Rip::Compiler::AST do
       expect(invocation_plus.arguments).to eq([two_node])
       expect(invocation_plus.callable).to eq(property_node_plus)
       expect(invocation_plus.callable.object).to eq(one_node)
-      expect(invocation_plus.callable.property).to eq(plus_node)
+      expect(invocation_plus.callable.name).to eq('+')
     end
 
     it 'finds the times invocation' do
@@ -223,23 +223,21 @@ describe Rip::Compiler::AST do
       expect(invocation_times.arguments).to eq([three_node])
       expect(invocation_times.callable).to eq(property_node_times)
       expect(invocation_times.callable.object).to eq(invocation_plus)
-      expect(invocation_times.callable.property).to eq(times_node)
+      expect(invocation_times.callable.name).to eq('*')
     end
   end
 
   context 'standard invocation' do
     let(:rip) { '1.+(2).*(3)' }
 
-    let(:one_node) { Rip::Nodes::Integer.new(location, 1) }
-    let(:two_node) { Rip::Nodes::Integer.new(location.add_character(4), 2) }
-    let(:three_node) { Rip::Nodes::Integer.new(location.add_character(9), 3) }
+    let(:one_node) { Rip::Nodes::Integer.new(location, '1') }
+    let(:two_node) { Rip::Nodes::Integer.new(location.add_character(4), '2') }
+    let(:three_node) { Rip::Nodes::Integer.new(location.add_character(9), '3') }
 
-    let(:plus_node) { Rip::Nodes::Reference.new(location.add_character(2), '+') }
-    let(:property_node_plus) { Rip::Nodes::Property.new(location.add_character(1), one_node, plus_node) }
+    let(:property_node_plus) { Rip::Nodes::Property.new(location.add_character(2), one_node, '+') }
     let(:invocation_node_plus) { Rip::Nodes::Invocation.new(location.add_character(3), property_node_plus, [two_node]) }
 
-    let(:times_node) { Rip::Nodes::Reference.new(location.add_character(7), '*') }
-    let(:property_node_times) { Rip::Nodes::Property.new(location.add_character(6), invocation_node_plus, times_node) }
+    let(:property_node_times) { Rip::Nodes::Property.new(location.add_character(7), invocation_node_plus, '*') }
     let(:invocation_node_times) { Rip::Nodes::Invocation.new(location.add_character(8), property_node_times, [three_node]) }
 
     let(:invocation_times) { expressions.first }
@@ -251,16 +249,14 @@ describe Rip::Compiler::AST do
   context 'operator invocation' do
     let(:rip) { '1 + 2 * 3' }
 
-    let(:one_node) { Rip::Nodes::Integer.new(location, 1) }
-    let(:two_node) { Rip::Nodes::Integer.new(location.add_character(4), 2) }
-    let(:three_node) { Rip::Nodes::Integer.new(location.add_character(8), 3) }
+    let(:one_node) { Rip::Nodes::Integer.new(location, '1') }
+    let(:two_node) { Rip::Nodes::Integer.new(location.add_character(4), '2') }
+    let(:three_node) { Rip::Nodes::Integer.new(location.add_character(8), '3') }
 
-    let(:plus_node) { Rip::Nodes::Reference.new(location.add_character(2), '+') }
-    let(:property_node_plus) { Rip::Nodes::Property.new(location.add_character(2), one_node, plus_node) }
+    let(:property_node_plus) { Rip::Nodes::Property.new(location.add_character(2), one_node, '+') }
     let(:invocation_node_plus) { Rip::Nodes::Invocation.new(location.add_character(2), property_node_plus, [two_node]) }
 
-    let(:times_node) { Rip::Nodes::Reference.new(location.add_character(6), '*') }
-    let(:property_node_times) { Rip::Nodes::Property.new(location.add_character(6), invocation_node_plus, times_node) }
+    let(:property_node_times) { Rip::Nodes::Property.new(location.add_character(6), invocation_node_plus, '*') }
     let(:invocation_node_times) { Rip::Nodes::Invocation.new(location.add_character(6), property_node_times, [three_node]) }
 
     let(:invocation_times) { expressions.first }

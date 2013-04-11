@@ -81,6 +81,15 @@ module Rip::Compiler
       locals[:range]
     end
 
+    rule(:callable => simple(:callable), :location => simple(:location), :arguments => sequence(:arguments)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
+      Rip::Nodes::Invocation.new(location, locals[:callable], locals[:arguments])
+    end
+
+    rule(:invocation => simple(:invocation)) do |locals|
+      locals[:invocation]
+    end
+
     rule(:object => simple(:object), :property_name => simple(:property_name)) do |locals|
       property_name = locals[:property_name]
       location = location_for(locals[:origin], property_name)
