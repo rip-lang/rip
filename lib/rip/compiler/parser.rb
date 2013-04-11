@@ -90,7 +90,7 @@ module Rip::Compiler
     rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) >> reference.absent? }.inject(:|) }
 
 
-    rule(:reference_assignment) { (reference.as(:lhs) >> whitespaces? >> equals >> whitespaces? >> phrase.as(:rhs)).as(:assignment) }
+    rule(:reference_assignment) { (reference.as(:lhs) >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase.as(:rhs)).as(:assignment) }
 
     rule(:phrase) { (phrase_base >> (expression_terminator.absent? >> (key_value_pair | range | property_assignment | operator_invocation | regular_invocation | index_invocation | property)).repeat).as(:phrase) }
 
@@ -103,7 +103,7 @@ module Rip::Compiler
 
     rule(:range) { (whitespaces? >> dot >> dot >> dot.maybe.as(:exclusivity) >> phrase.as(:end)).as(:range) }
 
-    rule(:property_assignment) { (whitespaces >> equals >> whitespaces >> phrase.as(:rhs)).as(:property_assignment) }
+    rule(:property_assignment) { (whitespaces >> equals.as(:location) >> whitespaces >> phrase.as(:rhs)).as(:property_assignment) }
 
     rule(:operator_invocation) { (whitespaces >> reference.as(:operator) >> whitespaces >> phrase.as(:argument)).as(:operator_invocation) }
 

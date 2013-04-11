@@ -118,6 +118,7 @@ module Rip::Compiler
           {
             :assignment => {
               :lhs => normalize(phrase_base),
+              :location => part[:property_assignment][:location],
               :rhs => normalize(part[:property_assignment][:rhs])
             }
           }

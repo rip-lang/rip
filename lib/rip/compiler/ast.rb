@@ -77,6 +77,15 @@ module Rip::Compiler
       locals[:property]
     end
 
+    rule(:lhs => simple(:lhs), :location => simple(:location), :rhs => simple(:rhs)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
+      Rip::Nodes::Assignment.new(location, locals[:lhs], locals[:rhs])
+    end
+
+    rule(:assignment => simple(:assignment)) do |locals|
+      locals[:assignment]
+    end
+
     {
       :case => Rip::Nodes::Case,
       :class => Rip::Nodes::Class

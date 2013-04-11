@@ -72,6 +72,7 @@ describe Rip::Compiler::Parser do
                   {
                     :assignment => {
                       :lhs => { :reference => 'lambda' },
+                      :location => '=',
                       :rhs => {
                         :phrase => {
                           :lambda_block => {
@@ -245,12 +246,14 @@ describe Rip::Compiler::Parser do
                     {
                       :assignment => {
                         :lhs => { :reference => 'one' },
+                        :location => '=',
                         :rhs => { :phrase => { :integer => '1' } }
                       }
                     },
                     {
                       :assignment => {
                         :lhs => { :reference => 'two' },
+                        :location => '=',
                         :rhs => { :phrase => { :integer => '2' } }
                       }
                     }
@@ -276,6 +279,7 @@ describe Rip::Compiler::Parser do
                     {
                       :assignment => {
                         :lhs => { :reference => 'name' },
+                        :location => '=',
                         :rhs => { :phrase => { :string => rip_parsed_string('rip') } }
                       }
                     }
@@ -302,12 +306,14 @@ describe Rip::Compiler::Parser do
                     {
                       :assignment => {
                         :lhs => { :reference => 'one' },
+                        :location => '=',
                         :rhs => { :phrase => { :integer => '1' } }
                       }
                     },
                     {
                       :assignment => {
                         :lhs => { :reference => 'two' },
+                        :location => '=',
                         :rhs => { :phrase => { :integer => '2' } }
                       }
                     }
@@ -411,6 +417,7 @@ describe Rip::Compiler::Parser do
                       {
                         :assignment => {
                           :lhs => { :reference => 'x' },
+                          :location => '=',
                           :rhs => { :phrase => { :string => rip_parsed_string('y') } }
                         }
                       }
@@ -770,6 +777,7 @@ describe Rip::Compiler::Parser do
             {
               :assignment => {
                 :lhs => { :reference => 'favorite_language' },
+                :location => '=',
                 :rhs => { :phrase => { :string => rip_parsed_string('rip') } }
               }
             }
@@ -780,6 +788,7 @@ describe Rip::Compiler::Parser do
             {
               :assignment => {
                 :lhs => { :reference => 'favorite_language' },
+                :location => '=',
                 :rhs => { :string => rip_character_string('rip') }
               }
             }
@@ -797,6 +806,7 @@ describe Rip::Compiler::Parser do
                 { :property_name => { :reference => 'language' } },
                 {
                   :property_assignment => {
+                    :location => '=',
                     :rhs => {
                       :phrase => [
                         { :string => rip_parsed_string('rip') },
@@ -819,6 +829,7 @@ describe Rip::Compiler::Parser do
                     :property_name => 'language'
                   }
                 },
+                :location => '=',
                 :rhs => {
                   :property => {
                     :object => { :string => rip_character_string('rip') },

@@ -98,11 +98,18 @@ describe Rip::Compiler::AST do
   end
 
   context 'assignment' do
-    let(:line_two) { new_location(:rspec, 10, 2, 0) }
+    let(:line_two) { new_location(:rspec, 10, 2, 1) }
     let(:rip) { "# find me\nlanguage = :rip" }
-    let(:comment_node) { Rip::Nodes::Comment.new(location, ' find me') }
+    let(:comment_node) { Rip::Nodes::Comment.new(location.add_character, ' find me') }
     let(:reference_node) { Rip::Nodes::Reference.new(line_two, 'language') }
-    let(:string_node) { Rip::Nodes::String.new(line_two.add_character(11), 'rip') }
+    let(:characters) do
+      [
+        Rip::Nodes::Character.new(line_two.add_character(12), 'r'),
+        Rip::Nodes::Character.new(line_two.add_character(13), 'i'),
+        Rip::Nodes::Character.new(line_two.add_character(14), 'p')
+      ]
+    end
+    let(:string_node) { Rip::Nodes::String.new(line_two.add_character(12), characters) }
     let(:assignment_node) { Rip::Nodes::Assignment.new(line_two.add_character(9), reference_node, string_node) }
 
     let(:comment) { expressions.first }
