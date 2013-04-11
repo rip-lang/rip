@@ -58,6 +58,15 @@ module Rip::Compiler
       Rip::Nodes::RegularExpression.new(location, locals[:pattern].join(''))
     end
 
+    rule(:key => simple(:key), :value => simple(:value)) do |locals|
+      location = locals[:key].location
+      Rip::Nodes::KeyValue.new(location, locals[:key], locals[:value])
+    end
+
+    rule(:key_value_pair => simple(:key_value_pair)) do |locals|
+      locals[:key_value_pair]
+    end
+
     rule(:start => simple(:start), :end => simple(:end), :exclusivity => simple(:exclusivity)) do |locals|
       location = locals[:start].location
       Rip::Nodes::Range.new(location, locals[:start], locals[:end], !locals[:exclusivity].nil?)

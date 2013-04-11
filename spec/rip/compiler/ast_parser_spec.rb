@@ -43,9 +43,25 @@ describe Rip::Compiler::AST do
   context 'key-value pair' do
     subject { expressions.first }
     let(:rip) { ':key: :value' }
-    let(:key_node) { Rip::Nodes::String.new(location, 'key') }
-    let(:value_node) { Rip::Nodes::String.new(location.add_character(6), 'value') }
-    let(:key_value_node) { Rip::Nodes::KeyValue.new(location, key_node, value_node) }
+    let(:key_characters) do
+      [
+        Rip::Nodes::Character.new(location.add_character(1), 'k'),
+        Rip::Nodes::Character.new(location.add_character(2), 'e'),
+        Rip::Nodes::Character.new(location.add_character(3), 'y')
+      ]
+    end
+    let(:key_node) { Rip::Nodes::String.new(location.add_character, key_characters) }
+    let(:value_characters) do
+      [
+        Rip::Nodes::Character.new(location.add_character(7), 'v'),
+        Rip::Nodes::Character.new(location.add_character(8), 'a'),
+        Rip::Nodes::Character.new(location.add_character(9), 'l'),
+        Rip::Nodes::Character.new(location.add_character(10), 'u'),
+        Rip::Nodes::Character.new(location.add_character(11), 'e')
+      ]
+    end
+    let(:value_node) { Rip::Nodes::String.new(location.add_character(7), value_characters) }
+    let(:key_value_node) { Rip::Nodes::KeyValue.new(location.add_character, key_node, value_node) }
 
     it 'has one top-level node' do
       expect(expressions.count).to eq(1)
