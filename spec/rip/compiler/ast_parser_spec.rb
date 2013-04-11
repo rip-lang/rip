@@ -83,8 +83,7 @@ describe Rip::Compiler::AST do
     subject { expressions.first }
     let(:rip) { 'one.two' }
     let(:object_node) { Rip::Nodes::Reference.new(location, 'one') }
-    let(:property_name_node) { Rip::Nodes::Reference.new(location.add_character(4), 'two') }
-    let(:property_node) { Rip::Nodes::Property.new(location.add_character(3), object_node, property_name_node) }
+    let(:property_node) { Rip::Nodes::Property.new(location.add_character(4), object_node, 'two') }
 
     it 'has one top-level node' do
       expect(expressions.count).to eq(1)
@@ -95,7 +94,7 @@ describe Rip::Compiler::AST do
     end
 
     its(:object) { should eq(object_node) }
-    its(:property) { should eq(property_name_node) }
+    its(:name) { should eq('two') }
   end
 
   context 'assignment' do

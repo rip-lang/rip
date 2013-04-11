@@ -1,18 +1,18 @@
 module Rip::Nodes
   class Property < Base
     attr_reader :object
-    attr_reader :property
+    attr_reader :name
 
-    def initialize(location, object, property)
+    def initialize(location, object, name)
       super(location)
       @object = object
-      @property = property
+      @name = name
     end
 
     def ==(other)
       super &&
         (object == other.object) &&
-        (property == other.property)
+        (name == other.name)
     end
   end
 end

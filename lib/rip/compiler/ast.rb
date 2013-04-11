@@ -67,6 +67,16 @@ module Rip::Compiler
       locals[:range]
     end
 
+    rule(:object => simple(:object), :property_name => simple(:property_name)) do |locals|
+      property_name = locals[:property_name]
+      location = location_for(locals[:origin], property_name)
+      Rip::Nodes::Property.new(location, locals[:object], property_name)
+    end
+
+    rule(:property => simple(:property)) do |locals|
+      locals[:property]
+    end
+
     {
       :case => Rip::Nodes::Case,
       :class => Rip::Nodes::Class
