@@ -46,18 +46,20 @@ module Rip::Compiler
       locals[:raw_regex]
     end
 
-    rule(:class => simple(:class), :body => sequence(:body)) do |locals|
+    rule(:class => simple(:class), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
       {
         :class => locals[:class],
         :arguments => [],
+        :location_body => locals[:location_body],
         :body => locals[:body]
       }
     end
 
-    rule(:switch => simple(:switch), :body => sequence(:body)) do |locals|
+    rule(:switch => simple(:switch), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
       {
         :switch => locals[:switch],
         :argument => nil,
+        :location_body => locals[:location_body],
         :body => locals[:body]
       }
     end

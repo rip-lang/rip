@@ -68,6 +68,7 @@ describe Rip::Compiler::Parser do
               :if_block => {
                 :if => 'if',
                 :argument => { :phrase => { :reference => 'true' } },
+                :location_body => '{',
                 :body => [
                   {
                     :assignment => {
@@ -77,6 +78,7 @@ describe Rip::Compiler::Parser do
                         :phrase => {
                           :lambda_block => {
                             :dash_rocket => '->',
+                            :location_body => '{',
                             :body => [ { :comment => ' comment' } ]
                           }
                         }
@@ -93,6 +95,7 @@ describe Rip::Compiler::Parser do
               },
               :else_block => {
                 :else => 'else',
+                :location_body => '{',
                 :body => [
                   {
                     :phrase => [
@@ -162,6 +165,7 @@ describe Rip::Compiler::Parser do
                 :block_sequence => {
                   :try_block => {
                     :try => 'try',
+                    :location_body => '{',
                     :body => []
                   }
                 }
@@ -181,10 +185,12 @@ describe Rip::Compiler::Parser do
                   :unless_block => {
                     :unless => 'unless',
                     :argument => { :phrase => { :string => rip_parsed_string('name') } },
+                    :location_body => '{',
                     :body => []
                   },
                   :else_block => {
                     :else => 'else',
+                    :location_body => '{',
                     :body => []
                   }
                 }
@@ -206,6 +212,7 @@ describe Rip::Compiler::Parser do
                     { :phrase => { :reference => 'one' } },
                     { :phrase => { :reference => 'two' } }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -226,6 +233,7 @@ describe Rip::Compiler::Parser do
                     { :reference => 'one' },
                     { :reference => 'two' }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -258,6 +266,7 @@ describe Rip::Compiler::Parser do
                       }
                     }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -284,6 +293,7 @@ describe Rip::Compiler::Parser do
                       }
                     }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -318,6 +328,7 @@ describe Rip::Compiler::Parser do
                       }
                     }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -340,11 +351,13 @@ describe Rip::Compiler::Parser do
                         :class_block => {
                           :class => 'class',
                           :arguments => [],
+                          :location_body => '{',
                           :body => []
                         }
                       }
                     }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -371,6 +384,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       { :comment => ' comment' }
                     ]
@@ -392,6 +406,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       { :phrase => { :reference => 'name' } }
                     ]
@@ -413,6 +428,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       {
                         :assignment => {
@@ -440,6 +456,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       {
                         :phrase => [
@@ -466,6 +483,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       {
                         :phrase => [
@@ -497,6 +515,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       { :phrase => { :character => '3' } }
                     ]
@@ -518,6 +537,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       {
                         :phrase => {
@@ -525,6 +545,7 @@ describe Rip::Compiler::Parser do
                             :unless_block => {
                               :unless => 'unless',
                               :argument => { :phrase => { :reference => 'false' } },
+                              :location_body => '{',
                               :body => []
                             }
                           }
@@ -684,6 +705,7 @@ describe Rip::Compiler::Parser do
                   :lambda_block => {
                     :dash_rocket => '->',
                     :parameters => '()',
+                    :location_body => '{',
                     :body => []
                   }
                 },

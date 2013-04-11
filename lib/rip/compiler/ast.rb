@@ -14,6 +14,11 @@ module Rip::Compiler
       super(tree, _context.merge(:origin => origin))
     end
 
+    def self.block_body(origin, slice, body)
+      location = location_for(origin, slice)
+      Rip::Nodes::BlockBody.new(location, body)
+    end
+
     def self.location_for(origin, slice)
       Rip::Utilities::Location.new(origin, slice.offset, *slice.line_and_column)
     end
@@ -99,9 +104,10 @@ module Rip::Compiler
       :case => Rip::Nodes::Case,
       :class => Rip::Nodes::Class
     }.each do |keyword, klass|
-      rule(keyword => simple(keyword), :arguments => sequence(:arguments), :body => sequence(:body)) do |locals|
+      rule(keyword => simple(keyword), :arguments => sequence(:arguments), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
-        klass.new(location, locals[:arguments], locals[:body])
+        body = block_body(locals[:origin], locals[:location_body], locals[:body])
+        klass.new(location, locals[:arguments], body)
       end
     end
 
@@ -111,9 +117,10 @@ module Rip::Compiler
       :unless => Rip::Nodes::Unless,
       :switch => Rip::Nodes::Switch
     }.each do |keyword, klass|
-      rule(keyword => simple(keyword), :argument => simple(:argument), :body => sequence(:body)) do |locals|
+      rule(keyword => simple(keyword), :argument => simple(:argument), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
-        klass.new(location, locals[:argument], locals[:body])
+        body = block_body(locals[:origin], locals[:location_body], locals[:body])
+        klass.new(location, locals[:argument], body)
       end
     end
 
@@ -122,9 +129,10 @@ module Rip::Compiler
       :finally => Rip::Nodes::Finally,
       :else => Rip::Nodes::Else
     }.each do |keyword, klass|
-      rule(keyword => simple(keyword), :body => sequence(:body)) do |locals|
+      rule(keyword => simple(keyword), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
-        klass.new(location, locals[:body])
+        body = block_body(locals[:origin], locals[:location_body], locals[:body])
+        klass.new(location, body)
       end
     end
   end
