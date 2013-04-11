@@ -33,8 +33,8 @@ module Rip::Utilities
       # make_keywords(:class, '->'.to_sym, '=>'.to_sym)
       [
         Keyword.new(:class),
-        Keyword.new(:lambda_dash, '->'),
-        Keyword.new(:lambda_fat, '=>')
+        Keyword.new(:dash_rocket, '->'),
+        Keyword.new(:fat_rocket, '=>')
       ]
     end
 
