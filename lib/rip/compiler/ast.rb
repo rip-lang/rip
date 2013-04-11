@@ -101,6 +101,21 @@ module Rip::Compiler
     end
 
     {
+      :dash_rocket => Rip::Nodes::Lambda,
+      :fat_rocket => Rip::Nodes::Lambda
+    }.each do |keyword, klass|
+      rule(keyword => simple(keyword), :parameters => sequence(:parameters), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+        location = location_for(locals[:origin], locals[keyword])
+        body = block_body(locals[:origin], locals[:location_body], locals[:body])
+        klass.new(location, Rip::Utilities::Keywords[keyword], locals[:parameters], body)
+      end
+    end
+
+    rule(:lambda_block => simple(:lambda_block)) do |locals|
+      locals[:lambda_block]
+    end
+
+    {
       :case => Rip::Nodes::Case,
       :class => Rip::Nodes::Class
     }.each do |keyword, klass|
