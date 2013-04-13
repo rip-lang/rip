@@ -630,7 +630,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'allows expressions to take more than one line' do
+      recognizes_as_expected 'allows expressions to take more than one line', :blur do
         let(:rip) do
           <<-RIP
             1 +
