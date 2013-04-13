@@ -14,9 +14,8 @@ module Rip::Utilities
   end
 
   module Keywords
-    def self.[](keyword)
-      _keyword = keyword.to_sym
-      all.detect { |keyword| keyword.keyword == _keyword }
+    def self.[](name)
+      all.detect { |keyword| keyword.name == name }
     end
 
     def self.all
@@ -33,8 +32,8 @@ module Rip::Utilities
       # make_keywords(:class, '->'.to_sym, '=>'.to_sym)
       [
         Keyword.new(:class),
-        Keyword.new(:lambda_dash, '->'),
-        Keyword.new(:lambda_fat, '=>')
+        Keyword.new(:dash_rocket, '->'),
+        Keyword.new(:fat_rocket, '=>')
       ]
     end
 

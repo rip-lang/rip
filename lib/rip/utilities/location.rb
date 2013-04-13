@@ -1,28 +1,28 @@
 module Rip::Utilities
   class Location
     attr_reader :origin
-    attr_reader :absolute_position
+    attr_reader :offset
     attr_reader :line
-    attr_reader :position
+    attr_reader :column
 
-    def initialize(origin, absolute_position, line, position)
+    def initialize(origin, offset, line, column)
       @origin = origin
-      @absolute_position = absolute_position
+      @offset = offset
       @line = line
-      @position = position
+      @column = column
     end
 
     def ==(other)
       (origin == other.origin) &&
-        (absolute_position == other.absolute_position)
+        (offset == other.offset)
     end
 
     def add_character(count = 1)
-      self.class.new(origin, absolute_position + count, line, position + count)
+      self.class.new(origin, offset + count, line, column + count)
     end
 
     def add_line(count = 1)
-      self.class.new(origin, absolute_position, line + count, position).add_character(count)
+      self.class.new(origin, offset, line + count, column).add_character(count)
     end
 
     def inspect
@@ -30,7 +30,7 @@ module Rip::Utilities
     end
 
     def to_s
-      "#{origin}:#{line}:#{position}(#{absolute_position})"
+      "#{origin}:#{line}:#{column}(#{offset})"
     end
   end
 end

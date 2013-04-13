@@ -68,14 +68,19 @@ describe Rip::Compiler::Parser do
               :if_block => {
                 :if => 'if',
                 :argument => { :phrase => { :reference => 'true' } },
+                :location_body => '{',
                 :body => [
                   {
-                    :reference_assignment => {
-                      :reference => 'lambda',
-                      :phrase => {
-                        :lambda_block => {
-                          :dash_rocket => '->',
-                          :body => [ { :comment => ' comment' } ]
+                    :assignment => {
+                      :lhs => { :reference => 'lambda' },
+                      :location => '=',
+                      :rhs => {
+                        :phrase => {
+                          :lambda_block => {
+                            :dash_rocket => '->',
+                            :location_body => '{',
+                            :body => [ { :comment => ' comment' } ]
+                          }
                         }
                       }
                     }
@@ -83,21 +88,22 @@ describe Rip::Compiler::Parser do
                   {
                     :phrase => [
                       { :reference => 'lambda' },
-                      { :regular_invocation => { :arguments => [] } }
+                      { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
                     ]
                   }
                 ]
               },
               :else_block => {
                 :else => 'else',
+                :location_body => '{',
                 :body => [
                   {
                     :phrase => [
-                      { :number => { :integer => '1' } },
+                      { :integer => '1' },
                       {
                         :operator_invocation => {
                           :operator => { :reference => '+' },
-                          :argument => { :phrase => { :number => { :integer => '2' } } }
+                          :argument => { :phrase => { :integer => '2' } }
                         }
                       }
                     ]
@@ -159,6 +165,7 @@ describe Rip::Compiler::Parser do
                 :block_sequence => {
                   :try_block => {
                     :try => 'try',
+                    :location_body => '{',
                     :body => []
                   }
                 }
@@ -178,10 +185,12 @@ describe Rip::Compiler::Parser do
                   :unless_block => {
                     :unless => 'unless',
                     :argument => { :phrase => { :string => rip_parsed_string('name') } },
+                    :location_body => '{',
                     :body => []
                   },
                   :else_block => {
                     :else => 'else',
+                    :location_body => '{',
                     :body => []
                   }
                 }
@@ -199,10 +208,12 @@ describe Rip::Compiler::Parser do
               :phrase => {
                 :class_block => {
                   :class => 'class',
+                  :location_arguments => '(',
                   :arguments => [
                     { :phrase => { :reference => 'one' } },
                     { :phrase => { :reference => 'two' } }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -223,6 +234,7 @@ describe Rip::Compiler::Parser do
                     { :reference => 'one' },
                     { :reference => 'two' }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -241,18 +253,21 @@ describe Rip::Compiler::Parser do
                   :dash_rocket => '->',
                   :parameters => [
                     {
-                      :reference_assignment => {
-                        :reference => 'one',
-                        :phrase => { :number => { :integer => '1' } }
+                      :assignment => {
+                        :lhs => { :reference => 'one' },
+                        :location => '=',
+                        :rhs => { :phrase => { :integer => '1' } }
                       }
                     },
                     {
-                      :reference_assignment => {
-                        :reference => 'two',
-                        :phrase => { :number => { :integer => '2' } }
+                      :assignment => {
+                        :lhs => { :reference => 'two' },
+                        :location => '=',
+                        :rhs => { :phrase => { :integer => '2' } }
                       }
                     }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -272,12 +287,14 @@ describe Rip::Compiler::Parser do
                   :parameters => [
                     { :reference => 'platform' },
                     {
-                      :reference_assignment => {
-                        :reference => 'name',
-                        :phrase => { :string => rip_parsed_string('rip') }
+                      :assignment => {
+                        :lhs => { :reference => 'name' },
+                        :location => '=',
+                        :rhs => { :phrase => { :string => rip_parsed_string('rip') } }
                       }
                     }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -298,18 +315,21 @@ describe Rip::Compiler::Parser do
                     { :reference => 'abc' },
                     { :reference => 'xyz' },
                     {
-                      :reference_assignment => {
-                        :reference => 'one',
-                        :phrase => { :number => { :integer => '1' } }
+                      :assignment => {
+                        :lhs => { :reference => 'one' },
+                        :location => '=',
+                        :rhs => { :phrase => { :integer => '1' } }
                       }
                     },
                     {
-                      :reference_assignment => {
-                        :reference => 'two',
-                        :phrase => { :number => { :integer => '2' } }
+                      :assignment => {
+                        :lhs => { :reference => 'two' },
+                        :location => '=',
+                        :rhs => { :phrase => { :integer => '2' } }
                       }
                     }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -326,17 +346,21 @@ describe Rip::Compiler::Parser do
               :phrase => {
                 :class_block => {
                   :class => 'class',
+                  :location_arguments => '(',
                   :arguments => [
                     {
                       :phrase => {
                         :class_block => {
                           :class => 'class',
+                          :location_arguments => '(',
                           :arguments => [],
+                          :location_body => '{',
                           :body => []
                         }
                       }
                     }
                   ],
+                  :location_body => '{',
                   :body => []
                 }
               }
@@ -363,6 +387,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       { :comment => ' comment' }
                     ]
@@ -384,6 +409,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       { :phrase => { :reference => 'name' } }
                     ]
@@ -405,11 +431,13 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       {
-                        :reference_assignment => {
-                          :reference => 'x',
-                          :phrase => { :string => rip_parsed_string('y') }
+                        :assignment => {
+                          :lhs => { :reference => 'x' },
+                          :location => '=',
+                          :rhs => { :phrase => { :string => rip_parsed_string('y') } }
                         }
                       }
                     ]
@@ -431,11 +459,12 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       {
                         :phrase => [
                           { :reference => 'run!' },
-                          { :regular_invocation => { :arguments => [] } }
+                          { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
                         ]
                       }
                     ]
@@ -457,6 +486,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       {
                         :phrase => [
@@ -488,6 +518,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       { :phrase => { :character => '3' } }
                     ]
@@ -509,6 +540,7 @@ describe Rip::Compiler::Parser do
                   :if_block => {
                     :if => 'if',
                     :argument => { :phrase => { :reference => 'true' } },
+                    :location_body => '{',
                     :body => [
                       {
                         :phrase => {
@@ -516,6 +548,7 @@ describe Rip::Compiler::Parser do
                             :unless_block => {
                               :unless => 'unless',
                               :argument => { :phrase => { :reference => 'false' } },
+                              :location_body => '{',
                               :body => []
                             }
                           }
@@ -549,7 +582,7 @@ describe Rip::Compiler::Parser do
           {
             :keyword => { :exit => 'exit' },
             :payload => {
-              :phrase => { :number => { :integer => '0' } }
+              :phrase => { :integer => '0' }
             }
           }
         ]
@@ -564,11 +597,105 @@ describe Rip::Compiler::Parser do
             :keyword => { :exit => 'exit' },
             :payload => {
               :phrase => {
-                :phrase => { :number => { :integer => '0' } }
+                :phrase => { :integer => '0' }
               }
             }
           }
         ]
+      end
+    end
+
+    context 'multiple expressions' do
+      recognizes_as_expected 'terminates expressions properly' do
+        let(:rip) do
+          <<-RIP
+            one
+            two
+            three
+          RIP
+        end
+        let(:expected_raw) do
+          [
+            { :phrase => { :reference => 'one' } },
+            { :phrase => { :reference => 'two' } },
+            { :phrase => { :reference => 'three' } }
+          ]
+        end
+        let(:expected) do
+          [
+            { :reference => 'one' },
+            { :reference => 'two' },
+            { :reference => 'three' }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'allows expressions to take more than one line', :blur do
+        let(:rip) do
+          <<-RIP
+            1 +
+              2 -
+              3
+          RIP
+        end
+        let(:expected_raw) do
+          [
+            {
+              :phrase => [
+                { :integer => '1' },
+                {
+                  :operator_invocation => {
+                    :operator => { :reference => '+' },
+                    :argument => {
+                      :phrase => [
+                        { :integer => '2' },
+                        {
+                          :operator_invocation => {
+                            :operator => { :reference => '-' },
+                            :argument => {
+                              :phrase => { :integer => '3' }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :invocation => {
+                :callable => {
+                  :property => {
+                    :object => { :sign => '+', :integer => '1' },
+                    :property_name => { :reference => '+' }
+                  }
+                },
+                :location => '+',
+                :arguments => [
+                  {
+                    :invocation => {
+                      :callable => {
+                        :property => {
+                          :object => { :sign => '+', :integer => '2' },
+                          :property_name => { :reference => '-' }
+                        }
+                      },
+                      :location => '-',
+                      :arguments => [
+                        { :sign => '+', :integer => '3' }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        end
       end
     end
 
@@ -583,10 +710,11 @@ describe Rip::Compiler::Parser do
                   :lambda_block => {
                     :dash_rocket => '->',
                     :parameters => '()',
+                    :location_body => '{',
                     :body => []
                   }
                 },
-                :regular_invocation => { :arguments => [] }
+                :regular_invocation => { :location_arguments => '(', :arguments => [] }
               ]
             }
           ]
@@ -600,7 +728,7 @@ describe Rip::Compiler::Parser do
             {
               :phrase => [
                 { :reference => 'full_name' },
-                { :regular_invocation => { :arguments => [] } }
+                { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
               ]
             }
           ]
@@ -616,6 +744,7 @@ describe Rip::Compiler::Parser do
                 { :reference => 'full_name' },
                 {
                   :regular_invocation => {
+                    :location_arguments => '(',
                     :arguments => [
                       { :phrase => { :string => rip_parsed_string('Thomas') } },
                       { :phrase => { :string => rip_parsed_string('Ingram') } }
@@ -639,7 +768,7 @@ describe Rip::Compiler::Parser do
                   :index_invocation => {
                     :open => '[',
                     :arguments => [
-                      { :phrase => { :number => { :integer => '0' } } }
+                      { :phrase => { :integer => '0' } }
                     ],
                     :close => ']'
                   }
@@ -656,11 +785,11 @@ describe Rip::Compiler::Parser do
           [
             {
               :phrase => [
-                { :number => { :integer => '2' } },
+                { :integer => '2' },
                 {
                   :operator_invocation => {
                     :operator => { :reference => '+' },
-                    :argument => { :phrase => { :number => { :integer => '2' } } }
+                    :argument => { :phrase => { :integer => '2' } }
                   }
                 }
               ]
@@ -669,14 +798,72 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'assignment as an operator invocation' do
+      recognizes_as_expected 'reference assignment' do
         let(:rip) { 'favorite_language = :rip' }
         let(:expected_raw) do
           [
             {
-              :reference_assignment => {
-                :reference => 'favorite_language',
-                :phrase => { :string => rip_parsed_string('rip') }
+              :assignment => {
+                :lhs => { :reference => 'favorite_language' },
+                :location => '=',
+                :rhs => { :phrase => { :string => rip_parsed_string('rip') } }
+              }
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :assignment => {
+                :lhs => { :reference => 'favorite_language' },
+                :location => '=',
+                :rhs => { :string => rip_character_string('rip') }
+              }
+            }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'property assignment' do
+        let(:rip) { 'favorite.language = :rip.lang' }
+        let(:expected_raw) do
+          [
+            {
+              :phrase => [
+                { :reference => 'favorite' },
+                { :property_name => { :reference => 'language' } },
+                {
+                  :property_assignment => {
+                    :location => '=',
+                    :rhs => {
+                      :phrase => [
+                        { :string => rip_parsed_string('rip') },
+                        { :property_name => { :reference => 'lang' } }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :assignment => {
+                :lhs => {
+                  :property => {
+                    :object => { :reference => 'favorite' },
+                    :property_name => 'language'
+                  }
+                },
+                :location => '=',
+                :rhs => {
+                  :property => {
+                    :object => { :string => rip_character_string('rip') },
+                    :property_name => 'lang'
+                  }
+                }
               }
             }
           ]
@@ -689,7 +876,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { '(0)' }
         let(:expected_raw) do
           [
-            { :phrase => { :phrase => { :number => { :integer => '0' } } } }
+            { :phrase => { :phrase => { :integer => '0' } } }
           ]
         end
       end
@@ -709,11 +896,12 @@ describe Rip::Compiler::Parser do
                             {:reference=>"l"},
                             {
                               :regular_invocation=> {
+                                :location_arguments => '(',
                                 :arguments=> [
                                   {
                                     :phrase=> {
                                       :phrase=> [
-                                        { :number => {:integer=>"1"} },
+                                        { :integer=>"1" },
                                         {
                                           :operator_invocation=> {
                                             :operator=>{:reference=>"+"},
@@ -722,13 +910,13 @@ describe Rip::Compiler::Parser do
                                                 :phrase=> {
                                                   :phrase=> {
                                                     :phrase=> [
-                                                      { :number => {:integer=>"2"} },
+                                                      { :integer=>"2" },
                                                       {
                                                         :operator_invocation=>
                                                         {
                                                           :operator=>{:reference=>"-"},
                                                           :argument=> {
-                                                            :phrase=> { :number => {:integer=> "3"} }
+                                                            :phrase=> { :integer=> "3" }
                                                           }
                                                         }
                                                       }
@@ -765,12 +953,12 @@ describe Rip::Compiler::Parser do
           [
             {
               :phrase => [
-                { :number => { :integer => '0' } },
+                { :integer => '0' },
                 { :property_name => { :reference => 'one' } },
-                { :regular_invocation => { :arguments => [] } },
+                { :regular_invocation => { :location_arguments => '(', :arguments => [] } },
                 { :property_name => { :reference => 'two' } },
                 { :property_name => { :reference => 'three' } },
-                { :regular_invocation => { :arguments=> [] } }
+                { :regular_invocation => { :location_arguments => '(', :arguments=> [] } }
               ]
             }
           ]
@@ -785,17 +973,17 @@ describe Rip::Compiler::Parser do
               :phrase => [
                 {
                   :phrase => [
-                    { :number => { :integer => '1' } },
+                    { :integer => '1' },
                     {
                       :operator_invocation => {
                         :operator => { :reference => '-' },
-                        :argument => { :phrase => { :number => { :integer => '2' } } }
+                        :argument => { :phrase => { :integer => '2' } }
                       }
                     }
                   ]
                 },
                 { :property_name => {:reference => 'zero?'} },
-                { :regular_invocation => { :arguments => [] } }
+                { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
               ]
             }
           ]
@@ -808,19 +996,19 @@ describe Rip::Compiler::Parser do
           [
             {
               :phrase => [
-                { :number => { :integer => '1' } },
+                { :integer => '1' },
                 {
                   :operator_invocation => {
                     :operator => { :reference => '+' },
                     :argument => { :phrase => [
-                      { :number => { :integer => '2' } },
+                      { :integer => '2' },
                       { :operator_invocation => {
                         :operator => { :reference => '+' },
                         :argument => { :phrase => [
-                          { :number => { :integer => '3' } },
+                          { :integer => '3' },
                           { :operator_invocation => {
                             :operator => { :reference => '+' },
-                            :argument => { :phrase => { :number => { :integer => '4' } } }
+                            :argument => { :phrase => { :integer => '4' } }
                           }}
                         ]}
                       }}
@@ -840,12 +1028,12 @@ describe Rip::Compiler::Parser do
           let(:rip) { '42' }
           let(:expected_raw) do
             [
-              { :phrase => { :number => { :integer => '42' } } }
+              { :phrase => { :integer => '42' } }
             ]
           end
           let(:expected) do
             [
-              { :number => { :integer => '42' } }
+              { :sign => '+', :integer => '42' }
             ]
           end
         end
@@ -854,12 +1042,12 @@ describe Rip::Compiler::Parser do
           let(:rip) { '4.2' }
           let(:expected_raw) do
             [
-              { :phrase => { :number => { :decimal => '4.2' } } }
+              { :phrase => { :decimal => '4.2' } }
             ]
           end
           let(:expected) do
             [
-              { :number => { :decimal => '4.2' } }
+              { :sign => '+', :decimal => '4.2' }
             ]
           end
         end
@@ -868,12 +1056,12 @@ describe Rip::Compiler::Parser do
           let(:rip) { '-3' }
           let(:expected_raw) do
             [
-              { :phrase => { :number => { :sign => '-', :integer => '3' } } }
+              { :phrase => { :sign => '-', :integer => '3' } }
             ]
           end
           let(:expected) do
             [
-              { :number => { :sign => '-', :integer => '3' } }
+              { :sign => '-', :integer => '3' }
             ]
           end
         end
@@ -882,12 +1070,12 @@ describe Rip::Compiler::Parser do
           let(:rip) { '123_456_789' }
           let(:expected_raw) do
             [
-              { :phrase => { :number => { :integer => '123_456_789' } } }
+              { :phrase => { :integer => '123_456_789' } }
             ]
           end
           let(:expected) do
             [
-              { :number => { :integer => '123_456_789' } }
+              { :sign => '+', :integer => '123_456_789' }
             ]
           end
         end
@@ -900,13 +1088,23 @@ describe Rip::Compiler::Parser do
             { :phrase => { :character => '9' } }
           ]
         end
+        let(:expected) do
+          [
+            { :character => '9' }
+          ]
+        end
       end
 
       recognizes_as_expected 'escaped character' do
         let(:rip) { '`\n' }
         let(:expected_raw) do
           [
-            { :phrase => { :character => { :escaped_any => 'n' } } }
+            { :phrase => { :character => { :location => '\\', :escaped_token => 'n' } } }
+          ]
+        end
+        let(:expected) do
+          [
+            { :character => "\n" }
           ]
         end
       end
@@ -933,11 +1131,24 @@ describe Rip::Compiler::Parser do
             {
               :phrase => {
                 :string => [
-                  { :raw_string=>'o' },
+                  { :raw_string => 'o' },
                   { :raw_string => 'n' },
-                  { :escaped_any => 'e' }
+                  { :raw_string => '\\' },
+                  { :raw_string => 'e' }
                 ]
               }
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :string => [
+                { :character => 'o' },
+                { :character => 'n' },
+                { :character => '\\' },
+                { :character => 'e' }
+              ]
             }
           ]
         end
@@ -1083,7 +1294,7 @@ describe Rip::Compiler::Parser do
           [
             {
               :phrase => [
-                { :number => { :integer => '5' } },
+                { :integer => '5' },
                 {
                   :key_value_pair => {
                     :value => { :phrase => { :string => rip_parsed_string('five') } }
@@ -1101,10 +1312,10 @@ describe Rip::Compiler::Parser do
           [
             {
               :phrase => [
-                { :number => { :integer => '1' } },
+                { :integer => '1' },
                 {
                   :range => {
-                    :end => { :phrase => { :number => { :integer => '3' } } },
+                    :end => { :phrase => { :integer => '3' } },
                     :exclusivity => nil
                   }
                 }
@@ -1120,7 +1331,7 @@ describe Rip::Compiler::Parser do
           [
             {
               :phrase => [
-                { :number => { :integer => '1' } },
+                { :integer => '1' },
                 {
                   :range => {
                     :end => { :phrase => { :reference => 'age' } },
@@ -1161,7 +1372,7 @@ describe Rip::Compiler::Parser do
                       { :string => rip_parsed_string('age') },
                       {
                         :key_value_pair => {
-                          :value => { :phrase => { :number => { :integer => '31' } } }
+                          :value => { :phrase => { :integer => '31' } }
                         }
                       }
                     ]
@@ -1206,7 +1417,7 @@ describe Rip::Compiler::Parser do
             {
               :phrase => {
                 :list => [
-                  { :phrase => { :number => { :integer => '31' } } },
+                  { :phrase => { :integer => '31' } },
                   { :phrase => { :string => rip_parsed_string('Thomas') } }
                 ]
               }

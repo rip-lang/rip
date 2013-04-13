@@ -14,7 +14,7 @@ describe Rip::Utilities::Location do
     end
 
     it 'notices important differences in position' do
-      expect(location).not_to eq(location_for(:absolute_position => 3))
+      expect(location).not_to eq(location_for(:offset => 3))
     end
   end
 

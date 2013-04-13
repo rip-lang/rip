@@ -11,8 +11,12 @@ module Rip::Compiler
       @source_code = source_code
     end
 
+    # NOTE shouldn't Rip::Compiler::AST create Rip::Nodes::Module?
     def syntax_tree
-      Rip::Compiler::AST.new(origin).apply(parse_tree)
+      location = Rip::Utilities::Location.new(origin, 0, 1, 1)
+      expressions = Rip::Compiler::AST.new(origin).apply(parse_tree)
+      _expressions = expressions.is_a?(String) ? [] : expressions
+      Rip::Nodes::Module.new(location, _expressions)
     end
 
     def parse_tree
@@ -86,9 +90,9 @@ module Rip::Compiler
     rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) >> reference.absent? }.inject(:|) }
 
 
-    rule(:reference_assignment) { (reference >> whitespaces? >> equals >> whitespaces? >> phrase).as(:reference_assignment) }
+    rule(:reference_assignment) { (reference.as(:lhs) >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase.as(:rhs)).as(:assignment) }
 
-    rule(:phrase) { (phrase_base >> (key_value_pair | range | operator_invocation | regular_invocation | index_invocation | property).repeat).as(:phrase) }
+    rule(:phrase) { (phrase_base >> (expression_terminator.absent? >> (key_value_pair | range | property_assignment | operator_invocation | regular_invocation | index_invocation | property)).repeat).as(:phrase) }
 
 
     rule(:regular_invocation) { multiple_arguments.as(:regular_invocation) }
@@ -98,6 +102,8 @@ module Rip::Compiler
     rule(:key_value_pair) { (whitespaces? >> colon >> whitespaces? >> phrase.as(:value)).as(:key_value_pair) }
 
     rule(:range) { (whitespaces? >> dot >> dot >> dot.maybe.as(:exclusivity) >> phrase.as(:end)).as(:range) }
+
+    rule(:property_assignment) { (whitespaces >> equals.as(:location) >> whitespaces >> phrase.as(:rhs)).as(:property_assignment) }
 
     rule(:operator_invocation) { (whitespaces >> reference.as(:operator) >> whitespaces >> phrase.as(:argument)).as(:operator_invocation) }
 
@@ -124,10 +130,10 @@ module Rip::Compiler
     rule(:class_block) { (str('class').as(:class) >> spaces? >> multiple_arguments.maybe >> block_body).as(:class_block) }
     rule(:case_block)  { (str('case').as(:case)   >> spaces? >> multiple_arguments       >> block_body).as(:case_block) }
 
-    rule(:catch_block)  { (str('catch').as(:catch)   >> spaces? >> single_argument >> block_body).as(:catch_block) }
-    rule(:if_block)     { (str('if').as(:if)         >> spaces? >> single_argument >> block_body).as(:if_block) }
-    rule(:unless_block) { (str('unless').as(:unless) >> spaces? >> single_argument >> block_body).as(:unless_block) }
-    rule(:switch_block) { (str('switch').as(:switch) >> spaces? >> single_argument >> block_body_switch).as(:switch_block) }
+    rule(:catch_block)  { (str('catch').as(:catch)   >> spaces? >> single_argument       >> block_body).as(:catch_block) }
+    rule(:if_block)     { (str('if').as(:if)         >> spaces? >> single_argument       >> block_body).as(:if_block) }
+    rule(:unless_block) { (str('unless').as(:unless) >> spaces? >> single_argument       >> block_body).as(:unless_block) }
+    rule(:switch_block) { (str('switch').as(:switch) >> spaces? >> single_argument.maybe >> block_body_switch).as(:switch_block) }
 
     rule(:try_block)     { (str('try').as(:try)         >> block_body).as(:try_block) }
     rule(:finally_block) { (str('finally').as(:finally) >> block_body).as(:finally_block) }
@@ -137,12 +143,12 @@ module Rip::Compiler
     rule(:required_parameter) { reference }
     rule(:optional_parameter) { reference_assignment }
 
-    rule(:multiple_arguments) { parenthesis_open >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
+    rule(:multiple_arguments) { parenthesis_open.as(:location_arguments) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
 
     rule(:single_argument) { parenthesis_open >> whitespaces? >> phrase.as(:argument) >> whitespaces? >> parenthesis_close }
 
-    rule(:block_body) { whitespaces? >> brace_open >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }
-    rule(:block_body_switch) { (case_block.repeat(1) >> whitespaces? >> else_block.maybe).as(:body) }
+    rule(:block_body) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }
+    rule(:block_body_switch) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> (case_block.repeat(1) >> whitespaces? >> else_block.maybe).as(:body) >> whitespaces? >> brace_close }
 
     # https://github.com/kschiess/parslet/blob/master/example/capture.rb
     # TODO literals for heredoc
@@ -153,7 +159,7 @@ module Rip::Compiler
 
     # WARNING order is important here: decimal must be before integer or the integral part of
     #   a decimal could be interpreted as a integer followed by a decimal starting with a dot
-    rule(:number) { (sign.maybe >> (decimal | integer)).as(:number) }
+    rule(:number) { sign.maybe >> (decimal | integer) }
 
     rule(:decimal) { (digits.maybe >> dot >> digits).as(:decimal) }
     rule(:integer) { digits.as(:integer) }
@@ -172,17 +178,17 @@ module Rip::Compiler
     rule(:escape_regex)    { escape_token_slash_forward | escape_token_slash_back }
     rule(:escape_advanced) { escape_token_unicode       | escape_token_any }
 
-    rule(:escape_token_quote_single)  { slash_back >> quote_single.as(:escaped_quote_single) }
-    rule(:escape_token_double)        { slash_back >> quote_double.as(:escaped_quote_double) }
-    rule(:escape_token_slash_back)    { slash_back >> slash_back.as(:escaped_slash_back) }
-    rule(:escape_token_slash_forward) { slash_back >> slash_forward.as(:escaped_slash_forward) }
-    rule(:escape_token_unicode)       { slash_back >> str('u') >> match['0-9a-f'].repeat(4, 4).as(:escaped_unicode) }
-    rule(:escape_token_any)           { slash_back >> any.as(:escaped_any) }
+    rule(:escape_token_quote_single)  { slash_back.as(:location) >> quote_single.as(:escaped_token) }
+    rule(:escape_token_double)        { slash_back.as(:location) >> quote_double.as(:escaped_token) }
+    rule(:escape_token_slash_back)    { slash_back.as(:location) >> slash_back.as(:escaped_token) }
+    rule(:escape_token_slash_forward) { slash_back.as(:location) >> slash_forward.as(:escaped_token) }
+    rule(:escape_token_unicode)       { slash_back.as(:location) >> str('u') >> match['0-9a-f'].repeat(4, 4).as(:escaped_token_unicode) }
+    rule(:escape_token_any)           { slash_back.as(:location) >> any.as(:escaped_token) }
 
 
     rule(:string) { string_symbol | string_single | string_double }
 
-    rule(:string_symbol) { colon >> (escape_advanced | character_legal.as(:raw_string)).repeat(1).as(:string) }
+    rule(:string_symbol) { colon >> (escape_simple | character_legal.as(:raw_string)).repeat(1).as(:string) }
 
     rule(:string_single) { string_parser(quote_single, escape_simple) }
     rule(:string_double) { string_parser(quote_double, escape_advanced | interpolation) }
