@@ -16,9 +16,99 @@ module Rip::Compiler
     }
 
     def apply(tree, context = nil)
-      _tree = normalize_phrase(tree)
-      super(_tree)
+      _tree = normalize_atom(tree)
+      __tree = normalize_phrase(_tree)
+      super(__tree)
     end
+
+
+    def normalize_atom(tree)
+      case tree
+      when Array
+        normalize_atom_array(tree)
+      when Hash
+        normalize_atom_hash(tree)
+      else
+        tree
+      end
+    end
+
+    def normalize_atom_array(tree)
+      tree.map { |leaf| normalize_atom(leaf) }
+    end
+
+    def normalize_atom_hash(tree)
+      atom_or_parts = tree[:atom]
+      case atom_or_parts
+      when Array
+        tree.merge(:atom => normalize_atom_parts(atom_or_parts))
+      when Hash
+        normalize_atom(atom_or_parts)
+      else
+        tree
+      end
+    end
+
+    def normalize_atom_parts(atom_or_parts)
+      atom_or_parts.inject do |atom_base, part|
+        case part.keys.sort.first
+        when :key_value_pair
+          {
+            :key_value_pair => {
+              :key => atom_base,
+              :value => normalize_phrase(part[:key_value_pair][:value])
+            }
+          }
+        when :range
+          {
+            :range => {
+              :start => atom_base,
+              :end => normalize_phrase(part[:range][:end]),
+              :exclusivity => part[:range][:exclusivity]
+            }
+          }
+        when :property_assignment
+          {
+            :assignment => {
+              :lhs => normalize_phrase(atom_base),
+              :location => part[:property_assignment][:location],
+              :rhs => normalize_phrase(part[:property_assignment][:rhs])
+            }
+          }
+        when :regular_invocation
+          {
+            :invocation => {
+              :callable => atom_base,
+              :location => part[:regular_invocation][:location_arguments],
+              :arguments => normalize_phrase(part[:regular_invocation][:arguments])
+            }
+          }
+        when :index_invocation
+          {
+            :invocation => {
+              :callable => {
+                :property => {
+                  :object => normalize_phrase(atom_base),
+                  :property_name => (part[:index_invocation][:open] + part[:index_invocation][:close])
+                }
+              },
+              :location => part[:index_invocation][:open],
+              :arguments => normalize_phrase(part[:index_invocation][:arguments])
+            }
+          }
+        when :property_name
+          {
+            :property => {
+              :object => normalize_phrase(atom_base),
+              :property_name => normalize_phrase(part[:property_name][:reference])
+            }
+          }
+        else
+          part
+        end
+      end
+    end
+
 
     def normalize_phrase(tree)
       case tree
@@ -50,68 +140,17 @@ module Rip::Compiler
     def normalize_phrase_parts(phrase_or_parts)
       phrase_or_parts.inject do |phrase_base, part|
         case part.keys.sort.first
-        when :key_value_pair
-          {
-            :key_value_pair => {
-              :key => phrase_base,
-              :value => normalize_phrase(part[:key_value_pair][:value])
-            }
-          }
-        when :range
-          {
-            :range => {
-              :start => phrase_base,
-              :end => normalize_phrase(part[:range][:end]),
-              :exclusivity => part[:range][:exclusivity]
-            }
-          }
-        when :property_assignment
-          {
-            :assignment => {
-              :lhs => normalize_phrase(phrase_base),
-              :location => part[:property_assignment][:location],
-              :rhs => normalize_phrase(part[:property_assignment][:rhs])
-            }
-          }
         when :operator_invocation
           {
-            :operator_invocation => {
+            :invocation => {
               :callable => {
                 :property => {
                   :object => normalize_phrase(phrase_base),
-                  :property_name => part[:operator_invocation][:operator]
+                  :property_name => part[:operator_invocation][:operator][:reference]
                 }
               },
               :location => part[:operator_invocation][:operator][:reference],
               :arguments => [ normalize_phrase(part[:operator_invocation][:argument]) ]
-            }
-          }
-        when :regular_invocation
-          {
-            :invocation => {
-              :callable => phrase_base,
-              :location => part[:regular_invocation][:location_arguments],
-              :arguments => normalize_phrase(part[:regular_invocation][:arguments])
-            }
-          }
-        when :index_invocation
-          {
-            :invocation => {
-              :callable => {
-                :property => {
-                  :object => normalize_phrase(phrase_base),
-                  :property_name => (part[:index_invocation][:open] + part[:index_invocation][:close])
-                }
-              },
-              :location => part[:index_invocation][:open],
-              :arguments => normalize_phrase(part[:index_invocation][:arguments])
-            }
-          }
-        when :property_name
-          {
-            :property => {
-              :object => normalize_phrase(phrase_base),
-              :property_name => normalize_phrase(part[:property_name][:reference])
             }
           }
         else
@@ -124,6 +163,7 @@ module Rip::Compiler
     def self.slice(location_slice, text)
       Parslet::Slice.new(text.to_s, location_slice.offset, location_slice.line_cache)
     end
+
 
     rule(:location => simple(:location), :escaped_token => simple(:token)) do |locals|
       token = locals[:token].to_s

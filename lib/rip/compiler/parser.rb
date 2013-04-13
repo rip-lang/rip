@@ -92,7 +92,9 @@ module Rip::Compiler
 
     rule(:reference_assignment) { (reference.as(:lhs) >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase.as(:rhs)).as(:assignment) }
 
-    rule(:phrase) { (phrase_base >> (expression_terminator.absent? >> (key_value_pair | range | property_assignment | operator_invocation | regular_invocation | index_invocation | property)).repeat).as(:phrase) }
+    rule(:phrase) { (atom >> (expression_terminator.absent? >> operator_invocation).repeat).as(:phrase) }
+
+    rule(:atom) { (phrase_base >> (expression_terminator.absent? >> (key_value_pair | range | property_assignment | regular_invocation | index_invocation | property)).repeat).as(:atom) }
 
 
     rule(:regular_invocation) { multiple_arguments.as(:regular_invocation) }
@@ -105,7 +107,7 @@ module Rip::Compiler
 
     rule(:property_assignment) { (whitespaces >> equals.as(:location) >> whitespaces >> phrase.as(:rhs)).as(:property_assignment) }
 
-    rule(:operator_invocation) { (whitespaces >> reference.as(:operator) >> whitespaces >> phrase.as(:argument)).as(:operator_invocation) }
+    rule(:operator_invocation) { (whitespaces >> reference.as(:operator) >> whitespaces >> atom.as(:argument)).as(:operator_invocation) }
 
     rule(:property) { dot >> property_name.as(:property_name) }
     rule(:property_name) { reference | (bracket_open >> bracket_close) }

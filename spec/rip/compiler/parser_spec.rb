@@ -630,7 +630,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'allows expressions to take more than one line', :blur do
+      recognizes_as_expected 'allows expressions to take more than one line' do
         let(:rip) do
           <<-RIP
             1 +
@@ -642,23 +642,17 @@ describe Rip::Compiler::Parser do
           [
             {
               :phrase => [
-                { :integer => '1' },
+                { :atom => { :integer => '1' } },
                 {
                   :operator_invocation => {
                     :operator => { :reference => '+' },
-                    :argument => {
-                      :phrase => [
-                        { :integer => '2' },
-                        {
-                          :operator_invocation => {
-                            :operator => { :reference => '-' },
-                            :argument => {
-                              :phrase => { :integer => '3' }
-                            }
-                          }
-                        }
-                      ]
-                    }
+                    :argument => { :atom => { :integer => '2' } }
+                  }
+                },
+                {
+                  :operator_invocation => {
+                    :operator => { :reference => '-' },
+                    :argument => { :atom => { :integer => '3' } }
                   }
                 }
               ]
@@ -671,26 +665,26 @@ describe Rip::Compiler::Parser do
               :invocation => {
                 :callable => {
                   :property => {
-                    :object => { :sign => '+', :integer => '1' },
-                    :property_name => { :reference => '+' }
+                    :object => {
+                      :invocation => {
+                        :callable => {
+                          :property => {
+                            :object => { :sign => '+', :integer => '1' },
+                            :property_name => '+'
+                          }
+                        },
+                        :location => '+',
+                        :arguments => [
+                          { :sign => '+', :integer => '2' }
+                        ]
+                      }
+                    },
+                    :property_name => '-'
                   }
                 },
-                :location => '+',
+                :location => '-',
                 :arguments => [
-                  {
-                    :invocation => {
-                      :callable => {
-                        :property => {
-                          :object => { :sign => '+', :integer => '2' },
-                          :property_name => { :reference => '-' }
-                        }
-                      },
-                      :location => '-',
-                      :arguments => [
-                        { :sign => '+', :integer => '3' }
-                      ]
-                    }
-                  }
+                  { :sign => '+', :integer => '3' }
                 ]
               }
             }
