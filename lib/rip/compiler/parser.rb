@@ -85,30 +85,28 @@ module Rip::Compiler
 
     rule(:expression) { expression_base >> spaces? >> expression_terminator? }
 
-    rule(:expression_base) { (keyword.as(:keyword) >> spaces >> (reference_assignment | phrase).as(:payload)) | keyword.as(:keyword) | reference_assignment | phrase }
+    rule(:expression_base) { (keyword.as(:keyword) >> spaces >> phrase.as(:payload)) | keyword.as(:keyword) | phrase }
 
     rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) >> reference.absent? }.inject(:|) }
 
 
-    rule(:reference_assignment) { (reference.as(:lhs) >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase.as(:rhs)).as(:assignment) }
+    rule(:phrase) { atom_5 }
 
-    rule(:phrase) { (atom >> (expression_terminator.absent? >> operator_invocation).repeat).as(:phrase) }
+    rule(:atom_5) { (atom_4 >> (expression_terminator.absent? >> assignment).repeat).as(:atom) }
+    rule(:assignment) { (whitespaces >> equals.as(:location) >> whitespaces >> phrase.as(:rhs)).as(:assignment) }
 
-    rule(:atom) { (phrase_base >> (expression_terminator.absent? >> (key_value_pair | range | property_assignment | regular_invocation | index_invocation | property)).repeat).as(:atom) }
+    rule(:atom_4) { (atom_3 >> (expression_terminator.absent? >> operator_invocation).repeat).as(:atom) }
+    rule(:operator_invocation) { (whitespaces >> reference.as(:operator) >> whitespaces >> atom_3.as(:argument)).as(:operator_invocation) }
 
+    rule(:atom_3) { (atom_2 >> (expression_terminator.absent? >> key_value_pair).repeat).as(:atom) }
+    rule(:key_value_pair) { (whitespaces? >> colon >> whitespaces? >> atom_2.as(:value)).as(:key_value_pair) }
 
+    rule(:atom_2) { (atom_1 >> (expression_terminator.absent? >> range).repeat).as(:atom) }
+    rule(:range) { (whitespaces? >> dot >> dot >> dot.maybe.as(:exclusivity) >> atom_1.as(:end)).as(:range) }
+
+    rule(:atom_1) { (phrase_base >> (expression_terminator.absent? >> (regular_invocation | index_invocation | property)).repeat).as(:atom) }
     rule(:regular_invocation) { multiple_arguments.as(:regular_invocation) }
-
     rule(:index_invocation) { (bracket_open.as(:open) >> csv(phrase).as(:arguments) >> bracket_close.as(:close)).as(:index_invocation) }
-
-    rule(:key_value_pair) { (whitespaces? >> colon >> whitespaces? >> phrase.as(:value)).as(:key_value_pair) }
-
-    rule(:range) { (whitespaces? >> dot >> dot >> dot.maybe.as(:exclusivity) >> phrase.as(:end)).as(:range) }
-
-    rule(:property_assignment) { (whitespaces >> equals.as(:location) >> whitespaces >> phrase.as(:rhs)).as(:property_assignment) }
-
-    rule(:operator_invocation) { (whitespaces >> reference.as(:operator) >> whitespaces >> atom.as(:argument)).as(:operator_invocation) }
-
     rule(:property) { dot >> property_name.as(:property_name) }
     rule(:property_name) { reference | (bracket_open >> bracket_close) }
 
@@ -143,7 +141,7 @@ module Rip::Compiler
 
     rule(:parameters) { parenthesis_open >> whitespaces? >> csv(optional_parameter | required_parameter) >> whitespaces? >> parenthesis_close }
     rule(:required_parameter) { reference }
-    rule(:optional_parameter) { reference_assignment }
+    rule(:optional_parameter) { reference >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase }
 
     rule(:multiple_arguments) { parenthesis_open.as(:location_arguments) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
 
