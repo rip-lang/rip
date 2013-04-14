@@ -17,8 +17,7 @@ module Rip::Compiler
 
     def apply(tree, context = nil)
       _tree = normalize_atom(tree)
-      __tree = normalize_phrase(_tree)
-      super(__tree)
+      super(_tree)
     end
 
 
@@ -56,23 +55,23 @@ module Rip::Compiler
           {
             :key_value_pair => {
               :key => atom_base,
-              :value => normalize_phrase(part[:key_value_pair][:value])
+              :value => normalize_atom(part[:key_value_pair][:value])
             }
           }
         when :range
           {
             :range => {
               :start => atom_base,
-              :end => normalize_phrase(part[:range][:end]),
+              :end => normalize_atom(part[:range][:end]),
               :exclusivity => part[:range][:exclusivity]
             }
           }
         when :property_assignment
           {
             :assignment => {
-              :lhs => normalize_phrase(atom_base),
+              :lhs => normalize_atom(atom_base),
               :location => part[:property_assignment][:location],
-              :rhs => normalize_phrase(part[:property_assignment][:rhs])
+              :rhs => normalize_atom(part[:property_assignment][:rhs])
             }
           }
         when :regular_invocation
@@ -80,7 +79,7 @@ module Rip::Compiler
             :invocation => {
               :callable => atom_base,
               :location => part[:regular_invocation][:location_arguments],
-              :arguments => normalize_phrase(part[:regular_invocation][:arguments])
+              :arguments => normalize_atom(part[:regular_invocation][:arguments])
             }
           }
         when :index_invocation
@@ -88,69 +87,32 @@ module Rip::Compiler
             :invocation => {
               :callable => {
                 :property => {
-                  :object => normalize_phrase(atom_base),
+                  :object => normalize_atom(atom_base),
                   :property_name => (part[:index_invocation][:open] + part[:index_invocation][:close])
                 }
               },
               :location => part[:index_invocation][:open],
-              :arguments => normalize_phrase(part[:index_invocation][:arguments])
+              :arguments => normalize_atom(part[:index_invocation][:arguments])
             }
           }
-        when :property_name
-          {
-            :property => {
-              :object => normalize_phrase(atom_base),
-              :property_name => normalize_phrase(part[:property_name][:reference])
-            }
-          }
-        else
-          part
-        end
-      end
-    end
-
-
-    def normalize_phrase(tree)
-      case tree
-      when Array
-        normalize_phrase_array(tree)
-      when Hash
-        normalize_phrase_hash(tree)
-      else
-        tree
-      end
-    end
-
-    def normalize_phrase_array(tree)
-      tree.map { |leaf| normalize_phrase(leaf) }
-    end
-
-    def normalize_phrase_hash(tree)
-      phrase_or_parts = tree[:phrase]
-      case phrase_or_parts
-      when Array
-        tree.merge(:phrase => normalize_phrase_parts(phrase_or_parts))
-      when Hash
-        normalize_phrase(phrase_or_parts)
-      else
-        tree
-      end
-    end
-
-    def normalize_phrase_parts(phrase_or_parts)
-      phrase_or_parts.inject do |phrase_base, part|
-        case part.keys.sort.first
         when :operator_invocation
           {
             :invocation => {
               :callable => {
                 :property => {
-                  :object => normalize_phrase(phrase_base),
+                  :object => normalize_atom(atom_base),
                   :property_name => part[:operator_invocation][:operator][:reference]
                 }
               },
               :location => part[:operator_invocation][:operator][:reference],
-              :arguments => [ normalize_phrase(part[:operator_invocation][:argument]) ]
+              :arguments => [ normalize_atom(part[:operator_invocation][:argument]) ]
+            }
+          }
+        when :property_name
+          {
+            :property => {
+              :object => normalize_atom(atom_base),
+              :property_name => normalize_atom(part[:property_name][:reference])
             }
           }
         else
