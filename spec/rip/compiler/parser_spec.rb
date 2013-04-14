@@ -870,7 +870,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { '(0)' }
         let(:expected_raw) do
           [
-            { :phrase => { :phrase => { :integer => '0' } } }
+            { :integer => '0' }
           ]
         end
       end
@@ -880,60 +880,37 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase=> {
-                :phrase=> {
-                  :phrase=> {
-                    :phrase=> {
-                      :phrase=> {
-                        :phrase=> {
-                          :phrase=> [
-                            {:reference=>"l"},
-                            {
-                              :regular_invocation=> {
-                                :location_arguments => '(',
-                                :arguments=> [
+              :atom => [
+                { :reference => 'l' },
+                {
+                  :regular_invocation => {
+                    :location_arguments => '(',
+                    :arguments => [
+                      {
+                        :atom => [
+                          { :integer => '1' },
+                          {
+                            :operator_invocation => {
+                              :operator => { :reference => '+' },
+                              :argument => {
+                                :atom => [
+                                  { :integer => '2' },
                                   {
-                                    :phrase=> {
-                                      :phrase=> [
-                                        { :integer=>"1" },
-                                        {
-                                          :operator_invocation=> {
-                                            :operator=>{:reference=>"+"},
-                                            :argument=> {
-                                              :phrase=> {
-                                                :phrase=> {
-                                                  :phrase=> {
-                                                    :phrase=> [
-                                                      { :integer=>"2" },
-                                                      {
-                                                        :operator_invocation=>
-                                                        {
-                                                          :operator=>{:reference=>"-"},
-                                                          :argument=> {
-                                                            :phrase=> { :integer=> "3" }
-                                                          }
-                                                        }
-                                                      }
-                                                    ]
-                                                  }
-                                                }
-                                              }
-                                            }
-                                          }
-                                        }
-                                      ]
+                                    :operator_invocation => {
+                                      :operator => { :reference => '-' },
+                                      :argument => { :integer => '3' }
                                     }
                                   }
                                 ]
                               }
                             }
-                          ]
-                        }
+                          }
+                        ]
                       }
-                    }
+                    ]
                   }
                 }
-              }
+              ]
             }
           ]
         end
