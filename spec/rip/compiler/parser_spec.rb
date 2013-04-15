@@ -137,7 +137,7 @@ describe Rip::Compiler::Parser do
         'Kernel',
         'returner'
       ].each do |reference|
-        expect(parser(reference)).to parse_raw_as([ { :phrase => { :reference => reference } } ])
+        expect(parser(reference)).to parse_raw_as([ { :reference => reference } ])
       end
     end
 
@@ -149,7 +149,7 @@ describe Rip::Compiler::Parser do
         'rip rocks',
         'key:value'
       ].each do |non_reference|
-        expect(parser(non_reference)).to_not parse_raw_as([ { :phrase => { :reference => non_reference } } ])
+        expect(parser(non_reference)).to_not parse_raw_as([ { :reference => non_reference } ])
       end
     end
   end
