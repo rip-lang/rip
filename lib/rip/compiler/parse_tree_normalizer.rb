@@ -51,6 +51,14 @@ module Rip::Compiler
     def normalize_atom_parts(atom_or_parts)
       atom_or_parts.inject do |atom_base, part|
         case part.keys.sort.first
+        when :assignment
+          {
+            :assignment => {
+              :lhs => normalize_atom(atom_base),
+              :location => part[:assignment][:location],
+              :rhs => normalize_atom(part[:assignment][:rhs])
+            }
+          }
         when :key_value_pair
           {
             :key_value_pair => {

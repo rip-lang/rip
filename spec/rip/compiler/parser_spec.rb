@@ -797,11 +797,15 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :assignment => {
-                :lhs => { :reference => 'favorite_language' },
-                :location => '=',
-                :rhs => { :phrase => { :string => rip_parsed_string('rip') } }
-              }
+              :atom => [
+                { :reference => 'favorite_language' },
+                {
+                  :assignment => {
+                    :location => '=',
+                    :rhs => { :string => rip_parsed_string('rip') }
+                  }
+                }
+              ]
             }
           ]
         end
@@ -823,14 +827,18 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
-                { :reference => 'favorite' },
-                { :property_name => { :reference => 'language' } },
+              :atom => [
                 {
-                  :property_assignment => {
+                  :atom => [
+                    { :reference => 'favorite' },
+                    { :property_name => { :reference => 'language' } }
+                  ]
+                },
+                {
+                  :assignment => {
                     :location => '=',
                     :rhs => {
-                      :phrase => [
+                      :atom => [
                         { :string => rip_parsed_string('rip') },
                         { :property_name => { :reference => 'lang' } }
                       ]
