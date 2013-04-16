@@ -1272,11 +1272,11 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 { :integer => '5' },
                 {
                   :key_value_pair => {
-                    :value => { :phrase => { :string => rip_parsed_string('five') } }
+                    :value => { :string => rip_parsed_string('five') }
                   }
                 }
               ]
@@ -1290,11 +1290,11 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 { :integer => '1' },
                 {
                   :range => {
-                    :end => { :phrase => { :integer => '3' } },
+                    :end => { :integer => '3' },
                     :exclusivity => nil
                   }
                 }
@@ -1309,11 +1309,11 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 { :integer => '1' },
                 {
                   :range => {
-                    :end => { :phrase => { :reference => 'age' } },
+                    :end => { :reference => 'age' },
                     :exclusivity => '.'
                   }
                 }
@@ -1327,7 +1327,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { '{}' }
         let(:expected_raw) do
           [
-            { :phrase => { :map => [] } }
+            { :map => [] }
           ]
         end
       end
@@ -1344,30 +1344,28 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :map => [
-                  {
-                    :phrase => [
-                      { :string => rip_parsed_string('age') },
-                      {
-                        :key_value_pair => {
-                          :value => { :phrase => { :integer => '31' } }
-                        }
+              :map => [
+                {
+                  :atom => [
+                    { :string => rip_parsed_string('age') },
+                    {
+                      :key_value_pair => {
+                        :value => { :integer => '31' }
                       }
-                    ]
-                  },
-                  {
-                    :phrase => [
-                      { :string => rip_parsed_string('name') },
-                      {
-                        :key_value_pair => {
-                          :value => { :phrase => { :string => rip_parsed_string('Thomas') } }
-                        }
+                    }
+                  ]
+                },
+                {
+                  :atom => [
+                    { :string => rip_parsed_string('name') },
+                    {
+                      :key_value_pair => {
+                        :value => { :string => rip_parsed_string('Thomas') }
                       }
-                    ]
-                  }
-                ]
-              }
+                    }
+                  ]
+                }
+              ]
             }
           ]
         end
@@ -1377,7 +1375,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { '[]' }
         let(:expected_raw) do
           [
-            { :phrase => { :list => [] } }
+            { :list => [] }
           ]
         end
       end
@@ -1394,12 +1392,10 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :list => [
-                  { :phrase => { :integer => '31' } },
-                  { :phrase => { :string => rip_parsed_string('Thomas') } }
-                ]
-              }
+              :list => [
+                { :integer => '31' },
+                { :string => rip_parsed_string('Thomas') }
+              ]
             }
           ]
         end
