@@ -1007,7 +1007,7 @@ describe Rip::Compiler::Parser do
           let(:rip) { '42' }
           let(:expected_raw) do
             [
-              { :phrase => { :integer => '42' } }
+              { :integer => '42' }
             ]
           end
           let(:expected) do
@@ -1021,7 +1021,7 @@ describe Rip::Compiler::Parser do
           let(:rip) { '4.2' }
           let(:expected_raw) do
             [
-              { :phrase => { :decimal => '4.2' } }
+              { :decimal => '4.2' }
             ]
           end
           let(:expected) do
@@ -1035,7 +1035,7 @@ describe Rip::Compiler::Parser do
           let(:rip) { '-3' }
           let(:expected_raw) do
             [
-              { :phrase => { :sign => '-', :integer => '3' } }
+              { :sign => '-', :integer => '3' }
             ]
           end
           let(:expected) do
@@ -1049,7 +1049,7 @@ describe Rip::Compiler::Parser do
           let(:rip) { '123_456_789' }
           let(:expected_raw) do
             [
-              { :phrase => { :integer => '123_456_789' } }
+              { :integer => '123_456_789' }
             ]
           end
           let(:expected) do
@@ -1064,7 +1064,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { '`9' }
         let(:expected_raw) do
           [
-            { :phrase => { :character => '9' } }
+            { :character => '9' }
           ]
         end
         let(:expected) do
@@ -1078,7 +1078,7 @@ describe Rip::Compiler::Parser do
         let(:rip) { '`\n' }
         let(:expected_raw) do
           [
-            { :phrase => { :character => { :location => '\\', :escaped_token => 'n' } } }
+            { :character => { :location => '\\', :escaped_token => 'n' } }
           ]
         end
         let(:expected) do
@@ -1093,11 +1093,9 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :string => [
-                  { :raw_string => '0' }
-                ]
-              }
+              :string => [
+                { :raw_string => '0' }
+              ]
             }
           ]
         end
@@ -1108,14 +1106,12 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :string => [
-                  { :raw_string => 'o' },
-                  { :raw_string => 'n' },
-                  { :raw_string => '\\' },
-                  { :raw_string => 'e' }
-                ]
-              }
+              :string => [
+                { :raw_string => 'o' },
+                { :raw_string => 'n' },
+                { :raw_string => '\\' },
+                { :raw_string => 'e' }
+              ]
             }
           ]
         end
@@ -1138,13 +1134,11 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :string => [
-                  { :raw_string => 't' },
-                  { :raw_string => 'w' },
-                  { :raw_string => 'o' }
-                ]
-              }
+              :string => [
+                { :raw_string => 't' },
+                { :raw_string => 'w' },
+                { :raw_string => 'o' }
+              ]
             }
           ]
         end
@@ -1155,15 +1149,13 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :string => [
-                  { :raw_string => 't' },
-                  { :raw_string => 'h' },
-                  { :raw_string => 'r' },
-                  { :raw_string => 'e' },
-                  { :raw_string => 'e' }
-                ]
-              }
+              :string => [
+                { :raw_string => 't' },
+                { :raw_string => 'h' },
+                { :raw_string => 'r' },
+                { :raw_string => 'e' },
+                { :raw_string => 'e' }
+              ]
             }
           ]
         end
@@ -1174,13 +1166,9 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :string => rip_parsed_string('hello, ') + [{ :interpolation => [
-                  {
-                    :phrase => { :reference => 'world' }
-                  }
-                ] }]
-              }
+              :string => rip_parsed_string('hello, ') + [{ :interpolation => [
+                { :reference => 'world' }
+              ] }]
             }
           ]
         end
@@ -1229,15 +1217,13 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :regex => [
-                  { :raw_regex => 'h' },
-                  { :raw_regex => 'e' },
-                  { :raw_regex => 'l' },
-                  { :raw_regex => 'l' },
-                  { :raw_regex => 'o' }
-                ]
-              }
+              :regex => [
+                { :raw_regex => 'h' },
+                { :raw_regex => 'e' },
+                { :raw_regex => 'l' },
+                { :raw_regex => 'l' },
+                { :raw_regex => 'o' }
+              ]
             }
           ]
         end
@@ -1248,18 +1234,14 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :regex => [
-                  { :raw_regex => 'h' },
-                  { :raw_regex => 'e' },
-                  { :interpolation => [
-                    {
-                      :phrase => { :reference => 'll' }
-                    }
-                  ] },
-                  { :raw_regex => 'o' }
-                ]
-              }
+              :regex => [
+                { :raw_regex => 'h' },
+                { :raw_regex => 'e' },
+                { :interpolation => [
+                  { :reference => 'll' }
+                ] },
+                { :raw_regex => 'o' }
+              ]
             }
           ]
         end
