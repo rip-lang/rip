@@ -699,7 +699,7 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 {
                   :lambda_block => {
                     :dash_rocket => '->',
@@ -720,7 +720,7 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 { :reference => 'full_name' },
                 { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
               ]
@@ -734,14 +734,14 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 { :reference => 'full_name' },
                 {
                   :regular_invocation => {
                     :location_arguments => '(',
                     :arguments => [
-                      { :phrase => { :string => rip_parsed_string('Thomas') } },
-                      { :phrase => { :string => rip_parsed_string('Ingram') } }
+                      { :string => rip_parsed_string('Thomas') },
+                      { :string => rip_parsed_string('Ingram') }
                     ]
                   }
                 }
@@ -756,13 +756,13 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 { :reference => 'list' },
                 {
                   :index_invocation => {
                     :open => '[',
                     :arguments => [
-                      { :phrase => { :integer => '0' } }
+                      { :integer => '0' }
                     ],
                     :close => ']'
                   }
@@ -778,12 +778,12 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 { :integer => '2' },
                 {
                   :operator_invocation => {
                     :operator => { :reference => '+' },
-                    :argument => { :phrase => { :integer => '2' } }
+                    :argument => { :integer => '2' }
                   }
                 }
               ]
