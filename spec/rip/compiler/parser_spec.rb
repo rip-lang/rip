@@ -63,19 +63,19 @@ describe Rip::Compiler::Parser do
     let(:expected_raw) do
       [
         {
-          :phrase => {
-            :block_sequence => {
-              :if_block => {
-                :if => 'if',
-                :argument => { :phrase => { :reference => 'true' } },
-                :location_body => '{',
-                :body => [
-                  {
-                    :assignment => {
-                      :lhs => { :reference => 'lambda' },
-                      :location => '=',
-                      :rhs => {
-                        :phrase => {
+          :block_sequence => {
+            :if_block => {
+              :if => 'if',
+              :argument => { :reference => 'true' },
+              :location_body => '{',
+              :body => [
+                {
+                  :atom => [
+                    { :reference => 'lambda' },
+                    {
+                      :assignment => {
+                        :location => '=',
+                        :rhs => {
                           :lambda_block => {
                             :dash_rocket => '->',
                             :location_body => '{',
@@ -84,32 +84,32 @@ describe Rip::Compiler::Parser do
                         }
                       }
                     }
-                  },
-                  {
-                    :phrase => [
-                      { :reference => 'lambda' },
-                      { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
-                    ]
-                  }
-                ]
-              },
-              :else_block => {
-                :else => 'else',
-                :location_body => '{',
-                :body => [
-                  {
-                    :phrase => [
-                      { :integer => '1' },
-                      {
-                        :operator_invocation => {
-                          :operator => { :reference => '+' },
-                          :argument => { :phrase => { :integer => '2' } }
-                        }
+                  ]
+                },
+                {
+                  :atom => [
+                    { :reference => 'lambda' },
+                    { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
+                  ]
+                }
+              ]
+            },
+            :else_block => {
+              :else => 'else',
+              :location_body => '{',
+              :body => [
+                {
+                  :atom => [
+                    { :integer => '1' },
+                    {
+                      :operator_invocation => {
+                        :operator => { :reference => '+' },
+                        :argument => { :integer => '2' }
                       }
-                    ]
-                  }
-                ]
-              }
+                    }
+                  ]
+                }
+              ]
             }
           }
         }
