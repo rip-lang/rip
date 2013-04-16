@@ -616,9 +616,9 @@ describe Rip::Compiler::Parser do
         end
         let(:expected_raw) do
           [
-            { :phrase => { :reference => 'one' } },
-            { :phrase => { :reference => 'two' } },
-            { :phrase => { :reference => 'three' } }
+            { :reference => 'one' },
+            { :reference => 'two' },
+            { :reference => 'three' }
           ]
         end
         let(:expected) do
@@ -641,18 +641,18 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
-                { :atom => { :integer => '1' } },
+              :atom => [
+                { :integer => '1' },
                 {
                   :operator_invocation => {
                     :operator => { :reference => '+' },
-                    :argument => { :atom => { :integer => '2' } }
+                    :argument => { :integer => '2' }
                   }
                 },
                 {
                   :operator_invocation => {
                     :operator => { :reference => '-' },
-                    :argument => { :atom => { :integer => '3' } }
+                    :argument => { :integer => '3' }
                   }
                 }
               ]
