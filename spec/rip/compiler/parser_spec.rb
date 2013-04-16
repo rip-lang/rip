@@ -581,9 +581,7 @@ describe Rip::Compiler::Parser do
         [
           {
             :keyword => { :exit => 'exit' },
-            :payload => {
-              :phrase => { :integer => '0' }
-            }
+            :payload => { :integer => '0' }
           }
         ]
       end
@@ -595,11 +593,7 @@ describe Rip::Compiler::Parser do
         [
           {
             :keyword => { :exit => 'exit' },
-            :payload => {
-              :phrase => {
-                :phrase => { :integer => '0' }
-              }
-            }
+            :payload => { :integer => '0' }
           }
         ]
       end
