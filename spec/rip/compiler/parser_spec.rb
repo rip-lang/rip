@@ -925,7 +925,7 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 { :integer => '0' },
                 { :property_name => { :reference => 'one' } },
                 { :regular_invocation => { :location_arguments => '(', :arguments => [] } },
@@ -943,14 +943,14 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 {
-                  :phrase => [
+                  :atom => [
                     { :integer => '1' },
                     {
                       :operator_invocation => {
                         :operator => { :reference => '-' },
-                        :argument => { :phrase => { :integer => '2' } }
+                        :argument => { :integer => '2' }
                       }
                     }
                   ]
@@ -968,24 +968,24 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => [
+              :atom => [
                 { :integer => '1' },
                 {
                   :operator_invocation => {
                     :operator => { :reference => '+' },
-                    :argument => { :phrase => [
-                      { :integer => '2' },
-                      { :operator_invocation => {
-                        :operator => { :reference => '+' },
-                        :argument => { :phrase => [
-                          { :integer => '3' },
-                          { :operator_invocation => {
-                            :operator => { :reference => '+' },
-                            :argument => { :phrase => { :integer => '4' } }
-                          }}
-                        ]}
-                      }}
-                    ]}
+                    :argument => { :integer => '2' }
+                  }
+                },
+                {
+                  :operator_invocation => {
+                    :operator => { :reference => '+' },
+                    :argument => { :integer => '3' }
+                  }
+                },
+                {
+                  :operator_invocation => {
+                    :operator => { :reference => '+' },
+                    :argument => { :integer => '4' }
                   }
                 }
               ]
