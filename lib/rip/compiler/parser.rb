@@ -167,7 +167,7 @@ module Rip::Compiler
 
     rule(:parameters) { parenthesis_open >> whitespaces? >> csv(optional_parameter | required_parameter) >> whitespaces? >> parenthesis_close }
     rule(:required_parameter) { reference }
-    rule(:optional_parameter) { reference >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase }
+    rule(:optional_parameter) { reference >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase.as(:default) }
 
     rule(:multiple_arguments) { parenthesis_open.as(:location_arguments) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
 

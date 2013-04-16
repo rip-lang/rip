@@ -161,13 +161,11 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :block_sequence => {
-                  :try_block => {
-                    :try => 'try',
-                    :location_body => '{',
-                    :body => []
-                  }
+              :block_sequence => {
+                :try_block => {
+                  :try => 'try',
+                  :location_body => '{',
+                  :body => []
                 }
               }
             }
@@ -180,19 +178,17 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :block_sequence => {
-                  :unless_block => {
-                    :unless => 'unless',
-                    :argument => { :phrase => { :string => rip_parsed_string('name') } },
-                    :location_body => '{',
-                    :body => []
-                  },
-                  :else_block => {
-                    :else => 'else',
-                    :location_body => '{',
-                    :body => []
-                  }
+              :block_sequence => {
+                :unless_block => {
+                  :unless => 'unless',
+                  :argument => { :string => rip_parsed_string('name') },
+                  :location_body => '{',
+                  :body => []
+                },
+                :else_block => {
+                  :else => 'else',
+                  :location_body => '{',
+                  :body => []
                 }
               }
             }
@@ -205,17 +201,15 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :class_block => {
-                  :class => 'class',
-                  :location_arguments => '(',
-                  :arguments => [
-                    { :phrase => { :reference => 'one' } },
-                    { :phrase => { :reference => 'two' } }
-                  ],
-                  :location_body => '{',
-                  :body => []
-                }
+              :class_block => {
+                :class => 'class',
+                :location_arguments => '(',
+                :arguments => [
+                  { :reference => 'one' },
+                  { :reference => 'two' }
+                ],
+                :location_body => '{',
+                :body => []
               }
             }
           ]
@@ -227,16 +221,14 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :lambda_block => {
-                  :dash_rocket => '->',
-                  :parameters => [
-                    { :reference => 'one' },
-                    { :reference => 'two' }
-                  ],
-                  :location_body => '{',
-                  :body => []
-                }
+              :lambda_block => {
+                :dash_rocket => '->',
+                :parameters => [
+                  { :reference => 'one' },
+                  { :reference => 'two' }
+                ],
+                :location_body => '{',
+                :body => []
               }
             }
           ]
@@ -248,28 +240,22 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :lambda_block => {
-                  :dash_rocket => '->',
-                  :parameters => [
-                    {
-                      :assignment => {
-                        :lhs => { :reference => 'one' },
-                        :location => '=',
-                        :rhs => { :phrase => { :integer => '1' } }
-                      }
-                    },
-                    {
-                      :assignment => {
-                        :lhs => { :reference => 'two' },
-                        :location => '=',
-                        :rhs => { :phrase => { :integer => '2' } }
-                      }
-                    }
-                  ],
-                  :location_body => '{',
-                  :body => []
-                }
+              :lambda_block => {
+                :dash_rocket => '->',
+                :parameters => [
+                  {
+                    :reference => 'one',
+                    :location => '=',
+                    :default => { :integer => '1' }
+                  },
+                  {
+                    :reference => 'two',
+                    :location => '=',
+                    :default => { :integer => '2' }
+                  }
+                ],
+                :location_body => '{',
+                :body => []
               }
             }
           ]
@@ -281,22 +267,18 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :lambda_block => {
-                  :fat_rocket => '=>',
-                  :parameters => [
-                    { :reference => 'platform' },
-                    {
-                      :assignment => {
-                        :lhs => { :reference => 'name' },
-                        :location => '=',
-                        :rhs => { :phrase => { :string => rip_parsed_string('rip') } }
-                      }
-                    }
-                  ],
-                  :location_body => '{',
-                  :body => []
-                }
+              :lambda_block => {
+                :fat_rocket => '=>',
+                :parameters => [
+                  { :reference => 'platform' },
+                  {
+                    :reference => 'name',
+                    :location => '=',
+                    :default => { :string => rip_parsed_string('rip') }
+                  }
+                ],
+                :location_body => '{',
+                :body => []
               }
             }
           ]
@@ -308,30 +290,24 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :lambda_block => {
-                  :dash_rocket => '->',
-                  :parameters => [
-                    { :reference => 'abc' },
-                    { :reference => 'xyz' },
-                    {
-                      :assignment => {
-                        :lhs => { :reference => 'one' },
-                        :location => '=',
-                        :rhs => { :phrase => { :integer => '1' } }
-                      }
-                    },
-                    {
-                      :assignment => {
-                        :lhs => { :reference => 'two' },
-                        :location => '=',
-                        :rhs => { :phrase => { :integer => '2' } }
-                      }
-                    }
-                  ],
-                  :location_body => '{',
-                  :body => []
-                }
+              :lambda_block => {
+                :dash_rocket => '->',
+                :parameters => [
+                  { :reference => 'abc' },
+                  { :reference => 'xyz' },
+                  {
+                    :reference => 'one',
+                    :location => '=',
+                    :default => { :integer => '1' }
+                  },
+                  {
+                    :reference => 'two',
+                    :location => '=',
+                    :default => { :integer => '2' }
+                  }
+                ],
+                :location_body => '{',
+                :body => []
               }
             }
           ]
@@ -343,26 +319,22 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :class_block => {
-                  :class => 'class',
-                  :location_arguments => '(',
-                  :arguments => [
-                    {
-                      :phrase => {
-                        :class_block => {
-                          :class => 'class',
-                          :location_arguments => '(',
-                          :arguments => [],
-                          :location_body => '{',
-                          :body => []
-                        }
-                      }
+              :class_block => {
+                :class => 'class',
+                :location_arguments => '(',
+                :arguments => [
+                  {
+                    :class_block => {
+                      :class => 'class',
+                      :location_arguments => '(',
+                      :arguments => [],
+                      :location_body => '{',
+                      :body => []
                     }
-                  ],
-                  :location_body => '{',
-                  :body => []
-                }
+                  }
+                ],
+                :location_body => '{',
+                :body => []
               }
             }
           ]
@@ -382,16 +354,14 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :block_sequence => {
-                  :if_block => {
-                    :if => 'if',
-                    :argument => { :phrase => { :reference => 'true' } },
-                    :location_body => '{',
-                    :body => [
-                      { :comment => ' comment' }
-                    ]
-                  }
+              :block_sequence => {
+                :if_block => {
+                  :if => 'if',
+                  :argument => { :reference => 'true' },
+                  :location_body => '{',
+                  :body => [
+                    { :comment => ' comment' }
+                  ]
                 }
               }
             }
@@ -404,16 +374,14 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :block_sequence => {
-                  :if_block => {
-                    :if => 'if',
-                    :argument => { :phrase => { :reference => 'true' } },
-                    :location_body => '{',
-                    :body => [
-                      { :phrase => { :reference => 'name' } }
-                    ]
-                  }
+              :block_sequence => {
+                :if_block => {
+                  :if => 'if',
+                  :argument => { :reference => 'true' },
+                  :location_body => '{',
+                  :body => [
+                    { :reference => 'name' }
+                  ]
                 }
               }
             }
@@ -426,22 +394,24 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :block_sequence => {
-                  :if_block => {
-                    :if => 'if',
-                    :argument => { :phrase => { :reference => 'true' } },
-                    :location_body => '{',
-                    :body => [
-                      {
-                        :assignment => {
-                          :lhs => { :reference => 'x' },
-                          :location => '=',
-                          :rhs => { :phrase => { :string => rip_parsed_string('y') } }
+              :block_sequence => {
+                :if_block => {
+                  :if => 'if',
+                  :argument => { :reference => 'true' },
+                  :location_body => '{',
+                  :body => [
+                    {
+                      :atom => [
+                        { :reference => 'x' },
+                        {
+                          :assignment => {
+                            :location => '=',
+                            :rhs => { :string => rip_parsed_string('y') }
+                          }
                         }
-                      }
-                    ]
-                  }
+                      ]
+                    }
+                  ]
                 }
               }
             }
@@ -454,21 +424,19 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :block_sequence => {
-                  :if_block => {
-                    :if => 'if',
-                    :argument => { :phrase => { :reference => 'true' } },
-                    :location_body => '{',
-                    :body => [
-                      {
-                        :phrase => [
-                          { :reference => 'run!' },
-                          { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
-                        ]
-                      }
-                    ]
-                  }
+              :block_sequence => {
+                :if_block => {
+                  :if => 'if',
+                  :argument => { :reference => 'true' },
+                  :location_body => '{',
+                  :body => [
+                    {
+                      :atom => [
+                        { :reference => 'run!' },
+                        { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
+                      ]
+                    }
+                  ]
                 }
               }
             }
@@ -481,26 +449,24 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :block_sequence => {
-                  :if_block => {
-                    :if => 'if',
-                    :argument => { :phrase => { :reference => 'true' } },
-                    :location_body => '{',
-                    :body => [
-                      {
-                        :phrase => [
-                          { :reference => 'steam' },
-                          {
-                            :operator_invocation => {
-                              :operator => { :reference => 'will' },
-                              :argument => { :phrase => { :string => rip_parsed_string('rise') } }
-                            }
+              :block_sequence => {
+                :if_block => {
+                  :if => 'if',
+                  :argument => { :reference => 'true' },
+                  :location_body => '{',
+                  :body => [
+                    {
+                      :atom => [
+                        { :reference => 'steam' },
+                        {
+                          :operator_invocation => {
+                            :operator => { :reference => 'will' },
+                            :argument => { :string => rip_parsed_string('rise') }
                           }
-                        ]
-                      }
-                    ]
-                  }
+                        }
+                      ]
+                    }
+                  ]
                 }
               }
             }
@@ -513,16 +479,14 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :block_sequence => {
-                  :if_block => {
-                    :if => 'if',
-                    :argument => { :phrase => { :reference => 'true' } },
-                    :location_body => '{',
-                    :body => [
-                      { :phrase => { :character => '3' } }
-                    ]
-                  }
+              :block_sequence => {
+                :if_block => {
+                  :if => 'if',
+                  :argument => { :reference => 'true' },
+                  :location_body => '{',
+                  :body => [
+                    { :character => '3' }
+                  ]
                 }
               }
             }
@@ -535,27 +499,23 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :phrase => {
-                :block_sequence => {
-                  :if_block => {
-                    :if => 'if',
-                    :argument => { :phrase => { :reference => 'true' } },
-                    :location_body => '{',
-                    :body => [
-                      {
-                        :phrase => {
-                          :block_sequence => {
-                            :unless_block => {
-                              :unless => 'unless',
-                              :argument => { :phrase => { :reference => 'false' } },
-                              :location_body => '{',
-                              :body => []
-                            }
-                          }
+              :block_sequence => {
+                :if_block => {
+                  :if => 'if',
+                  :argument => { :reference => 'true' },
+                  :location_body => '{',
+                  :body => [
+                    {
+                      :block_sequence => {
+                        :unless_block => {
+                          :unless => 'unless',
+                          :argument => { :reference => 'false' },
+                          :location_body => '{',
+                          :body => []
                         }
                       }
-                    ]
-                  }
+                    }
+                  ]
                 }
               }
             }
