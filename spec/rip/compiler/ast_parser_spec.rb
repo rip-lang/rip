@@ -238,7 +238,7 @@ describe Rip::Compiler::AST do
     it_behaves_like 'invocation'
   end
 
-  context 'operator invocation', :blur do
+  context 'operator invocation' do
     let(:rip) { '1 + 2 * 3' }
 
     let(:one_node) { Rip::Nodes::Integer.new(location, '1') }
