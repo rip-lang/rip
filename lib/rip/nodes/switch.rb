@@ -1,18 +1,21 @@
 module Rip::Nodes
   class Switch < Base
     attr_reader :argument
-    attr_reader :body
+    attr_reader :case_blocks
+    attr_reader :else_block
 
-    def initialize(location, argument, body)
+    def initialize(location, argument, case_blocks, else_block = nil)
       super(location)
       @argument = argument
-      @body = body
+      @case_blocks = case_blocks
+      @else_block = else_block
     end
 
     def ==(other)
       super &&
         (argument == other.argument) &&
-        (body == other.body)
+        (case_blocks == other.case_blocks) &&
+        (else_block == other.else_block)
     end
   end
 end

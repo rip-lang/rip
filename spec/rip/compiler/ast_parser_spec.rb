@@ -256,4 +256,45 @@ describe Rip::Compiler::AST do
 
     it_behaves_like 'invocation'
   end
+
+  context 'switch blocks' do
+    let(:rip) do
+      <<-RIP
+        switch (x) {
+          case (1) {}
+          case (2) {}
+          case (3) {}
+          else     {}
+        }
+      RIP
+    end
+
+    let(:case_1_argument_node) { Rip::Nodes::Integer.new(location, '1') }
+    let(:case_1_body_node) { Rip::Nodes::BlockBody.new(location, []) }
+    let(:case_1_node) { Rip::Nodes::Case.new(location.add_character(2), case_1_argument_node, case_1_body_node) }
+
+    let(:case_2_argument_node) { Rip::Nodes::Integer.new(location, '2') }
+    let(:case_2_body_node) { Rip::Nodes::BlockBody.new(location, []) }
+    let(:case_2_node) { Rip::Nodes::Case.new(location.add_character(2), case_2_argument_node, case_2_body_node) }
+
+    let(:case_3_argument_node) { Rip::Nodes::Integer.new(location, '3') }
+    let(:case_3_body_node) { Rip::Nodes::BlockBody.new(location, []) }
+    let(:case_3_node) { Rip::Nodes::Case.new(location.add_character(2), case_3_argument_node, case_3_body_node) }
+
+    let(:else_body_node) { Rip::Nodes::BlockBody.new(location, []) }
+    let(:else_node) { Rip::Nodes::Else.new(location.add_character(2), else_body_node) }
+
+    let(:switch_argument_node) { Rip::Nodes::Reference.new(location, 'x') }
+    let(:switch_node) { Rip::Nodes::Switch.new(location, switch_argument_node, [ case_1_node, case_2_node, case_3_node ], else_node) }
+
+    let(:switch_block) { expressions.first }
+
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'finds the switch' do
+      expect(switch_block).to eq(switch_node)
+    end
+  end
 end
