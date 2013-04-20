@@ -76,11 +76,9 @@ describe Rip::Compiler::Parser do
                       :assignment => {
                         :location => '=',
                         :rhs => {
-                          :lambda_block => {
-                            :dash_rocket => '->',
-                            :location_body => '{',
-                            :body => [ { :comment => ' comment' } ]
-                          }
+                          :dash_rocket => '->',
+                          :location_body => '{',
+                          :body => [ { :comment => ' comment' } ]
                         }
                       }
                     }
@@ -201,16 +199,14 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :class_block => {
-                :class => 'class',
-                :location_arguments => '(',
-                :arguments => [
-                  { :reference => 'one' },
-                  { :reference => 'two' }
-                ],
-                :location_body => '{',
-                :body => []
-              }
+              :class => 'class',
+              :location_arguments => '(',
+              :arguments => [
+                { :reference => 'one' },
+                { :reference => 'two' }
+              ],
+              :location_body => '{',
+              :body => []
             }
           ]
         end
@@ -221,15 +217,13 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :lambda_block => {
-                :dash_rocket => '->',
-                :parameters => [
-                  { :reference => 'one' },
-                  { :reference => 'two' }
-                ],
-                :location_body => '{',
-                :body => []
-              }
+              :dash_rocket => '->',
+              :parameters => [
+                { :reference => 'one' },
+                { :reference => 'two' }
+              ],
+              :location_body => '{',
+              :body => []
             }
           ]
         end
@@ -240,23 +234,21 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :lambda_block => {
-                :dash_rocket => '->',
-                :parameters => [
-                  {
-                    :reference => 'one',
-                    :location => '=',
-                    :default => { :integer => '1' }
-                  },
-                  {
-                    :reference => 'two',
-                    :location => '=',
-                    :default => { :integer => '2' }
-                  }
-                ],
-                :location_body => '{',
-                :body => []
-              }
+              :dash_rocket => '->',
+              :parameters => [
+                {
+                  :reference => 'one',
+                  :location => '=',
+                  :default => { :integer => '1' }
+                },
+                {
+                  :reference => 'two',
+                  :location => '=',
+                  :default => { :integer => '2' }
+                }
+              ],
+              :location_body => '{',
+              :body => []
             }
           ]
         end
@@ -267,19 +259,17 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :lambda_block => {
-                :fat_rocket => '=>',
-                :parameters => [
-                  { :reference => 'platform' },
-                  {
-                    :reference => 'name',
-                    :location => '=',
-                    :default => { :string => rip_parsed_string('rip') }
-                  }
-                ],
-                :location_body => '{',
-                :body => []
-              }
+              :fat_rocket => '=>',
+              :parameters => [
+                { :reference => 'platform' },
+                {
+                  :reference => 'name',
+                  :location => '=',
+                  :default => { :string => rip_parsed_string('rip') }
+                }
+              ],
+              :location_body => '{',
+              :body => []
             }
           ]
         end
@@ -290,25 +280,23 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :lambda_block => {
-                :dash_rocket => '->',
-                :parameters => [
-                  { :reference => 'abc' },
-                  { :reference => 'xyz' },
-                  {
-                    :reference => 'one',
-                    :location => '=',
-                    :default => { :integer => '1' }
-                  },
-                  {
-                    :reference => 'two',
-                    :location => '=',
-                    :default => { :integer => '2' }
-                  }
-                ],
-                :location_body => '{',
-                :body => []
-              }
+              :dash_rocket => '->',
+              :parameters => [
+                { :reference => 'abc' },
+                { :reference => 'xyz' },
+                {
+                  :reference => 'one',
+                  :location => '=',
+                  :default => { :integer => '1' }
+                },
+                {
+                  :reference => 'two',
+                  :location => '=',
+                  :default => { :integer => '2' }
+                }
+              ],
+              :location_body => '{',
+              :body => []
             }
           ]
         end
@@ -319,23 +307,19 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :class_block => {
-                :class => 'class',
-                :location_arguments => '(',
-                :arguments => [
-                  {
-                    :class_block => {
-                      :class => 'class',
-                      :location_arguments => '(',
-                      :arguments => [],
-                      :location_body => '{',
-                      :body => []
-                    }
-                  }
-                ],
-                :location_body => '{',
-                :body => []
-              }
+              :class => 'class',
+              :location_arguments => '(',
+              :arguments => [
+                {
+                  :class => 'class',
+                  :location_arguments => '(',
+                  :arguments => [],
+                  :location_body => '{',
+                  :body => []
+                }
+              ],
+              :location_body => '{',
+              :body => []
             }
           ]
         end
@@ -655,12 +639,10 @@ describe Rip::Compiler::Parser do
             {
               :atom => [
                 {
-                  :lambda_block => {
-                    :dash_rocket => '->',
-                    :parameters => '()',
-                    :location_body => '{',
-                    :body => []
-                  }
+                  :dash_rocket => '->',
+                  :parameters => '()',
+                  :location_body => '{',
+                  :body => []
                 },
                 :regular_invocation => { :location_arguments => '(', :arguments => [] }
               ]

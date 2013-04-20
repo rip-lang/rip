@@ -120,10 +120,6 @@ module Rip::Compiler
       end
     end
 
-    rule(:lambda_block => simple(:lambda_block)) do |locals|
-      locals[:lambda_block]
-    end
-
     {
       :case => Rip::Nodes::Case,
       :class => Rip::Nodes::Class
@@ -157,6 +153,12 @@ module Rip::Compiler
         location = location_for(locals[:origin], locals[keyword])
         body = block_body(locals[:origin], locals[:location_body], locals[:body])
         klass.new(location, body)
+      end
+    end
+
+    %i[ catch_block if_block unless_block try_block finally_block else_block ].each do |block|
+      rule(block => simple(block)) do |locals|
+        locals[block]
       end
     end
   end
