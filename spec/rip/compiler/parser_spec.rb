@@ -179,7 +179,7 @@ describe Rip::Compiler::Parser do
               :block_sequence => {
                 :unless_block => {
                   :unless => 'unless',
-                  :argument => { :string => rip_parsed_string('name') },
+                  :argument => { :string => rip_string('name') },
                   :location_body => '{',
                   :body => []
                 },
@@ -265,7 +265,7 @@ describe Rip::Compiler::Parser do
                 {
                   :reference => 'name',
                   :location => '=',
-                  :default => { :string => rip_parsed_string('rip') }
+                  :default => { :string => rip_string('rip') }
                 }
               ],
               :location_body => '{',
@@ -390,7 +390,7 @@ describe Rip::Compiler::Parser do
                         {
                           :assignment => {
                             :location => '=',
-                            :rhs => { :string => rip_parsed_string('y') }
+                            :rhs => { :string => rip_string('y') }
                           }
                         }
                       ]
@@ -445,7 +445,7 @@ describe Rip::Compiler::Parser do
                         {
                           :operator_invocation => {
                             :operator => { :reference => 'will' },
-                            :argument => { :string => rip_parsed_string('rise') }
+                            :argument => { :string => rip_string('rise') }
                           }
                         }
                       ]
@@ -668,8 +668,8 @@ describe Rip::Compiler::Parser do
                   :regular_invocation => {
                     :location_arguments => '(',
                     :arguments => [
-                      { :string => rip_parsed_string('Thomas') },
-                      { :string => rip_parsed_string('Ingram') }
+                      { :string => rip_string('Thomas') },
+                      { :string => rip_string('Ingram') }
                     ]
                   }
                 }
@@ -730,7 +730,7 @@ describe Rip::Compiler::Parser do
                 {
                   :assignment => {
                     :location => '=',
-                    :rhs => { :string => rip_parsed_string('rip') }
+                    :rhs => { :string => rip_string('rip') }
                   }
                 }
               ]
@@ -742,7 +742,7 @@ describe Rip::Compiler::Parser do
             {
               :lhs => { :reference => 'favorite_language' },
               :location => '=',
-              :rhs => { :string => rip_character_string('rip') }
+              :rhs => { :string => rip_string('rip') }
             }
           ]
         end
@@ -765,7 +765,7 @@ describe Rip::Compiler::Parser do
                     :location => '=',
                     :rhs => {
                       :atom => [
-                        { :string => rip_parsed_string('rip') },
+                        { :string => rip_string('rip') },
                         { :property_name => { :reference => 'lang' } }
                       ]
                     }
@@ -784,7 +784,7 @@ describe Rip::Compiler::Parser do
               },
               :location => '=',
               :rhs => {
-                :object => { :string => rip_character_string('rip') },
+                :object => { :string => rip_string('rip') },
                 :property_name => 'lang'
               }
             }
@@ -1014,7 +1014,7 @@ describe Rip::Compiler::Parser do
           [
             {
               :string => [
-                { :raw_string => '0' }
+                { :character => '0' }
               ]
             }
           ]
@@ -1027,10 +1027,10 @@ describe Rip::Compiler::Parser do
           [
             {
               :string => [
-                { :raw_string => 'o' },
-                { :raw_string => 'n' },
-                { :raw_string => '\\' },
-                { :raw_string => 'e' }
+                { :character => 'o' },
+                { :character => 'n' },
+                { :character => '\\' },
+                { :character => 'e' }
               ]
             }
           ]
@@ -1055,9 +1055,9 @@ describe Rip::Compiler::Parser do
           [
             {
               :string => [
-                { :raw_string => 't' },
-                { :raw_string => 'w' },
-                { :raw_string => 'o' }
+                { :character => 't' },
+                { :character => 'w' },
+                { :character => 'o' }
               ]
             }
           ]
@@ -1070,11 +1070,11 @@ describe Rip::Compiler::Parser do
           [
             {
               :string => [
-                { :raw_string => 't' },
-                { :raw_string => 'h' },
-                { :raw_string => 'r' },
-                { :raw_string => 'e' },
-                { :raw_string => 'e' }
+                { :character => 't' },
+                { :character => 'h' },
+                { :character => 'r' },
+                { :character => 'e' },
+                { :character => 'e' }
               ]
             }
           ]
@@ -1086,7 +1086,7 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :string => rip_parsed_string('hello, ') + [{ :start => '#{', :interpolation => [
+              :string => rip_string('hello, ') + [{ :start => '#{', :interpolation => [
                 { :reference => 'world' }
               ], :end => '}' }]
             }
@@ -1106,7 +1106,7 @@ describe Rip::Compiler::Parser do
       #     [
       #       {
       #         :here_doc_start => 'HERE_DOC',
-      #         :string => rip_parsed_string("here docs are good for multi-line strings\n"),
+      #         :string => rip_string("here docs are good for multi-line strings\n"),
       #         :here_doc_end => 'HERE_DOC'
       #       }
       #     ]
@@ -1125,7 +1125,7 @@ describe Rip::Compiler::Parser do
       #     [
       #       {
       #         :here_doc_start => 'HERE_DOC',
-      #         :string => rip_parsed_string('here docs are good for multi-line ') + [{ :start => '#{', :interpolation => [{ :reference => 'strings' }], :end => '}' }] + rip_parsed_string("\n")
+      #         :string => rip_string('here docs are good for multi-line ') + [{ :start => '#{', :interpolation => [{ :reference => 'strings' }], :end => '}' }] + rip_string("\n")
       #         :here_doc_end => 'HERE_DOC'
       #       }
       #     ]
@@ -1182,7 +1182,7 @@ describe Rip::Compiler::Parser do
                 { :integer => '5' },
                 {
                   :key_value_pair => {
-                    :value => { :string => rip_parsed_string('five') }
+                    :value => { :string => rip_string('five') }
                   }
                 }
               ]
@@ -1253,7 +1253,7 @@ describe Rip::Compiler::Parser do
               :map => [
                 {
                   :atom => [
-                    { :string => rip_parsed_string('age') },
+                    { :string => rip_string('age') },
                     {
                       :key_value_pair => {
                         :value => { :integer => '31' }
@@ -1263,10 +1263,10 @@ describe Rip::Compiler::Parser do
                 },
                 {
                   :atom => [
-                    { :string => rip_parsed_string('name') },
+                    { :string => rip_string('name') },
                     {
                       :key_value_pair => {
-                        :value => { :string => rip_parsed_string('Thomas') }
+                        :value => { :string => rip_string('Thomas') }
                       }
                     }
                   ]
@@ -1300,7 +1300,7 @@ describe Rip::Compiler::Parser do
             {
               :list => [
                 { :integer => '31' },
-                { :string => rip_parsed_string('Thomas') }
+                { :string => rip_string('Thomas') }
               ]
             }
           ]

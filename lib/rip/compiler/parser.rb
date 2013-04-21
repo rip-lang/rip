@@ -215,7 +215,7 @@ module Rip::Compiler
 
     rule(:string) { string_symbol | string_single | string_double }
 
-    rule(:string_symbol) { colon >> (escape_simple | character_legal.as(:raw_string)).repeat(1).as(:string) }
+    rule(:string_symbol) { colon >> (escape_simple | character_legal.as(:character)).repeat(1).as(:string) }
 
     rule(:string_single) { string_parser(quote_single, escape_simple) }
     rule(:string_double) { string_parser(quote_double, escape_advanced | interpolation) }
@@ -247,7 +247,7 @@ module Rip::Compiler
       (_value >> (comma >> _value).repeat).repeat(0, 1)
     end
 
-    def string_parser(delimiter, inner_special, delimited_flag = :string, any_flag = :raw_string)
+    def string_parser(delimiter, inner_special, delimited_flag = :string, any_flag = :character)
       delimiter >> (delimiter.absent? >> (inner_special | any.as(any_flag))).repeat.as(delimited_flag) >> delimiter
     end
   end

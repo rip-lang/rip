@@ -133,10 +133,6 @@ module Rip::Compiler
       end
     end
 
-    rule(:raw_string => simple(:raw_string)) do |locals|
-      { :character => locals[:raw_string] }
-    end
-
     rule(:raw_regex => simple(:raw_regex)) do |locals|
       locals[:raw_regex]
     end
