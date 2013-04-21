@@ -21,14 +21,56 @@ module Rip::Compiler
     end
 
 
-    def normalize_atom(tree)
-      case tree
-      when Array
-        normalize_atom_array(tree)
-      when Hash
-        normalize_atom_hash(tree)
+    def normalize_string(tree)
+      if tree.is_a?(Hash) && tree.has_key?(:string)
+        normalize_string_hash(tree)
       else
         tree
+      end
+    end
+
+    def normalize_string_hash(tree)
+      tree[:string].inject({}) do |memo, piece|
+        if piece.has_key?(:interpolation)
+          {
+            :callable => {
+              :object => {
+                :string => memo[:string]
+              },
+              :property_name => '+'
+            },
+            :location => piece[:start],
+            :arguments => [
+              {
+                :callable => {
+                  :object => {
+                    :block => normalize_atom(piece[:interpolation])
+                  },
+                  :property_name => 'to_string'
+                },
+                :location => piece[:end],
+                :arguments => []
+              }
+            ]
+          }
+        else
+          characters = Array(memo[:string]) + [ piece ]
+          { :string => characters }
+        end
+      end
+    end
+
+
+    def normalize_atom(tree)
+      _tree = normalize_string(tree)
+
+      case _tree
+      when Array
+        normalize_atom_array(_tree)
+      when Hash
+        normalize_atom_hash(_tree)
+      else
+        _tree
       end
     end
 
