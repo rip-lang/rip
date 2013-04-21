@@ -1086,9 +1086,9 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :string => rip_parsed_string('hello, ') + [{ :interpolation => [
+              :string => rip_parsed_string('hello, ') + [{ :start => '#{', :interpolation => [
                 { :reference => 'world' }
-              ] }]
+              ], :end => '}' }]
             }
           ]
         end
@@ -1125,7 +1125,7 @@ describe Rip::Compiler::Parser do
       #     [
       #       {
       #         :here_doc_start => 'HERE_DOC',
-      #         :string => rip_parsed_string('here docs are good for multi-line ') + [{ :interpolation => [{ :reference => 'strings' }] }] + rip_parsed_string("\n")
+      #         :string => rip_parsed_string('here docs are good for multi-line ') + [{ :start => '#{', :interpolation => [{ :reference => 'strings' }], :end => '}' }] + rip_parsed_string("\n")
       #         :here_doc_end => 'HERE_DOC'
       #       }
       #     ]
@@ -1157,9 +1157,13 @@ describe Rip::Compiler::Parser do
               :regex => [
                 { :raw_regex => 'h' },
                 { :raw_regex => 'e' },
-                { :interpolation => [
-                  { :reference => 'll' }
-                ] },
+                {
+                  :start => '#{',
+                  :interpolation => [
+                    { :reference => 'll' }
+                  ],
+                  :end => '}'
+                },
                 { :raw_regex => 'o' }
               ]
             }
