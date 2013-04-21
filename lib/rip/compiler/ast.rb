@@ -120,15 +120,11 @@ module Rip::Compiler
       end
     end
 
-    rule(:lambda_block => simple(:lambda_block)) do |locals|
-      locals[:lambda_block]
-    end
-
     {
       :case => Rip::Nodes::Case,
       :class => Rip::Nodes::Class
     }.each do |keyword, klass|
-      rule(keyword => simple(keyword), :arguments => sequence(:arguments), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+      rule(keyword => simple(keyword), :location_arguments => simple(:location_arguments), :arguments => sequence(:arguments), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
         body = block_body(locals[:origin], locals[:location_body], locals[:body])
         klass.new(location, locals[:arguments], body)
@@ -138,14 +134,18 @@ module Rip::Compiler
     {
       :catch => Rip::Nodes::Catch,
       :if => Rip::Nodes::If,
-      :unless => Rip::Nodes::Unless,
-      :switch => Rip::Nodes::Switch
+      :unless => Rip::Nodes::Unless
     }.each do |keyword, klass|
       rule(keyword => simple(keyword), :argument => simple(:argument), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
         body = block_body(locals[:origin], locals[:location_body], locals[:body])
         klass.new(location, locals[:argument], body)
       end
+    end
+
+    rule(:switch => simple(:switch), :argument => simple(:argument), :case_blocks => sequence(:case_blocks), :else_block => simple(:else_block)) do |locals|
+      location = location_for(locals[:origin], locals[:switch])
+      Rip::Nodes::Switch.new(location, locals[:argument], locals[:case_blocks], locals[:else_block])
     end
 
     {
@@ -157,6 +157,12 @@ module Rip::Compiler
         location = location_for(locals[:origin], locals[keyword])
         body = block_body(locals[:origin], locals[:location_body], locals[:body])
         klass.new(location, body)
+      end
+    end
+
+    %i[ catch_block if_block unless_block try_block finally_block else_block ].each do |block|
+      rule(block => simple(block)) do |locals|
+        locals[block]
       end
     end
   end

@@ -22,7 +22,7 @@ module Rip::Utilities
     end
 
     def add_line(count = 1)
-      self.class.new(origin, offset, line + count, column).add_character(count)
+      self.class.new(origin, offset + count, line + count, 1)
     end
 
     def inspect

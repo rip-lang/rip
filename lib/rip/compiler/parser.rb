@@ -151,15 +151,16 @@ module Rip::Compiler
 
     rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat >> whitespaces? >> finally_block.maybe }
 
-    rule(:lambda_block) { ((str('->').as(:dash_rocket) | str('=>').as(:fat_rocket)) >> spaces? >> parameters.as(:parameters).maybe >> block_body).as(:lambda_block) }
+    rule(:lambda_block) { (str('->').as(:dash_rocket) | str('=>').as(:fat_rocket)) >> spaces? >> parameters.as(:parameters).maybe >> block_body }
 
-    rule(:class_block) { (str('class').as(:class) >> spaces? >> multiple_arguments.maybe >> block_body).as(:class_block) }
-    rule(:case_block)  { (str('case').as(:case)   >> spaces? >> multiple_arguments       >> block_body).as(:case_block) }
+    rule(:class_block) { str('class').as(:class) >> spaces? >> multiple_arguments.maybe >> block_body }
+    rule(:case_block)  { str('case').as(:case)   >> spaces? >> multiple_arguments       >> block_body }
 
-    rule(:catch_block)  { (str('catch').as(:catch)   >> spaces? >> single_argument       >> block_body).as(:catch_block) }
-    rule(:if_block)     { (str('if').as(:if)         >> spaces? >> single_argument       >> block_body).as(:if_block) }
-    rule(:unless_block) { (str('unless').as(:unless) >> spaces? >> single_argument       >> block_body).as(:unless_block) }
-    rule(:switch_block) { (str('switch').as(:switch) >> spaces? >> single_argument.maybe >> block_body_switch).as(:switch_block) }
+    rule(:switch_block) { str('switch').as(:switch) >> spaces? >> single_argument.maybe >> block_body_switch }
+
+    rule(:catch_block)  { (str('catch').as(:catch)   >> spaces? >> single_argument >> block_body).as(:catch_block) }
+    rule(:if_block)     { (str('if').as(:if)         >> spaces? >> single_argument >> block_body).as(:if_block) }
+    rule(:unless_block) { (str('unless').as(:unless) >> spaces? >> single_argument >> block_body).as(:unless_block) }
 
     rule(:try_block)     { (str('try').as(:try)         >> block_body).as(:try_block) }
     rule(:finally_block) { (str('finally').as(:finally) >> block_body).as(:finally_block) }
@@ -174,7 +175,7 @@ module Rip::Compiler
     rule(:single_argument) { parenthesis_open >> whitespaces? >> phrase.as(:argument) >> whitespaces? >> parenthesis_close }
 
     rule(:block_body) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }
-    rule(:block_body_switch) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> (case_block.repeat(1) >> whitespaces? >> else_block.maybe).as(:body) >> whitespaces? >> brace_close }
+    rule(:block_body_switch) { whitespaces? >> brace_open >> whitespaces? >> (case_block >> whitespaces?).repeat(1).as(:case_blocks) >> else_block.maybe.as(:else_block) >> whitespaces? >> brace_close }
 
     # https://github.com/kschiess/parslet/blob/master/example/capture.rb
     # TODO literals for heredoc
