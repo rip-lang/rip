@@ -1092,6 +1092,33 @@ describe Rip::Compiler::Parser do
             }
           ]
         end
+        let(:expected) do
+          [
+            {
+              :callable => {
+                :object => {
+                  :string => rip_string('hello, ')
+                },
+                :property_name => '+'
+              },
+              :location => '#{',
+              :arguments => [
+                {
+                  :callable => {
+                    :object => {
+                      :block => [
+                        { :reference => 'world' }
+                      ]
+                    },
+                    :property_name => 'to_string'
+                  },
+                  :location => '}',
+                  :arguments => []
+                }
+              ]
+            }
+          ]
+        end
       end
 
       # recognizes_as_expected 'heredoc' do
