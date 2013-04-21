@@ -143,10 +143,9 @@ module Rip::Compiler
       end
     end
 
-    rule(:switch => simple(:switch), :argument => simple(:argument), :body => sequence(:body)) do |locals|
+    rule(:switch => simple(:switch), :argument => simple(:argument), :case_blocks => sequence(:case_blocks), :else_block => simple(:else_block)) do |locals|
       location = location_for(locals[:origin], locals[:switch])
-      case_blocks, else_block = locals[:body].partition { |block| block.is_a?(Rip::Nodes::Case) }
-      Rip::Nodes::Switch.new(location, locals[:argument], case_blocks, else_block.first)
+      Rip::Nodes::Switch.new(location, locals[:argument], locals[:case_blocks], locals[:else_block])
     end
 
     {

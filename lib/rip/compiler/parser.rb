@@ -175,7 +175,7 @@ module Rip::Compiler
     rule(:single_argument) { parenthesis_open >> whitespaces? >> phrase.as(:argument) >> whitespaces? >> parenthesis_close }
 
     rule(:block_body) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }
-    rule(:block_body_switch) { whitespaces? >> brace_open >> whitespaces? >> ((case_block >> whitespaces?).repeat(1) >> else_block.maybe).as(:body) >> whitespaces? >> brace_close }
+    rule(:block_body_switch) { whitespaces? >> brace_open >> whitespaces? >> (case_block >> whitespaces?).repeat(1).as(:case_blocks) >> else_block.maybe.as(:else_block) >> whitespaces? >> brace_close }
 
     # https://github.com/kschiess/parslet/blob/master/example/capture.rb
     # TODO literals for heredoc
