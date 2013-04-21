@@ -259,7 +259,7 @@ describe Rip::Compiler::AST do
 
   context 'switch blocks' do
     let(:rip) do
-      <<-RIP
+      strip_heredoc(<<-RIP)
         switch (x) {
           case (1) {}
           case (2) {}
@@ -269,22 +269,26 @@ describe Rip::Compiler::AST do
       RIP
     end
 
-    let(:case_1_argument_node) { Rip::Nodes::Integer.new(location, '1') }
-    let(:case_1_body_node) { Rip::Nodes::BlockBody.new(location, []) }
-    let(:case_1_node) { Rip::Nodes::Case.new(location.add_character(2), case_1_argument_node, case_1_body_node) }
+    let(:line_2) { location.add_character(12).add_line }
+    let(:case_1_argument_node) { Rip::Nodes::Integer.new(line_2.add_character(8), '1') }
+    let(:case_1_body_node) { Rip::Nodes::BlockBody.new(line_2.add_character(11), []) }
+    let(:case_1_node) { Rip::Nodes::Case.new(line_2.add_character(2), [ case_1_argument_node ], case_1_body_node) }
 
-    let(:case_2_argument_node) { Rip::Nodes::Integer.new(location, '2') }
-    let(:case_2_body_node) { Rip::Nodes::BlockBody.new(location, []) }
-    let(:case_2_node) { Rip::Nodes::Case.new(location.add_character(2), case_2_argument_node, case_2_body_node) }
+    let(:line_3) { line_2.add_character(13).add_line }
+    let(:case_2_argument_node) { Rip::Nodes::Integer.new(line_3.add_character(8), '2') }
+    let(:case_2_body_node) { Rip::Nodes::BlockBody.new(line_3.add_character(11), []) }
+    let(:case_2_node) { Rip::Nodes::Case.new(line_3.add_character(2), [ case_2_argument_node ], case_2_body_node) }
 
-    let(:case_3_argument_node) { Rip::Nodes::Integer.new(location, '3') }
-    let(:case_3_body_node) { Rip::Nodes::BlockBody.new(location, []) }
-    let(:case_3_node) { Rip::Nodes::Case.new(location.add_character(2), case_3_argument_node, case_3_body_node) }
+    let(:line_4) { line_3.add_character(13).add_line }
+    let(:case_3_argument_node) { Rip::Nodes::Integer.new(line_4.add_character(8), '3') }
+    let(:case_3_body_node) { Rip::Nodes::BlockBody.new(line_4.add_character(11), []) }
+    let(:case_3_node) { Rip::Nodes::Case.new(line_4.add_character(2), [ case_3_argument_node ], case_3_body_node) }
 
-    let(:else_body_node) { Rip::Nodes::BlockBody.new(location, []) }
-    let(:else_node) { Rip::Nodes::Else.new(location.add_character(2), else_body_node) }
+    let(:line_5) { line_4.add_character(13).add_line }
+    let(:else_body_node) { Rip::Nodes::BlockBody.new(line_5.add_character(11), []) }
+    let(:else_node) { Rip::Nodes::Else.new(line_5.add_character(2), else_body_node) }
 
-    let(:switch_argument_node) { Rip::Nodes::Reference.new(location, 'x') }
+    let(:switch_argument_node) { Rip::Nodes::Reference.new(location.add_character(8), 'x') }
     let(:switch_node) { Rip::Nodes::Switch.new(location, switch_argument_node, [ case_1_node, case_2_node, case_3_node ], else_node) }
 
     let(:switch_block) { expressions.first }
@@ -294,6 +298,12 @@ describe Rip::Compiler::AST do
     end
 
     it 'finds the switch' do
+      expect(switch_block.case_blocks[0]).to eq(switch_node.case_blocks[0])
+      expect(switch_block.case_blocks[1]).to eq(switch_node.case_blocks[1])
+      expect(switch_block.case_blocks[2]).to eq(switch_node.case_blocks[2])
+
+      expect(switch_block.else_block).to eq(switch_node.else_block)
+
       expect(switch_block).to eq(switch_node)
     end
   end

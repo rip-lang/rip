@@ -134,14 +134,19 @@ module Rip::Compiler
     {
       :catch => Rip::Nodes::Catch,
       :if => Rip::Nodes::If,
-      :unless => Rip::Nodes::Unless,
-      :switch => Rip::Nodes::Switch
+      :unless => Rip::Nodes::Unless
     }.each do |keyword, klass|
       rule(keyword => simple(keyword), :argument => simple(:argument), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
         body = block_body(locals[:origin], locals[:location_body], locals[:body])
         klass.new(location, locals[:argument], body)
       end
+    end
+
+    rule(:switch => simple(:switch), :argument => simple(:argument), :body => sequence(:body)) do |locals|
+      location = location_for(locals[:origin], locals[:switch])
+      case_blocks, else_block = locals[:body].partition { |block| block.is_a?(Rip::Nodes::Case) }
+      Rip::Nodes::Switch.new(location, locals[:argument], case_blocks, else_block.first)
     end
 
     {
