@@ -124,7 +124,7 @@ module Rip::Compiler
       :case => Rip::Nodes::Case,
       :class => Rip::Nodes::Class
     }.each do |keyword, klass|
-      rule(keyword => simple(keyword), :arguments => sequence(:arguments), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+      rule(keyword => simple(keyword), :location_arguments => simple(:location_arguments), :arguments => sequence(:arguments), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
         body = block_body(locals[:origin], locals[:location_body], locals[:body])
         klass.new(location, locals[:arguments], body)
