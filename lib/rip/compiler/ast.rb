@@ -68,26 +68,14 @@ module Rip::Compiler
       Rip::Nodes::KeyValue.new(location, locals[:key], locals[:value])
     end
 
-    rule(:key_value_pair => simple(:key_value_pair)) do |locals|
-      locals[:key_value_pair]
-    end
-
     rule(:start => simple(:start), :end => simple(:end), :exclusivity => simple(:exclusivity)) do |locals|
       location = locals[:start].location
       Rip::Nodes::Range.new(location, locals[:start], locals[:end], !locals[:exclusivity].nil?)
     end
 
-    rule(:range => simple(:range)) do |locals|
-      locals[:range]
-    end
-
     rule(:callable => simple(:callable), :location => simple(:location), :arguments => sequence(:arguments)) do |locals|
       location = location_for(locals[:origin], locals[:location])
       Rip::Nodes::Invocation.new(location, locals[:callable], locals[:arguments])
-    end
-
-    rule(:invocation => simple(:invocation)) do |locals|
-      locals[:invocation]
     end
 
     rule(:object => simple(:object), :property_name => simple(:property_name)) do |locals|
@@ -96,17 +84,9 @@ module Rip::Compiler
       Rip::Nodes::Property.new(location, locals[:object], property_name)
     end
 
-    rule(:property => simple(:property)) do |locals|
-      locals[:property]
-    end
-
     rule(:lhs => simple(:lhs), :location => simple(:location), :rhs => simple(:rhs)) do |locals|
       location = location_for(locals[:origin], locals[:location])
       Rip::Nodes::Assignment.new(location, locals[:lhs], locals[:rhs])
-    end
-
-    rule(:assignment => simple(:assignment)) do |locals|
-      locals[:assignment]
     end
 
     {

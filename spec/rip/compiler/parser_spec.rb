@@ -600,31 +600,23 @@ describe Rip::Compiler::Parser do
         let(:expected) do
           [
             {
-              :invocation => {
-                :callable => {
-                  :property => {
-                    :object => {
-                      :invocation => {
-                        :callable => {
-                          :property => {
-                            :object => { :sign => '+', :integer => '1' },
-                            :property_name => '+'
-                          }
-                        },
-                        :location => '+',
-                        :arguments => [
-                          { :sign => '+', :integer => '2' }
-                        ]
-                      }
-                    },
-                    :property_name => '-'
-                  }
+              :callable => {
+                :object => {
+                  :callable => {
+                    :object => { :sign => '+', :integer => '1' },
+                    :property_name => '+'
+                  },
+                  :location => '+',
+                  :arguments => [
+                    { :sign => '+', :integer => '2' }
+                  ]
                 },
-                :location => '-',
-                :arguments => [
-                  { :sign => '+', :integer => '3' }
-                ]
-              }
+                :property_name => '-'
+              },
+              :location => '-',
+              :arguments => [
+                { :sign => '+', :integer => '3' }
+              ]
             }
           ]
         end
@@ -748,11 +740,9 @@ describe Rip::Compiler::Parser do
         let(:expected) do
           [
             {
-              :assignment => {
-                :lhs => { :reference => 'favorite_language' },
-                :location => '=',
-                :rhs => { :string => rip_character_string('rip') }
-              }
+              :lhs => { :reference => 'favorite_language' },
+              :location => '=',
+              :rhs => { :string => rip_character_string('rip') }
             }
           ]
         end
@@ -788,20 +778,14 @@ describe Rip::Compiler::Parser do
         let(:expected) do
           [
             {
-              :assignment => {
-                :lhs => {
-                  :property => {
-                    :object => { :reference => 'favorite' },
-                    :property_name => 'language'
-                  }
-                },
-                :location => '=',
-                :rhs => {
-                  :property => {
-                    :object => { :string => rip_character_string('rip') },
-                    :property_name => 'lang'
-                  }
-                }
+              :lhs => {
+                :object => { :reference => 'favorite' },
+                :property_name => 'language'
+              },
+              :location => '=',
+              :rhs => {
+                :object => { :string => rip_character_string('rip') },
+                :property_name => 'lang'
               }
             }
           ]

@@ -53,75 +53,55 @@ module Rip::Compiler
         case part.keys.sort.first
         when :assignment
           {
-            :assignment => {
-              :lhs => normalize_atom(atom_base),
-              :location => part[:assignment][:location],
-              :rhs => normalize_atom(part[:assignment][:rhs])
-            }
+            :lhs => normalize_atom(atom_base),
+            :location => part[:assignment][:location],
+            :rhs => normalize_atom(part[:assignment][:rhs])
           }
         when :key_value_pair
           {
-            :key_value_pair => {
-              :key => atom_base,
-              :value => normalize_atom(part[:key_value_pair][:value])
-            }
+            :key => atom_base,
+            :value => normalize_atom(part[:key_value_pair][:value])
           }
         when :range
           {
-            :range => {
-              :start => atom_base,
-              :end => normalize_atom(part[:range][:end]),
-              :exclusivity => part[:range][:exclusivity]
-            }
+            :start => atom_base,
+            :end => normalize_atom(part[:range][:end]),
+            :exclusivity => part[:range][:exclusivity]
           }
         when :property_assignment
           {
-            :assignment => {
-              :lhs => normalize_atom(atom_base),
-              :location => part[:property_assignment][:location],
-              :rhs => normalize_atom(part[:property_assignment][:rhs])
-            }
+            :lhs => normalize_atom(atom_base),
+            :location => part[:property_assignment][:location],
+            :rhs => normalize_atom(part[:property_assignment][:rhs])
           }
         when :regular_invocation
           {
-            :invocation => {
-              :callable => atom_base,
-              :location => part[:regular_invocation][:location_arguments],
-              :arguments => normalize_atom(part[:regular_invocation][:arguments])
-            }
+            :callable => atom_base,
+            :location => part[:regular_invocation][:location_arguments],
+            :arguments => normalize_atom(part[:regular_invocation][:arguments])
           }
         when :index_invocation
           {
-            :invocation => {
-              :callable => {
-                :property => {
-                  :object => normalize_atom(atom_base),
-                  :property_name => (part[:index_invocation][:open] + part[:index_invocation][:close])
-                }
-              },
-              :location => part[:index_invocation][:open],
-              :arguments => normalize_atom(part[:index_invocation][:arguments])
-            }
+            :callable => {
+              :object => normalize_atom(atom_base),
+              :property_name => (part[:index_invocation][:open] + part[:index_invocation][:close])
+            },
+            :location => part[:index_invocation][:open],
+            :arguments => normalize_atom(part[:index_invocation][:arguments])
           }
         when :operator_invocation
           {
-            :invocation => {
-              :callable => {
-                :property => {
-                  :object => normalize_atom(atom_base),
-                  :property_name => part[:operator_invocation][:operator][:reference]
-                }
-              },
-              :location => part[:operator_invocation][:operator][:reference],
-              :arguments => [ normalize_atom(part[:operator_invocation][:argument]) ]
-            }
+            :callable => {
+              :object => normalize_atom(atom_base),
+              :property_name => part[:operator_invocation][:operator][:reference]
+            },
+            :location => part[:operator_invocation][:operator][:reference],
+            :arguments => [ normalize_atom(part[:operator_invocation][:argument]) ]
           }
         when :property_name
           {
-            :property => {
-              :object => normalize_atom(atom_base),
-              :property_name => normalize_atom(part[:property_name][:reference])
-            }
+            :object => normalize_atom(atom_base),
+            :property_name => normalize_atom(part[:property_name][:reference])
           }
         else
           part
