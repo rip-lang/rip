@@ -215,10 +215,10 @@ module Rip::Compiler
 
     rule(:string) { string_symbol | string_single | string_double }
 
-    rule(:string_symbol) { colon >> (escape_simple | character_legal.as(:character)).repeat(1).as(:string) }
+    rule(:string_symbol) { colon >> (escape_simple | character_legal).as(:character).repeat(1).as(:string) }
 
-    rule(:string_single) { string_parser(quote_single, escape_simple) }
-    rule(:string_double) { string_parser(quote_double, escape_advanced | interpolation) }
+    rule(:string_single) { string_parser(quote_single, escape_simple.as(:character)) }
+    rule(:string_double) { string_parser(quote_double, escape_advanced.as(:character) | interpolation) }
 
     rule(:regular_expression) { string_parser(slash_forward, escape_regex | interpolation, :regex, :raw_regex) }
 

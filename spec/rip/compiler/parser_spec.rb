@@ -1065,16 +1065,25 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'double-quoted string' do
-        let(:rip) { '"three"' }
+        let(:rip) { '"a\nb"' }
         let(:expected_raw) do
           [
             {
               :string => [
-                { :character => 't' },
-                { :character => 'h' },
-                { :character => 'r' },
-                { :character => 'e' },
-                { :character => 'e' }
+                { :character => 'a' },
+                { :character => { :location => '\\', :escaped_token => 'n' } },
+                { :character => 'b' }
+              ]
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :string => [
+                { :character => 'a' },
+                { :character => "\n" },
+                { :character => 'b' }
               ]
             }
           ]
