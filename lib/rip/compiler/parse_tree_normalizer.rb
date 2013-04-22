@@ -41,16 +41,7 @@ module Rip::Compiler
             },
             :location => piece[:start],
             :arguments => [
-              {
-                :callable => {
-                  :object => {
-                    :block => normalize_atom(piece[:interpolation])
-                  },
-                  :property_name => 'to_string'
-                },
-                :location => piece[:end],
-                :arguments => []
-              }
+              normalize_atom(piece)
             ]
           }
         else

@@ -1113,16 +1113,9 @@ describe Rip::Compiler::Parser do
               :location => '#{',
               :arguments => [
                 {
-                  :callable => {
-                    :object => {
-                      :block => [
-                        { :reference => 'world' }
-                      ]
-                    },
-                    :property_name => 'to_string'
-                  },
-                  :location => '}',
-                  :arguments => []
+                  :interpolation => [
+                    { :reference => 'world' }
+                  ]
                 }
               ]
             }
