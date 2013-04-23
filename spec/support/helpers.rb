@@ -62,15 +62,9 @@ module RSpecHelpers
     parser(code).syntax_tree
   end
 
-  def rip_parsed_string(string)
+  def rip_string(string)
     string.split('').map do |s|
-      { :raw_string => s }
-    end
-  end
-
-  def rip_character_string(string)
-    rip_parsed_string(string).map do |c|
-      { :character => c[:raw_string] }
+      { :character => s }
     end
   end
 

@@ -21,14 +21,58 @@ module Rip::Compiler
     end
 
 
-    def normalize_atom(tree)
-      case tree
-      when Array
-        normalize_atom_array(tree)
-      when Hash
-        normalize_atom_hash(tree)
+    def normalize_string(tree)
+      if tree.is_a?(Hash) && tree.has_key?(:string)
+        normalize_string_hash(tree)
       else
         tree
+      end
+    end
+
+    def normalize_string_hash(tree)
+      parts = tree[:string].inject([]) do |memo, part|
+        if part[:character] && memo.last && memo.last[:string]
+          memo.last[:string] << part
+        elsif part[:character]
+          memo << { :string => [ part ] }
+        else
+          memo << part
+        end
+
+        memo
+      end
+
+      parts.inject do |memo, part|
+        location = part[:start] ||
+          memo[:end] ||
+          memo[:atom].last[:operator_invocation][:argument][:end]
+        plus = self.class.slice(location, '+')
+
+        {
+          :atom => [
+            memo,
+            {
+              :operator_invocation => {
+                :operator => { :reference => plus },
+                :argument => part
+              }
+            }
+          ]
+        }
+      end
+    end
+
+
+    def normalize_atom(tree)
+      _tree = normalize_string(tree)
+
+      case _tree
+      when Array
+        normalize_atom_array(_tree)
+      when Hash
+        normalize_atom_hash(_tree)
+      else
+        _tree
       end
     end
 
@@ -131,10 +175,6 @@ module Rip::Compiler
           number => locals[number]
         }
       end
-    end
-
-    rule(:raw_string => simple(:raw_string)) do |locals|
-      { :character => locals[:raw_string] }
     end
 
     rule(:raw_regex => simple(:raw_regex)) do |locals|

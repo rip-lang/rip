@@ -89,6 +89,11 @@ module Rip::Compiler
       Rip::Nodes::Assignment.new(location, locals[:lhs], locals[:rhs])
     end
 
+    rule(:start => simple(:start), :interpolation => sequence(:lines), :end => simple(:end)) do |locals|
+      location = location_for(locals[:origin], locals[:start])
+      Rip::Nodes::Interpolation.new(location, locals[:lines])
+    end
+
     {
       :dash_rocket => Rip::Nodes::Lambda,
       :fat_rocket => Rip::Nodes::Lambda
