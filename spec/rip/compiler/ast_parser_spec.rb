@@ -307,4 +307,31 @@ describe Rip::Compiler::AST do
       expect(switch_block).to eq(switch_node)
     end
   end
+
+  context 'interpolation' do
+    let(:rip) { '"#{a}b"' }
+
+    let(:reference) { Rip::Nodes::Reference.new(location.add_character(3), 'a') }
+    let(:interpolation) { Rip::Nodes::Interpolation.new(location.add_character(1), [ reference ]) }
+    let(:plus) { Rip::Nodes::Property.new(location.add_character(4), interpolation, '+') }
+
+    let(:character) { Rip::Nodes::Character.new(location.add_character(5), 'b') }
+    let(:string) { Rip::Nodes::String.new(location.add_character(5), [ character ]) }
+
+    let(:concatenation_node) { Rip::Nodes::Invocation.new(location.add_character(4), plus, [ string ]) }
+
+    let(:concatenation) { expressions.first }
+
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'transforms interpolation into string concatenation' do
+      expect(concatenation.callable.object).to eq(interpolation)
+      expect(concatenation.callable).to eq(plus)
+      expect(concatenation.arguments.first).to eq(string)
+
+      expect(concatenation).to eq(concatenation_node)
+    end
+  end
 end
