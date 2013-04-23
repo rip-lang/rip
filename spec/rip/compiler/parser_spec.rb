@@ -1091,13 +1091,13 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'double-quoted string with interpolation' do
-        let(:rip) { '"hello, #{world}"' }
+        let(:rip) { '"ab#{cd}ef"' }
         let(:expected_raw) do
           [
             {
-              :string => rip_string('hello, ') + [{ :start => '#{', :interpolation => [
-                { :reference => 'world' }
-              ], :end => '}' }]
+              :string => rip_string('ab') + [{ :start => '#{', :interpolation => [
+                { :reference => 'cd' }
+              ], :end => '}' }] + rip_string('ef')
             }
           ]
         end
@@ -1106,17 +1106,26 @@ describe Rip::Compiler::Parser do
             {
               :callable => {
                 :object => {
-                  :string => rip_string('hello, ')
+                  :callable => {
+                    :object => { :string => rip_string('ab') },
+                    :property_name => '+'
+                  },
+                  :location => '+',
+                  :arguments => [
+                    {
+                      :start => '#{',
+                      :interpolation => [
+                        { :reference => 'cd' }
+                      ],
+                      :end => '}'
+                    }
+                  ]
                 },
                 :property_name => '+'
               },
-              :location => '#{',
+              :location => '+',
               :arguments => [
-                {
-                  :interpolation => [
-                    { :reference => 'world' }
-                  ]
-                }
+                { :string => rip_string('ef') }
               ]
             }
           ]

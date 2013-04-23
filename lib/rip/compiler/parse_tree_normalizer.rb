@@ -30,24 +30,35 @@ module Rip::Compiler
     end
 
     def normalize_string_hash(tree)
-      tree[:string].inject({}) do |memo, piece|
-        if piece.has_key?(:interpolation)
-          {
-            :callable => {
-              :object => {
-                :string => memo[:string]
-              },
-              :property_name => '+'
-            },
-            :location => piece[:start],
-            :arguments => [
-              normalize_atom(piece)
-            ]
-          }
+      parts = tree[:string].inject([]) do |memo, part|
+        if part[:character] && memo.last && memo.last[:string]
+          memo.last[:string] << part
+        elsif part[:character]
+          memo << { :string => [ part ] }
         else
-          characters = Array(memo[:string]) + [ piece ]
-          { :string => characters }
+          memo << part
         end
+
+        memo
+      end
+
+      parts.inject do |memo, part|
+        location = part[:start] ||
+          memo[:end] ||
+          memo[:atom].last[:operator_invocation][:argument][:end]
+        plus = self.class.slice(location, '+')
+
+        {
+          :atom => [
+            memo,
+            {
+              :operator_invocation => {
+                :operator => { :reference => plus },
+                :argument => part
+              }
+            }
+          ]
+        }
       end
     end
 
