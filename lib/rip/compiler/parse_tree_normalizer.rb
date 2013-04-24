@@ -21,15 +21,15 @@ module Rip::Compiler
     end
 
 
-    def normalize_string(tree)
+    def normalize_characters(tree)
       if tree.is_a?(Hash) && tree.has_key?(:string)
-        normalize_string_hash(tree)
+        normalize_character_hash(tree)
       else
         tree
       end
     end
 
-    def normalize_string_hash(tree)
+    def normalize_character_hash(tree)
       parts = tree[:string].inject([]) do |memo, part|
         if part[:character] && memo.last && memo.last[:string]
           memo.last[:string] << part
@@ -64,7 +64,7 @@ module Rip::Compiler
 
 
     def normalize_atom(tree)
-      _tree = normalize_string(tree)
+      _tree = normalize_characters(tree)
 
       case _tree
       when Array
