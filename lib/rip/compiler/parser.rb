@@ -220,7 +220,7 @@ module Rip::Compiler
     rule(:string_single) { string_parser(quote_single, escape_simple.as(:character)) }
     rule(:string_double) { string_parser(quote_double, escape_advanced.as(:character) | interpolation) }
 
-    rule(:regular_expression) { string_parser(slash_forward, escape_regex | interpolation, :regex, :raw_regex) }
+    rule(:regular_expression) { string_parser(slash_forward, escape_regex.as(:character) | interpolation, :regex) }
 
 
     rule(:interpolation) { interpolation_start.as(:start) >> (interpolation_end.absent? >> line.repeat(1)).repeat.as(:interpolation) >> interpolation_end.as(:end) }
@@ -247,8 +247,8 @@ module Rip::Compiler
       (_value >> (comma >> _value).repeat).repeat(0, 1)
     end
 
-    def string_parser(delimiter, inner_special, delimited_flag = :string, any_flag = :character)
-      delimiter >> (delimiter.absent? >> (inner_special | any.as(any_flag))).repeat.as(delimited_flag) >> delimiter
+    def string_parser(delimiter, inner_special, delimited_flag = :string)
+      delimiter >> (delimiter.absent? >> (inner_special | any.as(:character))).repeat.as(delimited_flag) >> delimiter
     end
   end
 end
