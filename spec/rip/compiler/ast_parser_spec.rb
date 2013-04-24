@@ -308,7 +308,7 @@ describe Rip::Compiler::AST do
     end
   end
 
-  context 'interpolation' do
+  context 'interpolation for string' do
     let(:rip) { '"#{a}b"' }
 
     let(:reference) { Rip::Nodes::Reference.new(location.add_character(3), 'a') }
