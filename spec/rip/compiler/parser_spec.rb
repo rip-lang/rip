@@ -1176,11 +1176,11 @@ describe Rip::Compiler::Parser do
           [
             {
               :regex => [
-                { :raw_regex => 'h' },
-                { :raw_regex => 'e' },
-                { :raw_regex => 'l' },
-                { :raw_regex => 'l' },
-                { :raw_regex => 'o' }
+                { :character => 'h' },
+                { :character => 'e' },
+                { :character => 'l' },
+                { :character => 'l' },
+                { :character => 'o' }
               ]
             }
           ]
@@ -1193,8 +1193,8 @@ describe Rip::Compiler::Parser do
           [
             {
               :regex => [
-                { :raw_regex => 'h' },
-                { :raw_regex => 'e' },
+                { :character => 'h' },
+                { :character => 'e' },
                 {
                   :start => '#{',
                   :interpolation => [
@@ -1202,7 +1202,36 @@ describe Rip::Compiler::Parser do
                   ],
                   :end => '}'
                 },
-                { :raw_regex => 'o' }
+                { :character => 'o' }
+              ]
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :callable => {
+                :object => {
+                  :callable => {
+                    :object => { :regex => rip_string('he') },
+                    :property_name => '+'
+                  },
+                  :location => '+',
+                  :arguments => [
+                    {
+                      :start => '#{',
+                      :interpolation => [
+                        { :reference => 'll' }
+                      ],
+                      :end => '}'
+                    }
+                  ]
+                },
+                :property_name => '+'
+              },
+              :location => '+',
+              :arguments => [
+                { :regex => rip_string('o') }
               ]
             }
           ]
