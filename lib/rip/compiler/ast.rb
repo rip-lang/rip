@@ -59,8 +59,8 @@ module Rip::Compiler
     end
 
     rule(:regex => sequence(:pattern)) do |locals|
-      location = location_for(locals[:origin], locals[:pattern].first)
-      Rip::Nodes::RegularExpression.new(location, locals[:pattern].join(''))
+      location = locals[:pattern].first.location
+      Rip::Nodes::RegularExpression.new(location, locals[:pattern])
     end
 
     rule(:key => simple(:key), :value => simple(:value)) do |locals|
