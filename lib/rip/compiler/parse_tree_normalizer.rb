@@ -22,19 +22,22 @@ module Rip::Compiler
 
 
     def normalize_characters(tree)
-      if tree.is_a?(Hash) && tree.has_key?(:string)
-        normalize_character_hash(tree)
+      case
+      when tree.is_a?(Hash) && tree.has_key?(:regex)
+        normalize_character_hash(tree, :regex)
+      when tree.is_a?(Hash) && tree.has_key?(:string)
+        normalize_character_hash(tree, :string)
       else
         tree
       end
     end
 
-    def normalize_character_hash(tree)
-      parts = tree[:string].inject([]) do |memo, part|
-        if part[:character] && memo.last && memo.last[:string]
-          memo.last[:string] << part
+    def normalize_character_hash(tree, type)
+      parts = tree[type].inject([]) do |memo, part|
+        if part[:character] && memo.last && memo.last[type]
+          memo.last[type] << part
         elsif part[:character]
-          memo << { :string => [ part ] }
+          memo << { type => [ part ] }
         else
           memo << part
         end

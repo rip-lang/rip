@@ -1207,6 +1207,35 @@ describe Rip::Compiler::Parser do
             }
           ]
         end
+        let(:expected) do
+          [
+            {
+              :callable => {
+                :object => {
+                  :callable => {
+                    :object => { :regex => rip_string('he') },
+                    :property_name => '+'
+                  },
+                  :location => '+',
+                  :arguments => [
+                    {
+                      :start => '#{',
+                      :interpolation => [
+                        { :reference => 'll' }
+                      ],
+                      :end => '}'
+                    }
+                  ]
+                },
+                :property_name => '+'
+              },
+              :location => '+',
+              :arguments => [
+                { :regex => rip_string('o') }
+              ]
+            }
+          ]
+        end
       end
     end
 
