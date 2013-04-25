@@ -1,18 +1,21 @@
 module Rip::Nodes
   class If < Base
     attr_reader :argument
-    attr_reader :body
+    attr_reader :true_body
+    attr_reader :false_body
 
-    def initialize(location, argument, body)
+    def initialize(location, argument, true_body, false_body)
       super(location)
       @argument = argument
-      @body = body
+      @true_body = true_body
+      @false_body = false_body
     end
 
     def ==(other)
       super &&
         (argument == other.argument) &&
-        (body == other.body)
+        (true_body == other.true_body) &&
+        (false_body == other.false_body)
     end
   end
 end
