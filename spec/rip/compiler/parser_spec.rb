@@ -63,52 +63,50 @@ describe Rip::Compiler::Parser do
     let(:expected_raw) do
       [
         {
-          :block_sequence => {
-            :if_block => {
-              :if => 'if',
-              :argument => { :reference => 'true' },
-              :location_body => '{',
-              :body => [
-                {
-                  :atom => [
-                    { :reference => 'lambda' },
-                    {
-                      :assignment => {
-                        :location => '=',
-                        :rhs => {
-                          :dash_rocket => '->',
-                          :location_body => '{',
-                          :body => [ { :comment => ' comment' } ]
-                        }
+          :if_block => {
+            :if => 'if',
+            :argument => { :reference => 'true' },
+            :location_body => '{',
+            :body => [
+              {
+                :atom => [
+                  { :reference => 'lambda' },
+                  {
+                    :assignment => {
+                      :location => '=',
+                      :rhs => {
+                        :dash_rocket => '->',
+                        :location_body => '{',
+                        :body => [ { :comment => ' comment' } ]
                       }
                     }
-                  ]
-                },
-                {
-                  :atom => [
-                    { :reference => 'lambda' },
-                    { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
-                  ]
-                }
-              ]
-            },
-            :else_block => {
-              :else => 'else',
-              :location_body => '{',
-              :body => [
-                {
-                  :atom => [
-                    { :integer => '1' },
-                    {
-                      :operator_invocation => {
-                        :operator => { :reference => '+' },
-                        :argument => { :integer => '2' }
-                      }
+                  }
+                ]
+              },
+              {
+                :atom => [
+                  { :reference => 'lambda' },
+                  { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
+                ]
+              }
+            ]
+          },
+          :else_block => {
+            :else => 'else',
+            :location_body => '{',
+            :body => [
+              {
+                :atom => [
+                  { :integer => '1' },
+                  {
+                    :operator_invocation => {
+                      :operator => { :reference => '+' },
+                      :argument => { :integer => '2' }
                     }
-                  ]
-                }
-              ]
-            }
+                  }
+                ]
+              }
+            ]
           }
         }
       ]
@@ -159,12 +157,10 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :block_sequence => {
-                :try_block => {
-                  :try => 'try',
-                  :location_body => '{',
-                  :body => []
-                }
+              :try_block => {
+                :try => 'try',
+                :location_body => '{',
+                :body => []
               }
             }
           ]
@@ -176,18 +172,16 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :block_sequence => {
-                :unless_block => {
-                  :unless => 'unless',
-                  :argument => { :string => rip_string('name') },
-                  :location_body => '{',
-                  :body => []
-                },
-                :else_block => {
-                  :else => 'else',
-                  :location_body => '{',
-                  :body => []
-                }
+              :unless_block => {
+                :unless => 'unless',
+                :argument => { :string => rip_string('name') },
+                :location_body => '{',
+                :body => []
+              },
+              :else_block => {
+                :else => 'else',
+                :location_body => '{',
+                :body => []
               }
             }
           ]
@@ -338,15 +332,13 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    { :comment => ' comment' }
-                  ]
-                }
+              :if_block => {
+                :if => 'if',
+                :argument => { :reference => 'true' },
+                :location_body => '{',
+                :body => [
+                  { :comment => ' comment' }
+                ]
               }
             }
           ]
@@ -358,15 +350,13 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    { :reference => 'name' }
-                  ]
-                }
+              :if_block => {
+                :if => 'if',
+                :argument => { :reference => 'true' },
+                :location_body => '{',
+                :body => [
+                  { :reference => 'name' }
+                ]
               }
             }
           ]
@@ -378,25 +368,23 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    {
-                      :atom => [
-                        { :reference => 'x' },
-                        {
-                          :assignment => {
-                            :location => '=',
-                            :rhs => { :string => rip_string('y') }
-                          }
+              :if_block => {
+                :if => 'if',
+                :argument => { :reference => 'true' },
+                :location_body => '{',
+                :body => [
+                  {
+                    :atom => [
+                      { :reference => 'x' },
+                      {
+                        :assignment => {
+                          :location => '=',
+                          :rhs => { :string => rip_string('y') }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      }
+                    ]
+                  }
+                ]
               }
             }
           ]
@@ -408,20 +396,18 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    {
-                      :atom => [
-                        { :reference => 'run!' },
-                        { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
-                      ]
-                    }
-                  ]
-                }
+              :if_block => {
+                :if => 'if',
+                :argument => { :reference => 'true' },
+                :location_body => '{',
+                :body => [
+                  {
+                    :atom => [
+                      { :reference => 'run!' },
+                      { :regular_invocation => { :location_arguments => '(', :arguments => [] } }
+                    ]
+                  }
+                ]
               }
             }
           ]
@@ -433,25 +419,23 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    {
-                      :atom => [
-                        { :reference => 'steam' },
-                        {
-                          :operator_invocation => {
-                            :operator => { :reference => 'will' },
-                            :argument => { :string => rip_string('rise') }
-                          }
+              :if_block => {
+                :if => 'if',
+                :argument => { :reference => 'true' },
+                :location_body => '{',
+                :body => [
+                  {
+                    :atom => [
+                      { :reference => 'steam' },
+                      {
+                        :operator_invocation => {
+                          :operator => { :reference => 'will' },
+                          :argument => { :string => rip_string('rise') }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      }
+                    ]
+                  }
+                ]
               }
             }
           ]
@@ -463,15 +447,13 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    { :character => '3' }
-                  ]
-                }
+              :if_block => {
+                :if => 'if',
+                :argument => { :reference => 'true' },
+                :location_body => '{',
+                :body => [
+                  { :character => '3' }
+                ]
               }
             }
           ]
@@ -483,24 +465,20 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           [
             {
-              :block_sequence => {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    {
-                      :block_sequence => {
-                        :unless_block => {
-                          :unless => 'unless',
-                          :argument => { :reference => 'false' },
-                          :location_body => '{',
-                          :body => []
-                        }
-                      }
+              :if_block => {
+                :if => 'if',
+                :argument => { :reference => 'true' },
+                :location_body => '{',
+                :body => [
+                  {
+                    :unless_block => {
+                      :unless => 'unless',
+                      :argument => { :reference => 'false' },
+                      :location_body => '{',
+                      :body => []
                     }
-                  ]
-                }
+                  }
+                ]
               }
             }
           ]
