@@ -318,6 +318,88 @@ describe Rip::Compiler::Parser do
           ]
         end
       end
+
+      recognizes_as_expected 'try-catch' do
+        let(:rip) { 'try {} catch (Exception: e) {}' }
+        let(:expected) do
+          [
+            {
+              :try_block => {
+                :try => 'try',
+                :location_body => '{',
+                :body => []
+              },
+              :catch_blocks => [
+                :catch_block => {
+                  :catch => 'catch',
+                  :argument => {
+                    :atom => {
+                      :key => { :reference => 'Exception' },
+                      :value => { :reference => 'e' }
+                    }
+                  },
+                  :location_body => '{',
+                  :body => []
+                }
+              ]
+            }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'try-finally' do
+        let(:rip) { 'try {} finally {}' }
+        let(:expected) do
+          [
+            {
+              :try_block => {
+                :try => 'try',
+                :location_body => '{',
+                :body => []
+              },
+              :catch_blocks => [],
+              :finally_block => {
+                :finally => 'finally',
+                :location_body => '{',
+                :body => []
+              }
+            }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'try-catch-finally' do
+        let(:rip) { 'try {} catch (Exception: e) {} finally {}' }
+        let(:expected) do
+          [
+            {
+              :try_block => {
+                :try => 'try',
+                :location_body => '{',
+                :body => []
+              },
+              :catch_blocks => [
+                :catch_block => {
+                  :catch => 'catch',
+                  :argument => {
+                    :atom => {
+                      :key => { :reference => 'Exception' },
+                      :value => { :reference => 'e' }
+                    }
+                  },
+                  :location_body => '{',
+                  :body => []
+                }
+              ],
+              :finally_block => {
+                :finally => 'finally',
+                :location_body => '{',
+                :body => []
+              }
+            }
+          ]
+        end
+      end
     end
 
     context 'block body' do

@@ -149,7 +149,7 @@ module Rip::Compiler
 
     rule(:condition_block_sequence) { (if_block | unless_block) >> whitespaces? >> else_block.maybe }
 
-    rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat >> whitespaces? >> finally_block.maybe }
+    rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat.as(:catch_blocks) >> whitespaces? >> finally_block.maybe }
 
     rule(:lambda_block) { (str('->').as(:dash_rocket) | str('=>').as(:fat_rocket)) >> spaces? >> parameters.as(:parameters).maybe >> block_body }
 
