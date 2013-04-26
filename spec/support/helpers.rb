@@ -68,6 +68,14 @@ module RSpecHelpers
     end
   end
 
+  def rip_string_nodes(location, string)
+    rip_string(string).inject([]) do |reply, character|
+      last = reply.last
+      _location = last.respond_to?(:location) ? last.location : location
+      reply << Rip::Nodes::Character.new(_location.add_character, character[:character])
+    end
+  end
+
   # http://apidock.com/rails/String/strip_heredoc
   def strip_heredoc(string)
     indent = string.scan(/^[ \t]*(?=\S)/).min.size

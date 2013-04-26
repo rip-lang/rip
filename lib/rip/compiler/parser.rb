@@ -137,8 +137,8 @@ module Rip::Compiler
     rule(:property_name) { reference | (bracket_open >> bracket_close) }
 
     rule(:phrase_base) do
-      condition_block_sequence.as(:block_sequence) |
-      exception_block_sequence.as(:block_sequence) |
+      condition_block_sequence |
+      exception_block_sequence |
       class_block |
       lambda_block |
       switch_block |

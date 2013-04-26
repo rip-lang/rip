@@ -361,4 +361,67 @@ describe Rip::Compiler::AST do
       expect(concatenation).to eq(concatenation_node)
     end
   end
+
+  context 'binary conditional block' do
+    let(:rip) do
+      strip_heredoc(<<-RIP)
+        if (true) { :hello }
+        else      { :goodbye }
+      RIP
+    end
+
+    let(:reference_node) { Rip::Nodes::Reference.new(location.add_character(4), 'true') }
+
+    let(:hello_node) { Rip::Nodes::String.new(location.add_character(13), rip_string_nodes(location.add_character(12), 'hello')) }
+    let(:true_body) { Rip::Nodes::BlockBody.new(location.add_character(10), [ hello_node ]) }
+
+    let(:line_2) { location.add_character(20).add_line }
+    let(:goodbye_node) { Rip::Nodes::String.new(line_2.add_character(13), rip_string_nodes(line_2.add_character(12), 'goodbye')) }
+    let(:false_body) { Rip::Nodes::BlockBody.new(line_2.add_character(10), [ goodbye_node ]) }
+
+    let(:if_else_node) { Rip::Nodes::If.new(location, reference_node, true_body, false_body) }
+
+    let(:if_else) { expressions.first }
+
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'transforms into if' do
+      expect(if_else.argument).to eq(reference_node)
+
+      expect(if_else.true_body).to eq(true_body)
+      expect(if_else.false_body).to eq(false_body)
+
+      expect(if_else).to eq(if_else_node)
+    end
+  end
+
+  context 'binary conditional block with synthesized else' do
+    let(:rip) { 'unless (false) { :implied_else }' }
+
+    let(:reference_node) { Rip::Nodes::Reference.new(location.add_character(8), 'false') }
+
+    let(:implied_node) { Rip::Nodes::String.new(location.add_character(18), rip_string_nodes(location.add_character(17), 'implied_else')) }
+    let(:false_body) { Rip::Nodes::BlockBody.new(location.add_character(15), [ implied_node ]) }
+
+    let(:true_body) { Rip::Nodes::BlockBody.new(location.add_character(15), []) }
+
+    let(:unless_else_node) { Rip::Nodes::Unless.new(location, reference_node, false_body, true_body) }
+
+    let(:unless_else) { expressions.first }
+
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'transforms into unless' do
+      expect(unless_else.argument).to eq(reference_node)
+
+      expect(unless_else.false_body).to eq(false_body)
+      expect(unless_else.true_body).to eq(true_body)
+
+      expect(unless_else).to eq(unless_else_node)
+    end
+  end
 end
