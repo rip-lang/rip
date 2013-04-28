@@ -25,31 +25,24 @@ module Rip::Compiler
 
     def raw_parse_tree
       ugly_tree = parse(source_code)
-      Collapser.new.apply(ugly_tree)
+      collapse_atom(ugly_tree)
     end
 
-    class Collapser < Parslet::Transform
-      def apply(tree, context = nil)
-        _tree = collapse_atom(tree)
-        super(_tree)
-      end
-
-      def collapse_atom(tree)
-        case tree
-        when Array
-          tree.map { |t| collapse_atom(t) }
-        when Hash
-          if tree[:atom]
-            if tree[:atom].is_a?(Array)
-              tree.merge(:atom => collapse_atom(tree[:atom]))
-            else
-              collapse_atom(tree[:atom])
-            end
-          else
-            tree
-          end
-        else tree
+    def collapse_atom(tree)
+      case tree
+      when Array
+        tree.map { |t| collapse_atom(t) }
+      when Hash
+        _tree = tree.map do |key, value|
+          [ key, collapse_atom(value) ]
         end
+        reply = Hash[_tree]
+        if reply.key?(:atom)
+          reply[:atom].is_a?(Array) ? reply : reply[:atom]
+        else
+          reply
+        end
+      else tree
       end
     end
 
@@ -149,7 +142,7 @@ module Rip::Compiler
 
     rule(:condition_block_sequence) { (if_block | unless_block) >> whitespaces? >> else_block.maybe }
 
-    rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat >> whitespaces? >> finally_block.maybe }
+    rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat.as(:catch_blocks) >> whitespaces? >> finally_block.maybe }
 
     rule(:lambda_block) { (str('->').as(:dash_rocket) | str('=>').as(:fat_rocket)) >> spaces? >> parameters.as(:parameters).maybe >> block_body }
 
@@ -157,8 +150,8 @@ module Rip::Compiler
     rule(:case_block)  { str('case').as(:case)   >> spaces? >> multiple_arguments       >> block_body }
 
     rule(:switch_block) { str('switch').as(:switch) >> spaces? >> single_argument.maybe >> block_body_switch }
+    rule(:catch_block)  { str('catch').as(:catch)   >> spaces? >> single_argument       >> block_body }
 
-    rule(:catch_block)  { (str('catch').as(:catch)   >> spaces? >> single_argument >> block_body).as(:catch_block) }
     rule(:if_block)     { (str('if').as(:if)         >> spaces? >> single_argument >> block_body).as(:if_block) }
     rule(:unless_block) { (str('unless').as(:unless) >> spaces? >> single_argument >> block_body).as(:unless_block) }
 

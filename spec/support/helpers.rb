@@ -81,4 +81,13 @@ module RSpecHelpers
     indent = string.scan(/^[ \t]*(?=\S)/).min.size
     string.gsub(/^[ \t]{#{indent}}/, '')
   end
+
+  def clean_inspect(ast)
+    ast.inspect
+      .gsub(/@\d+/, '')
+      .gsub(/:0x[0-9a-f]+/, '')
+      .gsub('Rip::Nodes::', '')
+      .gsub('Rip::Utilities::Location ', '')
+      .gsub(/ @location=\#\<([^>]+)>/, '@\1')
+  end
 end

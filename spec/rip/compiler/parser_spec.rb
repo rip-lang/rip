@@ -161,7 +161,8 @@ describe Rip::Compiler::Parser do
                 :try => 'try',
                 :location_body => '{',
                 :body => []
-              }
+              },
+              :catch_blocks => []
             }
           ]
         end
@@ -314,6 +315,110 @@ describe Rip::Compiler::Parser do
               ],
               :location_body => '{',
               :body => []
+            }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'try-catch' do
+        let(:rip) { 'try {} catch (Exception: e) {}' }
+        let(:expected_raw) do
+          [
+            {
+              :try_block => {
+                :try => 'try',
+                :location_body => '{',
+                :body => []
+              },
+              :catch_blocks => [
+                {
+                  :catch => 'catch',
+                  :argument => {
+                    :atom => [
+                      { :reference => 'Exception' },
+                      {
+                        :key_value_pair => { :value => { :reference => 'e' } }
+                      }
+                    ]
+                  },
+                  :location_body => '{',
+                  :body => []
+                }
+              ]
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :try_block => {
+                :try => 'try',
+                :location_body => '{',
+                :body => []
+              },
+              :catch_blocks => [
+                {
+                  :catch => 'catch',
+                  :argument => {
+                    :key => { :reference => 'Exception' },
+                    :value => { :reference => 'e' }
+                  },
+                  :location_body => '{',
+                  :body => []
+                }
+              ]
+            }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'try-finally' do
+        let(:rip) { 'try {} finally {}' }
+        let(:expected) do
+          [
+            {
+              :try_block => {
+                :try => 'try',
+                :location_body => '{',
+                :body => []
+              },
+              :catch_blocks => [],
+              :finally_block => {
+                :finally => 'finally',
+                :location_body => '{',
+                :body => []
+              }
+            }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'try-catch-finally' do
+        let(:rip) { 'try {} catch (Exception: e) {} finally {}' }
+        let(:expected) do
+          [
+            {
+              :try_block => {
+                :try => 'try',
+                :location_body => '{',
+                :body => []
+              },
+              :catch_blocks => [
+                {
+                  :catch => 'catch',
+                  :argument => {
+                    :key => { :reference => 'Exception' },
+                    :value => { :reference => 'e' }
+                  },
+                  :location_body => '{',
+                  :body => []
+                }
+              ],
+              :finally_block => {
+                :finally => 'finally',
+                :location_body => '{',
+                :body => []
+              }
             }
           ]
         end

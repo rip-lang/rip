@@ -151,9 +151,8 @@ module Rip::Compiler
     end
 
     {
-      :try => Rip::Nodes::Try,
-      :finally => Rip::Nodes::Finally,
-      :else => Rip::Nodes::Else
+      :else => Rip::Nodes::Else,
+      :finally => Rip::Nodes::Finally
     }.each do |keyword, klass|
       rule(keyword => simple(keyword), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
@@ -162,10 +161,26 @@ module Rip::Compiler
       end
     end
 
-    %i[ catch_block try_block finally_block else_block ].each do |block|
-      rule(block => simple(block)) do |locals|
-        locals[block]
-      end
+    rule(:try => simple(:try), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+      location = location_for(locals[:origin], locals[:try])
+      body = block_body(locals[:origin], locals[:location_body], locals[:body])
+      OpenStruct.new(:location => location, :body => body)
+    end
+
+    rule(:try_block => simple(:try), :catch_blocks => sequence(:catches)) do |locals|
+      {
+        :try_block => locals[:try],
+        :catch_blocks => locals[:catches],
+        :finally_block => Rip::Nodes::Finally.new(location, [])
+      }
+    end
+
+    rule(:try_block => simple(:try), :catch_blocks => sequence(:catches), :finally_block => simple(:finally)) do |locals|
+      Rip::Nodes::Try.new(locals[:try].location, locals[:try].body, locals[:catches], locals[:finally])
+    end
+
+    rule(:else_block => simple(:else_block)) do |locals|
+      locals[:else_block]
     end
   end
 end

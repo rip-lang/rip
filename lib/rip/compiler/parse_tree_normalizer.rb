@@ -87,7 +87,7 @@ module Rip::Compiler
       atom_or_parts = tree[:atom]
       case atom_or_parts
       when Array
-        tree.merge(:atom => normalize_atom_parts(atom_or_parts))
+        normalize_atom_parts(atom_or_parts)
       when Hash
         normalize_atom(atom_or_parts)
       else

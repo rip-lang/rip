@@ -424,4 +424,79 @@ describe Rip::Compiler::AST do
       expect(unless_else).to eq(unless_else_node)
     end
   end
+
+  context 'exception handling' do
+    let(:rip) do
+      strip_heredoc(<<-RIP)
+        try {
+          # danger!
+        }
+        catch (AppError: e) {
+          # rescue specific
+        }
+        catch (Exception: e) {
+          # rescue generic
+        }
+        finally {
+          # always run
+        }
+      RIP
+    end
+
+    let(:line_2) { location.add_character(5).add_line }
+    let(:danger_comment_node) { Rip::Nodes::Comment.new(line_2.add_character(3), ' danger!') }
+    let(:danger_body_node) { Rip::Nodes::BlockBody.new(location.add_character(4), [ danger_comment_node ]) }
+
+    let(:line_3) { line_2.add_character(11).add_line }
+
+    let(:line_4) { line_3.add_character(1).add_line }
+
+    let(:line_5) { line_4.add_character(21).add_line }
+    let(:specific_argument_key) { Rip::Nodes::Reference.new(line_4.add_character(7), 'AppError') }
+    let(:specific_argument_value) { Rip::Nodes::Reference.new(line_4.add_character(17), 'e') }
+    let(:specific_argument) { Rip::Nodes::KeyValue.new(line_4.add_character(7), specific_argument_key, specific_argument_value) }
+    let(:specific_comment_node) { Rip::Nodes::Comment.new(line_5.add_character(3), ' rescue specific') }
+    let(:specific_body_node) { Rip::Nodes::BlockBody.new(line_4.add_character(20), [ specific_comment_node ]) }
+    let(:specific_block_node) { Rip::Nodes::Catch.new(line_4, specific_argument, specific_body_node) }
+
+    let(:line_6) { line_5.add_character(19).add_line }
+
+    let(:line_7) { line_6.add_character(1).add_line }
+
+    let(:line_8) { line_7.add_character(22).add_line }
+    let(:generic_argument_key) { Rip::Nodes::Reference.new(line_7.add_character(7), 'Exception') }
+    let(:generic_argument_value) { Rip::Nodes::Reference.new(line_7.add_character(18), 'e') }
+    let(:generic_argument) { Rip::Nodes::KeyValue.new(line_7.add_character(7), generic_argument_key, generic_argument_value) }
+    let(:generic_comment_node) { Rip::Nodes::Comment.new(line_8.add_character(3), ' rescue generic') }
+    let(:generic_body_node) { Rip::Nodes::BlockBody.new(line_7.add_character(21), [ generic_comment_node ]) }
+    let(:generic_block_node) { Rip::Nodes::Catch.new(line_7, generic_argument, generic_body_node) }
+
+    let(:line_9) { line_8.add_character(18).add_line }
+
+    let(:line_10) { line_9.add_character(1).add_line }
+
+    let(:line_11) { line_10.add_character(9).add_line }
+    let(:always_comment_node) { Rip::Nodes::Comment.new(line_11.add_character(3), ' always run') }
+    let(:always_body_node) { Rip::Nodes::BlockBody.new(line_10.add_character(8), [ always_comment_node ]) }
+    let(:always_block_node) { Rip::Nodes::Finally.new(line_10, always_body_node) }
+
+    let(:try_etc_node) { Rip::Nodes::Try.new(location, danger_body_node, [ specific_block_node, generic_block_node ], always_block_node) }
+
+    let(:try_etc) { expressions.first }
+
+    it 'has one top-level node' do
+      expect(expressions.count).to eq(1)
+    end
+
+    it 'transforms into try with two catches and finally' do
+      expect(try_etc.attempt_body).to eq(danger_body_node)
+
+      expect(try_etc.catch_blocks.first).to eq(specific_block_node)
+      expect(try_etc.catch_blocks.last).to eq(generic_block_node)
+
+      expect(try_etc.finally_block).to eq(always_block_node)
+
+      expect(try_etc).to eq(try_etc_node)
+    end
+  end
 end
