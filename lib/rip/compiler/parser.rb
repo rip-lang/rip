@@ -16,7 +16,8 @@ module Rip::Compiler
       location = Rip::Utilities::Location.new(origin, 0, 1, 1)
       expressions = Rip::Compiler::AST.new(origin).apply(parse_tree)
       _expressions = expressions.is_a?(String) ? [] : expressions
-      Rip::Nodes::Module.new(location, _expressions)
+      body = Rip::Nodes::BlockBody.new(location, _expressions)
+      Rip::Nodes::Module.new(location, body)
     end
 
     def parse_tree

@@ -2,16 +2,18 @@ require 'spec_helper'
 
 describe Rip::Compiler::AST do
   let(:location) { location_for }
-  let(:expressions) { syntax_tree(rip).expressions }
+  let(:the_module) { syntax_tree(rip) }
+  let(:statements) { the_module.body.statements }
 
   context 'some basics' do
     describe 'tree for empty module' do
       let(:rip) { '' }
-      let(:rip_module) { Rip::Nodes::Module.new(location, []) }
+      let(:empty_body) { Rip::Nodes::BlockBody.new(location, []) }
+      let(:rip_module) { Rip::Nodes::Module.new(location, empty_body) }
 
       specify do
         expect(syntax_tree(rip)).to eq(rip_module)
-        expect(expressions.count).to eq(0)
+        expect(statements.count).to eq(0)
       end
     end
 
@@ -21,8 +23,8 @@ describe Rip::Compiler::AST do
       let(:rip_module) { Rip::Nodes::Module.new(location, [ comment ]) }
 
       specify do
-        expect(expressions.count).to eq(1)
-        expect(expressions.first).to eq(comment)
+        expect(statements.count).to eq(1)
+        expect(statements.first).to eq(comment)
       end
     end
   end
@@ -32,16 +34,16 @@ describe Rip::Compiler::AST do
     let(:reference_node) { Rip::Nodes::Reference.new(location, rip) }
 
     it 'finds a single node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'finds a single reference as the first node' do
-      expect(expressions.first).to eq(reference_node)
+      expect(statements.first).to eq(reference_node)
     end
   end
 
   context 'key-value pair' do
-    subject { expressions.first }
+    subject { statements.first }
     let(:rip) { ':key: :value' }
     let(:key_characters) do
       [
@@ -64,11 +66,11 @@ describe Rip::Compiler::AST do
     let(:key_value_node) { Rip::Nodes::KeyValue.new(location.add_character, key_node, value_node) }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'finds the key-value node' do
-      expect(expressions.first).to eq(key_value_node)
+      expect(statements.first).to eq(key_value_node)
     end
 
     its(:key) { should eq(key_node) }
@@ -76,18 +78,18 @@ describe Rip::Compiler::AST do
   end
 
   context 'range' do
-    subject { expressions.first }
+    subject { statements.first }
     let(:rip) { '`a..`z' }
     let(:a_node) { Rip::Nodes::Character.new(location.add_character, 'a') }
     let(:z_node) { Rip::Nodes::Character.new(location.add_character(5), 'z') }
     let(:range_node) { Rip::Nodes::Range.new(location.add_character, a_node, z_node) }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'finds the range node' do
-      expect(expressions.first).to eq(range_node)
+      expect(statements.first).to eq(range_node)
     end
 
     its(:start) { should eq(a_node) }
@@ -96,17 +98,17 @@ describe Rip::Compiler::AST do
   end
 
   context 'property' do
-    subject { expressions.first }
+    subject { statements.first }
     let(:rip) { 'one.two' }
     let(:object_node) { Rip::Nodes::Reference.new(location, 'one') }
     let(:property_node) { Rip::Nodes::Property.new(location.add_character(4), object_node, 'two') }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'finds the property node' do
-      expect(expressions.first).to eq(property_node)
+      expect(statements.first).to eq(property_node)
     end
 
     its(:object) { should eq(object_node) }
@@ -128,11 +130,11 @@ describe Rip::Compiler::AST do
     let(:string_node) { Rip::Nodes::String.new(line_two.add_character(12), characters) }
     let(:assignment_node) { Rip::Nodes::Assignment.new(line_two.add_character(9), reference_node, string_node) }
 
-    let(:comment) { expressions.first }
-    let(:assignment) { expressions.last }
+    let(:comment) { statements.first }
+    let(:assignment) { statements.last }
 
     it 'has two top-level nodes' do
-      expect(expressions.count).to eq(2)
+      expect(statements.count).to eq(2)
     end
 
     it 'knows the first node is a comment' do
@@ -155,11 +157,11 @@ describe Rip::Compiler::AST do
     let(:lambda_node) { Rip::Nodes::Lambda.new(location, dash_rocket_node, parameter_nodes, body_node) }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'finds the lambda' do
-      expect(expressions.first).to eq(lambda_node)
+      expect(statements.first).to eq(lambda_node)
     end
   end
 
@@ -176,12 +178,12 @@ describe Rip::Compiler::AST do
     let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(18), []) }
     let(:lambda_node) { Rip::Nodes::Lambda.new(location.add_character(7), dash_rocket_node, [parameter_node], body_node) }
 
-    let(:assignment) { expressions.first }
+    let(:assignment) { statements.first }
     let(:assignee) { assignment.reference }
     let(:value) { assignment.value }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'finds the assignment' do
@@ -199,7 +201,7 @@ describe Rip::Compiler::AST do
 
   shared_examples_for 'invocation' do
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'finds the plus invocation' do
@@ -232,7 +234,7 @@ describe Rip::Compiler::AST do
     let(:property_node_times) { Rip::Nodes::Property.new(location.add_character(7), invocation_node_plus, '*') }
     let(:invocation_node_times) { Rip::Nodes::Invocation.new(location.add_character(8), property_node_times, [three_node]) }
 
-    let(:invocation_times) { expressions.first }
+    let(:invocation_times) { statements.first }
     let(:invocation_plus) { invocation_times.callable.object }
 
     it_behaves_like 'invocation'
@@ -251,7 +253,7 @@ describe Rip::Compiler::AST do
     let(:property_node_times) { Rip::Nodes::Property.new(location.add_character(6), invocation_node_plus, '*') }
     let(:invocation_node_times) { Rip::Nodes::Invocation.new(location.add_character(6), property_node_times, [three_node]) }
 
-    let(:invocation_times) { expressions.first }
+    let(:invocation_times) { statements.first }
     let(:invocation_plus) { invocation_times.callable.object }
 
     it_behaves_like 'invocation'
@@ -291,10 +293,10 @@ describe Rip::Compiler::AST do
     let(:switch_argument_node) { Rip::Nodes::Reference.new(location.add_character(8), 'x') }
     let(:switch_node) { Rip::Nodes::Switch.new(location, switch_argument_node, [ case_1_node, case_2_node, case_3_node ], else_node) }
 
-    let(:switch_block) { expressions.first }
+    let(:switch_block) { statements.first }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'finds the switch' do
@@ -320,10 +322,10 @@ describe Rip::Compiler::AST do
 
     let(:concatenation_node) { Rip::Nodes::Invocation.new(location.add_character(4), plus, [ regular_expression ]) }
 
-    let(:concatenation) { expressions.first }
+    let(:concatenation) { statements.first }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'transforms interpolation into regular expression concatenation' do
@@ -347,10 +349,10 @@ describe Rip::Compiler::AST do
 
     let(:concatenation_node) { Rip::Nodes::Invocation.new(location.add_character(4), plus, [ string ]) }
 
-    let(:concatenation) { expressions.first }
+    let(:concatenation) { statements.first }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'transforms interpolation into string concatenation' do
@@ -381,10 +383,10 @@ describe Rip::Compiler::AST do
 
     let(:if_else_node) { Rip::Nodes::If.new(location, reference_node, true_body, false_body) }
 
-    let(:if_else) { expressions.first }
+    let(:if_else) { statements.first }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'transforms into if' do
@@ -409,10 +411,10 @@ describe Rip::Compiler::AST do
 
     let(:unless_else_node) { Rip::Nodes::Unless.new(location, reference_node, false_body, true_body) }
 
-    let(:unless_else) { expressions.first }
+    let(:unless_else) { statements.first }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'transforms into unless' do
@@ -482,10 +484,10 @@ describe Rip::Compiler::AST do
 
     let(:try_etc_node) { Rip::Nodes::Try.new(location, danger_body_node, [ specific_block_node, generic_block_node ], always_block_node) }
 
-    let(:try_etc) { expressions.first }
+    let(:try_etc) { statements.first }
 
     it 'has one top-level node' do
-      expect(expressions.count).to eq(1)
+      expect(statements.count).to eq(1)
     end
 
     it 'transforms into try with two catches and finally' do
