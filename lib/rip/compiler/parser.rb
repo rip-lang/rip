@@ -25,31 +25,24 @@ module Rip::Compiler
 
     def raw_parse_tree
       ugly_tree = parse(source_code)
-      Collapser.new.apply(ugly_tree)
+      collapse_atom(ugly_tree)
     end
 
-    class Collapser < Parslet::Transform
-      def apply(tree, context = nil)
-        _tree = collapse_atom(tree)
-        super(_tree)
-      end
-
-      def collapse_atom(tree)
-        case tree
-        when Array
-          tree.map { |t| collapse_atom(t) }
-        when Hash
-          if tree[:atom]
-            if tree[:atom].is_a?(Array)
-              tree.merge(:atom => collapse_atom(tree[:atom]))
-            else
-              collapse_atom(tree[:atom])
-            end
-          else
-            tree
-          end
-        else tree
+    def collapse_atom(tree)
+      case tree
+      when Array
+        tree.map { |t| collapse_atom(t) }
+      when Hash
+        _tree = tree.map do |key, value|
+          [ key, collapse_atom(value) ]
         end
+        reply = Hash[_tree]
+        if reply.key?(:atom)
+          reply[:atom].is_a?(Array) ? reply : reply[:atom]
+        else
+          reply
+        end
+      else tree
       end
     end
 
