@@ -13,7 +13,7 @@ module Rip::Nodes
 
     def to_debug(level = 0)
       [
-        [ level, "#{self.class.short_name}@#{location}" ]
+        [ level, "#{self.class.short_name}@#{location.to_debug}" ]
       ]
     end
 

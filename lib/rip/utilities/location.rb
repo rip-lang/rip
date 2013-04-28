@@ -30,7 +30,11 @@ module Rip::Utilities
     end
 
     def to_s
-      "#{origin}:#{line}:#{column}(#{offset})"
+      "#{origin}:#{to_debug}"
+    end
+
+    def to_debug
+      "#{line}:#{column}(#{offset})"
     end
   end
 end
