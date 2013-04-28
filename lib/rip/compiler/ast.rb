@@ -179,10 +179,8 @@ module Rip::Compiler
       Rip::Nodes::Try.new(locals[:try].location, locals[:try].body, locals[:catches], locals[:finally])
     end
 
-    %i[ try_block finally_block else_block ].each do |block|
-      rule(block => simple(block)) do |locals|
-        locals[block]
-      end
+    rule(:else_block => simple(:else_block)) do |locals|
+      locals[:else_block]
     end
   end
 end
