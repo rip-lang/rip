@@ -21,12 +21,20 @@ module Rip::Compiler
     end
 
     def parse_tree
-      Rip::Compiler::ParseTreeNormalizer.new.apply(raw_parse_tree)
+      Rip::Compiler::ParseTreeNormalizer.new.apply(raw_parse_tree).tap do |reply|
+        def reply.to_debug
+          Rip::Utilities::ParseTreeDebugger.to_debug(self)
+        end
+      end
     end
 
     def raw_parse_tree
       ugly_tree = parse(source_code)
-      collapse_atom(ugly_tree)
+      collapse_atom(ugly_tree).tap do |reply|
+        def reply.to_debug
+          Rip::Utilities::ParseTreeDebugger.to_debug(self)
+        end
+      end
     end
 
     def collapse_atom(tree)
