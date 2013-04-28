@@ -322,6 +322,32 @@ describe Rip::Compiler::Parser do
 
       recognizes_as_expected 'try-catch' do
         let(:rip) { 'try {} catch (Exception: e) {}' }
+        let(:expected_raw) do
+          [
+            {
+              :try_block => {
+                :try => 'try',
+                :location_body => '{',
+                :body => []
+              },
+              :catch_blocks => [
+                {
+                  :catch => 'catch',
+                  :argument => {
+                    :atom => [
+                      { :reference => 'Exception' },
+                      {
+                        :key_value_pair => { :value => { :reference => 'e' } }
+                      }
+                    ]
+                  },
+                  :location_body => '{',
+                  :body => []
+                }
+              ]
+            }
+          ]
+        end
         let(:expected) do
           [
             {
