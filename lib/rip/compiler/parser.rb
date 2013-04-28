@@ -157,8 +157,8 @@ module Rip::Compiler
     rule(:case_block)  { str('case').as(:case)   >> spaces? >> multiple_arguments       >> block_body }
 
     rule(:switch_block) { str('switch').as(:switch) >> spaces? >> single_argument.maybe >> block_body_switch }
+    rule(:catch_block)  { str('catch').as(:catch)   >> spaces? >> single_argument       >> block_body }
 
-    rule(:catch_block)  { (str('catch').as(:catch)   >> spaces? >> single_argument >> block_body).as(:catch_block) }
     rule(:if_block)     { (str('if').as(:if)         >> spaces? >> single_argument >> block_body).as(:if_block) }
     rule(:unless_block) { (str('unless').as(:unless) >> spaces? >> single_argument >> block_body).as(:unless_block) }
 

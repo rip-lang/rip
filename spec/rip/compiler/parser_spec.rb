@@ -161,7 +161,8 @@ describe Rip::Compiler::Parser do
                 :try => 'try',
                 :location_body => '{',
                 :body => []
-              }
+              },
+              :catch_blocks => []
             }
           ]
         end
@@ -330,13 +331,11 @@ describe Rip::Compiler::Parser do
                 :body => []
               },
               :catch_blocks => [
-                :catch_block => {
+                {
                   :catch => 'catch',
                   :argument => {
-                    :atom => {
-                      :key => { :reference => 'Exception' },
-                      :value => { :reference => 'e' }
-                    }
+                    :key => { :reference => 'Exception' },
+                    :value => { :reference => 'e' }
                   },
                   :location_body => '{',
                   :body => []
@@ -379,13 +378,11 @@ describe Rip::Compiler::Parser do
                 :body => []
               },
               :catch_blocks => [
-                :catch_block => {
+                {
                   :catch => 'catch',
                   :argument => {
-                    :atom => {
-                      :key => { :reference => 'Exception' },
-                      :value => { :reference => 'e' }
-                    }
+                    :key => { :reference => 'Exception' },
+                    :value => { :reference => 'e' }
                   },
                   :location_body => '{',
                   :body => []
