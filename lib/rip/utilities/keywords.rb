@@ -29,7 +29,6 @@ module Rip::Utilities
     end
 
     def self.object
-      # make_keywords(:class, '->'.to_sym, '=>'.to_sym)
       [
         Keyword.new(:class),
         Keyword.new(:dash_rocket, '->'),
