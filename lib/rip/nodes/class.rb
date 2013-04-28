@@ -14,5 +14,13 @@ module Rip::Nodes
         (arguments == other.arguments) &&
         (body == other.body)
     end
+
+    def to_debug(level = 0)
+      arguments_debug = arguments.inject([]) do |reply, argument|
+        reply + argument.to_debug(level + 1)
+      end
+
+      super + arguments_debug + body.to_debug(level + 1)
+    end
   end
 end

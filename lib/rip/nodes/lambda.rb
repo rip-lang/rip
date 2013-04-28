@@ -17,5 +17,15 @@ module Rip::Nodes
         (parameters == other.parameters) &&
         (body == other.body)
     end
+
+    def to_debug(level = 0)
+      arguments_debug = arguments.inject([]) do |reply, argument|
+        reply + argument.to_debug(level + 1)
+      end
+
+      [
+        [ level, "#{super.last.last} #{keyword}" ]
+      ] + arguments_debug + body.to_debug(level + 1)
+    end
   end
 end
