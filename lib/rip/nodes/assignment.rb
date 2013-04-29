@@ -1,12 +1,12 @@
 module Rip::Nodes
   class Assignment < Base
-    attr_reader :reference
-    attr_reader :value
+    attr_reader :lhs
+    attr_reader :rhs
 
-    def initialize(location, reference, value)
+    def initialize(location, lhs, rhs)
       super(location)
-      @reference = reference
-      @value = value
+      @lhs = lhs
+      @rhs = rhs
     end
   end
 end

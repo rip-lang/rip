@@ -143,8 +143,8 @@ describe Rip::Compiler::AST do
 
     it 'finds an assignment as the last node' do
       expect(assignment).to eq(assignment_node)
-      expect(assignment.reference).to eq(reference_node)
-      expect(assignment.value).to eq(string_node)
+      expect(assignment.lhs).to eq(reference_node)
+      expect(assignment.rhs).to eq(string_node)
     end
   end
 
@@ -179,8 +179,6 @@ describe Rip::Compiler::AST do
     let(:lambda_node) { Rip::Nodes::Lambda.new(location.add_character(7), dash_rocket_node, [parameter_node], body_node) }
 
     let(:assignment) { statements.first }
-    let(:assignee) { assignment.reference }
-    let(:value) { assignment.value }
 
     it 'has one top-level node' do
       expect(statements.count).to eq(1)
@@ -191,11 +189,11 @@ describe Rip::Compiler::AST do
     end
 
     it 'assigns to the == property' do
-      expect(assignee).to eq(property_node)
+      expect(assignment.lhs).to eq(property_node)
     end
 
     it 'assigns a lambda' do
-      expect(value).to eq(lambda_node)
+      expect(assignment.rhs).to eq(lambda_node)
     end
   end
 
