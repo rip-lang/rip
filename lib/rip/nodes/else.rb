@@ -11,5 +11,13 @@ module Rip::Nodes
       super &&
         (body == other.body)
     end
+
+    def to_debug(level = 0)
+      body_debug = [ [ level + 1, 'body = [' ] ] +
+        body.to_debug(level + 2) +
+        [ [ level + 1, ']' ] ]
+
+      super + body_debug
+    end
   end
 end
