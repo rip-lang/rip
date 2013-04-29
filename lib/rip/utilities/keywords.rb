@@ -11,6 +11,10 @@ module Rip::Utilities
     def ==(other)
       keyword == other.keyword
     end
+
+    def to_debug
+      name
+    end
   end
 
   module Keywords

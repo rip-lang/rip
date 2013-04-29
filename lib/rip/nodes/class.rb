@@ -16,11 +16,19 @@ module Rip::Nodes
     end
 
     def to_debug(level = 0)
-      arguments_debug = arguments.inject([]) do |reply, argument|
-        reply + argument.to_debug(level + 1)
+      arguments_debug_inner = arguments.inject([]) do |reply, argument|
+        reply + argument.to_debug(level + 2)
       end
 
-      super + arguments_debug + body.to_debug(level + 1)
+      arguments_debug = [ [ level + 1, 'arguments = [' ] ] +
+        arguments_debug_inner +
+        [ [ level + 1, ']' ] ]
+
+      body_debug = [ [ level + 1, 'body = [' ] ] +
+        body.to_debug(level + 2) +
+        [ [ level + 1, ']' ] ]
+
+      super + arguments_debug + body_debug
     end
   end
 end
