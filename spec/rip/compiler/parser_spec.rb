@@ -715,7 +715,7 @@ describe Rip::Compiler::Parser do
               :atom => [
                 {
                   :dash_rocket => '->',
-                  :parameters => '()',
+                  :parameters => [],
                   :location_body => '{',
                   :body => []
                 },

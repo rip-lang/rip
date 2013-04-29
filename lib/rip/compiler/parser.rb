@@ -153,7 +153,7 @@ module Rip::Compiler
 
     rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat.as(:catch_blocks) >> whitespaces? >> finally_block.maybe }
 
-    rule(:lambda_block) { (str('->').as(:dash_rocket) | str('=>').as(:fat_rocket)) >> spaces? >> parameters.as(:parameters).maybe >> block_body }
+    rule(:lambda_block) { (str('->').as(:dash_rocket) | str('=>').as(:fat_rocket)) >> spaces? >> parameters.maybe >> block_body }
 
     rule(:class_block) { str('class').as(:class) >> spaces? >> multiple_arguments.maybe >> block_body }
     rule(:case_block)  { str('case').as(:case)   >> spaces? >> multiple_arguments       >> block_body }
@@ -168,7 +168,7 @@ module Rip::Compiler
     rule(:finally_block) { (str('finally').as(:finally) >> block_body).as(:finally_block) }
     rule(:else_block)    { (str('else').as(:else)       >> block_body).as(:else_block) }
 
-    rule(:parameters) { parenthesis_open >> whitespaces? >> csv(optional_parameter | required_parameter) >> whitespaces? >> parenthesis_close }
+    rule(:parameters) { parenthesis_open >> whitespaces? >> csv(optional_parameter | required_parameter).as(:parameters) >> whitespaces? >> parenthesis_close }
     rule(:required_parameter) { reference }
     rule(:optional_parameter) { reference >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase.as(:default) }
 
