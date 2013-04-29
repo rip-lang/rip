@@ -11,5 +11,11 @@ module Rip::Nodes
       super &&
         (name == other.name)
     end
+
+    def to_debug(level = 0)
+      [
+        [ level, "#{super.last.last} (#{name})" ]
+      ]
+    end
   end
 end
