@@ -30,6 +30,23 @@ module Rip::Compiler
       Rip::Nodes::Comment.new(location, comment)
     end
 
+    {
+      :exit => Rip::Nodes::Exit,
+      :raise => Rip::Nodes::Raise,
+      :return => Rip::Nodes::Return
+    }.each do |keyword, klass|
+      rule(keyword => simple(keyword)) do |locals|
+        location = location_for(locals[:origin], locals[keyword])
+        payload = Rip::Nodes::BlockBody.new(location, [])
+        klass.new(location, payload)
+      end
+
+      rule(keyword => simple(keyword), :payload => simple(:payload)) do |locals|
+        location = location_for(locals[:origin], locals[keyword])
+        klass.new(location, locals[:payload])
+      end
+    end
+
     rule(:reference => simple(:reference)) do |locals|
       reference = locals[:reference]
       location = location_for(locals[:origin], reference)
