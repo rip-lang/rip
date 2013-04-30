@@ -14,5 +14,17 @@ module Rip::Nodes
         (key == other.key) &&
         (value == other.value)
     end
+
+    def to_debug(level = 0)
+      key_debug = [ [ level + 1, 'key = [' ] ] +
+        key.to_debug(level + 2) +
+        [ [ level + 1, ']' ] ]
+
+      value_debug = [ [ level + 1, 'value = [' ] ] +
+        value.to_debug(level + 2) +
+        [ [ level + 1, ']' ] ]
+
+      super + key_debug + value_debug
+    end
   end
 end

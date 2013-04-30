@@ -6,5 +6,13 @@ module Rip::Nodes
       super(location)
       @pattern = pattern
     end
+
+    def to_debug(level = 0)
+      pattern_debug = pattern.map(&:data).join('')
+
+      [
+        [ level, "#{super.last.last} (#{pattern_debug})" ]
+      ]
+    end
   end
 end
