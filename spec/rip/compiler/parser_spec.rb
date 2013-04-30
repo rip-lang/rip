@@ -615,12 +615,12 @@ describe Rip::Compiler::Parser do
     end
 
     recognizes_as_expected 'keyword followed by parenthesis around phrase' do
-      let(:rip) { 'exit (0)' }
+      let(:rip) { 'raise (e)' }
       let(:expected_raw) do
         [
           {
-            :keyword => { :exit => 'exit' },
-            :payload => { :integer => '0' }
+            :keyword => { :raise => 'raise' },
+            :payload => { :reference => 'e' }
           }
         ]
       end
