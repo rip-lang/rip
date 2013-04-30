@@ -595,9 +595,7 @@ describe Rip::Compiler::Parser do
       let(:rip) { 'return;' }
       let(:expected_raw) do
         [
-          {
-            :keyword => { :return => 'return' }
-          }
+          { :return => 'return' }
         ]
       end
     end
@@ -607,7 +605,7 @@ describe Rip::Compiler::Parser do
       let(:expected_raw) do
         [
           {
-            :keyword => { :exit => 'exit' },
+            :exit => 'exit',
             :payload => { :integer => '0' }
           }
         ]
@@ -619,7 +617,7 @@ describe Rip::Compiler::Parser do
       let(:expected_raw) do
         [
           {
-            :keyword => { :raise => 'raise' },
+            :raise => 'raise',
             :payload => { :reference => 'e' }
           }
         ]

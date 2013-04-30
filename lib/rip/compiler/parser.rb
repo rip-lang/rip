@@ -113,7 +113,7 @@ module Rip::Compiler
 
     rule(:expression) { expression_base >> spaces? >> expression_terminator? }
 
-    rule(:expression_base) { (keyword.as(:keyword) >> spaces >> phrase.as(:payload)) | keyword.as(:keyword) | phrase }
+    rule(:expression_base) { (keyword >> spaces >> phrase.as(:payload)) | keyword | phrase }
 
     rule(:keyword) { %i[exit raise return].map { |kw| str(kw.to_s).as(kw) >> reference.absent? }.inject(:|) }
 
