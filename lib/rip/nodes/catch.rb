@@ -14,5 +14,9 @@ module Rip::Nodes
         (argument == other.argument) &&
         (body == other.body)
     end
+
+    def to_debug(level = 0)
+      super + argument.to_debug(level + 1) + body.to_debug(level + 1)
+    end
   end
 end

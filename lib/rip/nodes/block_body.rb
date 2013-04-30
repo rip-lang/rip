@@ -11,5 +11,11 @@ module Rip::Nodes
       super &&
         (statements == other.statements)
     end
+
+    def to_debug(level = 0)
+      statements.inject([]) do |reply, statement|
+        reply + statement.to_debug(level)
+      end
+    end
   end
 end

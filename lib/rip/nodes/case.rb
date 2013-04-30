@@ -14,5 +14,21 @@ module Rip::Nodes
         (arguments == other.arguments) &&
         (body == other.body)
     end
+
+    def to_debug(level = 0)
+      arguments_debug_inner = arguments.inject([]) do |reply, argument|
+        reply + argument.to_debug(level + 2)
+      end
+
+      arguments_debug = [ [ level + 1, 'arguments = [' ] ] +
+        arguments_debug_inner +
+        [ [ level + 1, ']' ] ]
+
+      body_debug = [ [ level + 1, 'body = [' ] ] +
+        body.to_debug(level + 2) +
+        [ [ level + 1, ']' ] ]
+
+      super + arguments_debug + body_debug
+    end
   end
 end

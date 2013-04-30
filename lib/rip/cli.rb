@@ -53,7 +53,11 @@ Usage:
         'syntax' => :syntax_tree,
       })
 
-      puts send(valid_trees[options[:tree]], file).inspect
+      output = send(valid_trees[options[:tree]], file).to_debug.map do |(level, node)|
+        "#{"\t" * level}#{node}"
+      end
+
+      puts output
     end
 
     protected

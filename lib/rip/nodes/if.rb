@@ -17,5 +17,20 @@ module Rip::Nodes
         (true_body == other.true_body) &&
         (false_body == other.false_body)
     end
+
+    def to_debug(level = 0)
+      argument_debug = [ [ level + 1, 'argument =' ] ] +
+        argument.to_debug(level + 2)
+
+      true_body_debug = [ [ level + 1, 'true_body = [' ] ] +
+        true_body.to_debug(level + 2) +
+        [ [ level + 1, ']' ] ]
+
+      false_body_debug = [ [ level + 1, 'false_body = [' ] ] +
+        false_body.to_debug(level + 2) +
+        [ [ level + 1, ']' ] ]
+
+      super + argument_debug + true_body_debug + false_body_debug
+    end
   end
 end

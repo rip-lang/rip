@@ -14,5 +14,11 @@ module Rip::Nodes
         (data == other.data) &&
         (sign == other.sign)
     end
+
+    def to_debug(level = 0)
+      [
+        [ level, "#{super.last.last} (#{sign}#{data})" ]
+      ]
+    end
   end
 end

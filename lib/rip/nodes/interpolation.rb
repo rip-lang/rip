@@ -1,15 +1,19 @@
 module Rip::Nodes
   class Interpolation < Base
-    attr_reader :expressions
+    attr_reader :body
 
-    def initialize(location, expressions)
+    def initialize(location, body)
       super(location)
-      @expressions = expressions
+      @body = body
     end
 
     def ==(other)
       super &&
-        (expressions == other.expressions)
+        (body == other.body)
+    end
+
+    def to_debug(level = 0)
+      super + body.to_debug(level + 1)
     end
   end
 end

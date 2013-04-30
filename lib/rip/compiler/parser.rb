@@ -16,16 +16,25 @@ module Rip::Compiler
       location = Rip::Utilities::Location.new(origin, 0, 1, 1)
       expressions = Rip::Compiler::AST.new(origin).apply(parse_tree)
       _expressions = expressions.is_a?(String) ? [] : expressions
-      Rip::Nodes::Module.new(location, _expressions)
+      body = Rip::Nodes::BlockBody.new(location, _expressions)
+      Rip::Nodes::Module.new(location, body)
     end
 
     def parse_tree
-      Rip::Compiler::ParseTreeNormalizer.new.apply(raw_parse_tree)
+      Rip::Compiler::ParseTreeNormalizer.new.apply(raw_parse_tree).tap do |reply|
+        def reply.to_debug
+          Rip::Utilities::ParseTreeDebugger.to_debug(self)
+        end
+      end
     end
 
     def raw_parse_tree
       ugly_tree = parse(source_code)
-      collapse_atom(ugly_tree)
+      collapse_atom(ugly_tree).tap do |reply|
+        def reply.to_debug
+          Rip::Utilities::ParseTreeDebugger.to_debug(self)
+        end
+      end
     end
 
     def collapse_atom(tree)
@@ -144,7 +153,7 @@ module Rip::Compiler
 
     rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat.as(:catch_blocks) >> whitespaces? >> finally_block.maybe }
 
-    rule(:lambda_block) { (str('->').as(:dash_rocket) | str('=>').as(:fat_rocket)) >> spaces? >> parameters.as(:parameters).maybe >> block_body }
+    rule(:lambda_block) { (str('->').as(:dash_rocket) | str('=>').as(:fat_rocket)) >> spaces? >> parameters.maybe >> block_body }
 
     rule(:class_block) { str('class').as(:class) >> spaces? >> multiple_arguments.maybe >> block_body }
     rule(:case_block)  { str('case').as(:case)   >> spaces? >> multiple_arguments       >> block_body }
@@ -159,7 +168,7 @@ module Rip::Compiler
     rule(:finally_block) { (str('finally').as(:finally) >> block_body).as(:finally_block) }
     rule(:else_block)    { (str('else').as(:else)       >> block_body).as(:else_block) }
 
-    rule(:parameters) { parenthesis_open >> whitespaces? >> csv(optional_parameter | required_parameter) >> whitespaces? >> parenthesis_close }
+    rule(:parameters) { parenthesis_open >> whitespaces? >> csv(optional_parameter | required_parameter).as(:parameters) >> whitespaces? >> parenthesis_close }
     rule(:required_parameter) { reference }
     rule(:optional_parameter) { reference >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase.as(:default) }
 

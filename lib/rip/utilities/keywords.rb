@@ -11,6 +11,10 @@ module Rip::Utilities
     def ==(other)
       keyword == other.keyword
     end
+
+    def to_debug
+      name
+    end
   end
 
   module Keywords
@@ -29,7 +33,6 @@ module Rip::Utilities
     end
 
     def self.object
-      # make_keywords(:class, '->'.to_sym, '=>'.to_sym)
       [
         Keyword.new(:class),
         Keyword.new(:dash_rocket, '->'),

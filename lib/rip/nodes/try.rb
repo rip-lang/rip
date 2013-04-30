@@ -17,5 +17,13 @@ module Rip::Nodes
         (catch_blocks == other.catch_blocks) &&
         (finally_block == other.finally_block)
     end
+
+    def to_debug(level = 0)
+      catch_blocks_debug = catch_blocks.inject([]) do |reply, catch_block|
+        reply + catch_block.to_debug(level)
+      end
+
+      super + attempt_body.to_debug(level + 1) + catch_blocks_debug + finally_block.to_debug(level)
+    end
   end
 end
