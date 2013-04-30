@@ -97,6 +97,53 @@ describe Rip::Compiler::AST do
     its(:exclusivity) { should be_false }
   end
 
+  context 'list' do
+    subject { statements.first }
+
+    let(:rip) { '[a, z]' }
+
+    let(:a_node) { Rip::Nodes::Reference.new(location.add_character, 'a') }
+    let(:z_node) { Rip::Nodes::Reference.new(location.add_character(4), 'z') }
+    let(:list_node) { Rip::Nodes::List.new(location.add_character, [ a_node, z_node ]) }
+
+    let(:list) { statements.first }
+
+    it 'has one top-level node' do
+      expect(statements.count).to eq(1)
+    end
+
+    it 'finds the range node' do
+      expect(list.items.first).to eq(a_node)
+      expect(list.items.last).to eq(z_node)
+
+      expect(list).to eq(list_node)
+    end
+  end
+
+  context 'map' do
+    subject { statements.first }
+
+    let(:rip) { '{a: z}' }
+
+    let(:a_node) { Rip::Nodes::Reference.new(location.add_character, 'a') }
+    let(:z_node) { Rip::Nodes::Reference.new(location.add_character(4), 'z') }
+    let(:key_value_node) { Rip::Nodes::KeyValue.new(location.add_character, a_node, z_node) }
+
+    let(:map_node) { Rip::Nodes::Map.new(location.add_character, [ key_value_node ]) }
+
+    let(:map) { statements.first }
+
+    it 'has one top-level node' do
+      expect(statements.count).to eq(1)
+    end
+
+    it 'finds the range node' do
+      expect(map.items.first).to eq(key_value_node)
+
+      expect(map).to eq(map_node)
+    end
+  end
+
   context 'property' do
     subject { statements.first }
     let(:rip) { 'one.two' }

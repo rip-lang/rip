@@ -59,6 +59,16 @@ module Rip::Compiler
       Rip::Nodes::String.new(location, locals[:characters])
     end
 
+    rule(:list => sequence(:items)) do |locals|
+      location = locals[:items].first.location
+      Rip::Nodes::List.new(location, locals[:items])
+    end
+
+    rule(:map => sequence(:key_value_pairs)) do |locals|
+      location = locals[:key_value_pairs].first.location
+      Rip::Nodes::Map.new(location, locals[:key_value_pairs])
+    end
+
     rule(:regex => sequence(:pattern)) do |locals|
       location = locals[:pattern].first.location
       Rip::Nodes::RegularExpression.new(location, locals[:pattern])
