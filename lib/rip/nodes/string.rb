@@ -10,7 +10,7 @@ module Rip::Nodes
       characters_debug = characters.map(&:data).join('')
 
       [
-        [ level, "#{super.last.last} (#{characters_debug})" ]
+        [ level, "#{self.class.short_name}@#{location.to_debug} (#{characters_debug})" ]
       ]
     end
   end
