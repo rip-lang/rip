@@ -359,7 +359,8 @@ describe Rip::Compiler::AST do
     let(:rip) { '/#{a}b/' }
 
     let(:reference) { Rip::Nodes::Reference.new(location.add_character(3), 'a') }
-    let(:interpolation) { Rip::Nodes::Interpolation.new(location.add_character(1), [ reference ]) }
+    let(:interpolation_body) { Rip::Nodes::BlockBody.new(location.add_character(1), [ reference ]) }
+    let(:interpolation) { Rip::Nodes::Interpolation.new(location.add_character(1), interpolation_body) }
     let(:plus) { Rip::Nodes::Property.new(location.add_character(4), interpolation, '+') }
 
     let(:character) { Rip::Nodes::Character.new(location.add_character(5), 'b') }
@@ -386,7 +387,8 @@ describe Rip::Compiler::AST do
     let(:rip) { '"#{a}b"' }
 
     let(:reference) { Rip::Nodes::Reference.new(location.add_character(3), 'a') }
-    let(:interpolation) { Rip::Nodes::Interpolation.new(location.add_character(1), [ reference ]) }
+    let(:interpolation_body) { Rip::Nodes::BlockBody.new(location.add_character(1), [ reference ]) }
+    let(:interpolation) { Rip::Nodes::Interpolation.new(location.add_character(1), interpolation_body) }
     let(:plus) { Rip::Nodes::Property.new(location.add_character(4), interpolation, '+') }
 
     let(:character) { Rip::Nodes::Character.new(location.add_character(5), 'b') }

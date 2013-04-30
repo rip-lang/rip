@@ -102,7 +102,8 @@ module Rip::Compiler
 
     rule(:start => simple(:start), :interpolation => sequence(:lines), :end => simple(:end)) do |locals|
       location = location_for(locals[:origin], locals[:start])
-      Rip::Nodes::Interpolation.new(location, locals[:lines])
+      body = block_body(locals[:origin], locals[:start], locals[:lines])
+      Rip::Nodes::Interpolation.new(location, body)
     end
 
     {
