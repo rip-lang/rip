@@ -145,6 +145,12 @@ module Rip::Compiler
       end
     end
 
+    rule(:class => simple(:class), :arguments => sequence(:arguments), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+      location = location_for(locals[:origin], locals[:class])
+      body = block_body(locals[:origin], locals[:location_body], locals[:body])
+      Rip::Nodes::Class.new(location, locals[:arguments], body)
+    end
+
     {
       :if => Rip::Nodes::If,
       :unless => Rip::Nodes::Unless
