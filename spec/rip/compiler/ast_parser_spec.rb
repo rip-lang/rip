@@ -584,4 +584,68 @@ describe Rip::Compiler::AST do
       expect(keyword).to eq(keyword_node)
     end
   end
+
+  context 'class with ignored parents' do
+    let(:rip) { 'class {}' }
+
+    let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(6), []) }
+    let(:class_node) { Rip::Nodes::Class.new(location, [], class_body_node) }
+
+    let(:klass) { statements.first }
+
+    it 'has one top-level node' do
+      expect(statements.count).to eq(1)
+    end
+
+    it 'is a class (with no parents)' do
+      expect(klass.arguments).to eq([])
+      expect(klass.body).to eq(class_body_node)
+      expect(klass).to eq(class_node)
+    end
+  end
+
+  context 'class with unspecified parents' do
+    let(:rip) { 'class () {}' }
+
+    let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(9), []) }
+    let(:class_node) { Rip::Nodes::Class.new(location, [], class_body_node) }
+
+    let(:klass) { statements.first }
+
+    it 'has one top-level node' do
+      expect(statements.count).to eq(1)
+    end
+
+    it 'is a class (with no parents)' do
+      expect(klass.arguments).to eq([])
+      expect(klass.body).to eq(class_body_node)
+      expect(klass).to eq(class_node)
+    end
+  end
+
+  context 'class with explicit parents' do
+    let(:rip) { 'class (parent_1, parent_2) {}' }
+
+    let(:parent_1) { Rip::Nodes::Reference.new(location.add_character(7), 'parent_1') }
+    let(:parent_2) { Rip::Nodes::Reference.new(location.add_character(17), 'parent_2') }
+
+    let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(27), []) }
+    let(:class_node) { Rip::Nodes::Class.new(location, [ parent_1, parent_2 ], class_body_node) }
+
+    let(:klass) { statements.first }
+
+    it 'has one top-level node' do
+      expect(statements.count).to eq(1)
+    end
+
+    it 'is a class (with two parents)' do
+      expect(klass.arguments.count).to eq(2)
+      expect(klass.arguments.first).to eq(parent_1)
+      expect(klass.arguments.last).to eq(parent_2)
+
+      expect(klass.body).to eq(class_body_node)
+
+      expect(klass).to eq(class_node)
+    end
+  end
 end
