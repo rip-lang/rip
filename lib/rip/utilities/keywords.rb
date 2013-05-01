@@ -29,7 +29,7 @@ module Rip::Utilities
         exiter,
         exceptional,
         reserved
-      ].flatten
+      ].inject(&:+)
     end
 
     def self.object
