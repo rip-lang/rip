@@ -595,9 +595,7 @@ describe Rip::Compiler::Parser do
       let(:rip) { 'return;' }
       let(:expected_raw) do
         [
-          {
-            :keyword => { :return => 'return' }
-          }
+          { :return => 'return' }
         ]
       end
     end
@@ -607,7 +605,7 @@ describe Rip::Compiler::Parser do
       let(:expected_raw) do
         [
           {
-            :keyword => { :exit => 'exit' },
+            :exit => 'exit',
             :payload => { :integer => '0' }
           }
         ]
@@ -615,12 +613,12 @@ describe Rip::Compiler::Parser do
     end
 
     recognizes_as_expected 'keyword followed by parenthesis around phrase' do
-      let(:rip) { 'exit (0)' }
+      let(:rip) { 'throw (e)' }
       let(:expected_raw) do
         [
           {
-            :keyword => { :exit => 'exit' },
-            :payload => { :integer => '0' }
+            :throw => 'throw',
+            :payload => { :reference => 'e' }
           }
         ]
       end

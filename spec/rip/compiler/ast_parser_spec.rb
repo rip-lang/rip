@@ -548,4 +548,40 @@ describe Rip::Compiler::AST do
       expect(try_etc).to eq(try_etc_node)
     end
   end
+
+  context 'returning keyword with explicit payload' do
+    let(:rip) { 'throw e' }
+
+    let(:payload_node) { Rip::Nodes::Reference.new(location.add_character(6), 'e') }
+    let(:keyword_node) { Rip::Nodes::Throw.new(location, payload_node) }
+
+    let(:keyword) { statements.first }
+
+    it 'has one top-level node' do
+      expect(statements.count).to eq(1)
+    end
+
+    it 'wraps payload with the keyword' do
+      expect(keyword.payload).to eq(payload_node)
+      expect(keyword).to eq(keyword_node)
+    end
+  end
+
+  context 'returning keyword with implicit payload' do
+    let(:rip) { 'return' }
+
+    let(:payload_node) { Rip::Nodes::BlockBody.new(location, []) }
+    let(:keyword_node) { Rip::Nodes::Throw.new(location, payload_node) }
+
+    let(:keyword) { statements.first }
+
+    it 'has one top-level node' do
+      expect(statements.count).to eq(1)
+    end
+
+    it 'wraps payload with the keyword' do
+      expect(keyword.payload).to eq(payload_node)
+      expect(keyword).to eq(keyword_node)
+    end
+  end
 end
