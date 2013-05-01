@@ -229,6 +229,29 @@ describe Rip::Compiler::Parser do
         end
       end
 
+      recognizes_as_expected 'lambda with no parameters' do
+        let(:rip) { '-> {}' }
+        let(:expected_raw) do
+          [
+            {
+              :dash_rocket => '->',
+              :location_body => '{',
+              :body => []
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :dash_rocket => '->',
+              :parameters => [],
+              :location_body => '{',
+              :body => []
+            }
+          ]
+        end
+      end
+
       recognizes_as_expected 'lambda with multiple required parameters' do
         let(:rip) { '-> (one, two) {}' }
         let(:expected_raw) do

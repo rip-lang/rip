@@ -184,6 +184,17 @@ module Rip::Compiler
       locals[:raw_regex]
     end
 
+    %i[dash_rocket fat_rocket].each do |keyword|
+      rule(keyword => simple(keyword), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+        {
+          :dash_rocket => locals[keyword],
+          :parameters => [],
+          :location_body => locals[:location_body],
+          :body => locals[:body]
+        }
+      end
+    end
+
     rule(:class => simple(:class), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
       {
         :class => locals[:class],
