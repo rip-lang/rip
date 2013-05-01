@@ -1,34 +1,34 @@
 module Rip::Nodes
   class Class < Base
-    attr_reader :arguments
+    attr_reader :superclasses
     attr_reader :body
 
-    def initialize(location, arguments, body)
+    def initialize(location, superclasses, body)
       super(location)
-      @arguments = arguments
+      @superclasses = superclasses
       @body = body
     end
 
     def ==(other)
       super &&
-        (arguments == other.arguments) &&
+        (superclasses == other.superclasses) &&
         (body == other.body)
     end
 
     def to_debug(level = 0)
-      arguments_debug_inner = arguments.inject([]) do |reply, argument|
-        reply + argument.to_debug(level + 2)
+      superclasses_debug_inner = superclasses.inject([]) do |reply, superclass|
+        reply + superclass.to_debug(level + 2)
       end
 
-      arguments_debug = [ [ level + 1, 'arguments = [' ] ] +
-        arguments_debug_inner +
+      superclasses_debug = [ [ level + 1, 'superclasses = [' ] ] +
+        superclasses_debug_inner +
         [ [ level + 1, ']' ] ]
 
       body_debug = [ [ level + 1, 'body = [' ] ] +
         body.to_debug(level + 2) +
         [ [ level + 1, ']' ] ]
 
-      super + arguments_debug + body_debug
+      super + superclasses_debug + body_debug
     end
   end
 end
