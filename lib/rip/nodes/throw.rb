@@ -1,5 +1,5 @@
 module Rip::Nodes
-  class Raise < Base
+  class Throw < Base
     attr_reader :payload
 
     def initialize(location, payload)

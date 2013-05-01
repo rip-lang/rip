@@ -550,10 +550,10 @@ describe Rip::Compiler::AST do
   end
 
   context 'returning keyword with explicit payload' do
-    let(:rip) { 'raise e' }
+    let(:rip) { 'throw e' }
 
     let(:payload_node) { Rip::Nodes::Reference.new(location.add_character(6), 'e') }
-    let(:keyword_node) { Rip::Nodes::Raise.new(location, payload_node) }
+    let(:keyword_node) { Rip::Nodes::Throw.new(location, payload_node) }
 
     let(:keyword) { statements.first }
 
@@ -571,7 +571,7 @@ describe Rip::Compiler::AST do
     let(:rip) { 'return' }
 
     let(:payload_node) { Rip::Nodes::BlockBody.new(location, []) }
-    let(:keyword_node) { Rip::Nodes::Raise.new(location, payload_node) }
+    let(:keyword_node) { Rip::Nodes::Throw.new(location, payload_node) }
 
     let(:keyword) { statements.first }
 

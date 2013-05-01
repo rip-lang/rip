@@ -32,8 +32,8 @@ module Rip::Compiler
 
     {
       :exit => Rip::Nodes::Exit,
-      :raise => Rip::Nodes::Raise,
-      :return => Rip::Nodes::Return
+      :return => Rip::Nodes::Return,
+      :throw => Rip::Nodes::Throw
     }.each do |keyword, klass|
       rule(keyword => simple(keyword)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
