@@ -26,9 +26,9 @@ module Rip::Utilities
       [
         object,
         conditional,
-        exiter,
         exceptional,
-        reserved
+        reserved,
+        transfer
       ].inject(&:+)
     end
 
@@ -44,16 +44,16 @@ module Rip::Utilities
       make_keywords(:if, :unless, :switch, :case, :else)
     end
 
-    def self.exiter
-      make_keywords(:exit, :return, :throw, :break, :next)
-    end
-
     def self.exceptional
       make_keywords(:try, :catch, :finally)
     end
 
     def self.reserved
       make_keywords(:from, :as, :join, :union, :on, :where, :order, :select, :limit, :take)
+    end
+
+    def self.transfer
+      make_keywords(:exit, :return, :throw, :break, :next)
     end
 
     protected
