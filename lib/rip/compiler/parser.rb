@@ -132,20 +132,30 @@ module Rip::Compiler
     rule(:atom_2) { (atom_1 >> (expression_terminator.absent? >> range).repeat).as(:atom) }
     rule(:range) { (whitespaces? >> dot >> dot >> dot.maybe.as(:exclusivity) >> atom_1.as(:end)).as(:range) }
 
-    rule(:atom_1) { (phrase_base >> (expression_terminator.absent? >> (regular_invocation | index_invocation | property)).repeat).as(:atom) }
+    rule(:atom_1) { (object >> (expression_terminator.absent? >> (regular_invocation | index_invocation | property)).repeat).as(:atom) }
     rule(:regular_invocation) { regular_invocation_arguments.as(:regular_invocation) }
     rule(:regular_invocation_arguments) { parenthesis_open.as(:location) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
     rule(:index_invocation) { (bracket_open.as(:open) >> csv(phrase).as(:arguments) >> bracket_close.as(:close)).as(:index_invocation) }
     rule(:property) { dot >> property_name.as(:property_name) }
     rule(:property_name) { reference | (bracket_open >> bracket_close) }
 
-    rule(:phrase_base) do
+    # https://github.com/kschiess/parslet/blob/master/example/capture.rb
+    # TODO literals for heredoc
+    # TODO literals for datetime, date, time, version (maybe)
+    # TODO literals for unit
+    rule(:object) do
       condition_block_sequence |
       exception_block_sequence |
       class_block |
       lambda_block |
       switch_block |
-      object |
+      number |
+      character |
+      string |
+      regular_expression |
+      map |
+      list |
+      reference |
       parenthesis_open >> phrase >> parenthesis_close
     end
 
@@ -178,12 +188,6 @@ module Rip::Compiler
 
     rule(:block_body) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }
     rule(:block_body_switch) { whitespaces? >> brace_open >> whitespaces? >> (case_block >> whitespaces?).repeat(1).as(:case_blocks) >> else_block.maybe.as(:else_block) >> whitespaces? >> brace_close }
-
-    # https://github.com/kschiess/parslet/blob/master/example/capture.rb
-    # TODO literals for heredoc
-    # TODO literals for datetime, date, time, version (maybe)
-    # TODO literals for unit
-    rule(:object) { number | character | string | regular_expression | map | list | reference }
 
 
     # WARNING order is important here: decimal must be before integer or the integral part of
