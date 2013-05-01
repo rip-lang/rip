@@ -133,7 +133,8 @@ module Rip::Compiler
     rule(:range) { (whitespaces? >> dot >> dot >> dot.maybe.as(:exclusivity) >> atom_1.as(:end)).as(:range) }
 
     rule(:atom_1) { (phrase_base >> (expression_terminator.absent? >> (regular_invocation | index_invocation | property)).repeat).as(:atom) }
-    rule(:regular_invocation) { multiple_arguments.as(:regular_invocation) }
+    rule(:regular_invocation) { regular_invocation_arguments.as(:regular_invocation) }
+    rule(:regular_invocation_arguments) { parenthesis_open.as(:location) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
     rule(:index_invocation) { (bracket_open.as(:open) >> csv(phrase).as(:arguments) >> bracket_close.as(:close)).as(:index_invocation) }
     rule(:property) { dot >> property_name.as(:property_name) }
     rule(:property_name) { reference | (bracket_open >> bracket_close) }
@@ -172,8 +173,7 @@ module Rip::Compiler
     rule(:required_parameter) { reference }
     rule(:optional_parameter) { reference >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase.as(:default) }
 
-    rule(:multiple_arguments) { parenthesis_open.as(:location_arguments) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
-
+    rule(:multiple_arguments) { parenthesis_open >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
     rule(:single_argument) { parenthesis_open >> whitespaces? >> phrase.as(:argument) >> whitespaces? >> parenthesis_close }
 
     rule(:block_body) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }

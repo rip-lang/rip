@@ -124,7 +124,7 @@ module Rip::Compiler
         when :regular_invocation
           {
             :callable => atom_base,
-            :location => part[:regular_invocation][:location_arguments],
+            :location => part[:regular_invocation][:location],
             :arguments => normalize_atom(part[:regular_invocation][:arguments])
           }
         when :index_invocation
