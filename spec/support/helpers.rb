@@ -85,6 +85,7 @@ module RSpecHelpers
   def clean_inspect(ast)
     ast.inspect
       .gsub(/@\d+/, '')
+      .gsub('\\"', '\'')
       .gsub(/:0x[0-9a-f]+/, '')
       .gsub('Rip::Nodes::', '')
       .gsub('Rip::Utilities::Location ', '')

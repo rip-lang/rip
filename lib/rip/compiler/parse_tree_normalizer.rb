@@ -124,7 +124,7 @@ module Rip::Compiler
         when :regular_invocation
           {
             :callable => atom_base,
-            :location => part[:regular_invocation][:location_arguments],
+            :location => part[:regular_invocation][:location],
             :arguments => normalize_atom(part[:regular_invocation][:arguments])
           }
         when :index_invocation
@@ -184,7 +184,18 @@ module Rip::Compiler
       locals[:raw_regex]
     end
 
-    rule(:class => simple(:class), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+    %i[dash_rocket fat_rocket].each do |keyword|
+      rule(keyword => simple(keyword), :location_body => simple(:location_body), :body => subtree(:body)) do |locals|
+        {
+          :dash_rocket => locals[keyword],
+          :parameters => [],
+          :location_body => locals[:location_body],
+          :body => locals[:body]
+        }
+      end
+    end
+
+    rule(:class => simple(:class), :location_body => simple(:location_body), :body => subtree(:body)) do |locals|
       {
         :class => locals[:class],
         :arguments => [],
@@ -193,7 +204,7 @@ module Rip::Compiler
       }
     end
 
-    rule(:switch => simple(:switch), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+    rule(:switch => simple(:switch), :location_body => simple(:location_body), :body => subtree(:body)) do |locals|
       {
         :switch => locals[:switch],
         :argument => nil,
