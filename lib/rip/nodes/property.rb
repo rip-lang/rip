@@ -16,8 +16,9 @@ module Rip::Nodes
     end
 
     def to_debug(level = 0)
-      object_debug = [ [ level + 1, 'object =' ] ] +
-        object.to_debug(level + 2)
+      object_line_1, *object_other_lines = object.to_debug(level + 1)
+      object_debug = [ [ level + 1, "object = #{Array(object_line_1).last}" ] ] +
+        object_other_lines
 
       name_debug = [ [ level + 1, "name = #{name}" ] ]
 
