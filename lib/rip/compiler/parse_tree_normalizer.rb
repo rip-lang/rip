@@ -185,7 +185,7 @@ module Rip::Compiler
     end
 
     %i[dash_rocket fat_rocket].each do |keyword|
-      rule(keyword => simple(keyword), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+      rule(keyword => simple(keyword), :location_body => simple(:location_body), :body => subtree(:body)) do |locals|
         {
           :dash_rocket => locals[keyword],
           :parameters => [],
@@ -195,7 +195,7 @@ module Rip::Compiler
       end
     end
 
-    rule(:class => simple(:class), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+    rule(:class => simple(:class), :location_body => simple(:location_body), :body => subtree(:body)) do |locals|
       {
         :class => locals[:class],
         :arguments => [],
@@ -204,7 +204,7 @@ module Rip::Compiler
       }
     end
 
-    rule(:switch => simple(:switch), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+    rule(:switch => simple(:switch), :location_body => simple(:location_body), :body => subtree(:body)) do |locals|
       {
         :switch => locals[:switch],
         :argument => nil,

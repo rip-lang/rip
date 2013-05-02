@@ -207,13 +207,21 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'class with no superclasses' do
-        let(:rip) { 'class {}' }
+        let(:rip) do
+          <<-RIP
+            class {
+              # comment
+            }
+          RIP
+        end
         let(:expected_raw) do
           [
             {
               :class => 'class',
               :location_body => '{',
-              :body => []
+              :body => [
+                { :comment => ' comment' }
+              ]
             }
           ]
         end
@@ -223,7 +231,9 @@ describe Rip::Compiler::Parser do
               :class => 'class',
               :arguments => [],
               :location_body => '{',
-              :body => []
+              :body => [
+                { :comment => ' comment' }
+              ]
             }
           ]
         end
