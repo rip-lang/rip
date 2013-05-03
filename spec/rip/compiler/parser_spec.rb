@@ -287,14 +287,14 @@ describe Rip::Compiler::Parser do
               :dash_rocket => '->',
               :parameters => [
                 {
-                  :reference => 'one',
+                  :lhs => { :reference => 'one' },
                   :location => '=',
-                  :default => { :integer => '1' }
+                  :rhs => { :integer => '1' }
                 },
                 {
-                  :reference => 'two',
+                  :lhs => { :reference => 'two' },
                   :location => '=',
-                  :default => { :integer => '2' }
+                  :rhs => { :integer => '2' }
                 }
               ],
               :location_body => '{',
@@ -313,9 +313,9 @@ describe Rip::Compiler::Parser do
               :parameters => [
                 { :reference => 'platform' },
                 {
-                  :reference => 'name',
+                  :lhs => { :reference => 'name' },
                   :location => '=',
-                  :default => { :string => rip_string('rip') }
+                  :rhs => { :string => rip_string('rip') }
                 }
               ],
               :location_body => '{',
@@ -335,14 +335,14 @@ describe Rip::Compiler::Parser do
                 { :reference => 'abc' },
                 { :reference => 'xyz' },
                 {
-                  :reference => 'one',
+                  :lhs => { :reference => 'one' },
                   :location => '=',
-                  :default => { :integer => '1' }
+                  :rhs => { :integer => '1' }
                 },
                 {
-                  :reference => 'two',
+                  :lhs => { :reference => 'two' },
                   :location => '=',
-                  :default => { :integer => '2' }
+                  :rhs => { :integer => '2' }
                 }
               ],
               :location_body => '{',
