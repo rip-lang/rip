@@ -33,7 +33,7 @@ module Rip::Nodes
 
       [
         [ level, "#{super.last.last} (#{keyword.to_debug})" ]
-      ] + parameters_debug + body.to_debug(level + 1)
+      ] + parameters_debug + body_debug
     end
   end
 end

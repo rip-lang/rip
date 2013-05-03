@@ -19,13 +19,13 @@ module Rip::Nodes
     end
 
     def to_debug(level = 0)
-      start_debug = [ [ level + 1, 'start = [' ] ] +
-        start.to_debug(level + 2) +
-        [ [ level + 1, ']' ] ]
+      start_line_1, *start_other_lines = start.to_debug(level + 1)
+      start_debug = [ [ level + 1, "start = #{Array(start_line_1).last}" ] ] +
+        start_other_lines
 
-      end_debug = [ [ level + 1, 'end = [' ] ] +
-        self.end.to_debug(level + 2) +
-        [ [ level + 1, ']' ] ]
+      end_line_1, *end_other_lines = self.end.to_debug(level + 1)
+      end_debug = [ [ level + 1, "end = #{Array(end_line_1).last}" ] ] +
+      end_other_lines
 
       exclusivity_debug = [
         [ level + 1, "exclusivity = #{exclusivity}" ]

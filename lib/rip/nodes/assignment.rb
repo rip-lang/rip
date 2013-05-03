@@ -10,11 +10,13 @@ module Rip::Nodes
     end
 
     def to_debug(level = 0)
-      lhs_debug = [ [ level + 1, 'lhs =' ] ] +
-        lhs.to_debug(level + 2)
+      lhs_line_1, *lhs_other_lines = lhs.to_debug(level + 1)
+      lhs_debug = [ [ level + 1, "lhs = #{Array(lhs_line_1).last}" ] ] +
+        lhs_other_lines
 
-      rhs_debug = [ [ level + 1, 'rhs =' ] ] +
-        rhs.to_debug(level + 2)
+      rhs_line_1, *rhs_other_lines = rhs.to_debug(level + 1)
+      rhs_debug = [ [ level + 1, "rhs = #{Array(rhs_line_1).last}" ] ] +
+        rhs_other_lines
 
       super + lhs_debug + rhs_debug
     end
