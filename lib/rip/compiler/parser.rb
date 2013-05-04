@@ -121,7 +121,7 @@ module Rip::Compiler
     rule(:phrase) { atom_5 }
 
     rule(:atom_5) { (atom_4 >> (expression_terminator.absent? >> operator_invocation).repeat).as(:atom) }
-    rule(:operator_invocation) { (whitespaces >> reference.as(:operator) >> whitespaces >> atom_4.as(:argument)).as(:operator_invocation) }
+    rule(:operator_invocation) { (whitespaces >> property_name.as(:operator) >> whitespaces >> atom_4.as(:argument)).as(:operator_invocation) }
 
     rule(:atom_4) { (atom_3 >> (expression_terminator.absent? >> assignment).repeat).as(:atom) }
     rule(:assignment) { (whitespaces >> equals.as(:location) >> whitespaces >> phrase.as(:rhs)).as(:assignment) }
