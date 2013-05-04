@@ -145,18 +145,18 @@ module Rip::Compiler
     # TODO literals for unit
     rule(:object) do
       condition_block_sequence |
-      exception_block_sequence |
-      class_block |
-      lambda_block |
-      switch_block |
-      number |
-      character |
-      string |
-      regular_expression |
-      map |
-      list |
-      reference |
-      parenthesis_open >> phrase >> parenthesis_close
+        exception_block_sequence |
+        class_block |
+        lambda_block |
+        switch_block |
+        number |
+        character |
+        string |
+        regular_expression |
+        map |
+        list |
+        reference |
+        parenthesis_open >> phrase >> parenthesis_close
     end
 
 
