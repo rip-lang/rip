@@ -56,7 +56,7 @@ module Rip::Compiler
             memo,
             {
               :operator_invocation => {
-                :operator => { :reference => plus },
+                :operator => plus,
                 :argument => part
               }
             }
@@ -140,15 +140,15 @@ module Rip::Compiler
           {
             :callable => {
               :object => normalize_atom(atom_base),
-              :property_name => part[:operator_invocation][:operator][:reference]
+              :property_name => part[:operator_invocation][:operator]
             },
-            :location => part[:operator_invocation][:operator][:reference],
+            :location => part[:operator_invocation][:operator],
             :arguments => [ normalize_atom(part[:operator_invocation][:argument]) ]
           }
         when :property_name
           {
             :object => normalize_atom(atom_base),
-            :property_name => normalize_atom(part[:property_name][:reference])
+            :property_name => normalize_atom(part[:property_name])
           }
         else
           part

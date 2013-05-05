@@ -138,14 +138,12 @@ module Rip::Compiler
     rule(:index_invocation) { (bracket_open.as(:open) >> csv(phrase).as(:arguments) >> bracket_close.as(:close)).as(:index_invocation) }
     rule(:property) { dot >> property_name.as(:property_name) }
     rule(:property_name) do
-      reference |
-        (
-          str('[]') |
-          (str('<') >> str('=').maybe) |
-          (str('>') >> str('=').maybe) |
-          str('<=>') |
-          str('/')
-        ).as(:reference)
+      word |
+        str('[]') |
+        (str('<') >> str('=').maybe) |
+        (str('>') >> str('=').maybe) |
+        str('<=>') |
+        str('/')
     end
 
     # https://github.com/kschiess/parslet/blob/master/example/capture.rb
