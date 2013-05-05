@@ -169,6 +169,12 @@ module Rip::Compiler
     end
 
 
+    rule(:reference) { word.repeat(1).as(:reference) }
+
+    rule(:word) { word_legal >> (word_legal | digit).repeat }
+    rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
+
+
     rule(:condition_block_sequence) { (if_block | unless_block) >> whitespaces? >> else_block.maybe }
 
     rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat.as(:catch_blocks) >> whitespaces? >> finally_block.maybe }
@@ -241,12 +247,6 @@ module Rip::Compiler
     rule(:interpolation) { interpolation_start.as(:start) >> (interpolation_end.absent? >> line.repeat(1)).repeat.as(:interpolation) >> interpolation_end.as(:end) }
     rule(:interpolation_start) { pound >> brace_open }
     rule(:interpolation_end) { brace_close }
-
-
-    rule(:reference) { word.repeat(1).as(:reference) }
-
-    rule(:word) { word_legal >> (word_legal | digit).repeat }
-    rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
 
 
     rule(:map) { brace_open >> whitespaces? >> csv(phrase).as(:map) >> whitespaces? >> brace_close }
