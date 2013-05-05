@@ -149,6 +149,31 @@ describe Rip::Compiler::Parser do
     end
   end
 
+  describe '#property_name' do
+    it 'recognizes special-case property names' do
+      [
+        '/',
+        '<=>',
+        '<',
+        '<<',
+        '<=',
+        '>',
+        '>>',
+        '>=',
+        '[]'
+      ].each do |property_name|
+        rip = "@.#{property_name}"
+        expected = [
+          {
+            :object => { :reference => '@' },
+            :property_name => property_name
+          }
+        ]
+        expect(parser(rip)).to parse_as(expected)
+      end
+    end
+  end
+
   describe '#expression' do
     context 'block' do
       recognizes_as_expected 'empty block' do

@@ -139,11 +139,13 @@ module Rip::Compiler
     rule(:property) { dot >> property_name.as(:property_name) }
     rule(:property_name) do
       word |
-        str('[]') |
-        (str('<') >> str('=').maybe) |
-        (str('>') >> str('=').maybe) |
+        str('/') |
         str('<=>') |
-        str('/')
+        str('<=') |
+        str('<').repeat(1, 2) |
+        str('>=') |
+        str('>').repeat(1, 2) |
+        str('[]')
     end
 
     # https://github.com/kschiess/parslet/blob/master/example/capture.rb
