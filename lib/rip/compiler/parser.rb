@@ -121,7 +121,7 @@ module Rip::Compiler
     rule(:phrase) { atom_5 }
 
     rule(:atom_5) { (atom_4 >> (expression_terminator.absent? >> operator_invocation).repeat).as(:atom) }
-    rule(:operator_invocation) { (whitespaces >> reference.as(:operator) >> whitespaces >> atom_4.as(:argument)).as(:operator_invocation) }
+    rule(:operator_invocation) { (whitespaces >> property_name.as(:operator) >> whitespaces >> atom_4.as(:argument)).as(:operator_invocation) }
 
     rule(:atom_4) { (atom_3 >> (expression_terminator.absent? >> assignment).repeat).as(:atom) }
     rule(:assignment) { (whitespaces >> equals.as(:location) >> whitespaces >> phrase.as(:rhs)).as(:assignment) }
@@ -137,7 +137,16 @@ module Rip::Compiler
     rule(:regular_invocation_arguments) { parenthesis_open.as(:location) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
     rule(:index_invocation) { (bracket_open.as(:open) >> csv(phrase).as(:arguments) >> bracket_close.as(:close)).as(:index_invocation) }
     rule(:property) { dot >> property_name.as(:property_name) }
-    rule(:property_name) { reference | (bracket_open >> bracket_close) }
+    rule(:property_name) do
+      word |
+        str('/') |
+        str('<=>') |
+        str('<=') |
+        str('<').repeat(1, 2) |
+        str('>=') |
+        str('>').repeat(1, 2) |
+        str('[]')
+    end
 
     # https://github.com/kschiess/parslet/blob/master/example/capture.rb
     # TODO literals for heredoc
@@ -145,19 +154,25 @@ module Rip::Compiler
     # TODO literals for unit
     rule(:object) do
       condition_block_sequence |
-      exception_block_sequence |
-      class_block |
-      lambda_block |
-      switch_block |
-      number |
-      character |
-      string |
-      regular_expression |
-      map |
-      list |
-      reference |
-      parenthesis_open >> phrase >> parenthesis_close
+        exception_block_sequence |
+        class_block |
+        lambda_block |
+        switch_block |
+        number |
+        character |
+        string |
+        regular_expression |
+        map |
+        list |
+        reference |
+        parenthesis_open >> phrase >> parenthesis_close
     end
+
+
+    rule(:reference) { word.as(:reference) }
+
+    rule(:word) { word_legal >> (word_legal | digit).repeat }
+    rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
 
 
     rule(:condition_block_sequence) { (if_block | unless_block) >> whitespaces? >> else_block.maybe }
@@ -232,12 +247,6 @@ module Rip::Compiler
     rule(:interpolation) { interpolation_start.as(:start) >> (interpolation_end.absent? >> line.repeat(1)).repeat.as(:interpolation) >> interpolation_end.as(:end) }
     rule(:interpolation_start) { pound >> brace_open }
     rule(:interpolation_end) { brace_close }
-
-
-    rule(:reference) { (word | slash_forward).repeat(1).as(:reference) }
-
-    rule(:word) { word_legal >> (word_legal | digit).repeat }
-    rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
 
 
     rule(:map) { brace_open >> whitespaces? >> csv(phrase).as(:map) >> whitespaces? >> brace_close }
