@@ -143,7 +143,8 @@ module Rip::Compiler
           str('[]') |
           (str('<') >> str('=').maybe) |
           (str('>') >> str('=').maybe) |
-          str('<=>')
+          str('<=>') |
+          str('/')
         ).as(:reference)
     end
 
@@ -242,7 +243,7 @@ module Rip::Compiler
     rule(:interpolation_end) { brace_close }
 
 
-    rule(:reference) { (word | slash_forward).repeat(1).as(:reference) }
+    rule(:reference) { word.repeat(1).as(:reference) }
 
     rule(:word) { word_legal >> (word_legal | digit).repeat }
     rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
