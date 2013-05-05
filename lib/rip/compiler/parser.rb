@@ -169,7 +169,7 @@ module Rip::Compiler
     end
 
 
-    rule(:reference) { word.repeat(1).as(:reference) }
+    rule(:reference) { word.as(:reference) }
 
     rule(:word) { word_legal >> (word_legal | digit).repeat }
     rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
