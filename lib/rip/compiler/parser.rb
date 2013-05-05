@@ -137,7 +137,15 @@ module Rip::Compiler
     rule(:regular_invocation_arguments) { parenthesis_open.as(:location) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
     rule(:index_invocation) { (bracket_open.as(:open) >> csv(phrase).as(:arguments) >> bracket_close.as(:close)).as(:index_invocation) }
     rule(:property) { dot >> property_name.as(:property_name) }
-    rule(:property_name) { reference | (bracket_open >> bracket_close) }
+    rule(:property_name) do
+      reference |
+        (
+          str('[]') |
+          (str('<') >> str('=').maybe) |
+          (str('>') >> str('=').maybe) |
+          str('<=>')
+        ).as(:reference)
+    end
 
     # https://github.com/kschiess/parslet/blob/master/example/capture.rb
     # TODO literals for heredoc
