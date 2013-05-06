@@ -212,5 +212,43 @@ module Rip::Compiler
         :body => locals[:body]
       }
     end
+
+    rule(:hour => simple(:hour), :minute => simple(:minute), :second => simple(:second)) do |locals|
+      {
+        :hour => locals[:hour],
+        :minute => locals[:minute],
+        :second => locals[:second],
+        :sub_second => '0',
+        :offset => {
+          :sign => '+',
+          :hour => '00',
+          :minute => '00'
+        }
+      }
+    end
+
+    rule(:hour => simple(:hour), :minute => simple(:minute), :second => simple(:second), :sub_second => simple(:sub_second)) do |locals|
+      {
+        :hour => locals[:hour],
+        :minute => locals[:minute],
+        :second => locals[:second],
+        :sub_second => locals[:sub_second],
+        :offset => {
+          :sign => '+',
+          :hour => '00',
+          :minute => '00'
+        }
+      }
+    end
+
+    rule(:hour => simple(:hour), :minute => simple(:minute), :second => simple(:second), :offset => subtree(:offset)) do |locals|
+      {
+        :hour => locals[:hour],
+        :minute => locals[:minute],
+        :second => locals[:second],
+        :sub_second => '0',
+        :offset => locals[:offset]
+      }
+    end
   end
 end
