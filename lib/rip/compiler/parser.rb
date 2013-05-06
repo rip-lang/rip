@@ -212,7 +212,11 @@ module Rip::Compiler
 
     rule(:date) { digit.repeat(4, 4).as(:year) >> dash >> digit.repeat(2, 2).as(:month) >> dash >> digit.repeat(2, 2).as(:day) }
 
-    rule(:time) { digit.repeat(2, 2).as(:hour) >> colon >> digit.repeat(2, 2).as(:minute) >> colon >> digit.repeat(2, 2).as(:second) }
+    rule(:time) do
+      (digit.repeat(2, 2).as(:hour) >> colon >> digit.repeat(2, 2).as(:minute) >> colon >> digit.repeat(2, 2).as(:second)) >>
+        (dot >> digits.as(:sub_second)).maybe >>
+        (sign >> digit.repeat(2, 2).as(:hour) >> digit.repeat(2, 2).as(:minute)).as(:offset).maybe
+    end
 
 
     # WARNING order is important here: decimal must be before integer or the integral part of
