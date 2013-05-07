@@ -1397,6 +1397,154 @@ describe Rip::Compiler::Parser do
       end
     end
 
+    context 'date and time literals' do
+      recognizes_as_expected 'date' do
+        let(:rip) { '2012-02-12' }
+        let(:expected_raw) do
+          [
+            {
+              :year => '2012',
+              :month => '02',
+              :day => '12'
+            }
+          ]
+        end
+        let(:expected) do
+          expected_raw
+        end
+      end
+
+      recognizes_as_expected 'time' do
+        let(:rip) { '05:24:00' }
+        let(:expected_raw) do
+          [
+            {
+              :hour => '05',
+              :minute => '24',
+              :second => '00'
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :hour => '05',
+              :minute => '24',
+              :second => '00',
+              :sub_second => '0',
+              :offset => {
+                :sign => '+',
+                :hour => '00',
+                :minute => '00'
+              }
+            }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'time with optional fractional second' do
+        let(:rip) { '05:24:00.14159' }
+        let(:expected) do
+          [
+            {
+              :hour => '05',
+              :minute => '24',
+              :second => '00',
+              :sub_second => '14159',
+              :offset => {
+                :sign => '+',
+                :hour => '00',
+                :minute => '00'
+              }
+            }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'time with optional offset' do
+        let(:rip) { '00:24:00-0500' }
+        let(:expected) do
+          [
+            {
+              :hour => '00',
+              :minute => '24',
+              :second => '00',
+              :sub_second => '0',
+              :offset => {
+                :sign => '-',
+                :hour => '05',
+                :minute => '00'
+              }
+            }
+          ]
+        end
+      end
+
+      recognizes_as_expected 'time with optional fractional second and optional offset' do
+        let(:rip) { '00:24:00.14159-0500' }
+        let(:expected_raw) do
+          [
+            {
+              :hour => '00',
+              :minute => '24',
+              :second => '00',
+              :sub_second => '14159',
+              :offset => {
+                :sign => '-',
+                :hour => '05',
+                :minute => '00'
+              }
+            }
+          ]
+        end
+        let(:expected) do
+          expected_raw
+        end
+      end
+
+      recognizes_as_expected 'datetime' do
+        let(:rip) { '2012-02-12T05:24:00' }
+        let(:expected_raw) do
+          [
+            {
+              :date => {
+                :year => '2012',
+                :month => '02',
+                :day => '12'
+              },
+              :time => {
+                :hour => '05',
+                :minute => '24',
+                :second => '00'
+              }
+            }
+          ]
+        end
+        let(:expected) do
+          [
+            {
+              :date => {
+                :year => '2012',
+                :month => '02',
+                :day => '12'
+              },
+              :time => {
+                :hour => '05',
+                :minute => '24',
+                :second => '00',
+                :sub_second => '0',
+                :offset => {
+                  :sign => '+',
+                  :hour => '00',
+                  :minute => '00'
+                }
+              }
+            }
+          ]
+        end
+      end
+    end
+
     context 'molecular literals' do
       recognizes_as_expected 'key-value pairs' do
         let(:rip) { '5: \'five\'' }

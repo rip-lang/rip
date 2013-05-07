@@ -83,6 +83,7 @@ module Rip::Compiler
     rule(:semicolon) { str(';') }
     rule(:colon) { str(':') }
     rule(:pound) { str('#') }
+    rule(:dash) { str('-') }
     rule(:underscore) { str('_') }
     rule(:equals) { str('=') }
 
@@ -126,7 +127,7 @@ module Rip::Compiler
     rule(:atom_4) { (atom_3 >> (expression_terminator.absent? >> assignment).repeat).as(:atom) }
     rule(:assignment) { (whitespaces >> equals.as(:location) >> whitespaces >> phrase.as(:rhs)).as(:assignment) }
 
-    rule(:atom_3) { (atom_2 >> (expression_terminator.absent? >> key_value_pair).repeat).as(:atom) }
+    rule(:atom_3) { time | (atom_2 >> (expression_terminator.absent? >> key_value_pair).repeat).as(:atom) }
     rule(:key_value_pair) { (whitespaces? >> colon >> whitespaces? >> atom_2.as(:value)).as(:key_value_pair) }
 
     rule(:atom_2) { (atom_1 >> (expression_terminator.absent? >> range).repeat).as(:atom) }
@@ -158,6 +159,8 @@ module Rip::Compiler
         class_block |
         lambda_block |
         switch_block |
+        datetime |
+        date |
         number |
         character |
         string |
@@ -203,6 +206,17 @@ module Rip::Compiler
 
     rule(:block_body) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }
     rule(:block_body_switch) { whitespaces? >> brace_open >> whitespaces? >> (case_block >> whitespaces?).repeat(1).as(:case_blocks) >> else_block.maybe.as(:else_block) >> whitespaces? >> brace_close }
+
+
+    rule(:datetime) { date.as(:date) >> str('T') >> time.as(:time) }
+
+    rule(:date) { digit.repeat(4, 4).as(:year) >> dash >> digit.repeat(2, 2).as(:month) >> dash >> digit.repeat(2, 2).as(:day) }
+
+    rule(:time) do
+      (digit.repeat(2, 2).as(:hour) >> colon >> digit.repeat(2, 2).as(:minute) >> colon >> digit.repeat(2, 2).as(:second)) >>
+        (dot >> digits.as(:sub_second)).maybe >>
+        (sign >> digit.repeat(2, 2).as(:hour) >> digit.repeat(2, 2).as(:minute)).as(:offset).maybe
+    end
 
 
     # WARNING order is important here: decimal must be before integer or the integral part of

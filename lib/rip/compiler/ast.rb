@@ -53,6 +53,25 @@ module Rip::Compiler
       Rip::Nodes::Reference.new(location, reference)
     end
 
+    rule(:year => simple(:year), :month => simple(:month), :day => simple(:day)) do |locals|
+      location = location_for(locals[:origin], locals[:year])
+      Rip::Nodes::Date.new(location, locals[:year], locals[:month], locals[:day])
+    end
+
+    rule(:sign => simple(:sign), :hour => simple(:hour), :minute => simple(:minute)) do |locals|
+      Rip::Nodes::Time::Offset.new(locals[:sign], locals[:hour], locals[:minute])
+    end
+
+    rule(:hour => simple(:hour), :minute => simple(:minute), :second => simple(:second), :sub_second => simple(:sub_second), :offset => simple(:offset)) do |locals|
+      location = location_for(locals[:origin], locals[:hour])
+      Rip::Nodes::Time.new(location, locals[:hour], locals[:minute], locals[:second], locals[:sub_second], locals[:offset])
+    end
+
+    rule(:date => simple(:date), :time => simple(:time)) do |locals|
+      location = locals[:date].location
+      Rip::Nodes::DateTime.new(location, locals[:date], locals[:time])
+    end
+
     rule(:sign => simple(:sign), :integer => simple(:integer)) do |locals|
       sign = locals[:sign]
       location = location_for(locals[:origin], sign)
