@@ -12,19 +12,19 @@ describe Rip::Compiler::AST do
       let(:rip_module) { Rip::Nodes::Module.new(location, empty_body) }
 
       specify do
-        expect(syntax_tree(rip)).to eq(rip_module)
         expect(statements.count).to eq(0)
+        expect(the_module).to eq(rip_module)
       end
     end
 
     describe 'tree for comments' do
       let(:rip) { '# this is a comment' }
-      let(:comment) { Rip::Nodes::Comment.new(location.add_character, ' this is a comment') }
-      let(:rip_module) { Rip::Nodes::Module.new(location, [ comment ]) }
+      let(:empty_body) { Rip::Nodes::BlockBody.new(location, []) }
+      let(:rip_module) { Rip::Nodes::Module.new(location, empty_body) }
 
       specify do
-        expect(statements.count).to eq(1)
-        expect(statements.first).to eq(comment)
+        expect(statements.count).to eq(0)
+        expect(the_module).to eq(rip_module)
       end
     end
   end
@@ -165,7 +165,6 @@ describe Rip::Compiler::AST do
   context 'assignment' do
     let(:line_two) { new_location(:rspec, 10, 2, 1) }
     let(:rip) { "# find me\nlanguage = :rip" }
-    let(:comment_node) { Rip::Nodes::Comment.new(location.add_character, ' find me') }
     let(:reference_node) { Rip::Nodes::Reference.new(line_two, 'language') }
     let(:characters) do
       [
@@ -177,18 +176,13 @@ describe Rip::Compiler::AST do
     let(:string_node) { Rip::Nodes::String.new(line_two.add_character(12), characters) }
     let(:assignment_node) { Rip::Nodes::Assignment.new(line_two.add_character(9), reference_node, string_node) }
 
-    let(:comment) { statements.first }
-    let(:assignment) { statements.last }
+    let(:assignment) { statements.first }
 
-    it 'has two top-level nodes' do
-      expect(statements.count).to eq(2)
+    it 'has one top-level nodes' do
+      expect(statements.count).to eq(1)
     end
 
-    it 'knows the first node is a comment' do
-      expect(comment).to eq(comment_node)
-    end
-
-    it 'finds an assignment as the last node' do
+    it 'finds an assignment' do
       expect(assignment).to eq(assignment_node)
       expect(assignment.lhs).to eq(reference_node)
       expect(assignment.rhs).to eq(string_node)
@@ -493,8 +487,7 @@ describe Rip::Compiler::AST do
     end
 
     let(:line_2) { location.add_character(5).add_line }
-    let(:danger_comment_node) { Rip::Nodes::Comment.new(line_2.add_character(3), ' danger!') }
-    let(:danger_body_node) { Rip::Nodes::BlockBody.new(location.add_character(4), [ danger_comment_node ]) }
+    let(:danger_body_node) { Rip::Nodes::BlockBody.new(location.add_character(4), []) }
 
     let(:line_3) { line_2.add_character(11).add_line }
 
@@ -504,8 +497,7 @@ describe Rip::Compiler::AST do
     let(:specific_argument_key) { Rip::Nodes::Reference.new(line_4.add_character(7), 'AppError') }
     let(:specific_argument_value) { Rip::Nodes::Reference.new(line_4.add_character(17), 'e') }
     let(:specific_argument) { Rip::Nodes::KeyValue.new(line_4.add_character(7), specific_argument_key, specific_argument_value) }
-    let(:specific_comment_node) { Rip::Nodes::Comment.new(line_5.add_character(3), ' rescue specific') }
-    let(:specific_body_node) { Rip::Nodes::BlockBody.new(line_4.add_character(20), [ specific_comment_node ]) }
+    let(:specific_body_node) { Rip::Nodes::BlockBody.new(line_4.add_character(20), []) }
     let(:specific_block_node) { Rip::Nodes::Catch.new(line_4, specific_argument, specific_body_node) }
 
     let(:line_6) { line_5.add_character(19).add_line }
@@ -516,8 +508,7 @@ describe Rip::Compiler::AST do
     let(:generic_argument_key) { Rip::Nodes::Reference.new(line_7.add_character(7), 'Exception') }
     let(:generic_argument_value) { Rip::Nodes::Reference.new(line_7.add_character(18), 'e') }
     let(:generic_argument) { Rip::Nodes::KeyValue.new(line_7.add_character(7), generic_argument_key, generic_argument_value) }
-    let(:generic_comment_node) { Rip::Nodes::Comment.new(line_8.add_character(3), ' rescue generic') }
-    let(:generic_body_node) { Rip::Nodes::BlockBody.new(line_7.add_character(21), [ generic_comment_node ]) }
+    let(:generic_body_node) { Rip::Nodes::BlockBody.new(line_7.add_character(21), []) }
     let(:generic_block_node) { Rip::Nodes::Catch.new(line_7, generic_argument, generic_body_node) }
 
     let(:line_9) { line_8.add_character(18).add_line }
@@ -525,8 +516,7 @@ describe Rip::Compiler::AST do
     let(:line_10) { line_9.add_character(1).add_line }
 
     let(:line_11) { line_10.add_character(9).add_line }
-    let(:always_comment_node) { Rip::Nodes::Comment.new(line_11.add_character(3), ' always run') }
-    let(:always_body_node) { Rip::Nodes::BlockBody.new(line_10.add_character(8), [ always_comment_node ]) }
+    let(:always_body_node) { Rip::Nodes::BlockBody.new(line_10.add_character(8), []) }
     let(:always_block_node) { Rip::Nodes::Finally.new(line_10, always_body_node) }
 
     let(:try_etc_node) { Rip::Nodes::Try.new(location, danger_body_node, [ specific_block_node, generic_block_node ], always_block_node) }
@@ -646,6 +636,37 @@ describe Rip::Compiler::AST do
       expect(klass.body).to eq(class_body_node)
 
       expect(klass).to eq(class_node)
+    end
+  end
+
+  context 'list comments' do
+    let(:rip) do
+      strip_heredoc(<<-RIP)
+        [
+          1, # one
+          2  # two
+        ]
+      RIP
+    end
+
+    let(:line_2) { location.add_character.add_line }
+    let(:integer_1_node) { Rip::Nodes::Integer.new(line_2.add_character(2), '1') }
+
+    let(:line_3) { line_2.add_character(10).add_line }
+    let(:integer_2_node) { Rip::Nodes::Integer.new(line_3.add_character(2), '2') }
+
+    let(:list_node) { Rip::Nodes::List.new(line_1, [ integer_1_node, integer_2_node ]) }
+
+    let(:list) { statements.first }
+
+    it 'has one top-level node' do
+      expect(statements.count).to eq(1)
+    end
+
+    it 'is a list (with two integers)' do
+      expect(list.items.count).to eq(2)
+      expect(list.items.first).to eq(integer_1_node)
+      expect(list.items.last).to eq(integer_2_node)
     end
   end
 end

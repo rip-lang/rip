@@ -11,13 +11,8 @@ module Rip::Compiler
       @source_code = source_code
     end
 
-    # NOTE shouldn't Rip::Compiler::AST create Rip::Nodes::Module?
     def syntax_tree
-      location = Rip::Utilities::Location.new(origin, 0, 1, 1)
-      expressions = Rip::Compiler::AST.new(origin).apply(parse_tree)
-      _expressions = expressions.is_a?(String) ? [] : expressions
-      body = Rip::Nodes::BlockBody.new(location, _expressions)
-      Rip::Nodes::Module.new(location, body)
+      Rip::Compiler::AST.new(origin).apply(parse_tree)
     end
 
     def parse_tree
@@ -56,10 +51,10 @@ module Rip::Compiler
     end
 
 
-    root(:lines)
+    root(:module)
 
 
-    rule(:whitespace) { space | line_break }
+    rule(:whitespace) { space | line_break | comment }
     rule(:whitespaces) { whitespace.repeat(1) }
     rule(:whitespaces?) { whitespaces.maybe }
 
@@ -70,6 +65,8 @@ module Rip::Compiler
     rule(:line_break) { str("\r\n") | str("\n") | str("\r") }
     rule(:line_breaks) { line_break.repeat(1) }
     rule(:line_breaks?) { line_breaks.maybe }
+
+    rule(:comment) { pound >> (line_break.absent? >> any).repeat >> (line_break | eof) }
 
 
     rule(:expression_terminator) { semicolon | line_break }
@@ -107,10 +104,9 @@ module Rip::Compiler
     rule(:backtick) { str('`') }
 
 
+    rule(:module) { lines.as(:module) }
     rule(:lines) { line.repeat }
-    rule(:line) { whitespaces | expression | comment }
-
-    rule(:comment) { pound >> (line_break.absent? >> any).repeat.as(:comment) >> (line_break | eof) }
+    rule(:line) { whitespaces | expression }
 
     rule(:expression) { expression_base >> spaces? >> expression_terminator? }
 
