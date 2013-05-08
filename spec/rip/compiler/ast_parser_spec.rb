@@ -12,8 +12,8 @@ describe Rip::Compiler::AST do
       let(:rip_module) { Rip::Nodes::Module.new(location, empty_body) }
 
       specify do
-        expect(syntax_tree(rip)).to eq(rip_module)
         expect(statements.count).to eq(0)
+        expect(the_module).to eq(rip_module)
       end
     end
 
