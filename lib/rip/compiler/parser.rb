@@ -11,13 +11,8 @@ module Rip::Compiler
       @source_code = source_code
     end
 
-    # NOTE shouldn't Rip::Compiler::AST create Rip::Nodes::Module?
     def syntax_tree
-      location = Rip::Utilities::Location.new(origin, 0, 1, 1)
-      expressions = Rip::Compiler::AST.new(origin).apply(parse_tree)
-      _expressions = expressions.is_a?(String) ? [] : expressions
-      body = Rip::Nodes::BlockBody.new(location, _expressions)
-      Rip::Nodes::Module.new(location, body)
+      Rip::Compiler::AST.new(origin).apply(parse_tree)
     end
 
     def parse_tree
@@ -56,7 +51,7 @@ module Rip::Compiler
     end
 
 
-    root(:lines)
+    root(:module)
 
 
     rule(:whitespace) { space | line_break }
@@ -107,6 +102,7 @@ module Rip::Compiler
     rule(:backtick) { str('`') }
 
 
+    rule(:module) { lines.as(:module) }
     rule(:lines) { line.repeat }
     rule(:line) { whitespaces | expression | comment }
 

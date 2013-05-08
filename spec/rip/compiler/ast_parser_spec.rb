@@ -20,8 +20,8 @@ describe Rip::Compiler::AST do
     describe 'tree for comments' do
       let(:rip) { '# this is a comment' }
       let(:comment) { Rip::Nodes::Comment.new(location.add_character, ' this is a comment') }
-      let(:empty_body) { Rip::Nodes::BlockBody.new(location, [ comment ]) }
-      let(:rip_module) { Rip::Nodes::Module.new(location, empty_body) }
+      let(:empty_body) { Rip::Nodes::BlockBody.new(comment.location, [ comment ]) }
+      let(:rip_module) { Rip::Nodes::Module.new(comment.location, empty_body) }
 
       specify do
         expect(statements.count).to eq(1)

@@ -24,6 +24,24 @@ module Rip::Compiler
       Rip::Utilities::Location.new(origin, slice.offset, *slice.line_and_column)
     end
 
+    def self.module_for(location, lines)
+      body = Rip::Nodes::BlockBody.new(location, lines)
+      Rip::Nodes::Module.new(location, body)
+    end
+
+    rule(:module => simple(:lines)) do |locals|
+      lines = []
+      location = Rip::Utilities::Location.new(locals[:origin], 0, 1, 1)
+      module_for(location, lines)
+    end
+
+    rule(:module => sequence(:lines)) do |locals|
+      lines = locals[:lines]
+      first = lines.first
+      location = first ? first.location : Rip::Utilities::Location.new(locals[:origin], 0, 1, 1)
+      module_for(location, lines)
+    end
+
     rule(:comment => simple(:comment)) do |locals|
       comment = locals[:comment]
       location = location_for(locals[:origin], comment)
