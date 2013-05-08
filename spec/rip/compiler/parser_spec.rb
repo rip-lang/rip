@@ -10,8 +10,8 @@ describe Rip::Compiler::Parser do
       expect(parser('       ')).to parse_as(:module => '       ')
     end
 
-    it 'recognizes comments' do
-      expect(parser('# this is a comment')).to parse_as(:module => [ { :comment => ' this is a comment' } ])
+    it 'ignores comments as whitespace' do
+      expect(parser('# this is a comment')).to parse_as(:module => '# this is a comment')
     end
 
     it 'recognizes various whitespace sequences' do
@@ -78,7 +78,7 @@ describe Rip::Compiler::Parser do
                         :rhs => {
                           :dash_rocket => '->',
                           :location_body => '{',
-                          :body => [ { :comment => ' comment' } ]
+                          :body => []
                         }
                       }
                     }
@@ -254,9 +254,7 @@ describe Rip::Compiler::Parser do
               {
                 :class => 'class',
                 :location_body => '{',
-                :body => [
-                  { :comment => ' comment' }
-                ]
+                :body => []
               }
             ]
           }
@@ -268,9 +266,7 @@ describe Rip::Compiler::Parser do
                 :class => 'class',
                 :arguments => [],
                 :location_body => '{',
-                :body => [
-                  { :comment => ' comment' }
-                ]
+                :body => []
               }
             ]
           }
@@ -555,9 +551,7 @@ describe Rip::Compiler::Parser do
                   :if => 'if',
                   :argument => { :reference => 'true' },
                   :location_body => '{',
-                  :body => [
-                    { :comment => ' comment' }
-                  ]
+                  :body => []
                 }
               }
             ]

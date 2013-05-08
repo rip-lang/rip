@@ -54,7 +54,7 @@ module Rip::Compiler
     root(:module)
 
 
-    rule(:whitespace) { space | line_break }
+    rule(:whitespace) { space | line_break | comment }
     rule(:whitespaces) { whitespace.repeat(1) }
     rule(:whitespaces?) { whitespaces.maybe }
 
@@ -65,6 +65,8 @@ module Rip::Compiler
     rule(:line_break) { str("\r\n") | str("\n") | str("\r") }
     rule(:line_breaks) { line_break.repeat(1) }
     rule(:line_breaks?) { line_breaks.maybe }
+
+    rule(:comment) { pound >> (line_break.absent? >> any).repeat >> (line_break | eof) }
 
 
     rule(:expression_terminator) { semicolon | line_break }
@@ -104,9 +106,7 @@ module Rip::Compiler
 
     rule(:module) { lines.as(:module) }
     rule(:lines) { line.repeat }
-    rule(:line) { whitespaces | expression | comment }
-
-    rule(:comment) { pound >> (line_break.absent? >> any).repeat.as(:comment) >> (line_break | eof) }
+    rule(:line) { whitespaces | expression }
 
     rule(:expression) { expression_base >> spaces? >> expression_terminator? }
 

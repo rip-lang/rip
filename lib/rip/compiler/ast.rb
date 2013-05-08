@@ -42,12 +42,6 @@ module Rip::Compiler
       module_for(location, lines)
     end
 
-    rule(:comment => simple(:comment)) do |locals|
-      comment = locals[:comment]
-      location = location_for(locals[:origin], comment)
-      Rip::Nodes::Comment.new(location, comment)
-    end
-
     {
       :exit => Rip::Nodes::Exit,
       :return => Rip::Nodes::Return,
