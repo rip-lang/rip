@@ -137,7 +137,7 @@ describe Rip::Compiler::AST do
       expect(statements.count).to eq(1)
     end
 
-    it 'finds the range node' do
+    it 'finds the key-value node' do
       expect(map.items.first).to eq(key_value_node)
 
       expect(map).to eq(map_node)
