@@ -115,24 +115,24 @@ module Rip::Compiler
     rule(:keyword) { %i[exit return throw].map { |kw| str(kw.to_s).as(kw) >> reference.absent? }.inject(:|) }
 
 
-    rule(:phrase) { atom_5 }
+    rule(:phrase) { operator_invocation? }
 
-    rule(:atom_5) { (atom_4 >> (expression_terminator.absent? >> operator_invocation).repeat).as(:atom) }
-    rule(:operator_invocation) { (whitespaces >> property_name.as(:operator) >> whitespaces >> atom_4.as(:argument)).as(:operator_invocation) }
+    rule(:operator_invocation?) { (assignment? >> (expression_terminator.absent? >> operator_invocation).repeat).as(:atom) }
+    rule(:operator_invocation) { (whitespaces >> property_name.as(:operator) >> whitespaces >> assignment?.as(:argument)).as(:operator_invocation) }
 
-    rule(:atom_4) { (atom_3 >> (expression_terminator.absent? >> assignment).repeat).as(:atom) }
+    rule(:assignment?) { (key_value_pair? >> (expression_terminator.absent? >> assignment).repeat).as(:atom) }
     rule(:assignment) { (whitespaces >> equals.as(:location) >> whitespaces >> phrase.as(:rhs)).as(:assignment) }
 
-    rule(:atom_3) { time | (atom_2 >> (expression_terminator.absent? >> key_value_pair).repeat).as(:atom) }
-    rule(:key_value_pair) { (whitespaces? >> colon >> whitespaces? >> atom_2.as(:value)).as(:key_value_pair) }
+    rule(:key_value_pair?) { time | (range? >> (expression_terminator.absent? >> key_value_pair).repeat).as(:atom) }
+    rule(:key_value_pair) { (whitespaces? >> colon >> whitespaces? >> range?.as(:value)).as(:key_value_pair) }
 
-    rule(:atom_2) { (atom_1 >> (expression_terminator.absent? >> range).repeat).as(:atom) }
-    rule(:range) { (whitespaces? >> dot >> dot >> dot.maybe.as(:exclusivity) >> atom_1.as(:end)).as(:range) }
+    rule(:range?) { (atom? >> (expression_terminator.absent? >> range).repeat).as(:atom) }
+    rule(:range) { (whitespaces? >> dot >> dot >> dot.maybe.as(:exclusivity) >> atom?.as(:end)).as(:range) }
 
-    rule(:atom_1) { (object >> (expression_terminator.absent? >> (regular_invocation | index_invocation | property)).repeat).as(:atom) }
-    rule(:regular_invocation) { regular_invocation_arguments.as(:regular_invocation) }
-    rule(:regular_invocation_arguments) { parenthesis_open.as(:location) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
+    rule(:atom?) { (object >> (expression_terminator.absent? >> (regular_invocation | index_invocation | property)).repeat).as(:atom) }
+    rule(:regular_invocation) { (parenthesis_open.as(:location) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close).as(:regular_invocation) }
     rule(:index_invocation) { (bracket_open.as(:open) >> csv(phrase).as(:arguments) >> bracket_close.as(:close)).as(:index_invocation) }
+
     rule(:property) { dot >> property_name.as(:property_name) }
     rule(:property_name) do
       word |
