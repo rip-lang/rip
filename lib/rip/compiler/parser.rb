@@ -124,10 +124,10 @@ module Rip::Compiler
     rule(:assignment) { (whitespaces >> equals.as(:location) >> whitespaces >> phrase.as(:rhs)).as(:assignment) }
 
     rule(:key_value_pair?) { time | (range? >> (expression_terminator.absent? >> key_value_pair).repeat).as(:atom) }
-    rule(:key_value_pair) { (whitespaces? >> colon >> whitespaces? >> range?.as(:value)).as(:key_value_pair) }
+    rule(:key_value_pair) { (whitespaces? >> colon.as(:location) >> whitespaces? >> range?.as(:value)).as(:key_value_pair) }
 
     rule(:range?) { (atom? >> (expression_terminator.absent? >> range).repeat).as(:atom) }
-    rule(:range) { (whitespaces? >> dot >> dot >> dot.maybe.as(:exclusivity) >> whitespaces? >> atom?.as(:end)).as(:range) }
+    rule(:range) { (whitespaces? >> dot.repeat(2, 2).as(:location) >> dot.maybe.as(:exclusivity) >> whitespaces? >> atom?.as(:end)).as(:range) }
 
     rule(:atom?) { (object >> (expression_terminator.absent? >> (regular_invocation | index_invocation | property)).repeat).as(:atom) }
     rule(:regular_invocation) { (parenthesis_open.as(:location) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close).as(:regular_invocation) }

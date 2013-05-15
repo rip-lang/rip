@@ -439,7 +439,10 @@ describe Rip::Compiler::Parser do
                       :atom => [
                         { :reference => 'Exception' },
                         {
-                          :key_value_pair => { :value => { :reference => 'e' } }
+                          :key_value_pair => {
+                            :location => ':',
+                            :value => { :reference => 'e' }
+                          }
                         }
                       ]
                     },
@@ -465,6 +468,7 @@ describe Rip::Compiler::Parser do
                     :catch => 'catch',
                     :argument => {
                       :key => { :reference => 'Exception' },
+                      :location => ':',
                       :value => { :reference => 'e' }
                     },
                     :location_body => '{',
@@ -516,6 +520,7 @@ describe Rip::Compiler::Parser do
                     :catch => 'catch',
                     :argument => {
                       :key => { :reference => 'Exception' },
+                      :location => ':',
                       :value => { :reference => 'e' }
                     },
                     :location_body => '{',
@@ -1704,6 +1709,7 @@ describe Rip::Compiler::Parser do
                   { :integer => '5' },
                   {
                     :key_value_pair => {
+                      :location => ':',
                       :value => { :string => rip_string('five') }
                     }
                   }
@@ -1725,6 +1731,7 @@ describe Rip::Compiler::Parser do
                   {
                     :range => {
                       :end => { :integer => '3' },
+                      :location => '..',
                       :exclusivity => nil
                     }
                   }
@@ -1746,6 +1753,7 @@ describe Rip::Compiler::Parser do
                   {
                     :range => {
                       :end => { :reference => 'age' },
+                      :location => '..',
                       :exclusivity => '.'
                     }
                   }
@@ -1786,6 +1794,7 @@ describe Rip::Compiler::Parser do
                       { :string => rip_string('age') },
                       {
                         :key_value_pair => {
+                          :location => ':',
                           :value => { :integer => '31' }
                         }
                       }
@@ -1796,6 +1805,7 @@ describe Rip::Compiler::Parser do
                       { :string => rip_string('name') },
                       {
                         :key_value_pair => {
+                          :location => ':',
                           :value => { :string => rip_string('Thomas') }
                         }
                       }

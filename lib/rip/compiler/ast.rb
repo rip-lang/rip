@@ -122,13 +122,13 @@ module Rip::Compiler
       Rip::Nodes::RegularExpression.new(location, locals[:pattern])
     end
 
-    rule(:key => simple(:key), :value => simple(:value)) do |locals|
-      location = locals[:key].location
+    rule(:key => simple(:key), :location => simple(:location), :value => simple(:value)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
       Rip::Nodes::KeyValue.new(location, locals[:key], locals[:value])
     end
 
-    rule(:start => simple(:start), :end => simple(:end), :exclusivity => simple(:exclusivity)) do |locals|
-      location = locals[:start].location
+    rule(:start => simple(:start), :location => simple(:location), :exclusivity => simple(:exclusivity), :end => simple(:end)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
       Rip::Nodes::Range.new(location, locals[:start], locals[:end], !locals[:exclusivity].nil?)
     end
 

@@ -63,7 +63,7 @@ describe Rip::Compiler::AST do
       ]
     end
     let(:value_node) { Rip::Nodes::String.new(location.add_character(7), value_characters) }
-    let(:key_value_node) { Rip::Nodes::KeyValue.new(location.add_character, key_node, value_node) }
+    let(:key_value_node) { Rip::Nodes::KeyValue.new(location.add_character(4), key_node, value_node) }
 
     it 'has one top-level node' do
       expect(statements.count).to eq(1)
@@ -82,7 +82,7 @@ describe Rip::Compiler::AST do
     let(:rip) { '`a..`z' }
     let(:a_node) { Rip::Nodes::Character.new(location.add_character, 'a') }
     let(:z_node) { Rip::Nodes::Character.new(location.add_character(5), 'z') }
-    let(:range_node) { Rip::Nodes::Range.new(location.add_character, a_node, z_node) }
+    let(:range_node) { Rip::Nodes::Range.new(location.add_character(2), a_node, z_node) }
 
     it 'has one top-level node' do
       expect(statements.count).to eq(1)
@@ -127,9 +127,9 @@ describe Rip::Compiler::AST do
 
     let(:a_node) { Rip::Nodes::Reference.new(location.add_character, 'a') }
     let(:z_node) { Rip::Nodes::Reference.new(location.add_character(4), 'z') }
-    let(:key_value_node) { Rip::Nodes::KeyValue.new(location.add_character, a_node, z_node) }
+    let(:key_value_node) { Rip::Nodes::KeyValue.new(location.add_character(2), a_node, z_node) }
 
-    let(:map_node) { Rip::Nodes::Map.new(location.add_character, [ key_value_node ]) }
+    let(:map_node) { Rip::Nodes::Map.new(location.add_character(2), [ key_value_node ]) }
 
     let(:map) { statements.first }
 
@@ -496,7 +496,7 @@ describe Rip::Compiler::AST do
     let(:line_5) { line_4.add_character(21).add_line }
     let(:specific_argument_key) { Rip::Nodes::Reference.new(line_4.add_character(7), 'AppError') }
     let(:specific_argument_value) { Rip::Nodes::Reference.new(line_4.add_character(17), 'e') }
-    let(:specific_argument) { Rip::Nodes::KeyValue.new(line_4.add_character(7), specific_argument_key, specific_argument_value) }
+    let(:specific_argument) { Rip::Nodes::KeyValue.new(line_4.add_character(15), specific_argument_key, specific_argument_value) }
     let(:specific_body_node) { Rip::Nodes::BlockBody.new(line_4.add_character(20), []) }
     let(:specific_block_node) { Rip::Nodes::Catch.new(line_4, specific_argument, specific_body_node) }
 
@@ -507,7 +507,7 @@ describe Rip::Compiler::AST do
     let(:line_8) { line_7.add_character(22).add_line }
     let(:generic_argument_key) { Rip::Nodes::Reference.new(line_7.add_character(7), 'Exception') }
     let(:generic_argument_value) { Rip::Nodes::Reference.new(line_7.add_character(18), 'e') }
-    let(:generic_argument) { Rip::Nodes::KeyValue.new(line_7.add_character(7), generic_argument_key, generic_argument_value) }
+    let(:generic_argument) { Rip::Nodes::KeyValue.new(line_7.add_character(16), generic_argument_key, generic_argument_value) }
     let(:generic_body_node) { Rip::Nodes::BlockBody.new(line_7.add_character(21), []) }
     let(:generic_block_node) { Rip::Nodes::Catch.new(line_7, generic_argument, generic_body_node) }
 

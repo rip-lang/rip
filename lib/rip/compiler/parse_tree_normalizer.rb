@@ -107,13 +107,15 @@ module Rip::Compiler
         when :key_value_pair
           {
             :key => atom_base,
+            :location => normalize_atom(part[:key_value_pair][:location]),
             :value => normalize_atom(part[:key_value_pair][:value])
           }
         when :range
           {
             :start => atom_base,
-            :end => normalize_atom(part[:range][:end]),
-            :exclusivity => part[:range][:exclusivity]
+            :location => normalize_atom(part[:range][:location]),
+            :exclusivity => part[:range][:exclusivity],
+            :end => normalize_atom(part[:range][:end])
           }
         when :property_assignment
           {
