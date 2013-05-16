@@ -117,12 +117,6 @@ module Rip::Compiler
             :exclusivity => part[:range][:exclusivity],
             :end => normalize_atom(part[:range][:end])
           }
-        when part.has_key?(:property_assignment)
-          {
-            :lhs => normalize_atom(atom_base),
-            :location => part[:property_assignment][:location],
-            :rhs => normalize_atom(part[:property_assignment][:rhs])
-          }
         when part.has_key?(:regular_invocation)
           {
             :callable => atom_base,
@@ -183,10 +177,6 @@ module Rip::Compiler
           number => locals[number]
         }
       end
-    end
-
-    rule(:raw_regex => simple(:raw_regex)) do |locals|
-      locals[:raw_regex]
     end
 
     %i[dash_rocket fat_rocket].each do |keyword|
