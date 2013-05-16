@@ -145,10 +145,9 @@ module Rip::Compiler
         str('[]')
     end
 
-    # https://github.com/kschiess/parslet/blob/master/example/capture.rb
-    # TODO literals for heredoc
-    # TODO literals for datetime, date, time, version (maybe)
+    # TODO literals for heredoc (see https://github.com/kschiess/parslet/blob/master/example/capture.rb)
     # TODO literals for unit
+    # TODO literals for version (maybe)
     rule(:object) do
       condition_block_sequence |
         exception_block_sequence |
