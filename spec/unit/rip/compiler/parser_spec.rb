@@ -169,6 +169,7 @@ describe Rip::Compiler::Parser do
           :module => [
             {
               :object => { :reference => '@' },
+              :location => '.',
               :property_name => property_name
             }
           ]
@@ -439,7 +440,10 @@ describe Rip::Compiler::Parser do
                       :atom => [
                         { :reference => 'Exception' },
                         {
-                          :key_value_pair => { :value => { :reference => 'e' } }
+                          :key_value_pair => {
+                            :location => ':',
+                            :value => { :reference => 'e' }
+                          }
                         }
                       ]
                     },
@@ -465,6 +469,7 @@ describe Rip::Compiler::Parser do
                     :catch => 'catch',
                     :argument => {
                       :key => { :reference => 'Exception' },
+                      :location => ':',
                       :value => { :reference => 'e' }
                     },
                     :location_body => '{',
@@ -516,6 +521,7 @@ describe Rip::Compiler::Parser do
                     :catch => 'catch',
                     :argument => {
                       :key => { :reference => 'Exception' },
+                      :location => ':',
                       :value => { :reference => 'e' }
                     },
                     :location_body => '{',
@@ -819,6 +825,7 @@ describe Rip::Compiler::Parser do
                   :object => {
                     :callable => {
                       :object => { :sign => '+', :integer => '1' },
+                      :location => '+',
                       :property_name => '+'
                     },
                     :location => '+',
@@ -826,6 +833,7 @@ describe Rip::Compiler::Parser do
                       { :sign => '+', :integer => '2' }
                     ]
                   },
+                  :location => '-',
                   :property_name => '-'
                 },
                 :location => '-',
@@ -988,7 +996,10 @@ describe Rip::Compiler::Parser do
                   {
                     :atom => [
                       { :reference => 'favorite' },
-                      { :property_name => 'language' }
+                      {
+                        :location => '.',
+                        :property_name => 'language'
+                      }
                     ]
                   },
                   {
@@ -997,7 +1008,10 @@ describe Rip::Compiler::Parser do
                       :rhs => {
                         :atom => [
                           { :string => rip_string('rip') },
-                          { :property_name => 'lang' }
+                          {
+                            :location => '.',
+                            :property_name => 'lang'
+                          }
                         ]
                       }
                     }
@@ -1013,11 +1027,13 @@ describe Rip::Compiler::Parser do
               {
                 :lhs => {
                   :object => { :reference => 'favorite' },
+                  :location => '.',
                   :property_name => 'language'
                 },
                 :location => '=',
                 :rhs => {
                   :object => { :string => rip_string('rip') },
+                  :location => '.',
                   :property_name => 'lang'
                 }
               }
@@ -1092,10 +1108,19 @@ describe Rip::Compiler::Parser do
               {
                 :atom => [
                   { :integer => '0' },
-                  { :property_name => 'one' },
+                  {
+                    :location => '.',
+                    :property_name => 'one'
+                  },
                   { :regular_invocation => { :location => '(', :arguments => [] } },
-                  { :property_name => 'two' },
-                  { :property_name => 'three' },
+                  {
+                    :location => '.',
+                    :property_name => 'two'
+                  },
+                  {
+                    :location => '.',
+                    :property_name => 'three'
+                  },
                   { :regular_invocation => { :location => '(', :arguments=> [] } }
                 ]
               }
@@ -1122,7 +1147,10 @@ describe Rip::Compiler::Parser do
                       }
                     ]
                   },
-                  { :property_name => 'zero?' },
+                  {
+                    :location => '.',
+                    :property_name => 'zero?'
+                  },
                   { :regular_invocation => { :location => '(', :arguments => [] } }
                 ]
               }
@@ -1391,6 +1419,7 @@ describe Rip::Compiler::Parser do
                   :object => {
                     :callable => {
                       :object => { :string => rip_string('ab') },
+                      :location => '+',
                       :property_name => '+'
                     },
                     :location => '+',
@@ -1404,6 +1433,7 @@ describe Rip::Compiler::Parser do
                       }
                     ]
                   },
+                  :location => '+',
                   :property_name => '+'
                 },
                 :location => '+',
@@ -1503,6 +1533,7 @@ describe Rip::Compiler::Parser do
                   :object => {
                     :callable => {
                       :object => { :regex => rip_string('he') },
+                      :location => '+',
                       :property_name => '+'
                     },
                     :location => '+',
@@ -1516,6 +1547,7 @@ describe Rip::Compiler::Parser do
                       }
                     ]
                   },
+                  :location => '+',
                   :property_name => '+'
                 },
                 :location => '+',
@@ -1704,6 +1736,7 @@ describe Rip::Compiler::Parser do
                   { :integer => '5' },
                   {
                     :key_value_pair => {
+                      :location => ':',
                       :value => { :string => rip_string('five') }
                     }
                   }
@@ -1725,6 +1758,7 @@ describe Rip::Compiler::Parser do
                   {
                     :range => {
                       :end => { :integer => '3' },
+                      :location => '..',
                       :exclusivity => nil
                     }
                   }
@@ -1746,6 +1780,7 @@ describe Rip::Compiler::Parser do
                   {
                     :range => {
                       :end => { :reference => 'age' },
+                      :location => '..',
                       :exclusivity => '.'
                     }
                   }
@@ -1786,6 +1821,7 @@ describe Rip::Compiler::Parser do
                       { :string => rip_string('age') },
                       {
                         :key_value_pair => {
+                          :location => ':',
                           :value => { :integer => '31' }
                         }
                       }
@@ -1796,6 +1832,7 @@ describe Rip::Compiler::Parser do
                       { :string => rip_string('name') },
                       {
                         :key_value_pair => {
+                          :location => ':',
                           :value => { :string => rip_string('Thomas') }
                         }
                       }

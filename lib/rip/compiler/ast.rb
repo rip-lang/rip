@@ -1,4 +1,3 @@
-require 'ostruct'
 require 'parslet'
 
 module Rip::Compiler
@@ -122,13 +121,13 @@ module Rip::Compiler
       Rip::Nodes::RegularExpression.new(location, locals[:pattern])
     end
 
-    rule(:key => simple(:key), :value => simple(:value)) do |locals|
-      location = locals[:key].location
+    rule(:key => simple(:key), :location => simple(:location), :value => simple(:value)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
       Rip::Nodes::KeyValue.new(location, locals[:key], locals[:value])
     end
 
-    rule(:start => simple(:start), :end => simple(:end), :exclusivity => simple(:exclusivity)) do |locals|
-      location = locals[:start].location
+    rule(:start => simple(:start), :location => simple(:location), :exclusivity => simple(:exclusivity), :end => simple(:end)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
       Rip::Nodes::Range.new(location, locals[:start], locals[:end], !locals[:exclusivity].nil?)
     end
 
@@ -137,10 +136,9 @@ module Rip::Compiler
       Rip::Nodes::Invocation.new(location, locals[:callable], locals[:arguments])
     end
 
-    rule(:object => simple(:object), :property_name => simple(:property_name)) do |locals|
-      property_name = locals[:property_name]
-      location = location_for(locals[:origin], property_name)
-      Rip::Nodes::Property.new(location, locals[:object], property_name)
+    rule(:object => simple(:object), :location => simple(:location), :property_name => simple(:property_name)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
+      Rip::Nodes::Property.new(location, locals[:object], locals[:property_name])
     end
 
     rule(:lhs => simple(:lhs), :location => simple(:location), :rhs => simple(:rhs)) do |locals|
@@ -185,7 +183,7 @@ module Rip::Compiler
       rule(keyword => simple(keyword), :argument => simple(:argument), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
         body = block_body(locals[:origin], locals[:location_body], locals[:body])
-        OpenStruct.new(:location => location, :argument => locals[:argument], :body => body)
+        Rip::Utilities::TemporaryBlock.new(location, body, locals[:argument])
       end
 
       rule(keyword_block => simple(keyword)) do |locals|
@@ -223,7 +221,7 @@ module Rip::Compiler
     rule(:try => simple(:try), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
       location = location_for(locals[:origin], locals[:try])
       body = block_body(locals[:origin], locals[:location_body], locals[:body])
-      OpenStruct.new(:location => location, :body => body)
+      Rip::Utilities::TemporaryBlock.new(location, body)
     end
 
     rule(:try_block => simple(:try), :catch_blocks => sequence(:catches)) do |locals|

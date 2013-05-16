@@ -97,57 +97,56 @@ module Rip::Compiler
 
     def normalize_atom_parts(atom_or_parts)
       atom_or_parts.inject do |atom_base, part|
-        case part.keys.sort.first
-        when :assignment
+        case
+        when part.has_key?(:assignment)
           {
             :lhs => normalize_atom(atom_base),
             :location => part[:assignment][:location],
             :rhs => normalize_atom(part[:assignment][:rhs])
           }
-        when :key_value_pair
+        when part.has_key?(:key_value_pair)
           {
             :key => atom_base,
+            :location => normalize_atom(part[:key_value_pair][:location]),
             :value => normalize_atom(part[:key_value_pair][:value])
           }
-        when :range
+        when part.has_key?(:range)
           {
             :start => atom_base,
-            :end => normalize_atom(part[:range][:end]),
-            :exclusivity => part[:range][:exclusivity]
+            :location => normalize_atom(part[:range][:location]),
+            :exclusivity => part[:range][:exclusivity],
+            :end => normalize_atom(part[:range][:end])
           }
-        when :property_assignment
-          {
-            :lhs => normalize_atom(atom_base),
-            :location => part[:property_assignment][:location],
-            :rhs => normalize_atom(part[:property_assignment][:rhs])
-          }
-        when :regular_invocation
+        when part.has_key?(:regular_invocation)
           {
             :callable => atom_base,
             :location => part[:regular_invocation][:location],
             :arguments => normalize_atom(part[:regular_invocation][:arguments])
           }
-        when :index_invocation
+        when part.has_key?(:index_invocation)
           {
             :callable => {
               :object => normalize_atom(atom_base),
+              :location => part[:index_invocation][:open],
               :property_name => (part[:index_invocation][:open] + part[:index_invocation][:close])
             },
             :location => part[:index_invocation][:open],
             :arguments => normalize_atom(part[:index_invocation][:arguments])
           }
-        when :operator_invocation
+        when part.has_key?(:operator_invocation)
           {
             :callable => {
               :object => normalize_atom(atom_base),
+              :location => part[:operator_invocation][:operator],
               :property_name => part[:operator_invocation][:operator]
             },
             :location => part[:operator_invocation][:operator],
             :arguments => [ normalize_atom(part[:operator_invocation][:argument]) ]
           }
-        when :property_name
+        when part.has_key?(:property_name)
           {
             :object => normalize_atom(atom_base),
+            :location => part[:location],
             :property_name => normalize_atom(part[:property_name])
           }
         else
@@ -178,10 +177,6 @@ module Rip::Compiler
           number => locals[number]
         }
       end
-    end
-
-    rule(:raw_regex => simple(:raw_regex)) do |locals|
-      locals[:raw_regex]
     end
 
     %i[dash_rocket fat_rocket].each do |keyword|
