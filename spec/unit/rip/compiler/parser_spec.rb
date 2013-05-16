@@ -1534,43 +1534,28 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      # recognizes_as_expected 'heredoc' do
-      #   let(:rip) do
-      #     <<-RIP
-      #       <<HERE_DOC
-      #       here docs are good for multi-line strings
-      #       HERE_DOC
-      #     RIP
-      #   end
-      #   let(:expected_raw) do
-      #     [
-      #       {
-      #         :here_doc_start => 'HERE_DOC',
-      #         :string => rip_string("here docs are good for multi-line strings\n"),
-      #         :here_doc_end => 'HERE_DOC'
-      #       }
-      #     ]
-      #   end
-      # end
-
-      # recognizes_as_expected 'heredoc with interpolation' do
-      #   let(:rip) do
-      #     <<-RIP
-      #       <<HERE_DOC
-      #       here docs are good for multi-line #{strings}
-      #       HERE_DOC
-      #     RIP
-      #   end
-      #   let(:expected_raw) do
-      #     [
-      #       {
-      #         :here_doc_start => 'HERE_DOC',
-      #         :string => rip_string('here docs are good for multi-line ') + [{ :start => '#{', :interpolation => [{ :reference => 'strings' }], :end => '}' }] + rip_string("\n")
-      #         :here_doc_end => 'HERE_DOC'
-      #       }
-      #     ]
-      #   end
-      # end
+      recognizes_as_expected 'heredoc with interpolation', :focus do
+        let(:rip) do
+          strip_heredoc(<<-RIP)
+            <<HERE_DOC
+            here docs are good for
+            strings that \#{need} multiple lines
+            advantageous, eh?
+            HERE_DOC
+          RIP
+        end
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :string => rip_string_raw("here docs are good for\nstrings that ") + [{ :start => '#{', :interpolation => [
+                  { :reference => 'need' }
+                ], :end => '}' }] + rip_string_raw(" multiple lines\nadvantageous, eh?\n")
+              }
+            ]
+          }
+        end
+      end
 
       recognizes_as_expected 'regular expression (empty)' do
         let(:rip) { '//' }
