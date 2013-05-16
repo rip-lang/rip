@@ -133,6 +133,7 @@ module Rip::Compiler
           {
             :callable => {
               :object => normalize_atom(atom_base),
+              :location => part[:index_invocation][:open],
               :property_name => (part[:index_invocation][:open] + part[:index_invocation][:close])
             },
             :location => part[:index_invocation][:open],
@@ -142,6 +143,7 @@ module Rip::Compiler
           {
             :callable => {
               :object => normalize_atom(atom_base),
+              :location => part[:operator_invocation][:operator],
               :property_name => part[:operator_invocation][:operator]
             },
             :location => part[:operator_invocation][:operator],
@@ -150,6 +152,7 @@ module Rip::Compiler
         when part.has_key?(:property_name)
           {
             :object => normalize_atom(atom_base),
+            :location => part[:location],
             :property_name => normalize_atom(part[:property_name])
           }
         else

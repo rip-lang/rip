@@ -148,7 +148,7 @@ describe Rip::Compiler::AST do
     subject { statements.first }
     let(:rip) { 'one.two' }
     let(:object_node) { Rip::Nodes::Reference.new(location, 'one') }
-    let(:property_node) { Rip::Nodes::Property.new(location.add_character(4), object_node, 'two') }
+    let(:property_node) { Rip::Nodes::Property.new(location.add_character(3), object_node, 'two') }
 
     it 'has one top-level node' do
       expect(statements.count).to eq(1)
@@ -210,7 +210,7 @@ describe Rip::Compiler::AST do
     let(:rip) { '@.== = -> (other) {}' }
 
     let(:prototype_node) { Rip::Nodes::Reference.new(location, '@') }
-    let(:property_node) { Rip::Nodes::Property.new(location.add_character(2), prototype_node, '==') }
+    let(:property_node) { Rip::Nodes::Property.new(location.add_character, prototype_node, '==') }
 
     let(:assignment_node) { Rip::Nodes::Assignment.new(location.add_character(5), property_node, lambda_node) }
 
@@ -267,10 +267,10 @@ describe Rip::Compiler::AST do
     let(:two_node) { Rip::Nodes::Integer.new(location.add_character(4), '2') }
     let(:three_node) { Rip::Nodes::Integer.new(location.add_character(9), '3') }
 
-    let(:property_node_plus) { Rip::Nodes::Property.new(location.add_character(2), one_node, '+') }
+    let(:property_node_plus) { Rip::Nodes::Property.new(location.add_character, one_node, '+') }
     let(:invocation_node_plus) { Rip::Nodes::Invocation.new(location.add_character(3), property_node_plus, [two_node]) }
 
-    let(:property_node_times) { Rip::Nodes::Property.new(location.add_character(7), invocation_node_plus, '*') }
+    let(:property_node_times) { Rip::Nodes::Property.new(location.add_character(6), invocation_node_plus, '*') }
     let(:invocation_node_times) { Rip::Nodes::Invocation.new(location.add_character(8), property_node_times, [three_node]) }
 
     let(:invocation_times) { statements.first }

@@ -133,7 +133,7 @@ module Rip::Compiler
     rule(:regular_invocation) { (parenthesis_open.as(:location) >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close).as(:regular_invocation) }
     rule(:index_invocation)   { (bracket_open.as(:open)         >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> bracket_close.as(:close)).as(:index_invocation) }
 
-    rule(:property) { whitespaces? >> dot >> property_name.as(:property_name) }
+    rule(:property) { whitespaces? >> dot.as(:location) >> property_name.as(:property_name) }
     rule(:property_name) do
       word |
         str('/') |
