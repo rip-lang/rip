@@ -1,4 +1,3 @@
-require 'ostruct'
 require 'parslet'
 
 module Rip::Compiler
@@ -184,7 +183,7 @@ module Rip::Compiler
       rule(keyword => simple(keyword), :argument => simple(:argument), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
         body = block_body(locals[:origin], locals[:location_body], locals[:body])
-        OpenStruct.new(:location => location, :argument => locals[:argument], :body => body)
+        Rip::Utilities::TemporaryBlock.new(location, body, locals[:argument])
       end
 
       rule(keyword_block => simple(keyword)) do |locals|
@@ -222,7 +221,7 @@ module Rip::Compiler
     rule(:try => simple(:try), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
       location = location_for(locals[:origin], locals[:try])
       body = block_body(locals[:origin], locals[:location_body], locals[:body])
-      OpenStruct.new(:location => location, :body => body)
+      Rip::Utilities::TemporaryBlock.new(location, body)
     end
 
     rule(:try_block => simple(:try), :catch_blocks => sequence(:catches)) do |locals|
