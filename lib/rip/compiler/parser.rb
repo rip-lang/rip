@@ -145,7 +145,6 @@ module Rip::Compiler
         str('[]')
     end
 
-    # TODO literals for heredoc (see https://github.com/kschiess/parslet/blob/master/example/capture.rb)
     # TODO literals for unit
     # TODO literals for version (maybe)
     rule(:object) do
@@ -160,6 +159,7 @@ module Rip::Compiler
         character |
         string |
         regular_expression |
+        heredoc |
         map |
         list |
         reference |
@@ -251,6 +251,16 @@ module Rip::Compiler
     rule(:string_double) { string_parser(quote_double, escape_advanced.as(:character) | interpolation) }
 
     rule(:regular_expression) { string_parser(slash_forward, escape_regex.as(:character) | interpolation, :regex) }
+
+
+    # https://github.com/kschiess/parslet/blob/master/example/capture.rb
+    rule(:heredoc) do
+      label = match['A-Z_'].repeat(1)
+      start = angled_open.repeat(2, 2) >> label.as(:heredoc_start) >> line_break
+      content = (label.absent? >> any).repeat.as(:string)
+      finish = label.as(:heredoc_end) >> line_break.maybe
+      start >> content >> finish
+    end
 
 
     rule(:interpolation) { interpolation_start.as(:start) >> (interpolation_end.absent? >> line.repeat(1)).repeat.as(:interpolation) >> interpolation_end.as(:end) }
