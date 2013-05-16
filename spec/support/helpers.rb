@@ -38,10 +38,6 @@ module RSpecHelpers
     tree.print(STDOUT)
   end
 
-  def samples_path
-    Pathname("#{__FILE__}/../fixtures").expand_path
-  end
-
   def new_location(origin, offset, line, column)
     Rip::Utilities::Location.new(origin, offset, line, column)
   end
@@ -58,8 +54,16 @@ module RSpecHelpers
     Rip::Compiler::Parser.new(:rspec, source_code)
   end
 
-  def syntax_tree(code)
-    parser(code).syntax_tree
+  def raw_parse_tree(source_code)
+    parser(source_code).raw_parse_tree
+  end
+
+  def parse_tree(source_code)
+    parser(source_code).parse_tree
+  end
+
+  def syntax_tree(source_code)
+    parser(source_code).syntax_tree
   end
 
   def rip_string(string)

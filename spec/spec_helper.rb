@@ -7,7 +7,7 @@ require 'parslet/rig/rspec'
 require 'pry'
 require 'ruby-prof'
 
-Dir[Pathname(__dir__).join('support', '**', '*.rb')].each { |f| require f }
+Pathname.glob(Pathname(__dir__) + 'support' + '**' + '*.rb').each { |file| require file }
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
