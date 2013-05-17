@@ -255,11 +255,17 @@ module Rip::Compiler
 
     # https://github.com/kschiess/parslet/blob/master/example/capture.rb
     rule(:heredoc) do
-      label = match['A-Z_'].repeat(1)
-      start = angled_open.repeat(2, 2) >> label.as(:heredoc_start) >> line_break
-      content = (label.absent? >> any).repeat.as(:string)
-      finish = label.as(:heredoc_end) >> line_break.maybe
-      start >> content >> finish
+      scope { heredoc_start >> heredoc_content.as(:string) >> heredoc_end }
+    end
+
+    rule(:heredoc_start) { angled_open.repeat(2, 2) >> heredoc_label >> line_break }
+    rule(:heredoc_label) { match['A-Z_'].repeat(1).capture(:heredoc_label) }
+
+    rule(:heredoc_content) { (heredoc_end.absent? >> heredoc_content_any >> (line_break.absent? >> heredoc_content_any).repeat >> heredoc_content_any).repeat(1) }
+    rule(:heredoc_content_any) { escape_advanced.as(:character) | interpolation | any.as(:character) }
+
+    rule(:heredoc_end) do
+      dynamic { |source, context| str(context.captures[:heredoc_label]) >> (eof.absent? >> line_break) }
     end
 
 
