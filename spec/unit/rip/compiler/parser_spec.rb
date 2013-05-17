@@ -1534,6 +1534,32 @@ describe Rip::Compiler::Parser do
         end
       end
 
+      recognizes_as_expected 'empty heredoc', :focus do
+        let(:rip) { "<<HERE_DOC\nHERE_DOC" }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :string => rip_string_raw('')
+              }
+            ]
+          }
+        end
+      end
+
+      recognizes_as_expected 'heredoc with just blank lines', :focus do
+        let(:rip) { "<<HERE_DOC\n\n\nHERE_DOC\n" }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :string => rip_string_raw("\n\n")
+              }
+            ]
+          }
+        end
+      end
+
       recognizes_as_expected 'heredoc with interpolation', :focus do
         let(:rip) do
           strip_heredoc(<<-RIP)
