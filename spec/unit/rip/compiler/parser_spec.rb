@@ -1534,7 +1534,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'empty heredoc', :focus do
+      recognizes_as_expected 'empty heredoc', :focus, :broken do
         let(:rip) { "<<HERE_DOC\nHERE_DOC" }
         let(:expected_raw) do
           {
@@ -1547,7 +1547,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'heredoc with just blank lines', :focus do
+      recognizes_as_expected 'heredoc with just blank lines', :focus, :broken do
         let(:rip) { "<<HERE_DOC\n\n\nHERE_DOC\n" }
         let(:expected_raw) do
           {
@@ -1560,7 +1560,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'heredoc with just indented lines', :focus do
+      recognizes_as_expected 'heredoc with just indented lines', :focus, :broken do
         let(:rip) { "\t<<HERE_DOC\n\t\n\t\n\tHERE_DOC\n" }
         let(:expected_raw) do
           {
@@ -1573,7 +1573,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'heredoc containing label', :focus do
+      recognizes_as_expected 'heredoc containing label', :focus, :working do
         let(:rip) do
           strip_heredoc(<<-RIP)
             <<HERE_DOC
@@ -1593,7 +1593,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'heredoc with interpolation', :focus do
+      recognizes_as_expected 'heredoc with interpolation', :focus, :working do
         let(:rip) do
           strip_heredoc(<<-RIP)
             <<HERE_DOC
