@@ -265,7 +265,7 @@ module Rip::Compiler
     rule(:heredoc_content_any) { escape_advanced.as(:character) | interpolation | any.as(:character) }
 
     rule(:heredoc_end) do
-      dynamic { |source, context| str(context.captures[:heredoc_label]) >> (eof.absent? >> line_break) }
+      dynamic { |source, context| spaces? >> str(context.captures[:heredoc_label]) >> (eof.absent? >> line_break) }
     end
 
 

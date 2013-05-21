@@ -1560,6 +1560,19 @@ describe Rip::Compiler::Parser do
         end
       end
 
+      recognizes_as_expected 'heredoc with just indented lines', :focus do
+        let(:rip) { "\t<<HERE_DOC\n\t\n\t\n\tHERE_DOC\n" }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :string => rip_string_raw("\t\n\t\n")
+              }
+            ]
+          }
+        end
+      end
+
       recognizes_as_expected 'heredoc containing label', :focus do
         let(:rip) do
           strip_heredoc(<<-RIP)
