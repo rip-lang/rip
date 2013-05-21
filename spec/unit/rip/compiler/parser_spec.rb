@@ -1560,6 +1560,26 @@ describe Rip::Compiler::Parser do
         end
       end
 
+      recognizes_as_expected 'heredoc containing label', :focus do
+        let(:rip) do
+          strip_heredoc(<<-RIP)
+            <<HERE_DOC
+            i'm a HERE_DOC
+            HERE_DOC are multi-line strings
+            HERE_DOC
+          RIP
+        end
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :string => rip_string_raw("i'm a HERE_DOC\nHERE_DOC are multi-line strings\n")
+              }
+            ]
+          }
+        end
+      end
+
       recognizes_as_expected 'heredoc with interpolation', :focus do
         let(:rip) do
           strip_heredoc(<<-RIP)
