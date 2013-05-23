@@ -66,9 +66,15 @@ module RSpecHelpers
     parser(source_code).syntax_tree
   end
 
-  def rip_string(string)
+  def rip_string_raw(string)
     string.split('').map do |s|
       { :character => s }
+    end
+  end
+
+  def rip_string(string)
+    rip_string_raw(string).map do |s|
+      s.merge(:location => s[:character])
     end
   end
 

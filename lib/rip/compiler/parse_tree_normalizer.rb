@@ -35,9 +35,9 @@ module Rip::Compiler
     def normalize_character_hash(tree, type)
       parts = tree[type].inject([]) do |memo, part|
         if part[:character] && memo.last && memo.last[type]
-          memo.last[type] << part
+          memo.last[type] << part.merge(:location => part[:character])
         elsif part[:character]
-          memo << { type => [ part ] }
+          memo << tree.merge(type => [ part.merge(:location => part[:character]) ])
         else
           memo << part
         end
