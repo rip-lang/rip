@@ -33,7 +33,21 @@ module Rip::Compiler
     end
 
     def normalize_character_hash(tree, type)
-      parts = tree[type].inject([]) do |memo, part|
+      _parts = tree[type].inject([]) do |memo, part|
+        line_break = part[:line_break]
+
+        if line_break
+          line_break.to_s.split('').inject(memo) do |_memo, line_break_part|
+            _memo << {
+              :character => self.class.slice(line_break, line_break_part)
+            }
+          end
+        else
+          memo << part
+        end
+      end
+
+      parts = _parts.inject([]) do |memo, part|
         if part[:character] && memo.last && memo.last[type]
           memo.last[type] << part.merge(:location => part[:character])
         elsif part[:character]

@@ -1545,6 +1545,15 @@ describe Rip::Compiler::Parser do
             ]
           }
         end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :string => rip_string('')
+              }
+            ]
+          }
+        end
       end
 
       recognizes_as_expected 'heredoc with just blank lines', :focus do
@@ -1553,7 +1562,19 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :string => rip_string_raw("\r\n\r\n")
+                :string => [
+                  { :line_break => "\r\n" },
+                  { :line_break => "\r\n" }
+                ]
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :string => rip_string("\r\n\r\n")
               }
             ]
           }
@@ -1566,7 +1587,16 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :string => rip_string_raw("\t\n\t\n")
+                :string => rip_string_raw("\t") + [ { :line_break => "\n" } ] + rip_string_raw("\t") + [ { :line_break => "\n" } ]
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :string => rip_string("\t\n\t\n")
               }
             ]
           }
@@ -1582,11 +1612,11 @@ describe Rip::Compiler::Parser do
             HERE_DOC
           RIP
         end
-        let(:expected_raw) do
+        let(:expected) do
           {
             :module => [
               {
-                :string => rip_string_raw("i'm a HERE_DOC\nHERE_DOC are multi-line strings\n")
+                :string => rip_string("i'm a HERE_DOC\nHERE_DOC are multi-line strings\n")
               }
             ]
           }
@@ -1607,9 +1637,12 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :string => rip_string_raw("here docs are good for\nstrings that ") + [{ :start => '#{', :interpolation => [
-                  { :reference => 'need' }
-                ], :end => '}' }] + rip_string_raw(" multiple lines\nadvantageous, eh?\n")
+                :string => rip_string_raw('here docs are good for') + [ { :line_break => "\n" } ] +
+                  rip_string_raw('strings that ') + [{ :start => '#{', :interpolation => [
+                    { :reference => 'need' }
+                  ], :end => '}' }] +
+                  rip_string_raw(' multiple lines') + [ { :line_break => "\n" } ] +
+                  rip_string_raw('advantageous, eh?') + [ { :line_break => "\n" } ]
               }
             ]
           }
