@@ -1534,43 +1534,120 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      # recognizes_as_expected 'heredoc' do
-      #   let(:rip) do
-      #     <<-RIP
-      #       <<HERE_DOC
-      #       here docs are good for multi-line strings
-      #       HERE_DOC
-      #     RIP
-      #   end
-      #   let(:expected_raw) do
-      #     [
-      #       {
-      #         :here_doc_start => 'HERE_DOC',
-      #         :string => rip_string("here docs are good for multi-line strings\n"),
-      #         :here_doc_end => 'HERE_DOC'
-      #       }
-      #     ]
-      #   end
-      # end
+      recognizes_as_expected 'empty heredoc' do
+        let(:rip) { "<<HERE_DOC\nHERE_DOC" }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :string => rip_string_raw('')
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :string => rip_string('')
+              }
+            ]
+          }
+        end
+      end
 
-      # recognizes_as_expected 'heredoc with interpolation' do
-      #   let(:rip) do
-      #     <<-RIP
-      #       <<HERE_DOC
-      #       here docs are good for multi-line #{strings}
-      #       HERE_DOC
-      #     RIP
-      #   end
-      #   let(:expected_raw) do
-      #     [
-      #       {
-      #         :here_doc_start => 'HERE_DOC',
-      #         :string => rip_string('here docs are good for multi-line ') + [{ :start => '#{', :interpolation => [{ :reference => 'strings' }], :end => '}' }] + rip_string("\n")
-      #         :here_doc_end => 'HERE_DOC'
-      #       }
-      #     ]
-      #   end
-      # end
+      recognizes_as_expected 'heredoc with just blank lines' do
+        let(:rip) { "<<HERE_DOC\r\n\r\n\r\nHERE_DOC\r\n" }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :string => [
+                  { :line_break => "\r\n" },
+                  { :line_break => "\r\n" }
+                ]
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :string => rip_string("\r\n\r\n")
+              }
+            ]
+          }
+        end
+      end
+
+      recognizes_as_expected 'heredoc with just indented lines' do
+        let(:rip) { "\t<<HERE_DOC\n\t\n\t\n\tHERE_DOC\n" }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :string => rip_string_raw("\t") + [ { :line_break => "\n" } ] + rip_string_raw("\t") + [ { :line_break => "\n" } ]
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :string => rip_string("\t\n\t\n")
+              }
+            ]
+          }
+        end
+      end
+
+      recognizes_as_expected 'heredoc containing label' do
+        let(:rip) do
+          strip_heredoc(<<-RIP)
+            <<HERE_DOC
+            i'm a HERE_DOC
+            HERE_DOC are multi-line strings
+            HERE_DOC
+          RIP
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :string => rip_string("i'm a HERE_DOC\nHERE_DOC are multi-line strings\n")
+              }
+            ]
+          }
+        end
+      end
+
+      recognizes_as_expected 'heredoc with interpolation' do
+        let(:rip) do
+          strip_heredoc(<<-RIP)
+            <<HERE_DOC
+            here docs are good for
+            strings that \#{need} multiple lines
+            advantageous, eh?
+            HERE_DOC
+          RIP
+        end
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :string => rip_string_raw('here docs are good for') + [ { :line_break => "\n" } ] +
+                  rip_string_raw('strings that ') + [{ :start => '#{', :interpolation => [
+                    { :reference => 'need' }
+                  ], :end => '}' }] +
+                  rip_string_raw(' multiple lines') + [ { :line_break => "\n" } ] +
+                  rip_string_raw('advantageous, eh?') + [ { :line_break => "\n" } ]
+              }
+            ]
+          }
+        end
+      end
 
       recognizes_as_expected 'regular expression (empty)' do
         let(:rip) { '//' }

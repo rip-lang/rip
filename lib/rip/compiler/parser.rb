@@ -145,7 +145,6 @@ module Rip::Compiler
         str('[]')
     end
 
-    # TODO literals for heredoc (see https://github.com/kschiess/parslet/blob/master/example/capture.rb)
     # TODO literals for unit
     # TODO literals for version (maybe)
     rule(:object) do
@@ -160,6 +159,7 @@ module Rip::Compiler
         character |
         string |
         regular_expression |
+        heredoc |
         map |
         list |
         reference |
@@ -251,6 +251,23 @@ module Rip::Compiler
     rule(:string_double) { string_parser(quote_double, escape_advanced.as(:character) | interpolation) }
 
     rule(:regular_expression) { string_parser(slash_forward, escape_regex.as(:character) | interpolation, :regex) }
+
+
+    # https://github.com/kschiess/parslet/blob/master/example/capture.rb
+    rule(:heredoc) do
+      scope { heredoc_start >> heredoc_content.as(:string) >> heredoc_end }
+    end
+
+    rule(:heredoc_start) { angled_open.repeat(2, 2) >> heredoc_label >> line_break }
+    rule(:heredoc_label) { match['A-Z_'].repeat(1).capture(:heredoc_label) }
+
+    rule(:heredoc_content) { (heredoc_end.absent? >> heredoc_line).repeat }
+    rule(:heredoc_line) { (line_break.absent? >> heredoc_content_any).repeat >> line_break.as(:line_break) }
+    rule(:heredoc_content_any) { escape_advanced.as(:character) | interpolation | any.as(:character) }
+
+    rule(:heredoc_end) do
+      dynamic { |source, context| spaces? >> str(context.captures[:heredoc_label]) >> (line_break | eof) }
+    end
 
 
     rule(:interpolation) { interpolation_start.as(:start) >> (interpolation_end.absent? >> line.repeat(1)).repeat.as(:interpolation) >> interpolation_end.as(:end) }
