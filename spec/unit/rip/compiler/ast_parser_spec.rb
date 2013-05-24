@@ -42,6 +42,84 @@ describe Rip::Compiler::AST do
     end
   end
 
+  context 'empty literals' do
+    context 'character' do
+      let(:rip) { '`1' }
+      let(:node) { Rip::Nodes::Character.new(location, '1') }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'string, symbol' do
+      let(:rip) { ':one' }
+      let(:node) { Rip::Nodes::String.new(location, rip_string_nodes(location.add_character(12), 'one')) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'string, single' do
+      let(:rip) { "''" }
+      let(:node) { Rip::Nodes::String.new(location, []) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'string, double' do
+      let(:rip) { '""' }
+      let(:node) { Rip::Nodes::String.new(location, []) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'regular expression' do
+      let(:rip) { '//' }
+      let(:node) { Rip::Nodes::RegularExpression.new(location, []) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'map' do
+      let(:rip) { '{}' }
+      let(:node) { Rip::Nodes::Map.new(location, []) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'list' do
+      let(:rip) { '[]' }
+      let(:node) { Rip::Nodes::List.new(location, []) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'key-value pair' do
+      let(:rip) { 'a:b' }
+      let(:key_node) { Rip::Nodes::Reference.new(location, 'a') }
+      let(:value_node) { Rip::Nodes::Reference.new(location.add_character(2), 'b') }
+      let(:node) { Rip::Nodes::KeyValue.new(location.add_character, key_node, value_node) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'range' do
+      let(:rip) { '1..3' }
+      let(:start_node) { Rip::Nodes::Integer.new(location, '1') }
+      let(:end_node) { Rip::Nodes::Integer.new(location.add_character(3), '3') }
+      let(:node) { Rip::Nodes::Range.new(location.add_character, start_node, end_node, false) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+  end
+
   context 'key-value pair' do
     subject { statements.first }
     let(:rip) { ':key: :value' }
