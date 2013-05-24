@@ -258,7 +258,7 @@ module Rip::Compiler
       scope { heredoc_start >> heredoc_content.as(:string) >> heredoc_end }
     end
 
-    rule(:heredoc_start) { angled_open.repeat(2, 2) >> heredoc_label >> line_break }
+    rule(:heredoc_start) { angled_open.repeat(2, 2).as(:location) >> heredoc_label >> line_break }
     rule(:heredoc_label) { match['A-Z_'].repeat(1).capture(:heredoc_label) }
 
     rule(:heredoc_content) { (heredoc_end.absent? >> heredoc_line).repeat }

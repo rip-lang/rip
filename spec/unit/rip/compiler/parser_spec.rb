@@ -1540,6 +1540,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '<<',
                 :string => rip_string_raw('')
               }
             ]
@@ -1549,6 +1550,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '<<',
                 :string => rip_string('')
               }
             ]
@@ -1562,6 +1564,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '<<',
                 :string => [
                   { :line_break => "\r\n" },
                   { :line_break => "\r\n" }
@@ -1574,6 +1577,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '<<',
                 :string => rip_string("\r\n\r\n")
               }
             ]
@@ -1587,6 +1591,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '<<',
                 :string => rip_string_raw("\t") + [ { :line_break => "\n" } ] + rip_string_raw("\t") + [ { :line_break => "\n" } ]
               }
             ]
@@ -1596,6 +1601,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '<<',
                 :string => rip_string("\t\n\t\n")
               }
             ]
@@ -1616,6 +1622,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '<<',
                 :string => rip_string("i'm a HERE_DOC\nHERE_DOC are multi-line strings\n")
               }
             ]
@@ -1637,6 +1644,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '<<',
                 :string => rip_string_raw('here docs are good for') + [ { :line_break => "\n" } ] +
                   rip_string_raw('strings that ') + [{ :start => '#{', :interpolation => [
                     { :reference => 'need' }
