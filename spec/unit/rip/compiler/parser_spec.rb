@@ -1381,6 +1381,30 @@ describe Rip::Compiler::Parser do
         end
       end
 
+      recognizes_as_expected 'single-quoted string (empty)' do
+        let(:rip) { "''" }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :location => '\'',
+                :string => []
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :location => '\'',
+                :string => []
+              }
+            ]
+          }
+        end
+      end
+
       recognizes_as_expected 'single-quoted string' do
         let(:rip) { '\'two\'' }
         let(:expected_raw) do
@@ -1393,6 +1417,30 @@ describe Rip::Compiler::Parser do
                   { :character => 'w' },
                   { :character => 'o' }
                 ]
+              }
+            ]
+          }
+        end
+      end
+
+      recognizes_as_expected 'double-quoted string (empty)' do
+        let(:rip) { '""' }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :location => '"',
+                :string => []
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :location => '"',
+                :string => []
               }
             ]
           }
@@ -1523,6 +1571,30 @@ describe Rip::Compiler::Parser do
       #     ]
       #   end
       # end
+
+      recognizes_as_expected 'regular expression (empty)' do
+        let(:rip) { '//' }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :location => '/',
+                :regex => []
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :location => '/',
+                :regex => []
+              }
+            ]
+          }
+        end
+      end
 
       recognizes_as_expected 'regular expression' do
         let(:rip) { '/hello/' }

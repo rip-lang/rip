@@ -45,7 +45,7 @@ module Rip::Compiler
         memo
       end
 
-      parts.inject do |memo, part|
+      reply = parts.inject do |memo, part|
         location = part[:start] ||
           memo[:end] ||
           memo[:atom].last[:operator_invocation][:argument][:end]
@@ -63,6 +63,8 @@ module Rip::Compiler
           ]
         }
       end
+
+      reply || tree
     end
 
 
