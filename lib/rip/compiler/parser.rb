@@ -227,7 +227,7 @@ module Rip::Compiler
     rule(:digits) { digit.repeat(1) >> (underscore.maybe >> digit.repeat(1)).repeat }
 
 
-    rule(:character) { backtick >> (escape_advanced | character_legal).as(:character) }
+    rule(:character) { backtick.as(:location) >> (escape_advanced | character_legal).as(:character) }
     rule(:character_legal) { digit | word_legal }
 
 
@@ -245,7 +245,7 @@ module Rip::Compiler
 
     rule(:string) { string_symbol | string_single | string_double }
 
-    rule(:string_symbol) { colon >> (escape_simple | character_legal).as(:character).repeat(1).as(:string) }
+    rule(:string_symbol) { colon.as(:location) >> (escape_simple | character_legal).as(:character).repeat(1).as(:string) }
 
     rule(:string_single) { string_parser(quote_single, escape_simple.as(:character)) }
     rule(:string_double) { string_parser(quote_double, escape_advanced.as(:character) | interpolation) }
@@ -258,9 +258,9 @@ module Rip::Compiler
     rule(:interpolation_end) { brace_close }
 
 
-    rule(:map) { brace_open >> whitespaces? >> csv(phrase).as(:map) >> whitespaces? >> brace_close }
+    rule(:map) { brace_open.as(:location) >> whitespaces? >> csv(phrase).as(:map) >> whitespaces? >> brace_close }
 
-    rule(:list) { bracket_open >> whitespaces? >> csv(phrase).as(:list) >> whitespaces? >> bracket_close }
+    rule(:list) { bracket_open.as(:location) >> whitespaces? >> csv(phrase).as(:list) >> whitespaces? >> bracket_close }
 
 
     protected
@@ -272,7 +272,7 @@ module Rip::Compiler
     end
 
     def string_parser(delimiter, inner_special, delimited_flag = :string)
-      delimiter >> (delimiter.absent? >> (inner_special | any.as(:character))).repeat.as(delimited_flag) >> delimiter
+      delimiter.as(:location) >> (delimiter.absent? >> (inner_special | any.as(:character))).repeat.as(delimited_flag) >> delimiter
     end
   end
 end

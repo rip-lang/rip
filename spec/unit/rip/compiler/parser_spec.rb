@@ -207,7 +207,10 @@ describe Rip::Compiler::Parser do
               {
                 :unless_block => {
                   :unless => 'unless',
-                  :argument => { :string => rip_string('name') },
+                  :argument => {
+                    :location => ':',
+                    :string => rip_string_raw('name')
+                  },
                   :location_body => '{',
                   :body => []
                 },
@@ -359,7 +362,10 @@ describe Rip::Compiler::Parser do
                   {
                     :lhs => { :reference => 'name' },
                     :location => '=',
-                    :rhs => { :string => rip_string('rip') }
+                    :rhs => {
+                      :location => ':',
+                      :string => rip_string_raw('rip')
+                    }
                   }
                 ],
                 :location_body => '{',
@@ -602,7 +608,10 @@ describe Rip::Compiler::Parser do
                         {
                           :assignment => {
                             :location => '=',
-                            :rhs => { :string => rip_string('y') }
+                            :rhs => {
+                              :location => ':',
+                              :string => rip_string_raw('y')
+                            }
                           }
                         }
                       ]
@@ -657,7 +666,10 @@ describe Rip::Compiler::Parser do
                         {
                           :operator_invocation => {
                             :operator => 'will',
-                            :argument => { :string => rip_string('rise') }
+                            :argument => {
+                              :location => ':',
+                              :string => rip_string_raw('rise')
+                            }
                           }
                         }
                       ]
@@ -681,7 +693,10 @@ describe Rip::Compiler::Parser do
                   :argument => { :reference => 'true' },
                   :location_body => '{',
                   :body => [
-                    { :character => '3' }
+                    {
+                      :location => '`',
+                      :character => '3'
+                    }
                   ]
                 }
               }
@@ -897,8 +912,8 @@ describe Rip::Compiler::Parser do
                     :regular_invocation => {
                       :location => '(',
                       :arguments => [
-                        { :string => rip_string('Thomas') },
-                        { :string => rip_string('Ingram') }
+                        { :location => ':', :string => rip_string_raw('Thomas') },
+                        { :location => ':', :string => rip_string_raw('Ingram') }
                       ]
                     }
                   }
@@ -965,7 +980,7 @@ describe Rip::Compiler::Parser do
                   {
                     :assignment => {
                       :location => '=',
-                      :rhs => { :string => rip_string('rip') }
+                      :rhs => { :location => ':', :string => rip_string_raw('rip') }
                     }
                   }
                 ]
@@ -979,7 +994,7 @@ describe Rip::Compiler::Parser do
               {
                 :lhs => { :reference => 'favorite_language' },
                 :location => '=',
-                :rhs => { :string => rip_string('rip') }
+                :rhs => { :location => ':', :string => rip_string('rip') }
               }
             ]
           }
@@ -1007,7 +1022,7 @@ describe Rip::Compiler::Parser do
                       :location => '=',
                       :rhs => {
                         :atom => [
-                          { :string => rip_string('rip') },
+                          { :location => ':', :string => rip_string_raw('rip') },
                           {
                             :location => '.',
                             :property_name => 'lang'
@@ -1032,7 +1047,7 @@ describe Rip::Compiler::Parser do
                 },
                 :location => '=',
                 :rhs => {
-                  :object => { :string => rip_string('rip') },
+                  :object => { :location => ':', :string => rip_string('rip') },
                   :location => '.',
                   :property_name => 'lang'
                 }
@@ -1273,14 +1288,20 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           {
             :module => [
-              { :character => '9' }
+              {
+                :location => '`',
+                :character => '9'
+              }
             ]
           }
         end
         let(:expected) do
           {
             :module => [
-              { :character => '9' }
+              {
+                :location => '`',
+                :character => '9'
+              }
             ]
           }
         end
@@ -1291,14 +1312,20 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           {
             :module => [
-              { :character => { :location => '\\', :escaped_token => 'n' } }
+              {
+                :location => '`',
+                :character => { :location => '\\', :escaped_token => 'n' }
+              }
             ]
           }
         end
         let(:expected) do
           {
             :module => [
-              { :character => "\n" }
+              {
+                :location => '`',
+                :character => "\n"
+              }
             ]
           }
         end
@@ -1310,6 +1337,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => ':',
                 :string => [
                   { :character => '0' }
                 ]
@@ -1325,6 +1353,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => ':',
                 :string => [
                   { :character => 'o' },
                   { :character => 'n' },
@@ -1339,12 +1368,37 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => ':',
                 :string => [
-                  { :character => 'o' },
-                  { :character => 'n' },
-                  { :character => '\\' },
-                  { :character => 'e' }
+                  { :location => 'o', :character => 'o' },
+                  { :location => 'n', :character => 'n' },
+                  { :location => '\\', :character => '\\' },
+                  { :location => 'e', :character => 'e' }
                 ]
+              }
+            ]
+          }
+        end
+      end
+
+      recognizes_as_expected 'single-quoted string (empty)' do
+        let(:rip) { "''" }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :location => '\'',
+                :string => []
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :location => '\'',
+                :string => []
               }
             ]
           }
@@ -1357,11 +1411,36 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '\'',
                 :string => [
                   { :character => 't' },
                   { :character => 'w' },
                   { :character => 'o' }
                 ]
+              }
+            ]
+          }
+        end
+      end
+
+      recognizes_as_expected 'double-quoted string (empty)' do
+        let(:rip) { '""' }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :location => '"',
+                :string => []
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :location => '"',
+                :string => []
               }
             ]
           }
@@ -1374,6 +1453,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '"',
                 :string => [
                   { :character => 'a' },
                   { :character => { :location => '\\', :escaped_token => 'n' } },
@@ -1387,10 +1467,11 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '"',
                 :string => [
-                  { :character => 'a' },
-                  { :character => "\n" },
-                  { :character => 'b' }
+                  { :location => 'a', :character => 'a' },
+                  { :location => "\n", :character => "\n" },
+                  { :location => 'b', :character => 'b' }
                 ]
               }
             ]
@@ -1404,9 +1485,10 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :string => rip_string('ab') + [{ :start => '#{', :interpolation => [
+                :location => '"',
+                :string => rip_string_raw('ab') + [{ :start => '#{', :interpolation => [
                   { :reference => 'cd' }
-                ], :end => '}' }] + rip_string('ef')
+                ], :end => '}' }] + rip_string_raw('ef')
               }
             ]
           }
@@ -1418,7 +1500,10 @@ describe Rip::Compiler::Parser do
                 :callable => {
                   :object => {
                     :callable => {
-                      :object => { :string => rip_string('ab') },
+                      :object => {
+                        :location => '"',
+                        :string => rip_string('ab')
+                      },
                       :location => '+',
                       :property_name => '+'
                     },
@@ -1438,7 +1523,10 @@ describe Rip::Compiler::Parser do
                 },
                 :location => '+',
                 :arguments => [
-                  { :string => rip_string('ef') }
+                  {
+                    :location => '"',
+                    :string => rip_string('ef')
+                  }
                 ]
               }
             ]
@@ -1484,12 +1572,37 @@ describe Rip::Compiler::Parser do
       #   end
       # end
 
+      recognizes_as_expected 'regular expression (empty)' do
+        let(:rip) { '//' }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :location => '/',
+                :regex => []
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :location => '/',
+                :regex => []
+              }
+            ]
+          }
+        end
+      end
+
       recognizes_as_expected 'regular expression' do
         let(:rip) { '/hello/' }
         let(:expected_raw) do
           {
             :module => [
               {
+                :location => '/',
                 :regex => [
                   { :character => 'h' },
                   { :character => 'e' },
@@ -1509,6 +1622,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '/',
                 :regex => [
                   { :character => 'h' },
                   { :character => 'e' },
@@ -1532,7 +1646,10 @@ describe Rip::Compiler::Parser do
                 :callable => {
                   :object => {
                     :callable => {
-                      :object => { :regex => rip_string('he') },
+                      :object => {
+                        :location => '/',
+                        :regex => rip_string('he')
+                      },
                       :location => '+',
                       :property_name => '+'
                     },
@@ -1552,7 +1669,10 @@ describe Rip::Compiler::Parser do
                 },
                 :location => '+',
                 :arguments => [
-                  { :regex => rip_string('o') }
+                  {
+                    :location => '/',
+                    :regex => rip_string('o')
+                  }
                 ]
               }
             ]
@@ -1737,7 +1857,10 @@ describe Rip::Compiler::Parser do
                   {
                     :key_value_pair => {
                       :location => ':',
-                      :value => { :string => rip_string('five') }
+                      :value => {
+                        :location => '\'',
+                        :string => rip_string_raw('five')
+                      }
                     }
                   }
                 ]
@@ -1796,7 +1919,10 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           {
             :module => [
-              { :map => [] }
+              {
+                :location => '{',
+                :map => []
+              }
             ]
           }
         end
@@ -1815,10 +1941,14 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '{',
                 :map => [
                   {
                     :atom => [
-                      { :string => rip_string('age') },
+                      {
+                        :location => ':',
+                        :string => rip_string_raw('age')
+                      },
                       {
                         :key_value_pair => {
                           :location => ':',
@@ -1829,11 +1959,17 @@ describe Rip::Compiler::Parser do
                   },
                   {
                     :atom => [
-                      { :string => rip_string('name') },
+                      {
+                        :location => ':',
+                        :string => rip_string_raw('name')
+                      },
                       {
                         :key_value_pair => {
                           :location => ':',
-                          :value => { :string => rip_string('Thomas') }
+                          :value => {
+                            :location => ':',
+                            :string => rip_string_raw('Thomas')
+                          }
                         }
                       }
                     ]
@@ -1850,7 +1986,10 @@ describe Rip::Compiler::Parser do
         let(:expected_raw) do
           {
             :module => [
-              { :list => [] }
+              {
+                :location => '[',
+                :list => []
+              }
             ]
           }
         end
@@ -1869,9 +2008,13 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
+                :location => '[',
                 :list => [
                   { :integer => '31' },
-                  { :string => rip_string('Thomas') }
+                  {
+                    :location => ':',
+                    :string => rip_string_raw('Thomas')
+                  }
                 ]
               }
             ]

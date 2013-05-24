@@ -95,29 +95,28 @@ module Rip::Compiler
       Rip::Nodes::Decimal.new(location, locals[:decimal], sign)
     end
 
-    rule(:character => simple(:character)) do |locals|
-      character = locals[:character]
-      location = location_for(locals[:origin], character)
-      Rip::Nodes::Character.new(location, character)
+    rule(:location => simple(:location), :character => simple(:character)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
+      Rip::Nodes::Character.new(location, locals[:character])
     end
 
-    rule(:string => sequence(:characters)) do |locals|
-      location = locals[:characters].first.location
+    rule(:location => simple(:location), :string => sequence(:characters)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
       Rip::Nodes::String.new(location, locals[:characters])
     end
 
-    rule(:list => sequence(:items)) do |locals|
-      location = locals[:items].first.location
+    rule(:location => simple(:location), :list => sequence(:items)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
       Rip::Nodes::List.new(location, locals[:items])
     end
 
-    rule(:map => sequence(:key_value_pairs)) do |locals|
-      location = locals[:key_value_pairs].first.location
+    rule(:location => simple(:location), :map => sequence(:key_value_pairs)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
       Rip::Nodes::Map.new(location, locals[:key_value_pairs])
     end
 
-    rule(:regex => sequence(:pattern)) do |locals|
-      location = locals[:pattern].first.location
+    rule(:location => simple(:location), :regex => sequence(:pattern)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
       Rip::Nodes::RegularExpression.new(location, locals[:pattern])
     end
 

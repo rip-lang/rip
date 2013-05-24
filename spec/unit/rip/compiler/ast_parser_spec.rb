@@ -42,6 +42,84 @@ describe Rip::Compiler::AST do
     end
   end
 
+  context 'empty literals' do
+    context 'character' do
+      let(:rip) { '`1' }
+      let(:node) { Rip::Nodes::Character.new(location, '1') }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'string, symbol' do
+      let(:rip) { ':one' }
+      let(:node) { Rip::Nodes::String.new(location, rip_string_nodes(location.add_character(12), 'one')) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'string, single' do
+      let(:rip) { "''" }
+      let(:node) { Rip::Nodes::String.new(location, []) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'string, double' do
+      let(:rip) { '""' }
+      let(:node) { Rip::Nodes::String.new(location, []) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'regular expression' do
+      let(:rip) { '//' }
+      let(:node) { Rip::Nodes::RegularExpression.new(location, []) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'map' do
+      let(:rip) { '{}' }
+      let(:node) { Rip::Nodes::Map.new(location, []) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'list' do
+      let(:rip) { '[]' }
+      let(:node) { Rip::Nodes::List.new(location, []) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'key-value pair' do
+      let(:rip) { 'a:b' }
+      let(:key_node) { Rip::Nodes::Reference.new(location, 'a') }
+      let(:value_node) { Rip::Nodes::Reference.new(location.add_character(2), 'b') }
+      let(:node) { Rip::Nodes::KeyValue.new(location.add_character, key_node, value_node) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+
+    context 'range' do
+      let(:rip) { '1..3' }
+      let(:start_node) { Rip::Nodes::Integer.new(location, '1') }
+      let(:end_node) { Rip::Nodes::Integer.new(location.add_character(3), '3') }
+      let(:node) { Rip::Nodes::Range.new(location.add_character, start_node, end_node, false) }
+      let(:actual) { statements.first }
+
+      specify { expect(actual.location).to eq(node.location) }
+    end
+  end
+
   context 'key-value pair' do
     subject { statements.first }
     let(:rip) { ':key: :value' }
@@ -52,7 +130,7 @@ describe Rip::Compiler::AST do
         Rip::Nodes::Character.new(location.add_character(3), 'y')
       ]
     end
-    let(:key_node) { Rip::Nodes::String.new(location.add_character, key_characters) }
+    let(:key_node) { Rip::Nodes::String.new(location, key_characters) }
     let(:value_characters) do
       [
         Rip::Nodes::Character.new(location.add_character(7), 'v'),
@@ -62,7 +140,7 @@ describe Rip::Compiler::AST do
         Rip::Nodes::Character.new(location.add_character(11), 'e')
       ]
     end
-    let(:value_node) { Rip::Nodes::String.new(location.add_character(7), value_characters) }
+    let(:value_node) { Rip::Nodes::String.new(location.add_character(6), value_characters) }
     let(:key_value_node) { Rip::Nodes::KeyValue.new(location.add_character(4), key_node, value_node) }
 
     it 'has one top-level node' do
@@ -80,8 +158,8 @@ describe Rip::Compiler::AST do
   context 'range' do
     subject { statements.first }
     let(:rip) { '`a..`z' }
-    let(:a_node) { Rip::Nodes::Character.new(location.add_character, 'a') }
-    let(:z_node) { Rip::Nodes::Character.new(location.add_character(5), 'z') }
+    let(:a_node) { Rip::Nodes::Character.new(location, 'a') }
+    let(:z_node) { Rip::Nodes::Character.new(location.add_character(4), 'z') }
     let(:range_node) { Rip::Nodes::Range.new(location.add_character(2), a_node, z_node) }
 
     it 'has one top-level node' do
@@ -104,7 +182,7 @@ describe Rip::Compiler::AST do
 
     let(:a_node) { Rip::Nodes::Reference.new(location.add_character, 'a') }
     let(:z_node) { Rip::Nodes::Reference.new(location.add_character(4), 'z') }
-    let(:list_node) { Rip::Nodes::List.new(location.add_character, [ a_node, z_node ]) }
+    let(:list_node) { Rip::Nodes::List.new(location, [ a_node, z_node ]) }
 
     let(:list) { statements.first }
 
@@ -129,7 +207,7 @@ describe Rip::Compiler::AST do
     let(:z_node) { Rip::Nodes::Reference.new(location.add_character(4), 'z') }
     let(:key_value_node) { Rip::Nodes::KeyValue.new(location.add_character(2), a_node, z_node) }
 
-    let(:map_node) { Rip::Nodes::Map.new(location.add_character(2), [ key_value_node ]) }
+    let(:map_node) { Rip::Nodes::Map.new(location, [ key_value_node ]) }
 
     let(:map) { statements.first }
 
@@ -173,7 +251,7 @@ describe Rip::Compiler::AST do
         Rip::Nodes::Character.new(line_two.add_character(14), 'p')
       ]
     end
-    let(:string_node) { Rip::Nodes::String.new(line_two.add_character(12), characters) }
+    let(:string_node) { Rip::Nodes::String.new(line_two.add_character(11), characters) }
     let(:assignment_node) { Rip::Nodes::Assignment.new(line_two.add_character(9), reference_node, string_node) }
 
     let(:assignment) { statements.first }
@@ -358,7 +436,7 @@ describe Rip::Compiler::AST do
     let(:plus) { Rip::Nodes::Property.new(location.add_character(4), interpolation, '+') }
 
     let(:character) { Rip::Nodes::Character.new(location.add_character(5), 'b') }
-    let(:regular_expression) { Rip::Nodes::RegularExpression.new(location.add_character(5), [ character ]) }
+    let(:regular_expression) { Rip::Nodes::RegularExpression.new(location, [ character ]) }
 
     let(:concatenation_node) { Rip::Nodes::Invocation.new(location.add_character(4), plus, [ regular_expression ]) }
 
@@ -386,7 +464,7 @@ describe Rip::Compiler::AST do
     let(:plus) { Rip::Nodes::Property.new(location.add_character(4), interpolation, '+') }
 
     let(:character) { Rip::Nodes::Character.new(location.add_character(5), 'b') }
-    let(:string) { Rip::Nodes::String.new(location.add_character(5), [ character ]) }
+    let(:string) { Rip::Nodes::String.new(location, [ character ]) }
 
     let(:concatenation_node) { Rip::Nodes::Invocation.new(location.add_character(4), plus, [ string ]) }
 
@@ -415,11 +493,11 @@ describe Rip::Compiler::AST do
 
     let(:reference_node) { Rip::Nodes::Reference.new(location.add_character(4), 'true') }
 
-    let(:hello_node) { Rip::Nodes::String.new(location.add_character(13), rip_string_nodes(location.add_character(12), 'hello')) }
+    let(:hello_node) { Rip::Nodes::String.new(location.add_character(12), rip_string_nodes(location.add_character(12), 'hello')) }
     let(:true_body) { Rip::Nodes::BlockBody.new(location.add_character(10), [ hello_node ]) }
 
     let(:line_2) { location.add_character(20).add_line }
-    let(:goodbye_node) { Rip::Nodes::String.new(line_2.add_character(13), rip_string_nodes(line_2.add_character(12), 'goodbye')) }
+    let(:goodbye_node) { Rip::Nodes::String.new(line_2.add_character(12), rip_string_nodes(line_2.add_character(12), 'goodbye')) }
     let(:false_body) { Rip::Nodes::BlockBody.new(line_2.add_character(10), [ goodbye_node ]) }
 
     let(:if_else_node) { Rip::Nodes::If.new(location, reference_node, true_body, false_body) }
@@ -445,7 +523,7 @@ describe Rip::Compiler::AST do
 
     let(:reference_node) { Rip::Nodes::Reference.new(location.add_character(8), 'false') }
 
-    let(:implied_node) { Rip::Nodes::String.new(location.add_character(18), rip_string_nodes(location.add_character(17), 'implied_else')) }
+    let(:implied_node) { Rip::Nodes::String.new(location.add_character(17), rip_string_nodes(location.add_character(17), 'implied_else')) }
     let(:false_body) { Rip::Nodes::BlockBody.new(location.add_character(15), [ implied_node ]) }
 
     let(:true_body) { Rip::Nodes::BlockBody.new(location.add_character(15), []) }
