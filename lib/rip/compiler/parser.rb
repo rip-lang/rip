@@ -261,11 +261,13 @@ module Rip::Compiler
     rule(:heredoc_start) { angled_open.repeat(2, 2) >> heredoc_label >> line_break }
     rule(:heredoc_label) { match['A-Z_'].repeat(1).capture(:heredoc_label) }
 
-    rule(:heredoc_content) { (heredoc_end.absent? >> heredoc_content_any >> (line_break.absent? >> heredoc_content_any).repeat >> heredoc_content_any).repeat(1) }
+    rule(:heredoc_content) { (heredoc_end.absent? >> heredoc_line).repeat }
+    rule(:heredoc_line) { (heredoc_line_break.absent? >> heredoc_content_any).repeat >> heredoc_line_break }
+    rule(:heredoc_line_break) { match["\n\r"].as(:character) }
     rule(:heredoc_content_any) { escape_advanced.as(:character) | interpolation | any.as(:character) }
 
     rule(:heredoc_end) do
-      dynamic { |source, context| spaces? >> str(context.captures[:heredoc_label]) >> (eof.absent? >> line_break) }
+      dynamic { |source, context| spaces? >> str(context.captures[:heredoc_label]) >> (line_break | eof) }
     end
 
 
