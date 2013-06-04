@@ -26,7 +26,13 @@ Rip is released under the MIT license. Please see LICENSE.markdown for more deta
 
 Rip is implemented as a front-end for [LLVM](http://llvm.org/). The compiler is written in [Ruby](http://www.ruby-lang.org/). You will need both installed.
 
-  $ git clone git://github.com/rip-lang/rip.git
+Quick start:
+
+0. Install Ruby 2. I use [rbenv](https://github.com/sstephenson/rbenv) and [ruby-build](https://github.com/sstephenson/ruby-build), but use whatever floats your boat.
+0. `$ git clone git://github.com/rip-lang/rip.git`
+0. `$ cd rip`
+0. `$ bundle install`
+0. `$ ./bin/rip help`
 
 ## Getting Help
 
