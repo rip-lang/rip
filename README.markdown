@@ -14,6 +14,9 @@ Rip is released under the MIT license. Please see LICENSE.markdown for more deta
 
 * no globals (except for a short list of pre-defined references)
 * robust object literal syntax for many constructs, including date/time and unit values
+* lexical scoping
+* type inference
+* static name resolution
 * tail call optimization
 * lazy iteration
 * first-class classes and lambdas (classes and lambdas may be passed around and assigned to references just like any other object)
