@@ -15,7 +15,8 @@ module Rip
 
       def set(key, value)
         if state.key?(key)
-          raise Rip::Exceptions::CompilerException.new("#{key} has already been defined.")
+          location = key.location if key.respond_to?(:location)
+          raise Rip::Exceptions::CompilerException.new("#{key} has already been defined.", location, caller)
         else
           self.class.new(state.merge(key => value), outer_scope)
         end
