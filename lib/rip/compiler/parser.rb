@@ -24,7 +24,13 @@ module Rip::Compiler
     end
 
     def raw_parse_tree
-      ugly_tree = parse(source_code)
+      ugly_tree = begin
+        parse(source_code)
+      rescue Parslet::ParseFailed => e
+        location = Rip::Utilities::Location.new(origin, e.cause.pos, *e.cause.source.line_and_column)
+        raise Rip::Exceptions::SyntaxError.new(e.message, location, e.backtrace, e.cause.ascii_tree)
+      end
+
       collapse_atom(ugly_tree).tap do |reply|
         def reply.to_debug
           Rip::Utilities::ParseTreeDebugger.to_debug(self)
