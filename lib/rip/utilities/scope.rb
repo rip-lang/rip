@@ -8,21 +8,21 @@ module Rip::Utilities
       @outer_scope = outer_scope
     end
 
-    def get(key)
+    def [](key)
       state[key] || (outer_scope ? outer_scope.get(key) : nil)
     end
 
-    def set(key, value)
+    def []=(key, value)
       if state.key?(key)
         location = key.location if key.respond_to?(:location)
         raise Rip::Exceptions::CompilerException.new("#{key} has already been defined.", location, caller)
       else
-        self.class.new(state.merge(key => value), outer_scope)
+        state[key] = value
       end
     end
 
-    def new(key, value)
-      self.class.new({}, self)
+    def new(new_state = {})
+      self.class.new(new_state, self)
     end
 
     def context
