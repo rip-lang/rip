@@ -1,9 +1,5 @@
 module Rip::Nodes
   class String < List
-    def initialize(location, characters)
-      super(location, characters)
-    end
-
     alias :characters :items
 
     def to_debug(level = 0)
