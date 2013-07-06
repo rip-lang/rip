@@ -6,7 +6,7 @@ module Rip::Nodes
     def initialize(location, object, name)
       super(location)
       @object = object
-      @name = name
+      @name = name.to_s
     end
 
     def ==(other)
