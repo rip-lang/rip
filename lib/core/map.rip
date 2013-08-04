@@ -1,0 +1,9 @@
+class (System.List) {
+	@.keys = -> {
+		@.map(:key)
+	}
+
+	@.values = -> {
+		@.map(:value)
+	}
+}

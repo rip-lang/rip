@@ -1,0 +1,11 @@
+class {
+	@.>> = -> (list) {
+		[ @ ] + list
+	}
+
+	@.? = -> (pair) {
+		@.to_boolean() ? pair
+	}
+
+	@.to_boolean = -> { true }
+}

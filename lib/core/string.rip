@@ -1,0 +1,9 @@
+class (System.List) {
+	@.downcase = -> {
+		@.map(:downcase)
+	}
+
+	@.upcase = -> {
+		@.map(:upcase)
+	}
+}

@@ -1,0 +1,19 @@
+class {
+	# these three examples are equivalent:
+	#   [ :hello, :world ].map(-> (word) { word.upcase() })
+	#   [ :hello, :world ].map(:upcase)
+	#   [ :HELLO, :WORLD ]
+	@.map = -> (callback) {
+		@.inject([], -> (memo, next) {
+			_next = if (callback.class == System.String) {
+				property = next.properties.detect(-> (property_kvp) {
+					property_kvp.key == callback
+				}).value
+				(property.class == System.Lambda) ? property() : property
+			} else {
+				callback(next)
+			}
+			memo << _next
+		})
+	}
+}
