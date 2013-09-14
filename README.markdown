@@ -43,7 +43,7 @@ If you find a bug or have any other issue, please open a [ticket](https://github
 
 ## Contributing
 
-Patches are most welcome!
+Patches are most welcome! Please make changes in a feature branch that merges into master cleanly. Existing tests should not break, and new code needs new tests.
 
 ## Code Status
 
