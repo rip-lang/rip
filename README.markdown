@@ -44,3 +44,8 @@ If you find a bug or have any other issue, please open a [ticket](https://github
 ## Contributing
 
 Patches are most welcome!
+
+## Code Status
+
+[![Build Status](https://travis-ci.org/rip-lang/rip.png)](https://travis-ci.org/rip-lang/rip)
+[![Dependency Status](https://gemnasium.com/rip-lang/rip.png)](https://gemnasium.com/rip-lang/rip)
