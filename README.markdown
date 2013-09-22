@@ -45,7 +45,8 @@ If you find a bug or have any other issue, please open a [ticket](https://github
 
 Patches are most welcome! Please make changes in a feature branch that merges into master cleanly. Existing tests should not break, and new code needs new tests.
 
-## Code Status
+## Badges!
 
 [![Build Status](https://travis-ci.org/rip-lang/rip.png)](https://travis-ci.org/rip-lang/rip)
+[![Coverage Status](https://coveralls.io/repos/rip-lang/rip/badge.png)](https://coveralls.io/r/rip-lang/rip)
 [![Dependency Status](https://gemnasium.com/rip-lang/rip.png)](https://gemnasium.com/rip-lang/rip)

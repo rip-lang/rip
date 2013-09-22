@@ -1,3 +1,7 @@
+require 'coveralls'
+
+Coveralls.wear!
+
 require_relative '../lib/rip'
 
 require 'pathname'
