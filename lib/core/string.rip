@@ -1,4 +1,6 @@
 class (System.List) {
+	to_string = -> { 'System.String' }
+
 	@.downcase = -> {
 		@.map(:downcase)
 	}

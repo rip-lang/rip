@@ -1,4 +1,6 @@
 class (System.Enumerable) {
+	to_string = -> { 'System.List' }
+
 	@.<< = -> (new_item) {
 		@ + [ new_item ]
 	}
