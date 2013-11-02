@@ -2,14 +2,14 @@ require 'coveralls'
 
 Coveralls.wear!
 
-require_relative '../lib/rip'
-
 require 'pathname'
 require 'parslet'
 require 'parslet/convenience'
 require 'parslet/rig/rspec'
 require 'pry'
 require 'ruby-prof'
+
+require_relative '../lib/rip'
 
 Pathname.glob(Pathname(__dir__) + 'support' + '**' + '*.rb').each { |file| require file }
 
