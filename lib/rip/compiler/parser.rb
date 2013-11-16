@@ -250,7 +250,7 @@ module Rip::Compiler
     rule(:string_single) { string_parser(quote_single, escape_simple.as(:character)) }
     rule(:string_double) { string_parser(quote_double, escape_advanced.as(:character) | interpolation) }
 
-    rule(:regular_expression) { string_parser(slash_forward, escape_regex.as(:character) | interpolation, :regex) }
+    rule(:regular_expression) { string_parser(slash_forward, escape_regex.as(:character) | interpolation(:interpolation_regex), :regex) }
 
 
     # https://github.com/kschiess/parslet/blob/master/example/capture.rb
@@ -270,11 +270,6 @@ module Rip::Compiler
     end
 
 
-    rule(:interpolation) { interpolation_start.as(:start) >> (interpolation_end.absent? >> line.repeat(1)).repeat.as(:interpolation) >> interpolation_end.as(:end) }
-    rule(:interpolation_start) { pound >> brace_open }
-    rule(:interpolation_end) { brace_close }
-
-
     rule(:map) { brace_open.as(:location) >> whitespaces? >> csv(phrase).as(:map) >> whitespaces? >> brace_close }
 
     rule(:list) { bracket_open.as(:location) >> whitespaces? >> csv(phrase).as(:list) >> whitespaces? >> bracket_close }
@@ -286,6 +281,10 @@ module Rip::Compiler
     def csv(value)
       _value = whitespaces? >> value >> whitespaces?
       (_value >> (comma >> _value).repeat).repeat(0, 1)
+    end
+
+    def interpolation(target = :interpolation)
+      (pound >> brace_open).as(:start) >> (brace_close.absent? >> line.repeat(1)).repeat.as(target) >> brace_close.as(:end)
     end
 
     def string_parser(delimiter, inner_special, delimited_flag = :string)
