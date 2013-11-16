@@ -21,7 +21,7 @@ module Rip::Utilities
       end
     end
 
-    def new(new_state = {})
+    def nested_context(new_state = {})
       self.class.new(new_state, self)
     end
 

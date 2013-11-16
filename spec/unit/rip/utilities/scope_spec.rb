@@ -13,7 +13,7 @@ describe Rip::Utilities::Scope do
 
     context 'shadowing' do
       subject { scope_bar }
-      let(:scope_bar) { scope_foo.new(:bar => 333) }
+      let(:scope_bar) { scope_foo.nested_context(:bar => 333) }
 
       its(:context) { should eq(:foo => 111, :bar => 333) }
       specify { expect(scope_foo.context).to eq(:foo => 111, :bar => 222) }
