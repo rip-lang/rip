@@ -431,9 +431,12 @@ describe Rip::Compiler::AST do
     let(:rip) { '/#{a}b/' }
 
     let(:reference) { Rip::Nodes::Reference.new(location.add_character(3), 'a') }
-    let(:interpolation_body) { Rip::Nodes::BlockBody.new(location.add_character(1), [ reference ]) }
-    let(:interpolation) { Rip::Nodes::Interpolation.new(location.add_character(1), interpolation_body) }
-    let(:plus) { Rip::Nodes::Property.new(location.add_character(4), interpolation, '+') }
+
+    let(:virtual_receiver) { Rip::Nodes::BlockBody.new(location.add_character(1), [ reference ]) }
+    let(:virtual_to_string) { Rip::Nodes::Property.new(location.add_character(1), virtual_receiver, 'to_string') }
+    let(:virtual_invocation) { Rip::Nodes::Invocation.new(location.add_character(1), virtual_to_string, []) }
+
+    let(:plus) { Rip::Nodes::Property.new(location.add_character(4), virtual_invocation, '+') }
 
     let(:character) { Rip::Nodes::Character.new(location.add_character(5), 'b') }
     let(:regular_expression) { Rip::Nodes::RegularExpression.new(location, [ character ]) }
@@ -447,7 +450,7 @@ describe Rip::Compiler::AST do
     end
 
     it 'transforms interpolation into regular expression concatenation' do
-      expect(concatenation.callable.object).to eq(interpolation)
+      expect(concatenation.callable.object).to eq(virtual_invocation)
       expect(concatenation.callable).to eq(plus)
       expect(concatenation.arguments.first).to eq(regular_expression)
 
@@ -459,9 +462,12 @@ describe Rip::Compiler::AST do
     let(:rip) { '"#{a}b"' }
 
     let(:reference) { Rip::Nodes::Reference.new(location.add_character(3), 'a') }
-    let(:interpolation_body) { Rip::Nodes::BlockBody.new(location.add_character(1), [ reference ]) }
-    let(:interpolation) { Rip::Nodes::Interpolation.new(location.add_character(1), interpolation_body) }
-    let(:plus) { Rip::Nodes::Property.new(location.add_character(4), interpolation, '+') }
+
+    let(:virtual_receiver) { Rip::Nodes::BlockBody.new(location.add_character(1), [ reference ]) }
+    let(:virtual_to_string) { Rip::Nodes::Property.new(location.add_character(1), virtual_receiver, 'to_string') }
+    let(:virtual_invocation) { Rip::Nodes::Invocation.new(location.add_character(1), virtual_to_string, []) }
+
+    let(:plus) { Rip::Nodes::Property.new(location.add_character(4), virtual_invocation, '+') }
 
     let(:character) { Rip::Nodes::Character.new(location.add_character(5), 'b') }
     let(:string) { Rip::Nodes::String.new(location, [ character ]) }
@@ -475,7 +481,7 @@ describe Rip::Compiler::AST do
     end
 
     it 'transforms interpolation into string concatenation' do
-      expect(concatenation.callable.object).to eq(interpolation)
+      expect(concatenation.callable.object).to eq(virtual_invocation)
       expect(concatenation.callable).to eq(plus)
       expect(concatenation.arguments.first).to eq(string)
 
