@@ -152,6 +152,15 @@ module Rip::Compiler
       Rip::Nodes::Invocation.new(location, callable, [])
     end
 
+    rule(:start => simple(:start), :interpolation_regex => sequence(:lines), :end => simple(:end)) do |locals|
+      location = location_for(locals[:origin], locals[:start])
+      body = block_body(locals[:origin], locals[:start], locals[:lines])
+      callable_string = Rip::Nodes::Property.new(location, body, 'to_string')
+      invocation_string = Rip::Nodes::Invocation.new(location, callable_string, [])
+      callable = Rip::Nodes::Property.new(location, invocation_string, 'to_regular_expression')
+      Rip::Nodes::Invocation.new(location, callable, [])
+    end
+
     {
       :dash_rocket => Rip::Nodes::Lambda,
       :fat_rocket => Rip::Nodes::Lambda

@@ -434,7 +434,10 @@ describe Rip::Compiler::AST do
 
     let(:virtual_receiver) { Rip::Nodes::BlockBody.new(location.add_character(1), [ reference ]) }
     let(:virtual_to_string) { Rip::Nodes::Property.new(location.add_character(1), virtual_receiver, 'to_string') }
-    let(:virtual_invocation) { Rip::Nodes::Invocation.new(location.add_character(1), virtual_to_string, []) }
+    let(:virtual_invocation_string) { Rip::Nodes::Invocation.new(location.add_character(1), virtual_to_string, []) }
+
+    let(:virtual_to_regular_expression) { Rip::Nodes::Property.new(location.add_character(1), virtual_invocation_string, 'to_regular_expression') }
+    let(:virtual_invocation) { Rip::Nodes::Invocation.new(location.add_character(1), virtual_to_regular_expression, []) }
 
     let(:plus) { Rip::Nodes::Property.new(location.add_character(4), virtual_invocation, '+') }
 
