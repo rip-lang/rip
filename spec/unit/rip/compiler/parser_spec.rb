@@ -1713,7 +1713,7 @@ describe Rip::Compiler::Parser do
                   { :character => 'e' },
                   {
                     :start => '#{',
-                    :interpolation => [
+                    :interpolation_regex => [
                       { :reference => 'll' }
                     ],
                     :end => '}'
@@ -1742,7 +1742,7 @@ describe Rip::Compiler::Parser do
                     :arguments => [
                       {
                         :start => '#{',
-                        :interpolation => [
+                        :interpolation_regex => [
                           { :reference => 'll' }
                         ],
                         :end => '}'
