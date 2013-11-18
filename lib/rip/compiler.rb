@@ -4,6 +4,5 @@ module Rip
 end
 
 require 'rip/compiler/ast'
-require 'rip/compiler/exceptions'
 require 'rip/compiler/parse_tree_normalizer'
 require 'rip/compiler/parser'

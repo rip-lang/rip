@@ -1,5 +1,5 @@
-module Rip
-  class Exception
+module Rip::Exceptions
+  class Base < StandardError
     attr_reader :message
     attr_reader :location
     attr_reader :call_stack
