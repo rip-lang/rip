@@ -9,7 +9,7 @@ module Rip::Utilities
     end
 
     def [](key)
-      state[key] || (outer_scope ? outer_scope.get(key) : nil)
+      state[key] || (outer_scope ? outer_scope[key] : nil)
     end
 
     def []=(key, value)
