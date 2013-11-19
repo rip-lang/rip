@@ -1,0 +1,13 @@
+class {
+	to_string = -> { 'System.Object' }
+
+	@.>> = -> (list) {
+		[ @ ] + list
+	}
+
+	@.? = -> (pair) {
+		@.to_boolean() ? pair
+	}
+
+	@.to_boolean = -> { true }
+}

@@ -1,0 +1,8 @@
+class {
+	@.? = -> (pair) {
+		if @ { pair.key }
+		else { pair.value }
+	}
+
+	@.to_boolean = -> { @ }
+}

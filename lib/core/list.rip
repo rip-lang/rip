@@ -1,0 +1,29 @@
+class (System.Enumerable) {
+	to_string = -> { 'System.List' }
+
+	@.<< = -> (new_item) {
+		@ + [ new_item ]
+	}
+
+	@.inject = -> (initial, callback) {
+		if (@.length > 0) {
+			@.tail.inject(callback(initial, @.head), callback)
+		} else {
+			initial
+		}
+	}
+
+	@.join = -> (glue) {
+		_glue = glue.to_string()
+		@.tail.inject(@.head.to_string(), -> (memo, string) {
+			memo + _glue + string.to_string()
+		})
+	}
+
+	@.next = -> {
+		if (@.length.zero?) {
+			raise 'no more'
+		}
+		@.head
+	}
+}

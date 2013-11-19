@@ -1,0 +1,6 @@
+class {
+	@.initialize = -> (key, value) {
+		@.key = key
+		@.value = value
+	}
+}
