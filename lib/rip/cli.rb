@@ -99,7 +99,7 @@ Usage:
         block.call
       rescue Rip::Exceptions::Base => e
         warn e.dump
-        raise e
+        exit e.status_code
       rescue => e
         warn 'Unknown exception has accurred. Please open an issue report at github.com/rip-lang/rip/issues'
         raise e

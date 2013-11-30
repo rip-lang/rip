@@ -14,12 +14,24 @@ module Rip::Exceptions
       [ inspect ] + call_stack
     end
 
+    def status_code
+      self.class.status_code
+    end
+
     def inspect
       "#<#{self.class.name} #{self}>"
     end
 
     def to_s
       "#{message.inspect} @ #{location}"
+    end
+
+    def self.status_code(code = nil)
+      if code.nil?
+        @status_code
+      else
+        @status_code = code
+      end
     end
   end
 end
