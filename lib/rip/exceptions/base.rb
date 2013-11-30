@@ -10,6 +10,10 @@ module Rip::Exceptions
       @call_stack = call_stack
     end
 
+    def dump
+      [ inspect ] + call_stack
+    end
+
     def inspect
       "#<#{self.class.name} #{self}>"
     end

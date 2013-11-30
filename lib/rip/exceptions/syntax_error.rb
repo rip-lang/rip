@@ -6,5 +6,12 @@ module Rip::Exceptions
       super(message, location, call_stack)
       @ascii_tree = ascii_tree
     end
+
+    def dump
+      [
+        inspect,
+        ascii_tree
+      ]
+    end
   end
 end
