@@ -12,7 +12,9 @@ module Rip
     desc '[file]', 'Read and execute [file] (or standard in)'
     def execute(file = nil)
       wip :execute
-      puts parse_tree(file).inspect
+      wrap_exceptions do
+        puts parse_tree(file).inspect
+      end
     end
 
     desc 'repl', 'Enter read, evaluate, print loop'
@@ -45,16 +47,18 @@ Usage:
     option :tree, :required => true, :aliases => ['-t'], :desc => 'Type of tree to output. Must be one of `raw_parse`, `parse`, `syntax`'
     def debug(file = nil)
       valid_trees = Hash.new do |valid, unknown_tree|
-        warn "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
-        exit 1
+        message = "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
+        raise Rip::Exceptions::UsageException.new(message)
       end.merge({
         'raw_parse'  => :raw_parse_tree,
         'parse'  => :parse_tree,
         'syntax' => :syntax_tree,
       })
 
-      output = send(valid_trees[options[:tree]], file).to_debug.map do |(level, node)|
-        "#{"\t" * level}#{node}"
+      output = wrap_exceptions do
+        send(valid_trees[options[:tree]], file).to_debug.map do |(level, node)|
+          "#{"\t" * level}#{node}"
+        end
       end
 
       puts output
@@ -88,6 +92,18 @@ Usage:
 
     def syntax_tree(origin)
       parser(origin).syntax_tree
+    end
+
+    def wrap_exceptions(&block)
+      begin
+        block.call
+      rescue Rip::Exceptions::Base => e
+        warn e.dump
+        exit e.status_code
+      rescue => e
+        warn 'Unknown exception has accurred. Please open an issue report at github.com/rip-lang/rip/issues'
+        raise e
+      end
     end
 
     def wip(command)

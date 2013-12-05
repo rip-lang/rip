@@ -8,3 +8,4 @@ require 'rip/exceptions/compiler_exception'
 require 'rip/exceptions/runtime_exception'
 
 require 'rip/exceptions/syntax_error'
+require 'rip/exceptions/usage_exception'
