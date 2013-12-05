@@ -47,8 +47,8 @@ Usage:
     option :tree, :required => true, :aliases => ['-t'], :desc => 'Type of tree to output. Must be one of `raw_parse`, `parse`, `syntax`'
     def debug(file = nil)
       valid_trees = Hash.new do |valid, unknown_tree|
-        warn "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
-        exit 1
+        message = "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
+        raise Rip::Exceptions::UsageException.new(message)
       end.merge({
         'raw_parse'  => :raw_parse_tree,
         'parse'  => :parse_tree,
