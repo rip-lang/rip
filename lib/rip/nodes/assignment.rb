@@ -10,6 +10,9 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      lhs.interpret_for_assignment(context) do
+        rhs.interpret(context)
+      end
     end
 
     def to_debug(level = 0)

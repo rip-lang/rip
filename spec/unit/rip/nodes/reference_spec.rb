@@ -39,4 +39,20 @@ describe Rip::Nodes::Reference do
       expect(actual).to eq('Unknown reference `rip`')
     end
   end
+
+  describe '#interpret_for_assignment' do
+    let(:context) { { 'not-rip' => 4 } }
+
+    before(:each) do
+      reference_node.interpret_for_assignment(context) { 42 }
+    end
+
+    it 'creates a new value in the context' do
+      expect(context['rip']).to eq(42)
+    end
+
+    it 'doesn\'t affect other values in context' do
+      expect(context['not-rip']).to eq(4)
+    end
+  end
 end
