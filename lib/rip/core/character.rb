@@ -6,5 +6,9 @@ module Rip::Core
       super()
       @data = data.to_s
     end
+
+    def ==(other)
+      data == other.data
+    end
   end
 end

@@ -13,6 +13,7 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      Rip::Core::Character.new(data)
     end
 
     def to_debug(level = 0)
