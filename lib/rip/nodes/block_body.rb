@@ -13,6 +13,11 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      _context = context.nested_context
+
+      statements.map do |statement|
+        statement.interpret(_context)
+      end.last
     end
 
     def to_debug(level = 0)
