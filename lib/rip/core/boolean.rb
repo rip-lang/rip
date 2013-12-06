@@ -6,5 +6,17 @@ module Rip::Core
       super()
       @data = data
     end
+
+    def ==(other)
+      data == other.data
+    end
+
+    def self.true
+      new(true)
+    end
+
+    def self.false
+      new(false)
+    end
   end
 end
