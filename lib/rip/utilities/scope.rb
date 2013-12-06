@@ -1,15 +1,15 @@
 module Rip::Utilities
   class Scope
     attr_reader :state
-    attr_reader :outer_scope
+    attr_reader :outer_context
 
-    def initialize(state = {}, outer_scope = nil)
-      @state = state
-      @outer_scope = outer_scope
+    def initialize(outer_context = nil)
+      @state = {}
+      @outer_context = outer_context
     end
 
     def [](key)
-      state[key] || (outer_scope ? outer_scope[key] : nil)
+      state[key] || (outer_context ? outer_context[key] : nil)
     end
 
     def []=(key, value)
@@ -21,16 +21,8 @@ module Rip::Utilities
       end
     end
 
-    def nested_context(new_state = {})
-      self.class.new(new_state, self)
-    end
-
-    def context
-      outer_context.merge(state)
-    end
-
-    def outer_context
-      outer_scope ? outer_scope.context : {}
+    def nested_context
+      self.class.new(self)
     end
   end
 end
