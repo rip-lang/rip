@@ -8,5 +8,10 @@ module Rip::Core
       @data = data
       @sign = sign.to_sym
     end
+
+    def ==(other)
+      (data == other.data) &&
+        (sign == other.sign)
+    end
   end
 end
