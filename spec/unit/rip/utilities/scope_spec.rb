@@ -30,6 +30,26 @@ describe Rip::Utilities::Scope do
 
       specify { expect(scope_bar[:foo]).to be(111) }
       specify { expect(scope_bar[:bar]).to be(333) }
+
+      describe '#==' do
+        let(:expected) { scope_foo.nested_context }
+
+        before(:each) { expected[:bar] = 333 }
+
+        specify { expect(scope_bar).to eq(expected) }
+      end
     end
+
+    describe '#==' do
+      specify { expect(scope_foo.nested_context).to eq(scope_foo.nested_context) }
+    end
+  end
+
+  describe '#==' do
+    let(:new_scope) { Rip::Utilities::Scope.new }
+
+    before(:each) { new_scope[:foo] = 111 }
+
+    specify { expect(scope_foo).to eq(new_scope) }
   end
 end

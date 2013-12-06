@@ -8,6 +8,11 @@ module Rip::Utilities
       @outer_context = outer_context
     end
 
+    def ==(other)
+      (state == other.state) &&
+        (outer_context == other.outer_context)
+    end
+
     def [](key)
       state[key] || outer_context[key]
     end
