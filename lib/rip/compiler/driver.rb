@@ -11,7 +11,10 @@ module Rip::Compiler
     end
 
     def global_context
-      Rip::Utilities::Scope.new
+      Rip::Utilities::Scope.new({
+        'true' => Rip::Core::Boolean.true,
+        'false' => Rip::Core::Boolean.false
+      })
     end
   end
 end
