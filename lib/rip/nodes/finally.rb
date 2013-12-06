@@ -12,6 +12,9 @@ module Rip::Nodes
         (body == other.body)
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       super + body.to_debug(level + 1)
     end

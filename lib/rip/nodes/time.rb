@@ -24,6 +24,9 @@ module Rip::Nodes
         (offset == other.offset)
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       [
         [ level, "#{super.last.last} (#{hour}:#{minute}:#{second}.#{sub_second}#{offset})" ]

@@ -12,6 +12,9 @@ module Rip::Nodes
         (name == other.name)
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       [
         [ level, "#{super.last.last} (#{name})" ]

@@ -15,6 +15,9 @@ module Rip::Nodes
         (time == other.time)
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       date_debug = date.to_debug(level + 1)
 

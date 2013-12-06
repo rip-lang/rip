@@ -18,6 +18,9 @@ module Rip::Nodes
         (else_block == other.else_block)
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       argument_debug = [ [ level + 1, 'argument =' ] ] +
         argument.to_debug(level + 2)

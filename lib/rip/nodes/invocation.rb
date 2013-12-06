@@ -15,6 +15,9 @@ module Rip::Nodes
         (arguments == other.arguments)
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       callable_line_1, *callable_other_lines = callable.to_debug(level + 1)
       callable_debug = [ [ level + 1, "callable = #{Array(callable_line_1).last}" ] ] +

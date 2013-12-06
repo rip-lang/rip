@@ -15,6 +15,9 @@ module Rip::Nodes
         (body == other.body)
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       arguments_debug_inner = arguments.inject([]) do |reply, argument|
         reply + argument.to_debug(level + 2)

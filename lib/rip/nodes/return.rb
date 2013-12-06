@@ -12,6 +12,9 @@ module Rip::Nodes
         (payload == other.payload)
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       super + payload.to_debug(level + 1)
     end
