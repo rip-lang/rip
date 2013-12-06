@@ -3,13 +3,13 @@ module Rip::Utilities
     attr_reader :state
     attr_reader :outer_context
 
-    def initialize(outer_context = nil)
+    def initialize(outer_context = {})
       @state = {}
       @outer_context = outer_context
     end
 
     def [](key)
-      state[key] || (outer_context ? outer_context[key] : nil)
+      state[key] || outer_context[key]
     end
 
     def []=(key, value)
