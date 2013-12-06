@@ -9,6 +9,10 @@ describe Rip::Utilities::Scope do
   specify { expect(scope_foo[:foo]).to be(111) }
   specify { expect(scope_foo[:zebra]).to be_nil }
 
+  specify do
+    expect { scope_foo[:foo] = 000 }.to raise_error(Rip::Exceptions::CompilerException)
+  end
+
   context 'extending' do
     before(:each) { scope_foo[:bar] = 222 }
 
