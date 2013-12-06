@@ -16,6 +16,8 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      object.interpret(context)[name] ||
+        (raise Rip::Exceptions::RuntimeException.new("Unknown property `#{name}`"))
     end
 
     def to_debug(level = 0)
