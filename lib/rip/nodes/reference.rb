@@ -13,6 +13,8 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      context[name] ||
+        (raise Rip::Exceptions::RuntimeException.new("Unknown reference `#{name}`"))
     end
 
     def to_debug(level = 0)
