@@ -4,7 +4,7 @@ module Rip::Nodes
 
     def initialize(location, data)
       super(location)
-      @data = data.to_sym
+      @data = data.to_s
     end
 
     def ==(other)
