@@ -20,7 +20,9 @@ module Rip::Core
     def self.class_instance
       return @class_instance if instance_variable_defined? :@class_instance
 
-      @class_instance = Rip::Core::Class.new
+      @class_instance = Rip::Core::Class.new.tap do |reply|
+        reply['class'] = Rip::Core::Class.class_instance
+      end
     end
   end
 end

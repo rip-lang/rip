@@ -6,6 +6,7 @@ describe Rip::Core::Integer do
 
   describe '.class_instance' do
     specify { expect(class_instance).to_not be_nil }
+    specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
   end
 
   describe '@.class' do
