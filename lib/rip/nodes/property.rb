@@ -20,6 +20,10 @@ module Rip::Nodes
         (raise Rip::Exceptions::RuntimeException.new("Unknown property `#{name}`"))
     end
 
+    def interpret_for_assignment(context, &block)
+      object.interpret(context)[name] = block.call
+    end
+
     def to_debug(level = 0)
       object_line_1, *object_other_lines = object.to_debug(level + 1)
       object_debug = [ [ level + 1, "object = #{Array(object_line_1).last}" ] ] +
