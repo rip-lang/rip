@@ -11,7 +11,8 @@ module Rip::Core
     end
 
     def [](key)
-      properties[key]
+      properties[key] ||
+        properties['class']['@'][key]
     end
 
     def []=(key, value)
