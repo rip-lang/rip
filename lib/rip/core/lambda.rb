@@ -17,7 +17,17 @@ module Rip::Core
     end
 
     def call(arguments)
-      body.interpret(context)
+      _context = parameters.zip(arguments).inject(context.nested_context) do |memo, (parameter, argument)|
+        _parameter = if parameter.is_a?(Rip::Nodes::Reference) && argument
+          Rip::Nodes::Assignment.new(argument.location, parameter, argument)
+        end
+
+        _parameter.interpret(memo)
+
+        memo
+      end
+
+      body.interpret(_context)
     end
 
     def self.class_instance

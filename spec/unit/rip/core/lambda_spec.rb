@@ -41,6 +41,27 @@ describe Rip::Core::Lambda do
       context 'accessing surrounding scope' do
         specify { expect(actual_return).to eq(Rip::Core::Integer.new(42)) }
       end
+
+      context 'shadowing surrounding scope' do
+        let(:parameters) do
+          [
+            Rip::Nodes::Reference.new(location, 'answer')
+          ]
+        end
+
+        let(:arguments) do
+          [
+            Rip::Nodes::Integer.new(location, 85)
+          ]
+        end
+
+        specify { expect(actual_return).to eq(Rip::Core::Integer.new(85)) }
+
+        it 'does not mutate surrounding scope' do
+          actual_return
+          expect(context['answer']).to eq(Rip::Core::Integer.new(42))
+        end
+      end
     end
 
     describe 'returning final expression' do
