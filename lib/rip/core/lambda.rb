@@ -16,6 +16,10 @@ module Rip::Core
       self['class'] = self.class.class_instance
     end
 
+    def call(arguments)
+      body.interpret(context)
+    end
+
     def self.class_instance
       return @class_instance if instance_variable_defined? :@class_instance
 
