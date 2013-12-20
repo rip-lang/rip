@@ -135,5 +135,51 @@ describe Rip::Core::Lambda do
         expect(actual_return).to eq(Rip::Core::Integer.new(9))
       end
     end
+
+    describe 'automatic currying' do
+      let(:parameters) do
+        [
+          Rip::Nodes::Reference.new(location, 'a'),
+          Rip::Nodes::Reference.new(location, 'b'),
+          Rip::Nodes::Assignment.new(location, Rip::Nodes::Reference.new(location, 'c'), Rip::Nodes::Integer.new(location, 3))
+        ]
+      end
+
+      let(:body_expressions) { [ a_plus_b_plus_c ] }
+
+      let(:arguments) do
+        [
+          Rip::Nodes::Integer.new(location, 3)
+        ]
+      end
+
+      it 'returns a lambda that takes two parameters' do
+        expect(actual_return).to be_a(Rip::Core::Lambda)
+        expect(actual_return.parameters.count).to be(2)
+      end
+
+      it 'remembers the arguments previously passed in' do
+        other_arguments = [
+          Rip::Nodes::Integer.new(location, 3),
+          Rip::Nodes::Integer.new(location, 3)
+        ]
+        expect(actual_return.call(context, other_arguments)).to eq(Rip::Core::Integer.new(9))
+      end
+
+      it 'can be called with different arguments' do
+        other_arguments = [
+          Rip::Nodes::Integer.new(location, 8),
+          Rip::Nodes::Integer.new(location, 16)
+        ]
+        expect(actual_return.call(context, other_arguments)).to eq(Rip::Core::Integer.new(27))
+      end
+
+      it 'can still use default values for optional arguments' do
+        other_arguments = [
+          Rip::Nodes::Integer.new(location, 8)
+        ]
+        expect(actual_return.call(context, other_arguments)).to eq(Rip::Core::Integer.new(14))
+      end
+    end
   end
 end

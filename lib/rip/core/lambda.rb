@@ -17,8 +17,20 @@ module Rip::Core
     end
 
     def call(calling_context, arguments)
-      _context = block_context(context, arguments)
-      body.interpret(_context)
+      required_parameters =  parameters.select { |parameter| parameter.is_a?(Rip::Nodes::Reference) }
+
+      if required_parameters.count > arguments.count
+        parameters_for_curry = parameters[0...arguments.count]
+        extra_parameters = parameters - parameters_for_curry
+
+        _context = parameter_context(context, parameters_for_curry, arguments)
+
+        self.class.new(_context, keyword, extra_parameters, body)
+      else
+        _context = parameter_context(context, parameters, arguments)
+
+        body.interpret(_context)
+      end
     end
 
     def self.class_instance
@@ -31,7 +43,7 @@ module Rip::Core
 
     protected
 
-    def block_context(calling_context, arguments)
+    def parameter_context(calling_context, parameters, arguments)
       parameters.zip(arguments).inject(calling_context.nested_context) do |memo, (parameter, argument)|
         _parameter = if parameter.is_a?(Rip::Nodes::Reference) && argument
           Rip::Nodes::Assignment.new(argument.location, parameter, argument)
@@ -54,7 +66,7 @@ module Rip::Core
     end
 
     def call(calling_context, arguments)
-      _context = block_context(calling_context, arguments)
+      _context = parameter_context(calling_context, parameters, arguments)
       body.call(self['@'], _context)
     end
   end
