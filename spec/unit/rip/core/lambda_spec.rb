@@ -112,5 +112,28 @@ describe Rip::Core::Lambda do
         expect(actual_return).to eq(Rip::Core::Integer.new(6))
       end
     end
+
+    describe 'optional parameters' do
+      let(:parameters) do
+        [
+          Rip::Nodes::Reference.new(location, 'a'),
+          Rip::Nodes::Assignment.new(location, Rip::Nodes::Reference.new(location, 'b'), Rip::Nodes::Integer.new(location, 2)),
+          Rip::Nodes::Assignment.new(location, Rip::Nodes::Reference.new(location, 'c'), Rip::Nodes::Integer.new(location, 3))
+        ]
+      end
+
+      let(:body_expressions) { [ a_plus_b_plus_c ] }
+
+      let(:arguments) do
+        [
+          Rip::Nodes::Integer.new(location, 3),
+          Rip::Nodes::Integer.new(location, 3)
+        ]
+      end
+
+      it 'interprets to nine' do
+        expect(actual_return).to eq(Rip::Core::Integer.new(9))
+      end
+    end
   end
 end

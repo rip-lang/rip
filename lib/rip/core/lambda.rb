@@ -35,6 +35,10 @@ module Rip::Core
       parameters.zip(arguments).inject(calling_context.nested_context) do |memo, (parameter, argument)|
         _parameter = if parameter.is_a?(Rip::Nodes::Reference) && argument
           Rip::Nodes::Assignment.new(argument.location, parameter, argument)
+        elsif parameter.is_a?(Rip::Nodes::Assignment) && argument
+          Rip::Nodes::Assignment.new(argument.location, parameter.lhs, argument)
+        elsif parameter.is_a?(Rip::Nodes::Assignment)
+          parameter
         end
 
         _parameter.interpret(memo)
