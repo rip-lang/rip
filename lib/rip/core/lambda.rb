@@ -16,17 +16,8 @@ module Rip::Core
       self['class'] = self.class.class_instance
     end
 
-    def call(arguments)
-      _context = parameters.zip(arguments).inject(context.nested_context) do |memo, (parameter, argument)|
-        _parameter = if parameter.is_a?(Rip::Nodes::Reference) && argument
-          Rip::Nodes::Assignment.new(argument.location, parameter, argument)
-        end
-
-        _parameter.interpret(memo)
-
-        memo
-      end
-
+    def call(calling_context, arguments)
+      _context = block_context(context, arguments)
       body.interpret(_context)
     end
 
@@ -35,6 +26,20 @@ module Rip::Core
 
       @class_instance = Rip::Core::Class.new.tap do |reply|
         reply['class'] = Rip::Core::Class.class_instance
+      end
+    end
+
+    protected
+
+    def block_context(calling_context, arguments)
+      parameters.zip(arguments).inject(calling_context.nested_context) do |memo, (parameter, argument)|
+        _parameter = if parameter.is_a?(Rip::Nodes::Reference) && argument
+          Rip::Nodes::Assignment.new(argument.location, parameter, argument)
+        end
+
+        _parameter.interpret(memo)
+
+        memo
       end
     end
   end

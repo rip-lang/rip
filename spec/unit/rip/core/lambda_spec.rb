@@ -15,7 +15,7 @@ describe Rip::Core::Lambda do
 
   let(:arguments) { [] }
 
-  let(:actual_return) { rip_lambda.call(arguments) }
+  let(:actual_return) { rip_lambda.call(context, arguments) }
 
   describe '.class_instance' do
     specify { expect(class_instance).to_not be_nil }
