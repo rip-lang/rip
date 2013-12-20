@@ -16,6 +16,7 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      callable.interpret(context).call(context, arguments)
     end
 
     def to_debug(level = 0)

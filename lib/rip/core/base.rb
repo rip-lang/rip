@@ -11,8 +11,12 @@ module Rip::Core
     end
 
     def [](key)
-      properties[key] ||
-        properties['class']['@'][key]
+      (properties[key] ||
+        properties['class']['@'][key]).tap do |reply|
+        if reply.is_a?(Rip::Core::Lambda)
+          reply['@'] = self
+        end
+      end
     end
 
     def []=(key, value)

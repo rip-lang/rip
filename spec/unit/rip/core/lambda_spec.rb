@@ -17,6 +17,18 @@ describe Rip::Core::Lambda do
 
   let(:actual_return) { rip_lambda.call(context, arguments) }
 
+  let(:a_plus_b_plus_c) do
+    reference_a = Rip::Nodes::Reference.new(location, 'a')
+    reference_b = Rip::Nodes::Reference.new(location, 'b')
+    reference_c = Rip::Nodes::Reference.new(location, 'c')
+
+    plus_a = Rip::Nodes::Property.new(location, reference_a, '+')
+    a_plus_b = Rip::Nodes::Invocation.new(location, plus_a, [ reference_b ])
+
+    a_plus_b_plus = Rip::Nodes::Property.new(location, a_plus_b, '+')
+    Rip::Nodes::Invocation.new(location, a_plus_b_plus, [ reference_c ])
+  end
+
   describe '.class_instance' do
     specify { expect(class_instance).to_not be_nil }
     specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
@@ -74,6 +86,30 @@ describe Rip::Core::Lambda do
 
       it 'returns the last expression' do
         expect(actual_return).to eq(Rip::Nodes::Integer.new(location, 4))
+      end
+    end
+
+    describe 'required parameters' do
+      let(:parameters) do
+        [
+          Rip::Nodes::Reference.new(location, 'a'),
+          Rip::Nodes::Reference.new(location, 'b'),
+          Rip::Nodes::Reference.new(location, 'c')
+        ]
+      end
+
+      let(:body_expressions) { [ a_plus_b_plus_c ] }
+
+      let(:arguments) do
+        [
+          Rip::Nodes::Integer.new(location, 1),
+          Rip::Nodes::Integer.new(location, 2),
+          Rip::Nodes::Integer.new(location, 3)
+        ]
+      end
+
+      it 'interprets to six' do
+        expect(actual_return).to eq(Rip::Core::Integer.new(6))
       end
     end
   end

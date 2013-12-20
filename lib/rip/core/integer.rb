@@ -22,6 +22,14 @@ module Rip::Core
 
       @class_instance = Rip::Core::Class.new.tap do |reply|
         reply['class'] = Rip::Core::Class.class_instance
+
+        reply['@']['+'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], [
+          Rip::Nodes::Reference.new(nil, 'other')
+        ]) do |this, context|
+          other = context['other']
+          new_data = this.data + other.data
+          Rip::Core::Integer.new(new_data, :+)
+        end
       end
     end
   end

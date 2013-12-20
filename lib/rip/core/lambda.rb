@@ -43,4 +43,15 @@ module Rip::Core
       end
     end
   end
+
+  class RubyLambda < Rip::Core::Lambda
+    def initialize(keyword, parameters, &body)
+      super(nil, keyword, parameters, body)
+    end
+
+    def call(calling_context, arguments)
+      _context = block_context(calling_context, arguments)
+      body.call(self['@'], _context)
+    end
+  end
 end
