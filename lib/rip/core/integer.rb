@@ -20,8 +20,14 @@ module Rip::Core
       @class_instance = Rip::Core::Class.new.tap do |reply|
         reply['class'] = Rip::Core::Class.class_instance
 
-        reply['@']['+'] = Rip::Core::RubyLambda.binary_prototype_method do |this, other|
-          new(this.data + other.data)
+        %w[
+          + -
+          * /
+          %
+        ].each do |property|
+          reply['@'][property] = Rip::Core::RubyLambda.binary_prototype_method do |this, other|
+            new(this.data.send(property, other.data))
+          end
         end
       end
     end

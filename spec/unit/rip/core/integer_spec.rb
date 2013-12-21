@@ -16,7 +16,30 @@ describe Rip::Core::Integer do
   end
 
   [
-    BinaryOperator.new(11, :+, 22, 33)
+    BinaryOperator.new(11, :+, 22, 33),
+    BinaryOperator.new(62, :+, -73, -11),
+    BinaryOperator.new(-85, :+, 39, -46),
+    BinaryOperator.new(-65, :+, -20, -85),
+
+    BinaryOperator.new(-14, :-, -20, 6),
+    BinaryOperator.new(-17, :-, 96, -113),
+    BinaryOperator.new(0, :-, 30, -30),
+    BinaryOperator.new(86, :-, 26, 60),
+
+    BinaryOperator.new(73, :*, 87, 6351),
+    BinaryOperator.new(8, :*, 96, 768),
+    BinaryOperator.new(54, :*, -95, -5130),
+    BinaryOperator.new(-4, :*, -8, 32),
+
+    BinaryOperator.new(8, :/, 4, 2),
+    BinaryOperator.new(0, :/, 62, 0),
+    BinaryOperator.new(72, :/, -4, -18),
+    BinaryOperator.new(-30, :/, -5, 6),
+
+    BinaryOperator.new(1, :%, -77, -76),
+    BinaryOperator.new(-62, :%, -4, -2),
+    BinaryOperator.new(-57, :%, -17, -6),
+    BinaryOperator.new(-15, :%, -53, -15)
   ].each do |bo|
     describe "@.#{bo.operator}" do
       let(:context) { Rip::Utilities::Scope.new }
