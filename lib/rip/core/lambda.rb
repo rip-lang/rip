@@ -20,12 +20,7 @@ module Rip::Core
       required_parameters =  parameters.select { |parameter| parameter.is_a?(Rip::Nodes::Reference) }
 
       if required_parameters.count > arguments.count
-        parameters_for_curry = parameters[0...arguments.count]
-        extra_parameters = parameters - parameters_for_curry
-
-        _context = parameter_context(context, parameters_for_curry, arguments)
-
-        self.class.new(_context, keyword, extra_parameters, body)
+        curry(calling_context, arguments)
       else
         _context = parameter_context(context, parameters, arguments)
 
@@ -42,6 +37,15 @@ module Rip::Core
     end
 
     protected
+
+    def curry(calling_context, arguments)
+      parameters_for_curry = self.parameters[0...arguments.count]
+      extra_parameters = self.parameters - parameters_for_curry
+
+      _context = parameter_context(calling_context, parameters_for_curry, arguments)
+
+      self.class.new(_context, self.keyword, extra_parameters, self.body)
+    end
 
     def parameter_context(calling_context, parameters, arguments)
       parameters.zip(arguments).inject(calling_context.nested_context) do |memo, (parameter, argument)|
