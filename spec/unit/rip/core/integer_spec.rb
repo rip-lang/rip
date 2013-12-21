@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+BinaryOperator = Struct.new(:lhs, :operator, :rhs, :result)
+
 describe Rip::Core::Integer do
   let(:forty_two) { Rip::Core::Integer.new(42) }
   let(:class_instance) { Rip::Core::Integer.class_instance }
@@ -13,19 +15,19 @@ describe Rip::Core::Integer do
     specify { expect(forty_two['class']).to be(class_instance) }
   end
 
-  describe '@.+' do
-    let(:context) { Rip::Utilities::Scope.new }
+  [
+    BinaryOperator.new(11, :+, 22, 33)
+  ].each do |bo|
+    describe "@.#{bo.operator}" do
+      let(:context) { Rip::Utilities::Scope.new }
 
-    let(:integer_11) { Rip::Nodes::Integer.new(nil, 11) }
-    let(:integer_22) { Rip::Nodes::Integer.new(nil, 22) }
-    let(:plus) { Rip::Nodes::Property.new(nil, integer_11, '+') }
-    let(:invocation_node) { Rip::Nodes::Invocation.new(nil, plus, [ integer_22 ]) }
+      let(:lhs_node) { Rip::Nodes::Integer.new(nil, bo.lhs) }
+      let(:operator_node) { Rip::Nodes::Property.new(nil, lhs_node, bo.operator) }
+      let(:rhs_node) { Rip::Nodes::Integer.new(nil, bo.rhs) }
+      let(:invocation_node) { Rip::Nodes::Invocation.new(nil, operator_node, [ rhs_node ]) }
 
-    let(:plus_lambda) { plus.interpret(context) }
-    let(:eleven) { integer_11.interpret(context) }
-    let(:thirty_three) { invocation_node.interpret(context) }
-
-    specify { expect(plus_lambda['@']).to eq(eleven) }
-    specify { expect(thirty_three).to eq(Rip::Core::Integer.new(33)) }
+      specify { expect(operator_node.interpret(context)['@']).to eq(lhs_node.interpret(context)) }
+      specify { expect(invocation_node.interpret(context)).to eq(Rip::Core::Integer.new(bo.result)) }
+    end
   end
 end
