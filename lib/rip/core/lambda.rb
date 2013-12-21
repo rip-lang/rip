@@ -69,5 +69,13 @@ module Rip::Core
       _context = parameter_context(calling_context, parameters, arguments)
       body.call(self['@'], _context)
     end
+
+    def self.binary_prototype_method(&body)
+      new(Rip::Utilities::Keywords[:dash_rocket], [
+        Rip::Nodes::Reference.new(nil, 'other')
+      ]) do |this, context|
+        body.call(this, context['other'])
+      end
+    end
   end
 end
