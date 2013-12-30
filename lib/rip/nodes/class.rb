@@ -15,6 +15,12 @@ module Rip::Nodes
         (body == other.body)
     end
 
+    def interpret(context)
+      Rip::Core::Class.new.tap do |reply|
+        body.interpret(reply)
+      end
+    end
+
     def to_debug(level = 0)
       superclasses_debug_inner = superclasses.inject([]) do |reply, superclass|
         reply + superclass.to_debug(level + 2)

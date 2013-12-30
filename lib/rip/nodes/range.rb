@@ -18,6 +18,9 @@ module Rip::Nodes
         (exclusivity == other.exclusivity)
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       start_line_1, *start_other_lines = start.to_debug(level + 1)
       start_debug = [ [ level + 1, "start = #{Array(start_line_1).last}" ] ] +

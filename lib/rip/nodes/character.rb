@@ -12,6 +12,10 @@ module Rip::Nodes
         (data == other.data)
     end
 
+    def interpret(context)
+      Rip::Core::Character.new(data)
+    end
+
     def to_debug(level = 0)
       [
         [ level, "#{super.last.last} (#{data})" ]

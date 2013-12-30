@@ -9,6 +9,12 @@ module Rip::Nodes
       @rhs = rhs
     end
 
+    def interpret(context)
+      lhs.interpret_for_assignment(context) do
+        rhs.interpret(context)
+      end
+    end
+
     def to_debug(level = 0)
       lhs_line_1, *lhs_other_lines = lhs.to_debug(level + 1)
       lhs_debug = [ [ level + 1, "lhs = #{Array(lhs_line_1).last}" ] ] +

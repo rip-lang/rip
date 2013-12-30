@@ -7,6 +7,9 @@ module Rip::Nodes
       @pattern = pattern
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       pattern_debug = pattern.map(&:data).join('')
 

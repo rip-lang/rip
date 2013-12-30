@@ -12,6 +12,15 @@ module Rip::Nodes
         (name == other.name)
     end
 
+    def interpret(context)
+      context[name] ||
+        (raise Rip::Exceptions::RuntimeException.new("Unknown reference `#{name}`"))
+    end
+
+    def interpret_for_assignment(context, &block)
+      context[name] = block.call
+    end
+
     def to_debug(level = 0)
       [
         [ level, "#{super.last.last} (#{name})" ]

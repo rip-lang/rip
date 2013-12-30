@@ -12,6 +12,14 @@ module Rip::Nodes
         (statements == other.statements)
     end
 
+    def interpret(context)
+      _context = context.nested_context
+
+      statements.map do |statement|
+        statement.interpret(_context)
+      end.last
+    end
+
     def to_debug(level = 0)
       statements.inject([]) do |reply, statement|
         reply + statement.to_debug(level)

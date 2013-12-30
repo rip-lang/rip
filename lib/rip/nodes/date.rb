@@ -18,6 +18,9 @@ module Rip::Nodes
         (day == other.day)
     end
 
+    def interpret(context)
+    end
+
     def to_debug(level = 0)
       [
         [ level, "#{super.last.last} (#{year}-#{month}-#{day})" ]

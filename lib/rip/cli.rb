@@ -13,7 +13,7 @@ module Rip
     def execute(file = nil)
       wip :execute
       wrap_exceptions do
-        puts parse_tree(file).inspect
+        Rip::Compiler::Driver.new(syntax_tree(file)).interpret
       end
     end
 

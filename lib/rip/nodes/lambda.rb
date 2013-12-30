@@ -18,6 +18,10 @@ module Rip::Nodes
         (body == other.body)
     end
 
+    def interpret(context)
+      Rip::Core::Lambda.new(context, keyword, parameters, body)
+    end
+
     def to_debug(level = 0)
       parameters_debug_inner = parameters.inject([]) do |reply, parameter|
         reply + parameter.to_debug(level + 2)
