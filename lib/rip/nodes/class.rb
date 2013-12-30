@@ -16,6 +16,9 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      Rip::Core::Class.new.tap do |reply|
+        body.interpret(reply)
+      end
     end
 
     def to_debug(level = 0)

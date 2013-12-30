@@ -19,6 +19,7 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      Rip::Core::Lambda.new(context, keyword, parameters, body)
     end
 
     def to_debug(level = 0)
