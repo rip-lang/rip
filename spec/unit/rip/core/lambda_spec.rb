@@ -29,6 +29,15 @@ describe Rip::Core::Lambda do
     Rip::Nodes::Invocation.new(location, a_plus_b_plus, [ reference_c ])
   end
 
+  include_examples 'debug methods' do
+    let(:class_to_s) { 'System.Lambda' }
+    let(:class_inspect) { '#< System.Lambda >' }
+
+    let(:instance) { rip_lambda }
+    let(:instance_to_s) { '#< System.Lambda [ class ] keyword = -> >' }
+    let(:instance_inspect) { '#< System.Lambda [ class ] keyword = -> >' }
+  end
+
   describe '.class_instance' do
     specify { expect(class_instance).to_not be_nil }
     specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }

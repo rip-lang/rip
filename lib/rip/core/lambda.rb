@@ -16,6 +16,10 @@ module Rip::Core
       self['class'] = self.class.class_instance
     end
 
+    def inspect_prep_body
+      super + [ "keyword = #{keyword.keyword}" ]
+    end
+
     def call(calling_context, arguments)
       required_parameters =  parameters.select { |parameter| parameter.is_a?(Rip::Nodes::Reference) }
 
@@ -33,6 +37,14 @@ module Rip::Core
 
       @class_instance = Rip::Core::Class.new.tap do |reply|
         reply['class'] = Rip::Core::Class.class_instance
+
+        def reply.to_s
+          'System.Lambda'
+        end
+
+        def reply.inspect_prep_body
+          [ to_s ]
+        end
       end
     end
 
