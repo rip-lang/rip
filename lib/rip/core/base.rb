@@ -22,5 +22,42 @@ module Rip::Core
     def []=(key, value)
       properties[key] = value
     end
+
+    def to_s
+      inspect
+    end
+
+    def inspect
+      inspect_prep.join(' ')
+    end
+
+    def inspect_prep
+      inspect_prep_prefix +
+        inspect_prep_body +
+        inspect_prep_postfix
+    end
+
+    def inspect_prep_prefix
+      [ '#<' ]
+    end
+
+    def inspect_prep_body
+      [
+        self['class'].to_s,
+        [
+          '[',
+          property_names.sort.join(', '),
+          ']'
+        ].join(' ')
+      ]
+    end
+
+    def inspect_prep_postfix
+      [ '>' ]
+    end
+
+    def property_names
+      self['class']['@'].properties.merge(properties).keys.uniq
+    end
   end
 end

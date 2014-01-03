@@ -14,6 +14,14 @@ module Rip::Core
       data == other.data
     end
 
+    def to_s
+      data.to_s
+    end
+
+    def inspect_prep_body
+      super + [ "data = #{data}" ]
+    end
+
     def self.class_instance
       return @class_instance if instance_variable_defined? :@class_instance
 
@@ -28,6 +36,14 @@ module Rip::Core
           reply['@'][property] = Rip::Core::RubyLambda.binary_prototype_method do |this, other|
             new(this.data.send(property, other.data))
           end
+        end
+
+        def reply.to_s
+          'System.Integer'
+        end
+
+        def reply.inspect_prep_body
+          [ to_s ]
         end
       end
     end
