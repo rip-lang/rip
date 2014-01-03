@@ -67,4 +67,36 @@ describe Rip::Core::Base do
       end
     end
   end
+
+  describe '#to_s' do
+    context 'class-level' do
+      specify do
+        expect(Rip::Core::Character.class_instance.to_s).to eq('System.Character')
+        expect(Rip::Core::Integer.class_instance.to_s).to eq('System.Integer')
+      end
+    end
+
+    context 'instance-level' do
+      specify do
+        expect(Rip::Core::Character.new('c').to_s).to eq('`c')
+        expect(Rip::Core::Integer.new(42).to_s).to eq('42')
+      end
+    end
+  end
+
+  describe '#inspect' do
+    context 'class-level' do
+      specify do
+        expect(Rip::Core::Character.class_instance.inspect).to eq('#< System.Character >')
+        expect(Rip::Core::Integer.class_instance.inspect).to eq('#< System.Integer >')
+      end
+    end
+
+    context 'instance-level' do
+      specify do
+        expect(Rip::Core::Character.new('c').inspect).to eq('#< System.Character [ class ] data = `c >')
+        expect(Rip::Core::Integer.new(42).inspect).to eq('#< System.Integer [ %, *, +, -, /, class ] data = 42 >')
+      end
+    end
+  end
 end
