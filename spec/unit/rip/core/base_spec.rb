@@ -71,6 +71,7 @@ describe Rip::Core::Base do
   describe '#to_s' do
     context 'class-level' do
       specify do
+        expect(Rip::Core::Boolean.class_instance.to_s).to eq('System.Boolean')
         expect(Rip::Core::Character.class_instance.to_s).to eq('System.Character')
         expect(Rip::Core::Integer.class_instance.to_s).to eq('System.Integer')
       end
@@ -78,6 +79,8 @@ describe Rip::Core::Base do
 
     context 'instance-level' do
       specify do
+        expect(Rip::Core::Boolean.true.to_s).to eq('true')
+        expect(Rip::Core::Boolean.false.to_s).to eq('false')
         expect(Rip::Core::Character.new('c').to_s).to eq('`c')
         expect(Rip::Core::Integer.new(42).to_s).to eq('42')
       end
@@ -87,6 +90,7 @@ describe Rip::Core::Base do
   describe '#inspect' do
     context 'class-level' do
       specify do
+        expect(Rip::Core::Boolean.class_instance.inspect).to eq('#< System.Boolean >')
         expect(Rip::Core::Character.class_instance.inspect).to eq('#< System.Character >')
         expect(Rip::Core::Integer.class_instance.inspect).to eq('#< System.Integer >')
       end
@@ -94,6 +98,8 @@ describe Rip::Core::Base do
 
     context 'instance-level' do
       specify do
+        expect(Rip::Core::Boolean.true.inspect).to eq('#< System.Boolean [ class ] true >')
+        expect(Rip::Core::Boolean.false.inspect).to eq('#< System.Boolean [ class ] false >')
         expect(Rip::Core::Character.new('c').inspect).to eq('#< System.Character [ class ] data = `c >')
         expect(Rip::Core::Integer.new(42).inspect).to eq('#< System.Integer [ %, *, +, -, /, class ] data = 42 >')
       end
