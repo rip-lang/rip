@@ -17,12 +17,23 @@ module Rip::Core
     end
 
     def inspect_prep_body
-      super + [ "keyword = #{keyword.keyword}" ]
+      super + [
+        [
+          "keyword = #{keyword.keyword}",
+          "arity = #{arity}"
+        ].join(', ')
+      ]
+    end
+
+    def arity
+      if required_parameters.count < parameters.count
+        required_parameters.count..parameters.count
+      else
+        parameters.count
+      end
     end
 
     def call(calling_context, arguments)
-      required_parameters =  parameters.select { |parameter| parameter.is_a?(Rip::Nodes::Reference) }
-
       if required_parameters.count > arguments.count
         curry(calling_context, arguments)
       else
@@ -73,6 +84,10 @@ module Rip::Core
 
         memo
       end
+    end
+
+    def required_parameters
+      parameters.select { |parameter| parameter.is_a?(Rip::Nodes::Reference) }
     end
   end
 
