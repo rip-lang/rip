@@ -12,4 +12,8 @@ describe Rip::Core::Class do
   describe '@.@' do
     specify { expect(klass['@']).to eq(Rip::Core::Prototype.new) }
   end
+
+  describe '@.class' do
+    specify { expect(klass['class']).to eq(class_instance) }
+  end
 end

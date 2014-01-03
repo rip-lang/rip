@@ -73,6 +73,7 @@ describe Rip::Core::Base do
       specify do
         expect(Rip::Core::Boolean.class_instance.to_s).to eq('System.Boolean')
         expect(Rip::Core::Character.class_instance.to_s).to eq('System.Character')
+        expect(Rip::Core::Class.class_instance.to_s).to eq('System.Class')
         expect(Rip::Core::Integer.class_instance.to_s).to eq('System.Integer')
       end
     end
@@ -82,7 +83,12 @@ describe Rip::Core::Base do
         expect(Rip::Core::Boolean.true.to_s).to eq('true')
         expect(Rip::Core::Boolean.false.to_s).to eq('false')
         expect(Rip::Core::Character.new('c').to_s).to eq('`c')
+        expect(Rip::Core::Class.new.to_s).to eq(Rip::Core::Class.new.inspect)
         expect(Rip::Core::Integer.new(42).to_s).to eq('42')
+      end
+
+      specify do
+        expect(Rip::Core::Prototype.new.to_s).to eq('#< @ >')
       end
     end
   end
@@ -92,6 +98,7 @@ describe Rip::Core::Base do
       specify do
         expect(Rip::Core::Boolean.class_instance.inspect).to eq('#< System.Boolean >')
         expect(Rip::Core::Character.class_instance.inspect).to eq('#< System.Character >')
+        expect(Rip::Core::Class.class_instance.inspect).to eq('#< System.Class >')
         expect(Rip::Core::Integer.class_instance.inspect).to eq('#< System.Integer >')
       end
     end
@@ -101,7 +108,16 @@ describe Rip::Core::Base do
         expect(Rip::Core::Boolean.true.inspect).to eq('#< System.Boolean [ class ] true >')
         expect(Rip::Core::Boolean.false.inspect).to eq('#< System.Boolean [ class ] false >')
         expect(Rip::Core::Character.new('c').inspect).to eq('#< System.Character [ class ] data = `c >')
+        expect(Rip::Core::Class.new.inspect).to eq('#< System.Class [ @, class ] >')
         expect(Rip::Core::Integer.new(42).inspect).to eq('#< System.Integer [ %, *, +, -, /, class ] data = 42 >')
+      end
+
+      specify do
+        prototype = Rip::Core::Prototype.new.tap do |prototype|
+          prototype['language'] = :rip
+        end
+        expect(prototype.inspect).to eq('#< @ [ language ] >')
+        expect(Rip::Core::Prototype.new.inspect).to eq('#< @ [ ] >')
       end
     end
   end
