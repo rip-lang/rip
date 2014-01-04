@@ -8,13 +8,11 @@ describe Rip::Core::Base do
         self['class'] = self.class.class_instance
       end
 
-      def self.class_instance
-        return @class_instance if instance_variable_defined? :@class_instance
+      define_class_instance do |class_instance|
+        class_instance['@']['bar'] = :hello
 
-        @class_instance = Rip::Core::Class.new.tap do |reply|
-          reply['class'] = Rip::Core::Class.class_instance
-
-          reply['@']['bar'] = :hello
+        def class_instance.inspect_prep_body
+          super
         end
       end
     end

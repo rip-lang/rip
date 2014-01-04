@@ -22,29 +22,19 @@ module Rip::Core
       super + [ "data = #{data}" ]
     end
 
-    def self.class_instance
-      return @class_instance if instance_variable_defined? :@class_instance
-
-      @class_instance = Rip::Core::Class.new.tap do |reply|
-        reply['class'] = Rip::Core::Class.class_instance
-
-        %w[
-          + -
-          * /
-          %
-        ].each do |property|
-          reply['@'][property] = Rip::Core::RubyLambda.binary_prototype_method do |this, other|
-            new(this.data.send(property, other.data))
-          end
+    define_class_instance do |class_instance|
+      %w[
+        + -
+        * /
+        %
+      ].each do |property|
+        class_instance['@'][property] = Rip::Core::RubyLambda.binary_prototype_method do |this, other|
+          new(this.data.send(property, other.data))
         end
+      end
 
-        def reply.to_s
-          'System.Integer'
-        end
-
-        def reply.inspect_prep_body
-          [ to_s ]
-        end
+      def class_instance.to_s
+        'System.Integer'
       end
     end
   end
