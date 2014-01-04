@@ -59,5 +59,23 @@ module Rip::Core
     def property_names
       self['class']['@'].properties.merge(properties).keys.uniq
     end
+
+    def self.define_class_instance(&block)
+      define_singleton_method :class_instance do
+        return @class_instance if instance_variable_defined? :@class_instance
+
+        @class_instance = Rip::Core::Class.new.tap do |reply|
+          reply['class'] = Rip::Core::Class.class_instance
+        end
+
+        def @class_instance.inspect_prep_body
+          [ to_s ]
+        end
+
+        block.call(@class_instance)
+
+        @class_instance
+      end
+    end
   end
 end
