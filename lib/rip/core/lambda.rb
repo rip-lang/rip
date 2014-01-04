@@ -43,19 +43,9 @@ module Rip::Core
       end
     end
 
-    def self.class_instance
-      return @class_instance if instance_variable_defined? :@class_instance
-
-      @class_instance = Rip::Core::Class.new.tap do |reply|
-        reply['class'] = Rip::Core::Class.class_instance
-
-        def reply.to_s
-          'System.Lambda'
-        end
-
-        def reply.inspect_prep_body
-          [ to_s ]
-        end
+    define_class_instance do |class_instance|
+      def class_instance.to_s
+        'System.Lambda'
       end
     end
 
