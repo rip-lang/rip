@@ -60,6 +60,10 @@ module Rip::Core
       self['class']['@'].properties.merge(properties).keys.uniq
     end
 
+    def symbols
+      properties.keys
+    end
+
     def self.define_class_instance(&block)
       define_singleton_method :class_instance do
         return @class_instance if instance_variable_defined? :@class_instance

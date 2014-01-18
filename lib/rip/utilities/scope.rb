@@ -29,5 +29,19 @@ module Rip::Utilities
     def nested_context
       self.class.new(self)
     end
+
+    def symbols
+      (keys + outer_context.keys).uniq
+    end
+
+    def to_s
+      inspect
+    end
+
+    protected
+
+    def keys
+      state.keys
+    end
   end
 end
