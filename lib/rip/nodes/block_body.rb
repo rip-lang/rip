@@ -20,6 +20,14 @@ module Rip::Nodes
       end.last
     end
 
+    def interpret_with_block(context, &block)
+      _context = context.nested_context
+
+      statements.map do |statement|
+        block.call(statement) || statement.interpret(_context)
+      end.last
+    end
+
     def to_debug(level = 0)
       statements.inject([]) do |reply, statement|
         reply + statement.to_debug(level)
