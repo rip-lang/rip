@@ -28,12 +28,10 @@ describe Rip::Nodes::BlockBody do
       block_node.interpret(empty_scope)
       expect(empty_scope).to eq(Rip::Utilities::Scope.new)
     end
-  end
 
-  describe '#interpret_with_block' do
     it 'calls the block once for each statement' do
       counter = 0
-      block_node.interpret_with_block(empty_scope) do |statement|
+      block_node.interpret(empty_scope) do |statement|
         counter = counter + 1
       end
 
@@ -41,7 +39,7 @@ describe Rip::Nodes::BlockBody do
     end
 
     it 'maps statements to return value of the block' do
-      last_value = block_node.interpret_with_block(empty_scope) do |statement|
+      last_value = block_node.interpret(empty_scope) do |statement|
         :foo
       end
 
@@ -49,7 +47,7 @@ describe Rip::Nodes::BlockBody do
     end
 
     it 'interprets the statement if block returns nil' do
-      last_value = block_node.interpret_with_block(empty_scope) do |statement|
+      last_value = block_node.interpret(empty_scope) do |statement|
       end
 
       expect(last_value).to eq(Rip::Core::Integer.new(42))

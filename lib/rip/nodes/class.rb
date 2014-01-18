@@ -17,7 +17,7 @@ module Rip::Nodes
 
     def interpret(context)
       Rip::Core::Class.new.tap do |reply|
-        body.interpret_with_block(context) do |statement|
+        body.interpret(context) do |statement|
           if statement.is_a?(Rip::Nodes::Assignment) && statement.lhs.is_a?(Rip::Nodes::Reference)
             statement.lhs.interpret_for_assignment(reply) do
               reply.resolve(context, statement.rhs)
