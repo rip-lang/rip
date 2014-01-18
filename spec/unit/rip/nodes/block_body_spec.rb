@@ -8,10 +8,15 @@ describe Rip::Nodes::BlockBody do
   let(:block_node) { Rip::Nodes::BlockBody.new(location, expression_nodes) }
 
   describe '#interpret' do
+    let(:forty_two_node) { Rip::Nodes::Integer.new(location, 42) }
+    let(:three_node) { Rip::Nodes::Integer.new(location, 2) }
+    let(:number_node) { Rip::Nodes::Reference.new(location, 'number') }
+    let(:number_assignment_node) { Rip::Nodes::Assignment.new(location, number_node, three_node) }
+
     let(:expression_nodes) do
       [
-        Rip::Nodes::Integer.new(location, 3),
-        Rip::Nodes::Integer.new(location, 42)
+        number_assignment_node,
+        forty_two_node
       ]
     end
 
