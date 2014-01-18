@@ -4,6 +4,7 @@ module Rip::Core
       super
 
       self['class'] = self.class.class_instance
+      self['self'] = self
       self['@'] = Rip::Core::Prototype.new
     end
 

@@ -58,7 +58,7 @@ describe Rip::Nodes::Class do
 
       describe 'resulting symbols' do
         specify { expect(context.symbols).to match_array(['half-life']) }
-        specify { expect(klass.symbols).to match_array(['@', 'class', 'number', 'alias']) }
+        specify { expect(klass.symbols).to match_array(['@', 'class', 'self', 'number', 'alias']) }
       end
 
       describe 'retrieving class properties' do
