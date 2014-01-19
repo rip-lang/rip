@@ -8,6 +8,10 @@ module Rip::Core
       self['@'] = Rip::Core::Prototype.new
     end
 
+    def nested_context
+      Rip::Utilities::Scope.new(self)
+    end
+
     def self.class_instance
       return @class_instance if instance_variable_defined? :@class_instance
 

@@ -33,6 +33,14 @@ describe Rip::Nodes::Class do
         Color = class {
           brightness = Person.population
         }
+
+        Outer = class {
+          foo = 17
+          Inner = class {
+            foo = 71
+            bar = half-life + 16
+          }
+        }
       RIP
     end
 
@@ -56,7 +64,7 @@ describe Rip::Nodes::Class do
 
 
     specify { expect(context.symbols).to eq([]) }
-    specify { expect(populated_context.symbols).to match_array(['half-life', 'Klass', 'Person', 'Color']) }
+    specify { expect(populated_context.symbols).to match_array(['half-life', 'Klass', 'Person', 'Color', 'Outer']) }
 
     specify { expect(klass.symbols).to match_array(['@', 'class', 'self', 'number', 'alias', 'alias_alias']) }
     specify { expect(klass['number']).to eq(Rip::Core::Integer.new(42)) }
@@ -71,5 +79,12 @@ describe Rip::Nodes::Class do
 
     specify { expect(color.symbols).to match_array(['@', 'class', 'self', 'brightness']) }
     specify { expect(color['brightness']).to be(person['population']) }
+
+    specify { expect(outer.symbols).to match_array(['@', 'class', 'self', 'foo', 'Inner']) }
+    specify { expect(outer['foo']).to eq(Rip::Core::Integer.new(17)) }
+
+    specify { expect(inner.symbols).to match_array(['@', 'class', 'self', 'foo', 'bar']) }
+    specify { expect(inner['foo']).to eq(Rip::Core::Integer.new(71)) }
+    specify { expect(inner['bar']).to eq(Rip::Core::Integer.new(36)) }
   end
 end
