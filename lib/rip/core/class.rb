@@ -4,7 +4,12 @@ module Rip::Core
       super
 
       self['class'] = self.class.class_instance
+      self['self'] = self
       self['@'] = Rip::Core::Prototype.new
+    end
+
+    def nested_context
+      Rip::Utilities::Scope.new(self)
     end
 
     def self.class_instance

@@ -9,8 +9,8 @@ describe Rip::Core::Class do
     let(:class_inspect) { '#< System.Class >' }
 
     let(:instance) { klass }
-    let(:instance_to_s) { '#< System.Class [ @, class ] >' }
-    let(:instance_inspect) { '#< System.Class [ @, class ] >' }
+    let(:instance_to_s) { '#< System.Class [ @, class, self ] >' }
+    let(:instance_inspect) { '#< System.Class [ @, class, self ] >' }
   end
 
   describe '.class_instance' do
@@ -24,5 +24,9 @@ describe Rip::Core::Class do
 
   describe '@.class' do
     specify { expect(klass['class']).to eq(class_instance) }
+  end
+
+  describe '@.self' do
+    specify { expect(klass['self']).to eq(klass) }
   end
 end

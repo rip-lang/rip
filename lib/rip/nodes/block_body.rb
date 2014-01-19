@@ -12,11 +12,15 @@ module Rip::Nodes
         (statements == other.statements)
     end
 
-    def interpret(context)
+    def interpret(context, &block)
       _context = context.nested_context
 
       statements.map do |statement|
-        statement.interpret(_context)
+        if block_given?
+          block.call(statement) || statement.interpret(_context)
+        else
+          statement.interpret(_context)
+        end
       end.last
     end
 

@@ -38,6 +38,11 @@ describe Rip::Utilities::Scope do
 
         specify { expect(scope_bar).to eq(expected) }
       end
+
+      describe '#symbols' do
+        specify { expect(scope_foo.symbols).to match_array([:foo, :bar]) }
+        specify { expect(scope_bar.symbols).to match_array([:foo, :bar]) }
+      end
     end
 
     describe '#==' do
@@ -51,5 +56,9 @@ describe Rip::Utilities::Scope do
     before(:each) { new_scope[:foo] = 111 }
 
     specify { expect(scope_foo).to eq(new_scope) }
+  end
+
+  describe '#symbols' do
+    specify { expect(scope_foo.symbols).to match_array([:foo]) }
   end
 end

@@ -1,4 +1,12 @@
 module RSpecHelpers
+  def build_ast(source)
+    Rip::Compiler::Parser.new(:rspec, source).syntax_tree
+  end
+
+  def debug_ast(ast)
+    puts ast.to_debug.map { |(level, node)| "#{"\t" * level}#{node}" }
+  end
+
   def recognizes_as_expected(description, *flags, &block)
     context description, *flags do
       instance_exec &block
