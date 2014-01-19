@@ -18,22 +18,6 @@ describe Rip::Core::Class do
     specify { expect(class_instance['class']).to be(Rip::Core::Class.class_instance) }
   end
 
-  describe '#resolve' do
-    let(:context) { Rip::Utilities::Scope.new }
-
-    let(:question_node) { Rip::Nodes::Reference.new(location_for, 'question') }
-    let(:answer_node) { Rip::Nodes::Reference.new(location_for, 'answer') }
-
-    before(:each) do
-      context[question_node.name] = Rip::Core::Integer.new(24)
-      klass[answer_node.name] = Rip::Core::Integer.new(42)
-    end
-
-    specify { expect { klass.resolve(context, question_node) }.to raise_error(Rip::Exceptions::RuntimeException) }
-
-    specify { expect(klass.resolve(context, answer_node)).to eq(Rip::Core::Integer.new(42)) }
-  end
-
   describe '@.@' do
     specify { expect(klass['@']).to eq(Rip::Core::Prototype.new) }
   end

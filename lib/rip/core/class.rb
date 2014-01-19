@@ -8,14 +8,6 @@ module Rip::Core
       self['@'] = Rip::Core::Prototype.new
     end
 
-    def resolve(context, expression)
-      if expression.is_a?(Rip::Nodes::Reference)
-        self[expression.name]
-      else
-        expression.interpret(context)
-      end
-    end
-
     def self.class_instance
       return @class_instance if instance_variable_defined? :@class_instance
 
