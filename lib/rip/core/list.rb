@@ -10,6 +10,11 @@ module Rip::Core
       self['class'] = self.class.class_instance
     end
 
+    def ==(other)
+      (self['class'] == other['class']) &&
+        (items == other.items)
+    end
+
     def to_s
       _items = items.map(&:to_s)
       "[#{_items.join(', ')}]"

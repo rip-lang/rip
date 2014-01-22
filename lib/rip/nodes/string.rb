@@ -13,6 +13,10 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      _characters = characters.map do |character|
+        character.interpret(context)
+      end
+      Rip::Core::String.new(_characters)
     end
 
     def to_debug(level = 0)
