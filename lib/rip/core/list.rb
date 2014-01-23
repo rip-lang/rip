@@ -21,6 +21,10 @@ module Rip::Core
     end
 
     define_class_instance do |class_instance|
+      class_instance['@']['reverse'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
+        new(this.items.reverse)
+      end
+
       def class_instance.to_s
         'System.List'
       end
