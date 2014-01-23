@@ -11,11 +11,17 @@ module Rip::Core
     end
 
     def [](key)
-      (properties[key] ||
+      reply = (properties[key] ||
         properties['class']['@'][key]).tap do |reply|
         if reply.is_a?(Rip::Core::Lambda)
           reply['@'] = self
         end
+      end
+
+      if reply.is_a?(Rip::Core::DynamicProperty)
+        properties[key] = reply.block.call(self)
+      else
+        reply
       end
     end
 
