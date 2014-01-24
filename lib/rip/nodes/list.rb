@@ -13,6 +13,10 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      _items = items.map do |item|
+        item.interpret(context)
+      end
+      Rip::Core::List.new(_items)
     end
 
     def to_debug(level = 0)

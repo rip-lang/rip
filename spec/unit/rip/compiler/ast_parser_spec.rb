@@ -216,7 +216,7 @@ describe Rip::Compiler::AST do
     end
 
     it 'finds the key-value node' do
-      expect(map.items.first).to eq(key_value_node)
+      expect(map.pairs.first).to eq(key_value_node)
 
       expect(map).to eq(map_node)
     end
