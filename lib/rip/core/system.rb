@@ -6,7 +6,7 @@ module Rip::Core
       ]) do |this, context|
         module_name = context['module_name'].characters.map(&:data).join
 
-        Rip::Loaders::FileSystem.load_module(module_name).tap do |reply|
+        Rip::Loaders::FileSystem.load_module(module_name, context.origin).tap do |reply|
           raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`") if reply.nil?
         end
       end
