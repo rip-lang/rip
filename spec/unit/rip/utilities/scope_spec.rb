@@ -58,6 +58,19 @@ describe Rip::Utilities::Scope do
     specify { expect(scope_foo).to eq(new_scope) }
   end
 
+  describe '#origin' do
+    let(:origin_context) { Rip::Utilities::Scope.new(scope_foo, :ORIGIN) }
+
+    specify { expect(scope_foo.origin).to be_nil }
+    specify { expect(scope_foo.nested_context.origin).to be_nil }
+    specify { expect(scope_foo.nested_context.nested_context.origin).to be_nil }
+
+    specify { expect(origin_context.outer_context.origin).to be_nil }
+    specify { expect(origin_context.origin).to eq(:ORIGIN) }
+    specify { expect(origin_context.nested_context.origin).to eq(:ORIGIN) }
+    specify { expect(origin_context.nested_context.nested_context.origin).to eq(:ORIGIN) }
+  end
+
   describe '#symbols' do
     specify { expect(scope_foo.symbols).to match_array([:foo]) }
   end

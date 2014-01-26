@@ -32,4 +32,5 @@ require 'rip/nodes'
 require 'rip/utilities'
 
 require 'rip/compiler'
+require 'rip/loaders'
 require 'rip/version'

@@ -2,6 +2,7 @@ require 'coveralls'
 
 Coveralls.wear!
 
+require 'aruba/api'
 require 'pathname'
 require 'parslet'
 require 'parslet/convenience'
@@ -27,6 +28,7 @@ RSpec.configure do |config|
 
   config.color = true
 
+  config.include Aruba::Api
   config.include RSpecHelpers
 
   config.extend RSpecHelpers

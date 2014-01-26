@@ -10,6 +10,11 @@ module Rip::Core
       self['class'] = self.class.class_instance
     end
 
+    def ==(other)
+      (self['class'] == other['class']) &&
+        (characters == other.characters)
+    end
+
     def to_s
       _characters = characters.map(&:to_s)
       "\"#{_characters.join('')}\""
