@@ -1,5 +1,4 @@
 require 'parslet'
-require 'pathname'
 
 module Rip::Compiler
   class Parser < Parslet::Parser
