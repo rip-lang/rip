@@ -3,9 +3,10 @@ module Rip::Utilities
     attr_reader :state
     attr_reader :outer_context
 
-    def initialize(outer_context = {})
+    def initialize(outer_context = {}, origin = nil)
       @state = {}
       @outer_context = outer_context
+      @origin = origin
     end
 
     def ==(other)
@@ -28,6 +29,14 @@ module Rip::Utilities
 
     def nested_context
       self.class.new(self)
+    end
+
+    def origin
+      if @origin
+        @origin
+      elsif outer_context.respond_to?(:origin)
+        outer_context.origin
+      end
     end
 
     def symbols
