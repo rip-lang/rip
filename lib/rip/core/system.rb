@@ -11,6 +11,8 @@ module Rip::Core
         end
       end
 
+      class_instance['List'] = Rip::Core::List.class_instance
+
       def class_instance.to_s
         'System'
       end
