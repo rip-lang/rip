@@ -20,6 +20,7 @@ describe Rip::Core::String do
   describe '.class_instance' do
     specify { expect(class_instance).to_not be_nil }
     specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
+    specify { expect(class_instance.ancestors).to include(Rip::Core::List.class_instance) }
   end
 
   describe '@.class' do

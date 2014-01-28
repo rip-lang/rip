@@ -35,6 +35,14 @@ module Rip::Core
         new(characters)
       end
 
+      def class_instance.ancestors
+        [
+          self,
+          Rip::Core::List.class_instance,
+          Rip::Core::Object.class_instance
+        ]
+      end
+
       def class_instance.to_s
         'System.String'
       end
