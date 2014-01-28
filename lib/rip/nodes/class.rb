@@ -16,7 +16,11 @@ module Rip::Nodes
     end
 
     def interpret(context)
-      Rip::Core::Class.new.tap do |reply|
+      _superclasses = superclasses.map do |superclass|
+        superclass.interpret(context)
+      end
+
+      Rip::Core::Class.new(_superclasses).tap do |reply|
         body.interpret(context) do |statement|
           if statement.is_a?(Rip::Nodes::Assignment)
             statement.lhs.interpret_for_assignment(reply) do
