@@ -20,7 +20,6 @@ describe Rip::Core::String do
   describe '.class_instance' do
     specify { expect(class_instance).to_not be_nil }
     specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
-    specify { expect(class_instance.ancestors).to include(Rip::Core::List.class_instance) }
   end
 
   describe '@.class' do
@@ -76,6 +75,32 @@ describe Rip::Core::String do
       let(:lowercase_string) { string['lowercase'].call(context, []) }
 
       specify { expect(lowercase_string).to eq(Rip::Core::String.new(lowercase_characters)) }
+    end
+  end
+
+  describe '@.reverse' do
+    let(:characters) do
+      [
+        Rip::Core::Character.new('r'),
+        Rip::Core::Character.new('i'),
+        Rip::Core::Character.new('p')
+      ]
+    end
+
+    specify { expect(string['reverse']).to be_a(Rip::Core::Lambda) }
+
+    context 'invocation' do
+      let(:reverse_characters) do
+        [
+          Rip::Core::Character.new('p'),
+          Rip::Core::Character.new('i'),
+          Rip::Core::Character.new('r')
+        ]
+      end
+
+      let(:reverse_string) { string['reverse'].call(context, []) }
+
+      specify { expect(reverse_string).to eq(Rip::Core::String.new(reverse_characters)) }
     end
   end
 end
