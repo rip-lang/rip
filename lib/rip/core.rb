@@ -23,5 +23,6 @@ require 'rip/core/map'
 require 'rip/core/range'
 require 'rip/core/regular_expression'
 require 'rip/core/string'
-require 'rip/core/system'
 require 'rip/core/time'
+
+require 'rip/core/system'

@@ -20,9 +20,9 @@ module Rip::Core
       "[#{_items.join(', ')}]"
     end
 
-    define_class_instance do |class_instance|
+    define_class_instance('list') do |class_instance|
       class_instance['@']['reverse'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
-        new(this.items.reverse)
+        this.class.new(this.items.reverse)
       end
 
       class_instance['@']['head'] = Rip::Core::DynamicProperty.new do |this|

@@ -1,6 +1,7 @@
 module Rip::Core
   class String < Rip::Core::Base
     attr_reader :characters
+    alias :items :characters
 
     def initialize(characters = [])
       super()
@@ -20,7 +21,7 @@ module Rip::Core
       "\"#{_characters.join('')}\""
     end
 
-    define_class_instance do |class_instance|
+    define_class_instance('string') do |class_instance|
       class_instance['@']['uppercase'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
         characters = this.characters.map do |character|
           character['uppercase'].call(context, [])

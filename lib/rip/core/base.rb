@@ -11,17 +11,22 @@ module Rip::Core
     end
 
     def [](key)
-      reply = (properties[key] ||
-        properties['class']['@'][key]).tap do |reply|
-        if reply.is_a?(Rip::Core::Lambda)
-          reply['@'] = self
-        end
-      end
+      reply = get(key) || (raise Rip::Exceptions::RuntimeException.new("Unknown property `#{key}`"))
 
-      if reply.is_a?(Rip::Core::DynamicProperty)
+      case reply
+      when Rip::Core::DynamicProperty
         properties[key] = reply.block.call(self)
+      when Rip::Core::Lambda
+        reply['@'] = self
+        reply
       else
         reply
+      end
+    end
+
+    def get(key)
+      properties['class'].ancestors.inject(properties[key]) do |memo, ancestor|
+        memo || ancestor['@'][key]
       end
     end
 
@@ -70,12 +75,17 @@ module Rip::Core
       properties.keys
     end
 
-    def self.define_class_instance(&block)
+    def self.define_class_instance(core_module_name = nil, &block)
       define_singleton_method :class_instance do
         return @class_instance if instance_variable_defined? :@class_instance
 
-        @class_instance = Rip::Core::Class.new.tap do |reply|
-          reply['class'] = Rip::Core::Class.class_instance
+        @class_instance = if core_module_name
+          load_path = Rip.root + 'core'
+          Rip::Loaders::FileSystem.new(core_module_name, [ load_path ]).load
+        else
+          Rip::Core::Class.new.tap do |reply|
+            reply['class'] = Rip::Core::Class.class_instance
+          end
         end
 
         def @class_instance.inspect_prep_body

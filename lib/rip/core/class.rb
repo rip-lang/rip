@@ -1,7 +1,14 @@
 module Rip::Core
   class Class < Rip::Core::Base
-    def initialize
-      super
+    attr_reader :ancestors
+
+    def initialize(ancestors = [])
+      super()
+
+      parents = ancestors + [ Rip::Core::Object.class_instance ]
+      @ancestors = parents.inject([ self ]) do |memo, parent|
+        memo + [ parent ] + parent.ancestors
+      end.uniq
 
       self['class'] = self.class.class_instance
       self['self'] = self

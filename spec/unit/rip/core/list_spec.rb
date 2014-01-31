@@ -14,7 +14,7 @@ describe Rip::Core::List do
 
     let(:instance) { list }
     let(:instance_to_s) { '[]' }
-    let(:instance_inspect) { '#< System.List [ class, head, head_left, head_right, reverse, tail, tail_left, tail_right ] >' }
+    let(:instance_inspect) { '#< System.List [ <<, class, head, head_left, head_right, inject, join, next, reverse, tail, tail_left, tail_right ] >' }
   end
 
   describe '.class_instance' do

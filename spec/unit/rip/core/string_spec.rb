@@ -77,4 +77,30 @@ describe Rip::Core::String do
       specify { expect(lowercase_string).to eq(Rip::Core::String.new(lowercase_characters)) }
     end
   end
+
+  describe '@.reverse' do
+    let(:characters) do
+      [
+        Rip::Core::Character.new('r'),
+        Rip::Core::Character.new('i'),
+        Rip::Core::Character.new('p')
+      ]
+    end
+
+    specify { expect(string['reverse']).to be_a(Rip::Core::Lambda) }
+
+    context 'invocation' do
+      let(:reverse_characters) do
+        [
+          Rip::Core::Character.new('p'),
+          Rip::Core::Character.new('i'),
+          Rip::Core::Character.new('r')
+        ]
+      end
+
+      let(:reverse_string) { string['reverse'].call(context, []) }
+
+      specify { expect(reverse_string).to eq(Rip::Core::String.new(reverse_characters)) }
+    end
+  end
 end
