@@ -1,3 +1,11 @@
 class (System.List) {
 	to_string = -> { 'System.String' }
+
+	# @.lowercase = -> {
+	# 	@.class.new(@.map(:lowercase))
+	# }
+
+	# @.uppercase = -> {
+	# 	@.class.new(@.map(:uppercase))
+	# }
 }
