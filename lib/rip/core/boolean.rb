@@ -27,6 +27,10 @@ module Rip::Core
     end
 
     define_class_instance do |class_instance|
+      class_instance['@']['to_boolean'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
+        this
+      end
+
       def class_instance.to_s
         '#< System.Boolean >'
       end

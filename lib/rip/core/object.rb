@@ -19,6 +19,10 @@ module Rip::Core
       @class_instance = new.tap do |reply|
         reply['@'] = Rip::Core::Prototype.new
 
+        reply['@']['to_boolean'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
+          Rip::Core::Boolean.true
+        end
+
         def reply.ancestors
           [ self ]
         end
