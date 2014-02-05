@@ -15,9 +15,9 @@ module Rip::Core
         (items == other.items)
     end
 
-    def to_s
-      _items = items.map(&:to_s)
-      "[#{_items.join(', ')}]"
+    def to_s_prep_body
+      _items = items.map(&:to_s).join(', ')
+      super + [ "items = [ #{_items} ]" ]
     end
 
     define_class_instance('list') do |class_instance|
@@ -50,7 +50,7 @@ module Rip::Core
       end
 
       def class_instance.to_s
-        'System.List'
+        '#< System.List >'
       end
     end
   end

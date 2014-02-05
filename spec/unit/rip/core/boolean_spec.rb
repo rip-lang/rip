@@ -6,12 +6,10 @@ describe Rip::Core::Boolean do
 
   include_examples 'debug methods' do
     let(:class_instance) { Rip::Core::Boolean.class_instance }
-    let(:class_to_s) { 'System.Boolean' }
-    let(:class_inspect) { '#< System.Boolean >' }
+    let(:class_to_s) { '#< System.Boolean >' }
 
     let(:instance) { rip_false }
-    let(:instance_to_s) { 'false' }
-    let(:instance_inspect) { '#< System.Boolean [ class ] false >' }
+    let(:instance_to_s) { '#< #< System.Boolean > [ class ] false >' }
   end
 
   describe '.true' do

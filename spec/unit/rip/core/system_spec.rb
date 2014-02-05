@@ -4,8 +4,7 @@ describe Rip::Core::System do
   let(:class_instance) { Rip::Core::System.class_instance }
 
   describe 'debug methods' do
-    specify { expect(class_instance.to_s).to eq('System') }
-    specify { expect(class_instance.inspect).to eq('#< System >') }
+    specify { expect(class_instance.to_s).to eq('#< System >') }
   end
 
   describe '.class_instance' do

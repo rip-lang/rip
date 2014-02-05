@@ -30,12 +30,10 @@ describe Rip::Core::Lambda do
   end
 
   include_examples 'debug methods' do
-    let(:class_to_s) { 'System.Lambda' }
-    let(:class_inspect) { '#< System.Lambda >' }
+    let(:class_to_s) { '#< System.Lambda >' }
 
     let(:instance) { rip_lambda }
-    let(:instance_to_s) { '#< System.Lambda [ bind, class ] keyword = ->, arity = 0 >' }
-    let(:instance_inspect) { '#< System.Lambda [ bind, class ] keyword = ->, arity = 0 >' }
+    let(:instance_to_s) { '#< #< System.Lambda > [ bind, class ] keyword = ->, arity = 0 >' }
   end
 
   describe '.class_instance' do
@@ -46,7 +44,7 @@ describe Rip::Core::Lambda do
   describe '#arity' do
     context 'no parameters' do
       specify { expect(rip_lambda.arity).to eq(0) }
-      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ bind, class ] keyword = ->, arity = 0 >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] keyword = ->, arity = 0 >') }
     end
 
     context 'all required parameters' do
@@ -57,7 +55,7 @@ describe Rip::Core::Lambda do
         ]
       end
       specify { expect(rip_lambda.arity).to eq(2) }
-      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ bind, class ] keyword = ->, arity = 2 >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] keyword = ->, arity = 2 >') }
     end
 
     context 'all optional parameters' do
@@ -68,7 +66,7 @@ describe Rip::Core::Lambda do
         ]
       end
       specify { expect(rip_lambda.arity).to eq(0..2) }
-      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ bind, class ] keyword = ->, arity = 0..2 >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] keyword = ->, arity = 0..2 >') }
     end
 
     context 'mixed parameters' do
@@ -79,7 +77,7 @@ describe Rip::Core::Lambda do
         ]
       end
       specify { expect(rip_lambda.arity).to eq(1..2) }
-      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ bind, class ] keyword = ->, arity = 1..2 >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] keyword = ->, arity = 1..2 >') }
     end
   end
 

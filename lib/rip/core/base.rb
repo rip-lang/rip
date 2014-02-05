@@ -36,24 +36,20 @@ module Rip::Core
     end
 
     def to_s
-      inspect
+      to_s_prep.join(' ')
     end
 
-    def inspect
-      inspect_prep.join(' ')
+    def to_s_prep
+      to_s_prep_prefix +
+        to_s_prep_body +
+        to_s_prep_postfix
     end
 
-    def inspect_prep
-      inspect_prep_prefix +
-        inspect_prep_body +
-        inspect_prep_postfix
-    end
-
-    def inspect_prep_prefix
+    def to_s_prep_prefix
       [ '#<' ]
     end
 
-    def inspect_prep_body
+    def to_s_prep_body
       [
         self['class'].to_s,
         [
@@ -64,7 +60,7 @@ module Rip::Core
       ]
     end
 
-    def inspect_prep_postfix
+    def to_s_prep_postfix
       [ '>' ]
     end
 
@@ -87,10 +83,6 @@ module Rip::Core
           Rip::Core::Class.new.tap do |reply|
             reply['class'] = Rip::Core::Class.class_instance
           end
-        end
-
-        def @class_instance.inspect_prep_body
-          [ to_s ]
         end
 
         block.call(@class_instance)

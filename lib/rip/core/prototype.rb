@@ -4,13 +4,7 @@ module Rip::Core
       properties[key]
     end
 
-    def to_s
-      (inspect_prep_prefix +
-        Array('@') +
-        inspect_prep_postfix).join(' ')
-    end
-
-    def inspect_prep_body
+    def to_s_prep_body
       [
         '@',
         [

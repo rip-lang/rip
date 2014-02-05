@@ -24,11 +24,7 @@ module Rip::Core
         end
 
         def reply.to_s
-          'System.Object'
-        end
-
-        def reply.inspect_prep_body
-          [ to_s ]
+          '#< System.Object >'
         end
       end
     end

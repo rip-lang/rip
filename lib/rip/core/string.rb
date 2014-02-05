@@ -16,9 +16,9 @@ module Rip::Core
         (characters == other.characters)
     end
 
-    def to_s
-      _characters = characters.map(&:to_s)
-      "\"#{_characters.join('')}\""
+    def to_s_prep_body
+      _characters = characters.map(&:to_s).join(', ')
+      super + [ "characters = \"#{_characters}\"" ]
     end
 
     define_class_instance('string') do |class_instance|
@@ -37,7 +37,7 @@ module Rip::Core
       end
 
       def class_instance.to_s
-        'System.String'
+        '#< System.String >'
       end
     end
   end

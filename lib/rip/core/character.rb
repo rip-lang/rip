@@ -14,12 +14,8 @@ module Rip::Core
       data == other.data
     end
 
-    def to_s
-      "`#{data}"
-    end
-
-    def inspect_prep_body
-      super + [ "data = #{to_s}" ]
+    def to_s_prep_body
+      super + [ "data = `#{data}" ]
     end
 
     define_class_instance do |class_instance|
@@ -32,7 +28,7 @@ module Rip::Core
       end
 
       def class_instance.to_s
-        'System.Character'
+        '#< System.Character >'
       end
     end
   end

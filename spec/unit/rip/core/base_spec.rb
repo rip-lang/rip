@@ -10,10 +10,6 @@ describe Rip::Core::Base do
 
       define_class_instance do |class_instance|
         class_instance['@']['bar'] = :hello
-
-        def class_instance.inspect_prep_body
-          super
-        end
       end
     end
   end

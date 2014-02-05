@@ -30,7 +30,7 @@ module Rip::Core
       # class_instance['Time']              = Rip::Core::Time.class_instance
 
       def class_instance.to_s
-        'System'
+        '#< System >'
       end
     end
   end

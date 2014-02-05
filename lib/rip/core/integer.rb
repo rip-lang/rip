@@ -14,11 +14,7 @@ module Rip::Core
       data == other.data
     end
 
-    def to_s
-      data.to_s
-    end
-
-    def inspect_prep_body
+    def to_s_prep_body
       super + [ "data = #{data}" ]
     end
 
@@ -34,7 +30,7 @@ module Rip::Core
       end
 
       def class_instance.to_s
-        'System.Integer'
+        '#< System.Integer >'
       end
     end
   end

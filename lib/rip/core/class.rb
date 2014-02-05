@@ -29,11 +29,7 @@ module Rip::Core
         reply['class'] = reply
 
         def reply.to_s
-          'System.Class'
-        end
-
-        def reply.inspect_prep_body
-          [ to_s ]
+          '#< System.Class >'
         end
       end
     end

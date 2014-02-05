@@ -9,12 +9,10 @@ describe Rip::Core::Character do
   let(:character) { Rip::Core::Character.new('r') }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { 'System.Character' }
-    let(:class_inspect) { '#< System.Character >' }
+    let(:class_to_s) { '#< System.Character >' }
 
     let(:instance) { character }
-    let(:instance_to_s) { '`r' }
-    let(:instance_inspect) { '#< System.Character [ class, lowercase, uppercase ] data = `r >' }
+    let(:instance_to_s) { '#< #< System.Character > [ class, lowercase, uppercase ] data = `r >' }
   end
 
   describe '.class_instance' do

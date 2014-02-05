@@ -14,12 +14,8 @@ module Rip::Core
       data == other.data
     end
 
-    def to_s
-      data.to_s
-    end
-
-    def inspect_prep_body
-      super + [ to_s ]
+    def to_s_prep_body
+      super + [ data.to_s ]
     end
 
     def self.true
@@ -32,7 +28,7 @@ module Rip::Core
 
     define_class_instance do |class_instance|
       def class_instance.to_s
-        'System.Boolean'
+        '#< System.Boolean >'
       end
     end
   end

@@ -9,12 +9,10 @@ describe Rip::Core::List do
   let(:list) { Rip::Core::List.new(objects) }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { 'System.List' }
-    let(:class_inspect) { '#< System.List >' }
+    let(:class_to_s) { '#< System.List >' }
 
     let(:instance) { list }
-    let(:instance_to_s) { '[]' }
-    let(:instance_inspect) { '#< System.List [ <<, class, head, head_left, head_right, inject, join, next, reverse, tail, tail_left, tail_right ] >' }
+    let(:instance_to_s) { '#< #< System.List > [ <<, class, head, head_left, head_right, inject, join, next, reverse, tail, tail_left, tail_right ] items = [  ] >' }
   end
 
   describe '.class_instance' do

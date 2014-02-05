@@ -7,12 +7,10 @@ describe Rip::Core::Integer do
   let(:class_instance) { Rip::Core::Integer.class_instance }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { 'System.Integer' }
-    let(:class_inspect) { '#< System.Integer >' }
+    let(:class_to_s) { '#< System.Integer >' }
 
     let(:instance) { forty_two }
-    let(:instance_to_s) { '42' }
-    let(:instance_inspect) { '#< System.Integer [ %, *, +, -, /, class ] data = 42 >' }
+    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, class ] data = 42 >' }
   end
 
   describe '.class_instance' do

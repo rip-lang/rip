@@ -16,7 +16,7 @@ module Rip::Core
       self['class'] = self.class.class_instance
     end
 
-    def inspect_prep_body
+    def to_s_prep_body
       super + [
         [
           "keyword = #{keyword.keyword}",
@@ -82,7 +82,7 @@ module Rip::Core
       end
 
       def class_instance.to_s
-        'System.Lambda'
+        '#< System.Lambda >'
       end
     end
 

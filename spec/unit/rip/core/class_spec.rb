@@ -6,12 +6,10 @@ describe Rip::Core::Class do
   let(:class_instance) { Rip::Core::Class.class_instance }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { 'System.Class' }
-    let(:class_inspect) { '#< System.Class >' }
+    let(:class_to_s) { '#< System.Class >' }
 
     let(:instance) { klass }
-    let(:instance_to_s) { '#< System.Class [ @, class, self ] >' }
-    let(:instance_inspect) { '#< System.Class [ @, class, self ] >' }
+    let(:instance_to_s) { '#< #< System.Class > [ @, class, self ] >' }
   end
 
   describe '.class_instance' do

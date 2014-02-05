@@ -9,12 +9,10 @@ describe Rip::Core::String do
   let(:string) { Rip::Core::String.new(characters) }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { 'System.String' }
-    let(:class_inspect) { '#< System.String >' }
+    let(:class_to_s) { '#< System.String >' }
 
     let(:instance) { string }
-    let(:instance_to_s) { '""' }
-    let(:instance_inspect) { '#< System.String [ class, lowercase, uppercase ] >' }
+    let(:instance_to_s) { '#< #< System.String > [ class, lowercase, uppercase ] characters = "" >' }
   end
 
   describe '.class_instance' do

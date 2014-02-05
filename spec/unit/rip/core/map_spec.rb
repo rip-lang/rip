@@ -7,12 +7,10 @@ describe Rip::Core::Map do
   let(:map) { Rip::Core::Map.new(pairs) }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { 'System.Map' }
-    let(:class_inspect) { '#< System.Map >' }
+    let(:class_to_s) { '#< System.Map >' }
 
     let(:instance) { map }
-    let(:instance_to_s) { '{}' }
-    let(:instance_inspect) { '#< System.Map [ class ] >' }
+    let(:instance_to_s) { '#< #< System.Map > [ class ] pairs = {  } >' }
   end
 
   describe '.class_instance' do
