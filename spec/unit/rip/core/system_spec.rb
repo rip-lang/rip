@@ -13,7 +13,7 @@ describe Rip::Core::System do
   end
 
   describe '.require' do
-    specify { expect(class_instance.symbols).to match_array(['@', 'Boolean', 'List', 'String', 'class', 'self', 'require']) }
+    specify { expect(class_instance.symbols).to match_array(['@', 'Boolean', 'Character', 'List', 'String', 'class', 'self', 'require']) }
     specify { expect(class_instance['require']).to be_a(Rip::Core::Lambda) }
 
     let(:project_dir) { Pathname(Dir.pwd) }

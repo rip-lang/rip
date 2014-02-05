@@ -12,7 +12,7 @@ module Rip::Core
       end
 
       class_instance['Boolean']           = Rip::Core::Boolean.class_instance
-      # class_instance['Character']         = Rip::Core::Character.class_instance
+      class_instance['Character']         = Rip::Core::Character.class_instance
       # class_instance['Class']             = Rip::Core::Class.class_instance
       # class_instance['Date']              = Rip::Core::Date.class_instance
       # class_instance['DateTime']          = Rip::Core::DateTime.class_instance

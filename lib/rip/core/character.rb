@@ -18,7 +18,7 @@ module Rip::Core
       super + [ "data = `#{data}" ]
     end
 
-    define_class_instance do |class_instance|
+    define_class_instance('character') do |class_instance|
       class_instance['@']['uppercase'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
         new(this.data.upcase)
       end
