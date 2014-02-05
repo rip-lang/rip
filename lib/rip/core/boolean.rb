@@ -19,14 +19,17 @@ module Rip::Core
     end
 
     def self.true
-      new(true)
+      class_instance['true']
     end
 
     def self.false
-      new(false)
+      class_instance['false']
     end
 
     define_class_instance do |class_instance|
+      class_instance['true'] = new(true)
+      class_instance['false'] = new(false)
+
       class_instance['@']['to_boolean'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
         this
       end
