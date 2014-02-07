@@ -24,14 +24,14 @@ module Rip::Core
     define_class_instance('string') do |class_instance|
       class_instance['@']['uppercase'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
         characters = this.characters.map do |character|
-          character['uppercase'].call(context, [])
+          character['uppercase'].call([])
         end
         new(characters)
       end
 
       class_instance['@']['lowercase'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
         characters = this.characters.map do |character|
-          character['lowercase'].call(context, [])
+          character['lowercase'].call([])
         end
         new(characters)
       end

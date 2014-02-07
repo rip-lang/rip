@@ -46,7 +46,7 @@ describe Rip::Core::String do
         ]
       end
 
-      let(:uppercase_string) { string['uppercase'].call(context, []) }
+      let(:uppercase_string) { string['uppercase'].call([]) }
 
       specify { expect(uppercase_string).to eq(Rip::Core::String.new(uppercase_characters)) }
     end
@@ -72,7 +72,7 @@ describe Rip::Core::String do
         ]
       end
 
-      let(:lowercase_string) { string['lowercase'].call(context, []) }
+      let(:lowercase_string) { string['lowercase'].call([]) }
 
       specify { expect(lowercase_string).to eq(Rip::Core::String.new(lowercase_characters)) }
     end
@@ -98,7 +98,7 @@ describe Rip::Core::String do
         ]
       end
 
-      let(:reverse_string) { string['reverse'].call(context, []) }
+      let(:reverse_string) { string['reverse'].call([]) }
 
       specify { expect(reverse_string).to eq(Rip::Core::String.new(reverse_characters)) }
     end

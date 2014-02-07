@@ -312,8 +312,8 @@ describe Rip::Compiler::Parser do
               {
                 :dash_rocket => '->',
                 :parameters => [
-                  { :reference => 'one' },
-                  { :reference => 'two' }
+                  { :parameter => 'one' },
+                  { :parameter => 'two' }
                 ],
                 :location_body => '{',
                 :body => []
@@ -332,14 +332,12 @@ describe Rip::Compiler::Parser do
                 :dash_rocket => '->',
                 :parameters => [
                   {
-                    :lhs => { :reference => 'one' },
-                    :location => '=',
-                    :rhs => { :integer => '1' }
+                    :parameter => 'one',
+                    :default_expression => { :integer => '1' }
                   },
                   {
-                    :lhs => { :reference => 'two' },
-                    :location => '=',
-                    :rhs => { :integer => '2' }
+                    :parameter => 'two',
+                    :default_expression => { :integer => '2' }
                   }
                 ],
                 :location_body => '{',
@@ -358,11 +356,10 @@ describe Rip::Compiler::Parser do
               {
                 :fat_rocket => '=>',
                 :parameters => [
-                  { :reference => 'platform' },
+                  { :parameter => 'platform' },
                   {
-                    :lhs => { :reference => 'name' },
-                    :location => '=',
-                    :rhs => {
+                    :parameter => 'name',
+                    :default_expression => {
                       :location => ':',
                       :string => rip_string_raw('rip')
                     }
@@ -384,17 +381,15 @@ describe Rip::Compiler::Parser do
               {
                 :dash_rocket => '->',
                 :parameters => [
-                  { :reference => 'abc' },
-                  { :reference => 'xyz' },
+                  { :parameter => 'abc' },
+                  { :parameter => 'xyz' },
                   {
-                    :lhs => { :reference => 'one' },
-                    :location => '=',
-                    :rhs => { :integer => '1' }
+                    :parameter => 'one',
+                    :default_expression => { :integer => '1' }
                   },
                   {
-                    :lhs => { :reference => 'two' },
-                    :location => '=',
-                    :rhs => { :integer => '2' }
+                    :parameter => 'two',
+                    :default_expression => { :integer => '2' }
                   }
                 ],
                 :location_body => '{',

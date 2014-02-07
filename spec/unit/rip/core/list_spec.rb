@@ -94,7 +94,7 @@ describe Rip::Core::List do
         ]
       end
 
-      let(:reverse_list) { list['reverse'].call(context, []) }
+      let(:reverse_list) { list['reverse'].call([]) }
 
       specify { expect(reverse_list).to eq(Rip::Core::List.new(reverse_objects)) }
     end
