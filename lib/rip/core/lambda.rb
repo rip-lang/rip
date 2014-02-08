@@ -33,6 +33,12 @@ module Rip::Core
       end
     end
 
+    def bind(receiver)
+      clone.tap do |reply|
+        reply['@'] = receiver
+      end
+    end
+
     def call(arguments, &block)
       _context = context.nested_context
 
@@ -56,11 +62,25 @@ module Rip::Core
       elsif block_given?
         block.call(_context)
       else
-        body.interpret(_context)
+        body.interpret(_context) do |statement|
+          if statement.is_a?(Rip::Nodes::Reference) && symbols.include?(statement.name)
+            self[statement.name]
+          end
+        end
       end
     end
 
+    def clone
+      self.class.new(context, keyword, parameters.clone, body)
+    end
+
     define_class_instance do |class_instance|
+      class_instance['@']['bind'] = RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], [
+        Rip::Nodes::Parameter.new(nil, '@@')
+      ]) do |this, context|
+        this.bind(context['@@'])
+      end
+
       def class_instance.to_s
         'System.Lambda'
       end
@@ -86,6 +106,10 @@ module Rip::Core
       super(arguments) do |_context|
         body.call(self['@'], _context)
       end
+    end
+
+    def clone
+      self.class.new(keyword, parameters.clone, &body)
     end
 
     def self.binary_prototype_method(&body)

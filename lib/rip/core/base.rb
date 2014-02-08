@@ -18,8 +18,7 @@ module Rip::Core
       when Rip::Core::DynamicProperty
         properties[_key] = reply.block.call(self)
       when Rip::Core::Lambda
-        reply['@'] = self
-        reply
+        reply.bind(self)
       else
         reply
       end
