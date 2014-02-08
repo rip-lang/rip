@@ -100,7 +100,7 @@ Usage:
         warn e.dump
         exit e.status_code
       rescue => e
-        warn 'Unknown exception has accurred. Please open an issue report at github.com/rip-lang/rip/issues'
+        warn 'Unknown exception has occurred. Please open an issue report at github.com/rip-lang/rip/issues'
         raise e
       end
     end
