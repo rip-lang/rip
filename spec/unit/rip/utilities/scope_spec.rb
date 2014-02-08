@@ -40,8 +40,8 @@ describe Rip::Utilities::Scope do
       end
 
       describe '#symbols' do
-        specify { expect(scope_foo.symbols).to match_array([:foo, :bar]) }
-        specify { expect(scope_bar.symbols).to match_array([:foo, :bar]) }
+        specify { expect(scope_foo.symbols).to match_array([ 'foo', 'bar' ]) }
+        specify { expect(scope_bar.symbols).to match_array([ 'foo', 'bar' ]) }
       end
     end
 
@@ -72,6 +72,6 @@ describe Rip::Utilities::Scope do
   end
 
   describe '#symbols' do
-    specify { expect(scope_foo.symbols).to match_array([:foo]) }
+    specify { expect(scope_foo.symbols).to match_array(['foo']) }
   end
 end

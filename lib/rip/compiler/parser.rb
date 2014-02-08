@@ -198,8 +198,8 @@ module Rip::Compiler
     rule(:else_block)    { (str('else').as(:else)       >> block_body).as(:else_block) }
 
     rule(:parameters) { parenthesis_open >> whitespaces? >> csv(optional_parameter | required_parameter).as(:parameters) >> whitespaces? >> parenthesis_close }
-    rule(:required_parameter) { reference }
-    rule(:optional_parameter) { reference.as(:lhs) >> whitespaces? >> equals.as(:location) >> whitespaces? >> phrase.as(:rhs) }
+    rule(:required_parameter) { word.as(:parameter) }
+    rule(:optional_parameter) { word.as(:parameter) >> whitespaces? >> equals >> whitespaces? >> phrase.as(:default_expression) }
 
     rule(:multiple_arguments) { parenthesis_open >> whitespaces? >> csv(phrase).as(:arguments) >> whitespaces? >> parenthesis_close }
     rule(:single_argument) { parenthesis_open >> whitespaces? >> phrase.as(:argument) >> whitespaces? >> parenthesis_close }

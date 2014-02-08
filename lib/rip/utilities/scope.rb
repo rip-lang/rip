@@ -15,15 +15,18 @@ module Rip::Utilities
     end
 
     def [](key)
-      state[key] || outer_context[key]
+      _key = key.to_s
+      state[_key] || outer_context[_key]
     end
 
     def []=(key, value)
-      if state.key?(key)
+      _key = key.to_s
+
+      if state.key?(_key)
         location = key.location if key.respond_to?(:location)
         raise Rip::Exceptions::CompilerException.new("#{key} has already been defined.", location, caller)
       else
-        state[key] = value
+        state[_key] = value
       end
     end
 

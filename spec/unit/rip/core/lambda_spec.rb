@@ -15,7 +15,7 @@ describe Rip::Core::Lambda do
 
   let(:arguments) { [] }
 
-  let(:actual_return) { rip_lambda.call(context, arguments) }
+  let(:actual_return) { rip_lambda.call(arguments) }
 
   let(:a_plus_b_plus_c) do
     reference_a = Rip::Nodes::Reference.new(location, 'a')
@@ -34,8 +34,8 @@ describe Rip::Core::Lambda do
     let(:class_inspect) { '#< System.Lambda >' }
 
     let(:instance) { rip_lambda }
-    let(:instance_to_s) { '#< System.Lambda [ class ] keyword = ->, arity = 0 >' }
-    let(:instance_inspect) { '#< System.Lambda [ class ] keyword = ->, arity = 0 >' }
+    let(:instance_to_s) { '#< System.Lambda [ bind, class ] keyword = ->, arity = 0 >' }
+    let(:instance_inspect) { '#< System.Lambda [ bind, class ] keyword = ->, arity = 0 >' }
   end
 
   describe '.class_instance' do
@@ -46,40 +46,40 @@ describe Rip::Core::Lambda do
   describe '#arity' do
     context 'no parameters' do
       specify { expect(rip_lambda.arity).to eq(0) }
-      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ class ] keyword = ->, arity = 0 >') }
+      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ bind, class ] keyword = ->, arity = 0 >') }
     end
 
     context 'all required parameters' do
       let(:parameters) do
         [
-          Rip::Nodes::Reference.new(location, 'a'),
-          Rip::Nodes::Reference.new(location, 'b')
+          Rip::Nodes::Parameter.new(location, 'a'),
+          Rip::Nodes::Parameter.new(location, 'b')
         ]
       end
       specify { expect(rip_lambda.arity).to eq(2) }
-      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ class ] keyword = ->, arity = 2 >') }
+      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ bind, class ] keyword = ->, arity = 2 >') }
     end
 
     context 'all optional parameters' do
       let(:parameters) do
         [
-          Rip::Nodes::Assignment.new(location, Rip::Nodes::Reference.new(location, 'a'), Rip::Nodes::Integer.new(location, 1)),
-          Rip::Nodes::Assignment.new(location, Rip::Nodes::Reference.new(location, 'b'), Rip::Nodes::Integer.new(location, 2))
+          Rip::Nodes::Parameter.new(location, 'a', Rip::Nodes::Integer.new(location, 1)),
+          Rip::Nodes::Parameter.new(location, 'b', Rip::Nodes::Integer.new(location, 2))
         ]
       end
       specify { expect(rip_lambda.arity).to eq(0..2) }
-      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ class ] keyword = ->, arity = 0..2 >') }
+      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ bind, class ] keyword = ->, arity = 0..2 >') }
     end
 
     context 'mixed parameters' do
       let(:parameters) do
         [
-          Rip::Nodes::Reference.new(location, 'a'),
-          Rip::Nodes::Assignment.new(location, Rip::Nodes::Reference.new(location, 'b'), Rip::Nodes::Integer.new(location, 2))
+          Rip::Nodes::Parameter.new(location, 'a'),
+          Rip::Nodes::Parameter.new(location, 'b', Rip::Nodes::Integer.new(location, 2))
         ]
       end
       specify { expect(rip_lambda.arity).to eq(1..2) }
-      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ class ] keyword = ->, arity = 1..2 >') }
+      specify { expect(rip_lambda.inspect).to eq('#< System.Lambda [ bind, class ] keyword = ->, arity = 1..2 >') }
     end
   end
 
@@ -106,13 +106,13 @@ describe Rip::Core::Lambda do
       context 'shadowing surrounding scope' do
         let(:parameters) do
           [
-            Rip::Nodes::Reference.new(location, 'answer')
+            Rip::Nodes::Parameter.new(location, 'answer')
           ]
         end
 
         let(:arguments) do
           [
-            Rip::Nodes::Integer.new(location, 85)
+            Rip::Core::Integer.new(85)
           ]
         end
 
@@ -141,9 +141,9 @@ describe Rip::Core::Lambda do
     describe 'required parameters' do
       let(:parameters) do
         [
-          Rip::Nodes::Reference.new(location, 'a'),
-          Rip::Nodes::Reference.new(location, 'b'),
-          Rip::Nodes::Reference.new(location, 'c')
+          Rip::Nodes::Parameter.new(location, 'a'),
+          Rip::Nodes::Parameter.new(location, 'b'),
+          Rip::Nodes::Parameter.new(location, 'c')
         ]
       end
 
@@ -151,9 +151,9 @@ describe Rip::Core::Lambda do
 
       let(:arguments) do
         [
-          Rip::Nodes::Integer.new(location, 1),
-          Rip::Nodes::Integer.new(location, 2),
-          Rip::Nodes::Integer.new(location, 3)
+          Rip::Core::Integer.new(1),
+          Rip::Core::Integer.new(2),
+          Rip::Core::Integer.new(3)
         ]
       end
 
@@ -165,9 +165,9 @@ describe Rip::Core::Lambda do
     describe 'optional parameters' do
       let(:parameters) do
         [
-          Rip::Nodes::Reference.new(location, 'a'),
-          Rip::Nodes::Assignment.new(location, Rip::Nodes::Reference.new(location, 'b'), Rip::Nodes::Integer.new(location, 2)),
-          Rip::Nodes::Assignment.new(location, Rip::Nodes::Reference.new(location, 'c'), Rip::Nodes::Integer.new(location, 3))
+          Rip::Nodes::Parameter.new(location, 'a'),
+          Rip::Nodes::Parameter.new(location, 'b', Rip::Nodes::Integer.new(location, 2)),
+          Rip::Nodes::Parameter.new(location, 'c', Rip::Nodes::Integer.new(location, 3))
         ]
       end
 
@@ -175,8 +175,8 @@ describe Rip::Core::Lambda do
 
       let(:arguments) do
         [
-          Rip::Nodes::Integer.new(location, 3),
-          Rip::Nodes::Integer.new(location, 3)
+          Rip::Core::Integer.new(3),
+          Rip::Core::Integer.new(3)
         ]
       end
 
@@ -188,9 +188,9 @@ describe Rip::Core::Lambda do
     describe 'automatic currying' do
       let(:parameters) do
         [
-          Rip::Nodes::Reference.new(location, 'a'),
-          Rip::Nodes::Reference.new(location, 'b'),
-          Rip::Nodes::Assignment.new(location, Rip::Nodes::Reference.new(location, 'c'), Rip::Nodes::Integer.new(location, 3))
+          Rip::Nodes::Parameter.new(location, 'a'),
+          Rip::Nodes::Parameter.new(location, 'b'),
+          Rip::Nodes::Parameter.new(location, 'c', Rip::Nodes::Integer.new(location, 3))
         ]
       end
 
@@ -198,36 +198,75 @@ describe Rip::Core::Lambda do
 
       let(:arguments) do
         [
-          Rip::Nodes::Integer.new(location, 3)
+          Rip::Core::Integer.new(3)
         ]
       end
 
       it 'returns a lambda that takes two parameters' do
         expect(actual_return).to be_a(Rip::Core::Lambda)
-        expect(actual_return.parameters.count).to be(2)
+        expect(actual_return.parameters.count).to eq(2)
+        expect(actual_return.parameters).to match_array(parameters[1..2])
       end
 
       it 'remembers the arguments previously passed in' do
         other_arguments = [
-          Rip::Nodes::Integer.new(location, 3),
-          Rip::Nodes::Integer.new(location, 3)
+          Rip::Core::Integer.new(3),
+          Rip::Core::Integer.new(3)
         ]
-        expect(actual_return.call(context, other_arguments)).to eq(Rip::Core::Integer.new(9))
+        expect(actual_return.call(other_arguments)).to eq(Rip::Core::Integer.new(9))
       end
 
       it 'can be called with different arguments' do
         other_arguments = [
-          Rip::Nodes::Integer.new(location, 8),
-          Rip::Nodes::Integer.new(location, 16)
+          Rip::Core::Integer.new(8),
+          Rip::Core::Integer.new(16)
         ]
-        expect(actual_return.call(context, other_arguments)).to eq(Rip::Core::Integer.new(27))
+        expect(actual_return.call(other_arguments)).to eq(Rip::Core::Integer.new(27))
       end
 
       it 'can still use default values for optional arguments' do
         other_arguments = [
-          Rip::Nodes::Integer.new(location, 8)
+          Rip::Core::Integer.new(8)
         ]
-        expect(actual_return.call(context, other_arguments)).to eq(Rip::Core::Integer.new(14))
+        expect(actual_return.call(other_arguments)).to eq(Rip::Core::Integer.new(14))
+      end
+    end
+  end
+
+  describe '#bind' do
+    let(:two) { Rip::Core::Integer.new(2) }
+    let(:five) { Rip::Core::Integer.new(5) }
+
+    let!(:two_plus) { two['+'] }
+    let!(:five_plus) { five['+'] }
+
+    specify do
+      expect(two_plus).to be_a(Rip::Core::Lambda)
+      expect(two_plus['@']).to be(two)
+    end
+
+    specify do
+      expect(five_plus).to be_a(Rip::Core::Lambda)
+      expect(five_plus['@']).to be(five)
+    end
+
+    context do
+      let(:body_expressions) do
+        [ Rip::Nodes::Reference.new(location, '@') ]
+      end
+
+      specify do
+        expect { rip_lambda.call(arguments) }.to raise_error(Rip::Exceptions::RuntimeException)
+      end
+
+      describe '@.bind' do
+        let(:character) { Rip::Core::Character.new('c') }
+        let(:bound_lambda) { rip_lambda['bind'].call([ character ]) }
+
+        specify do
+          expect { rip_lambda.call(arguments) }.to raise_error(Rip::Exceptions::RuntimeException)
+          expect(bound_lambda.call([])).to eq(Rip::Core::Character.new('c'))
+        end
       end
     end
   end

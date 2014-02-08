@@ -161,6 +161,16 @@ module Rip::Compiler
       Rip::Nodes::Invocation.new(location, callable, [])
     end
 
+    rule(:parameter => simple(:parameter)) do |locals|
+      location = location_for(locals[:origin], locals[:parameter])
+      Rip::Nodes::Parameter.new(location, locals[:parameter])
+    end
+
+    rule(:parameter => simple(:parameter), :default_expression => simple(:default_expression)) do |locals|
+      location = location_for(locals[:origin], locals[:parameter])
+      Rip::Nodes::Parameter.new(location, locals[:parameter], locals[:default_expression])
+    end
+
     {
       :dash_rocket => Rip::Nodes::Lambda,
       :fat_rocket => Rip::Nodes::Lambda

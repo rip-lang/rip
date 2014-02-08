@@ -11,27 +11,28 @@ module Rip::Core
     end
 
     def [](key)
-      reply = get(key) || (raise Rip::Exceptions::RuntimeException.new("Unknown property `#{key}`"))
+      _key = key.to_s
+      reply = get(_key) || (raise Rip::Exceptions::RuntimeException.new("Unknown property `#{key}`"))
 
       case reply
       when Rip::Core::DynamicProperty
-        properties[key] = reply.block.call(self)
+        properties[_key] = reply.block.call(self)
       when Rip::Core::Lambda
-        reply['@'] = self
-        reply
+        reply.bind(self)
       else
         reply
       end
     end
 
     def get(key)
-      properties['class'].ancestors.inject(properties[key]) do |memo, ancestor|
-        memo || ancestor['@'][key]
+      _key = key.to_s
+      properties['class'].ancestors.inject(properties[_key]) do |memo, ancestor|
+        memo || ancestor['@'][_key]
       end
     end
 
     def []=(key, value)
-      properties[key] = value
+      properties[key.to_s] = value
     end
 
     def to_s

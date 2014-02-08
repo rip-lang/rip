@@ -33,17 +33,54 @@ module Rip::Core
       end
     end
 
-    def call(calling_context, arguments)
-      if required_parameters.count > arguments.count
-        curry(calling_context, arguments)
-      else
-        _context = parameter_context(context, parameters, arguments)
-
-        body.interpret(_context)
+    def bind(receiver)
+      clone.tap do |reply|
+        reply['@'] = receiver
       end
     end
 
+    def call(arguments, &block)
+      _context = context.nested_context
+
+      bound_parameters = []
+
+      parameters.zip(arguments).each_with_index do |(parameter, argument), index|
+        if bound_parameters.count == index
+          bound_parameter = parameter.bind(_context, argument)
+          bound_parameters << bound_parameter if bound_parameter
+        end
+      end
+
+      remaining_parameters = parameters[bound_parameters.count..-1]
+
+      bound_parameters.each do |parameter|
+        parameter.inject(_context)
+      end
+
+      if remaining_parameters.any?
+        curry(_context, remaining_parameters)
+      elsif block_given?
+        block.call(_context)
+      else
+        body.interpret(_context) do |statement|
+          if statement.is_a?(Rip::Nodes::Reference) && symbols.include?(statement.name)
+            self[statement.name]
+          end
+        end
+      end
+    end
+
+    def clone
+      self.class.new(context, keyword, parameters.clone, body)
+    end
+
     define_class_instance do |class_instance|
+      class_instance['@']['bind'] = RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], [
+        Rip::Nodes::Parameter.new(nil, '@@')
+      ]) do |this, context|
+        this.bind(context['@@'])
+      end
+
       def class_instance.to_s
         'System.Lambda'
       end
@@ -51,49 +88,33 @@ module Rip::Core
 
     protected
 
-    def curry(calling_context, arguments)
-      parameters_for_curry = self.parameters[0...arguments.count]
-      extra_parameters = self.parameters - parameters_for_curry
-
-      _context = parameter_context(calling_context, parameters_for_curry, arguments)
-
-      self.class.new(_context, self.keyword, extra_parameters, self.body)
-    end
-
-    def parameter_context(calling_context, parameters, arguments)
-      parameters.zip(arguments).inject(calling_context.nested_context) do |memo, (parameter, argument)|
-        _parameter = if parameter.is_a?(Rip::Nodes::Reference) && argument
-          Rip::Nodes::Assignment.new(argument.location, parameter, argument)
-        elsif parameter.is_a?(Rip::Nodes::Assignment) && argument
-          Rip::Nodes::Assignment.new(argument.location, parameter.lhs, argument)
-        elsif parameter.is_a?(Rip::Nodes::Assignment)
-          parameter
-        end
-
-        _parameter.interpret(memo)
-
-        memo
-      end
+    def curry(bound_context, remaining_parameters)
+      self.class.new(bound_context, keyword, remaining_parameters, body)
     end
 
     def required_parameters
-      parameters.select { |parameter| parameter.is_a?(Rip::Nodes::Reference) }
+      parameters.reject(&:default_expression)
     end
   end
 
   class RubyLambda < Rip::Core::Lambda
     def initialize(keyword, parameters, &body)
-      super(nil, keyword, parameters, body)
+      super(Rip::Utilities::Scope.new, keyword, parameters, body)
     end
 
-    def call(calling_context, arguments)
-      _context = parameter_context(calling_context, parameters, arguments)
-      body.call(self['@'], _context)
+    def call(arguments)
+      super(arguments) do |_context|
+        body.call(self['@'], _context)
+      end
+    end
+
+    def clone
+      self.class.new(keyword, parameters.clone, &body)
     end
 
     def self.binary_prototype_method(&body)
       new(Rip::Utilities::Keywords[:dash_rocket], [
-        Rip::Nodes::Reference.new(nil, 'other')
+        Rip::Nodes::Parameter.new(nil, 'other')
       ]) do |this, context|
         body.call(this, context['other'])
       end
