@@ -46,6 +46,7 @@ describe Rip::Core::Integer do
     BinaryOperator.new(54, :*, -95, -5130),
     BinaryOperator.new(-4, :*, -8, 32),
 
+    BinaryOperator.new(9, :/, 2, 4),
     BinaryOperator.new(8, :/, 4, 2),
     BinaryOperator.new(0, :/, 62, 0),
     BinaryOperator.new(72, :/, -4, -18),
