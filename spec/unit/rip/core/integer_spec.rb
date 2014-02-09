@@ -65,6 +65,8 @@ describe Rip::Core::Integer do
 
       specify { expect(operator_node.interpret(context)['@']).to eq(lhs_node.interpret(context)) }
       specify { expect(invocation_node.interpret(context)).to eq(Rip::Core::Integer.new(bo.result)) }
+
+      specify { expect(Rip::Core::Integer.new(bo.lhs)[bo.operator].call([ Rip::Core::Integer.new(bo.rhs) ])).to eq(Rip::Core::Integer.new(bo.result)) }
     end
   end
 end
