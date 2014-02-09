@@ -3,6 +3,8 @@ require 'spec_helper'
 BinaryOperator = Struct.new(:lhs, :operator, :rhs, :result)
 
 describe Rip::Core::Integer do
+  let(:context) { Rip::Utilities::Scope.new }
+
   let(:forty_two) { Rip::Core::Integer.new(42) }
   let(:class_instance) { Rip::Core::Integer.class_instance }
 
@@ -22,6 +24,12 @@ describe Rip::Core::Integer do
     specify { expect(forty_two['class']).to be(class_instance) }
   end
 
+  describe '@.to_boolean' do
+    let(:zero) { Rip::Core::Integer.new(0) }
+
+    specify { expect(zero['to_boolean'].call([])).to eq(Rip::Core::Boolean.true) }
+  end
+
   [
     BinaryOperator.new(11, :+, 22, 33),
     BinaryOperator.new(62, :+, -73, -11),
@@ -38,6 +46,7 @@ describe Rip::Core::Integer do
     BinaryOperator.new(54, :*, -95, -5130),
     BinaryOperator.new(-4, :*, -8, 32),
 
+    BinaryOperator.new(9, :/, 2, 4),
     BinaryOperator.new(8, :/, 4, 2),
     BinaryOperator.new(0, :/, 62, 0),
     BinaryOperator.new(72, :/, -4, -18),
@@ -49,8 +58,6 @@ describe Rip::Core::Integer do
     BinaryOperator.new(-15, :%, -53, -15)
   ].each do |bo|
     describe "@.#{bo.operator}" do
-      let(:context) { Rip::Utilities::Scope.new }
-
       let(:lhs_node) { Rip::Nodes::Integer.new(nil, bo.lhs) }
       let(:operator_node) { Rip::Nodes::Property.new(nil, lhs_node, bo.operator) }
       let(:rhs_node) { Rip::Nodes::Integer.new(nil, bo.rhs) }
@@ -58,6 +65,8 @@ describe Rip::Core::Integer do
 
       specify { expect(operator_node.interpret(context)['@']).to eq(lhs_node.interpret(context)) }
       specify { expect(invocation_node.interpret(context)).to eq(Rip::Core::Integer.new(bo.result)) }
+
+      specify { expect(Rip::Core::Integer.new(bo.lhs)[bo.operator].call([ Rip::Core::Integer.new(bo.rhs) ])).to eq(Rip::Core::Integer.new(bo.result)) }
     end
   end
 end

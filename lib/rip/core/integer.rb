@@ -18,7 +18,7 @@ module Rip::Core
       super + [ "data = #{data}" ]
     end
 
-    define_class_instance do |class_instance|
+    define_class_instance('integer') do |class_instance|
       %w[
         + -
         * /

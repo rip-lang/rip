@@ -1,7 +1,2 @@
 class {
-	@.mod = -> (other) {
-		d = @ / other
-		m = @ % other
-		[ d, m ]
-	}
 }
