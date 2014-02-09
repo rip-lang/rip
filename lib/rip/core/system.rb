@@ -18,7 +18,7 @@ module Rip::Core
       # class_instance['DateTime']          = Rip::Core::DateTime.class_instance
       # class_instance['Decimal']           = Rip::Core::Decimal.class_instance
       # class_instance['Exception']         = Rip::Core::Exception.class_instance
-      # class_instance['Integer']           = Rip::Core::Integer.class_instance
+      class_instance['Integer']           = Rip::Core::Integer.class_instance
       # class_instance['KeyValue']          = Rip::Core::KeyValue.class_instance
       # class_instance['Lambda']            = Rip::Core::Lambda.class_instance
       class_instance['List']              = Rip::Core::List.class_instance
