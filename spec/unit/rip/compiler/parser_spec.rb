@@ -323,6 +323,30 @@ describe Rip::Compiler::Parser do
         end
       end
 
+      recognizes_as_expected 'lambda with multiple required parameters with type restrictions' do
+        let(:rip) { '-> (one, two<CustomType>) {}' }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :dash_rocket => '->',
+                :parameters => [
+                  { :parameter => 'one' },
+                  {
+                    :parameter => 'two',
+                    :type_argument => {
+                      :reference => 'CustomType'
+                    }
+                  }
+                ],
+                :location_body => '{',
+                :body => []
+              }
+            ]
+          }
+        end
+      end
+
       recognizes_as_expected 'lambda with multiple optional parameters' do
         let(:rip) { '-> (one = 1, two = 2) {}' }
         let(:expected_raw) do
@@ -338,6 +362,36 @@ describe Rip::Compiler::Parser do
                   {
                     :parameter => 'two',
                     :default_expression => { :integer => '2' }
+                  }
+                ],
+                :location_body => '{',
+                :body => []
+              }
+            ]
+          }
+        end
+      end
+
+      recognizes_as_expected 'lambda with multiple optional parameters with type restrictions' do
+        let(:rip) { '-> (one<System.Integer> = 1, two = 2) {}' }
+        let(:expected) do
+          {
+            :module => [
+              {
+                :dash_rocket => '->',
+                :parameters => [
+                  {
+                    :parameter => 'one',
+                    :type_argument => {
+                      :object => { :reference => 'System' },
+                      :location => '.',
+                      :property_name => 'Integer'
+                    },
+                    :default_expression => { :integer => '1', :sign => '+' }
+                  },
+                  {
+                    :parameter => 'two',
+                    :default_expression => { :integer => '2', :sign => '+' }
                   }
                 ],
                 :location_body => '{',
