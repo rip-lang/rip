@@ -61,8 +61,8 @@ describe Rip::Core::Lambda do
     context 'all optional parameters' do
       let(:parameters) do
         [
-          Rip::Nodes::Parameter.new(location, 'a', Rip::Nodes::Integer.new(location, 1)),
-          Rip::Nodes::Parameter.new(location, 'b', Rip::Nodes::Integer.new(location, 2))
+          Rip::Nodes::Parameter.new(location, 'a', nil, Rip::Nodes::Integer.new(location, 1)),
+          Rip::Nodes::Parameter.new(location, 'b', nil, Rip::Nodes::Integer.new(location, 2))
         ]
       end
       specify { expect(rip_lambda.arity).to eq(0..2) }
@@ -73,7 +73,7 @@ describe Rip::Core::Lambda do
       let(:parameters) do
         [
           Rip::Nodes::Parameter.new(location, 'a'),
-          Rip::Nodes::Parameter.new(location, 'b', Rip::Nodes::Integer.new(location, 2))
+          Rip::Nodes::Parameter.new(location, 'b', nil, Rip::Nodes::Integer.new(location, 2))
         ]
       end
       specify { expect(rip_lambda.arity).to eq(1..2) }
@@ -164,8 +164,8 @@ describe Rip::Core::Lambda do
       let(:parameters) do
         [
           Rip::Nodes::Parameter.new(location, 'a'),
-          Rip::Nodes::Parameter.new(location, 'b', Rip::Nodes::Integer.new(location, 2)),
-          Rip::Nodes::Parameter.new(location, 'c', Rip::Nodes::Integer.new(location, 3))
+          Rip::Nodes::Parameter.new(location, 'b', nil, Rip::Nodes::Integer.new(location, 2)),
+          Rip::Nodes::Parameter.new(location, 'c', nil, Rip::Nodes::Integer.new(location, 3))
         ]
       end
 
@@ -188,7 +188,7 @@ describe Rip::Core::Lambda do
         [
           Rip::Nodes::Parameter.new(location, 'a'),
           Rip::Nodes::Parameter.new(location, 'b'),
-          Rip::Nodes::Parameter.new(location, 'c', Rip::Nodes::Integer.new(location, 3))
+          Rip::Nodes::Parameter.new(location, 'c', nil, Rip::Nodes::Integer.new(location, 3))
         ]
       end
 

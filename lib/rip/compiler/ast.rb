@@ -166,9 +166,19 @@ module Rip::Compiler
       Rip::Nodes::Parameter.new(location, locals[:parameter])
     end
 
+    rule(:parameter => simple(:parameter), :type_argument => simple(:type_argument) ) do |locals|
+      location = location_for(locals[:origin], locals[:parameter])
+      Rip::Nodes::Parameter.new(location, locals[:parameter], locals[:type_argument])
+    end
+
     rule(:parameter => simple(:parameter), :default_expression => simple(:default_expression)) do |locals|
       location = location_for(locals[:origin], locals[:parameter])
-      Rip::Nodes::Parameter.new(location, locals[:parameter], locals[:default_expression])
+      Rip::Nodes::Parameter.new(location, locals[:parameter], nil, locals[:default_expression])
+    end
+
+    rule(:parameter => simple(:parameter), :type_argument => simple(:type_argument), :default_expression => simple(:default_expression)) do |locals|
+      location = location_for(locals[:origin], locals[:parameter])
+      Rip::Nodes::Parameter.new(location, locals[:parameter], locals[:type_argument], locals[:default_expression])
     end
 
     {

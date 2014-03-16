@@ -284,6 +284,39 @@ describe Rip::Compiler::AST do
     end
   end
 
+  context 'lambdas' do
+    let(:rip) { '-> (question, answer<Integer>) {}' }
+
+    let(:dash_rocket_node) { Rip::Utilities::Keywords[:dash_rocket] }
+    let(:integer_class_node) { Rip::Nodes::Reference.new(location.add_character(21), 'Integer') }
+    let(:parameter_nodes) do
+      [
+        Rip::Nodes::Parameter.new(location.add_character(14), 'question'),
+        Rip::Nodes::Parameter.new(location.add_character(14), 'answer', integer_class_node)
+      ]
+    end
+    let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(31), []) }
+    let(:lambda_node) { Rip::Nodes::Lambda.new(location, dash_rocket_node, parameter_nodes, body_node) }
+
+    let(:parameters) { statements.first.parameters }
+
+    it 'finds the lambda' do
+      expect(statements.first).to eq(lambda_node)
+    end
+
+    specify do
+      expect(parameters.first.name).to eq('question')
+      expect(parameters.first.type).to be_nil
+      expect(parameters.first).to eq(parameter_nodes.first)
+    end
+
+    specify do
+      expect(parameters.last.name).to eq('answer')
+      expect(parameters.last.type).to eq(integer_class_node)
+      expect(parameters.last).to eq(parameter_nodes.last)
+    end
+  end
+
   context 'property assignment' do
     let(:rip) { '@.== = -> (other) {}' }
 
