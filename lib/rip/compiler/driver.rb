@@ -6,11 +6,11 @@ module Rip::Compiler
       @syntax_tree = syntax_tree
     end
 
-    def interpret(context = global_context)
+    def interpret(context = self.class.global_context)
       syntax_tree.interpret(context)
     end
 
-    def global_context
+    def self.global_context
       Rip::Utilities::Scope.new({
         'System' => Rip::Core::System.class_instance,
         'true' => Rip::Core::Boolean.true,

@@ -1,14 +1,11 @@
 require 'spec_helper'
 
 describe Rip::Compiler::Driver do
-  subject { driver }
-  let(:driver) { Rip::Compiler::Driver.new(ast) }
+  let(:driver) { Rip::Compiler::Driver }
 
   let(:location) { location_for }
 
-  describe '#global_context' do
-    let(:ast) { nil }
-
+  describe '.global_context' do
     context 'provides globally assumed members' do
       specify { expect(driver.global_context.symbols).to match_array(['System', 'true', 'false']) }
 
