@@ -277,7 +277,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with no parameters' do
+      recognizes_as_expected 'overload with no parameters' do
         let(:rip) { '-> {}' }
         let(:expected_raw) do
           {
@@ -304,7 +304,46 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with multiple required parameters' do
+      recognizes_as_expected 'lambda with no parameters' do
+        let(:rip) { '=> { -> {} }' }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :fat_rocket => '=>',
+                :location_body => '{',
+                :overload_blocks => [
+                  {
+                    :dash_rocket => '->',
+                    :location_body => '{',
+                    :body => []
+                  }
+                ]
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :fat_rocket => '=>',
+                :location_body => '{',
+                :overload_blocks => [
+                  {
+                    :dash_rocket => '->',
+                    :parameters => [],
+                    :location_body => '{',
+                    :body => []
+                  }
+                ]
+              }
+            ]
+          }
+        end
+      end
+
+      recognizes_as_expected 'overload with multiple required parameters' do
         let(:rip) { '-> (one, two) {}' }
         let(:expected_raw) do
           {
@@ -323,7 +362,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with multiple required parameters with type restrictions' do
+      recognizes_as_expected 'overload with multiple required parameters with type restrictions' do
         let(:rip) { '-> (one, two<CustomType>) {}' }
         let(:expected_raw) do
           {
@@ -347,7 +386,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with multiple optional parameters' do
+      recognizes_as_expected 'overload with multiple optional parameters' do
         let(:rip) { '-> (one = 1, two = 2) {}' }
         let(:expected_raw) do
           {
@@ -372,7 +411,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with multiple optional parameters with type restrictions' do
+      recognizes_as_expected 'overload with multiple optional parameters with type restrictions' do
         let(:rip) { '-> (one<System.Integer> = 1, two = 2) {}' }
         let(:expected) do
           {
@@ -402,13 +441,13 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with required parameter and optional parameter' do
-        let(:rip) { '=> (platform, name = :rip) {}' }
+      recognizes_as_expected 'overload with required parameter and optional parameter' do
+        let(:rip) { '-> (platform, name = :rip) {}' }
         let(:expected_raw) do
           {
             :module => [
               {
-                :fat_rocket => '=>',
+                :dash_rocket => '->',
                 :parameters => [
                   { :parameter => 'platform' },
                   {
@@ -427,7 +466,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'lambda with multiple required parameter and multiple optional parameter' do
+      recognizes_as_expected 'overload with multiple required parameter and multiple optional parameter' do
         let(:rip) { '-> (abc, xyz, one = 1, two = 2) {}' }
         let(:expected_raw) do
           {
@@ -912,7 +951,7 @@ describe Rip::Compiler::Parser do
     end
 
     context 'invoking lambdas' do
-      recognizes_as_expected 'lambda literal invocation' do
+      recognizes_as_expected 'overload literal invocation' do
         let(:rip) { '-> () {}()' }
         let(:expected_raw) do
           {

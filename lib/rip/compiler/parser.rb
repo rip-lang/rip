@@ -157,6 +157,7 @@ module Rip::Compiler
         exception_block_sequence |
         class_block |
         lambda_block |
+        overload_block |
         switch_block |
         datetime |
         date |
@@ -182,7 +183,9 @@ module Rip::Compiler
 
     rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat.as(:catch_blocks) >> whitespaces? >> finally_block.maybe }
 
-    rule(:lambda_block) { (str('->').as(:dash_rocket) | str('=>').as(:fat_rocket)) >> spaces? >> parameters.maybe >> block_body }
+    rule(:lambda_block)   { str('=>').as(:fat_rocket) >> spaces? >> block_body_lambda }
+
+    rule(:overload_block) { str('->').as(:dash_rocket) >> spaces? >> parameters.maybe >> block_body }
 
     rule(:class_block) { str('class').as(:class) >> spaces? >> multiple_arguments.maybe >> block_body }
     rule(:case_block)  { str('case').as(:case)   >> spaces? >> multiple_arguments       >> block_body }
@@ -207,6 +210,7 @@ module Rip::Compiler
 
     rule(:block_body) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }
     rule(:block_body_switch) { whitespaces? >> brace_open >> whitespaces? >> (case_block >> whitespaces?).repeat(1).as(:case_blocks) >> else_block.maybe.as(:else_block) >> whitespaces? >> brace_close }
+    rule(:block_body_lambda) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> (overload_block >> whitespaces?).repeat(1).as(:overload_blocks) >> whitespaces? >> brace_close }
 
 
     rule(:datetime) { date.as(:date) >> str('T') >> time.as(:time) }
