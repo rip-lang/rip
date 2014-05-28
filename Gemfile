@@ -4,7 +4,9 @@ gem 'parslet'
 gem 'thor'
 
 group :development, :test do
+  gem 'byebug'
   gem 'pry'
+  gem 'pry-byebug'
 end
 
 group :test do
