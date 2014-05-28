@@ -151,8 +151,8 @@ describe Rip::Compiler::AST do
       expect(statements.first).to eq(key_value_node)
     end
 
-    its(:key) { should eq(key_node) }
-    its(:value) { should eq(value_node) }
+    specify { expect(subject.key).to eq(key_node) }
+    specify { expect(subject.value).to eq(value_node) }
   end
 
   context 'range' do
@@ -170,9 +170,9 @@ describe Rip::Compiler::AST do
       expect(statements.first).to eq(range_node)
     end
 
-    its(:start) { should eq(a_node) }
-    its(:end) { should eq(z_node) }
-    its(:exclusivity) { should be_false }
+    specify { expect(subject.start).to eq(a_node) }
+    specify { expect(subject.end).to eq(z_node) }
+    specify { expect(subject.exclusivity).to be(false) }
   end
 
   context 'list' do
@@ -236,8 +236,8 @@ describe Rip::Compiler::AST do
       expect(statements.first).to eq(property_node)
     end
 
-    its(:object) { should eq(object_node) }
-    its(:name) { should eq('two') }
+    specify { expect(subject.object).to eq(object_node) }
+    specify { expect(subject.name).to eq('two') }
   end
 
   context 'assignment' do

@@ -19,12 +19,12 @@ describe Rip::Utilities::Location do
   end
 
   describe '#to_s' do
-    its(:to_s) { should eq('rspec:1:0(0)') }
+    specify { expect(subject.to_s).to eq('rspec:1:0(0)') }
 
     context 'in another file' do
       let(:location) { Rip::Utilities::Location.new('lib/rip.rip', 47, 8, 3) }
 
-      its(:to_s) { should eq('lib/rip.rip:8:3(47)') }
+      specify { expect(subject.to_s).to eq('lib/rip.rip:8:3(47)') }
     end
   end
 
