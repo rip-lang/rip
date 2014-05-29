@@ -11,6 +11,22 @@ $LOAD_PATH.unshift(File.expand_path(__dir__ + '/../lib'))
 require 'pathname'
 
 module Rip
+  def self.logo
+    <<-'RIP'
+         _            _          _
+        /\ \         /\ \       /\ \
+       /  \ \        \ \ \     /  \ \
+      / /\ \ \       /\ \_\   / /\ \ \
+     / / /\ \_\     / /\/_/  / / /\ \_\
+    / / /_/ / /    / / /    / / /_/ / /
+   / / /__\/ /    / / /    / / /__\/ /
+  / / /_____/    / / /    / / /_____/
+ / / /\ \ \  ___/ / /__  / / /
+/ / /  \ \ \/\__\/_/___\/ / /
+\/_/    \_\/\/_________/\/_/
+    RIP
+  end
+
   def self.project_path
     Pathname(@path || '.').expand_path
   end
