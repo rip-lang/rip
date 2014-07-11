@@ -6,7 +6,7 @@ module Rip::Core
     end
 
     define_class_instance do |class_instance|
-      class_instance['require'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], [
+      class_instance['require'] = Rip::Core::NativeLambda.new(Rip::Utilities::Keywords[:dash_rocket], [
         Rip::Nodes::Parameter.new(nil, 'module_name')
       ]) do |this, context|
         module_name = context['module_name'].characters.map(&:data).join

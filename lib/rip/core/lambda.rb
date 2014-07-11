@@ -75,7 +75,7 @@ module Rip::Core
     end
 
     define_class_instance do |class_instance|
-      class_instance['@']['bind'] = RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], [
+      class_instance['@']['bind'] = NativeLambda.new(Rip::Utilities::Keywords[:dash_rocket], [
         Rip::Nodes::Parameter.new(nil, '@@')
       ]) do |this, context|
         this.bind(context['@@'])
@@ -97,7 +97,7 @@ module Rip::Core
     end
   end
 
-  class RubyLambda < Rip::Core::Lambda
+  class NativeLambda < Rip::Core::Lambda
     def initialize(keyword, parameters, &body)
       super(Rip::Utilities::Scope.new, keyword, parameters, body)
     end

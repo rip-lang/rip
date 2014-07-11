@@ -30,7 +30,7 @@ module Rip::Core
       class_instance['true'] = new(true)
       class_instance['false'] = new(false)
 
-      class_instance['@']['to_boolean'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
+      class_instance['@']['to_boolean'] = Rip::Core::NativeLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
         this
       end
 

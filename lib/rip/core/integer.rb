@@ -24,7 +24,7 @@ module Rip::Core
         * /
         %
       ].each do |property|
-        class_instance['@'][property] = Rip::Core::RubyLambda.binary_prototype_method do |this, other|
+        class_instance['@'][property] = Rip::Core::NativeLambda.binary_prototype_method do |this, other|
           new(this.data.send(property, other.data))
         end
       end
