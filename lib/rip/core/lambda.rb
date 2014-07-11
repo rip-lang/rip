@@ -1,15 +1,13 @@
 module Rip::Core
   class Lambda < Rip::Core::Base
     attr_reader :context
-    attr_reader :keyword
     attr_reader :parameters
     attr_reader :body
 
-    def initialize(context, keyword, parameters, body)
+    def initialize(context, parameters, body)
       super()
 
       @context = context
-      @keyword = keyword
       @parameters = parameters
       @body = body
 
@@ -19,7 +17,6 @@ module Rip::Core
     def to_s_prep_body
       super + [
         [
-          "keyword = #{keyword.keyword}",
           "arity = #{arity}"
         ].join(', ')
       ]
@@ -71,11 +68,11 @@ module Rip::Core
     end
 
     def clone
-      self.class.new(context, keyword, parameters.clone, body)
+      self.class.new(context, parameters.clone, body)
     end
 
     define_class_instance do |class_instance|
-      class_instance['@']['bind'] = NativeLambda.new(Rip::Utilities::Keywords[:dash_rocket], [
+      class_instance['@']['bind'] = NativeLambda.new([
         Rip::Nodes::Parameter.new(nil, '@@')
       ]) do |this, context|
         this.bind(context['@@'])
@@ -89,7 +86,7 @@ module Rip::Core
     protected
 
     def curry(bound_context, remaining_parameters)
-      self.class.new(bound_context, keyword, remaining_parameters, body)
+      self.class.new(bound_context, remaining_parameters, body)
     end
 
     def required_parameters
@@ -98,8 +95,8 @@ module Rip::Core
   end
 
   class NativeLambda < Rip::Core::Lambda
-    def initialize(keyword, parameters, &body)
-      super(Rip::Utilities::Scope.new, keyword, parameters, body)
+    def initialize(parameters, &body)
+      super(Rip::Utilities::Scope.new, parameters, body)
     end
 
     def call(arguments)
@@ -109,11 +106,11 @@ module Rip::Core
     end
 
     def clone
-      self.class.new(keyword, parameters.clone, &body)
+      self.class.new(parameters.clone, &body)
     end
 
     def self.binary_prototype_method(&body)
-      new(Rip::Utilities::Keywords[:dash_rocket], [
+      new([
         Rip::Nodes::Parameter.new(nil, 'other')
       ]) do |this, context|
         body.call(this, context['other'])

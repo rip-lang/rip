@@ -188,7 +188,7 @@ module Rip::Compiler
       rule(keyword => simple(keyword), :parameters => sequence(:parameters), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
         body = block_body(locals[:origin], locals[:location_body], locals[:body])
-        klass.new(location, Rip::Utilities::Keywords[keyword], locals[:parameters], body)
+        klass.new(location, locals[:parameters], body)
       end
     end
 

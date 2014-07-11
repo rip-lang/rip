@@ -22,14 +22,14 @@ module Rip::Core
     end
 
     define_class_instance('string') do |class_instance|
-      class_instance['@']['uppercase'] = Rip::Core::NativeLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
+      class_instance['@']['uppercase'] = Rip::Core::NativeLambda.new([]) do |this, context|
         characters = this.characters.map do |character|
           character['uppercase'].call([])
         end
         new(characters)
       end
 
-      class_instance['@']['lowercase'] = Rip::Core::NativeLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
+      class_instance['@']['lowercase'] = Rip::Core::NativeLambda.new([]) do |this, context|
         characters = this.characters.map do |character|
           character['lowercase'].call([])
         end

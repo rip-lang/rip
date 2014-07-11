@@ -19,11 +19,11 @@ module Rip::Core
     end
 
     define_class_instance('character') do |class_instance|
-      class_instance['@']['uppercase'] = Rip::Core::NativeLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
+      class_instance['@']['uppercase'] = Rip::Core::NativeLambda.new([]) do |this, context|
         new(this.data.upcase)
       end
 
-      class_instance['@']['lowercase'] = Rip::Core::NativeLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
+      class_instance['@']['lowercase'] = Rip::Core::NativeLambda.new([]) do |this, context|
         new(this.data.downcase)
       end
 

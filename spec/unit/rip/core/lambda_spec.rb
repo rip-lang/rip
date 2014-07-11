@@ -6,12 +6,11 @@ describe Rip::Core::Lambda do
   let(:location) { location_for }
   let(:context) { Rip::Utilities::Scope.new }
 
-  let(:keyword) { Rip::Utilities::Keywords[:dash_rocket] }
   let(:parameters) { [] }
   let(:body_expressions) { [] }
   let(:body) { Rip::Nodes::BlockBody.new(location, body_expressions) }
 
-  let(:rip_lambda) { Rip::Core::Lambda.new(context, keyword, parameters, body) }
+  let(:rip_lambda) { Rip::Core::Lambda.new(context, parameters, body) }
 
   let(:arguments) { [] }
 
@@ -33,7 +32,7 @@ describe Rip::Core::Lambda do
     let(:class_to_s) { '#< System.Lambda >' }
 
     let(:instance) { rip_lambda }
-    let(:instance_to_s) { '#< #< System.Lambda > [ bind, class ] keyword = ->, arity = 0 >' }
+    let(:instance_to_s) { '#< #< System.Lambda > [ bind, class ] arity = 0 >' }
   end
 
   describe '.class_instance' do
@@ -44,7 +43,7 @@ describe Rip::Core::Lambda do
   describe '#arity' do
     context 'no parameters' do
       specify { expect(rip_lambda.arity).to eq(0) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] keyword = ->, arity = 0 >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] arity = 0 >') }
     end
 
     context 'all required parameters' do
@@ -55,7 +54,7 @@ describe Rip::Core::Lambda do
         ]
       end
       specify { expect(rip_lambda.arity).to eq(2) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] keyword = ->, arity = 2 >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] arity = 2 >') }
     end
 
     context 'all optional parameters' do
@@ -66,7 +65,7 @@ describe Rip::Core::Lambda do
         ]
       end
       specify { expect(rip_lambda.arity).to eq(0..2) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] keyword = ->, arity = 0..2 >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] arity = 0..2 >') }
     end
 
     context 'mixed parameters' do
@@ -77,7 +76,7 @@ describe Rip::Core::Lambda do
         ]
       end
       specify { expect(rip_lambda.arity).to eq(1..2) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] keyword = ->, arity = 1..2 >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] arity = 1..2 >') }
     end
   end
 

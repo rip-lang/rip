@@ -270,10 +270,9 @@ describe Rip::Compiler::AST do
   context 'blocks' do
     let(:rip) { '-> (other) {}' }
 
-    let(:dash_rocket_node) { Rip::Utilities::Keywords[:dash_rocket] }
     let(:parameter_nodes) { [ Rip::Nodes::Parameter.new(location.add_character(4), 'other') ] }
     let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(11), []) }
-    let(:lambda_node) { Rip::Nodes::Lambda.new(location, dash_rocket_node, parameter_nodes, body_node) }
+    let(:lambda_node) { Rip::Nodes::Lambda.new(location, parameter_nodes, body_node) }
 
     it 'has one top-level node' do
       expect(statements.count).to eq(1)
@@ -287,7 +286,6 @@ describe Rip::Compiler::AST do
   context 'lambdas' do
     let(:rip) { '-> (question, answer<Integer>) {}' }
 
-    let(:dash_rocket_node) { Rip::Utilities::Keywords[:dash_rocket] }
     let(:integer_class_node) { Rip::Nodes::Reference.new(location.add_character(21), 'Integer') }
     let(:parameter_nodes) do
       [
@@ -296,7 +294,7 @@ describe Rip::Compiler::AST do
       ]
     end
     let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(31), []) }
-    let(:lambda_node) { Rip::Nodes::Lambda.new(location, dash_rocket_node, parameter_nodes, body_node) }
+    let(:lambda_node) { Rip::Nodes::Lambda.new(location, parameter_nodes, body_node) }
 
     let(:parameters) { statements.first.parameters }
 
@@ -325,10 +323,9 @@ describe Rip::Compiler::AST do
 
     let(:assignment_node) { Rip::Nodes::Assignment.new(location.add_character(5), property_node, lambda_node) }
 
-    let(:dash_rocket_node) { Rip::Utilities::Keywords[:dash_rocket] }
     let(:parameter_node) { Rip::Nodes::Parameter.new(location.add_character(11), 'other') }
     let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(18), []) }
-    let(:lambda_node) { Rip::Nodes::Lambda.new(location.add_character(7), dash_rocket_node, [parameter_node], body_node) }
+    let(:lambda_node) { Rip::Nodes::Lambda.new(location.add_character(7), [parameter_node], body_node) }
 
     let(:assignment) { statements.first }
 
