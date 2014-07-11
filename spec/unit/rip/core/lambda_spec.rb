@@ -182,7 +182,7 @@ describe Rip::Core::Lambda do
       end
     end
 
-    describe 'automatic currying' do
+    describe 'automatic application' do
       let(:parameters) do
         [
           Rip::Nodes::Parameter.new(location, 'a'),

@@ -55,7 +55,7 @@ module Rip::Core
       end
 
       if remaining_parameters.any?
-        curry(_context, remaining_parameters)
+        apply(_context, remaining_parameters)
       elsif block_given?
         block.call(_context)
       else
@@ -85,7 +85,7 @@ module Rip::Core
 
     protected
 
-    def curry(bound_context, remaining_parameters)
+    def apply(bound_context, remaining_parameters)
       self.class.new(bound_context, remaining_parameters, body)
     end
 
