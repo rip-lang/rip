@@ -17,7 +17,7 @@ describe Rip::Core::System do
     specify { expect(class_instance['require']).to be_a(Rip::Core::Lambda) }
 
     let(:project_dir) { Pathname(Dir.pwd) }
-    let(:syntax_tree) { syntax_tree = Rip::Compiler::Parser.new(main_file, main_file.read).syntax_tree }
+    let(:syntax_tree) { Rip::Compiler::Parser.new(main_file, main_file.read).syntax_tree }
     let(:final_result) { Rip::Compiler::Driver.new(syntax_tree).interpret }
 
     before(:each) do
