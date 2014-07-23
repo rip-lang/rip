@@ -9,13 +9,16 @@ describe Rip::Core::Base do
       end
 
       define_class_instance do |class_instance|
-        class_instance['@']['bar'] = :hello
+        class_instance['@']['instance_bar'] = :hello
+
+        class_instance['class_bar'] = :goodbye
+
+        $klass = class_instance
       end
     end
   end
 
   let(:class_instance) { klass.class_instance }
-  let(:prototype) { class_instance['@'] }
   let(:instance) { klass.new }
 
   describe '.class_instance' do
@@ -29,6 +32,10 @@ describe Rip::Core::Base do
   end
 
   describe 'property lookup' do
+    context 'on classes' do
+      specify { expect(class_instance['class_bar']).to eq(:goodbye) }
+    end
+
     context 'on instances' do
       describe 'instance-specific property' do
         let(:instance) do
@@ -41,23 +48,23 @@ describe Rip::Core::Base do
       end
 
       describe 'prototype property' do
-        specify { expect(instance['bar']).to eq(:hello) }
+        specify { expect(instance['instance_bar']).to eq(:hello) }
+      end
+    end
+
+    describe 'with invalid property' do
+      specify do
+        expect { instance['not-real'] }.to raise_error(Rip::Exceptions::RuntimeException)
       end
 
-      describe 'invalid property' do
-        specify do
-          expect { instance['not-real'] }.to raise_error(Rip::Exceptions::RuntimeException)
+      it 'describes the problem when invalid reference' do
+        actual = begin
+          instance['not-real']
+        rescue => e
+          e.message
         end
 
-        it 'describes the problem when invalid reference' do
-          actual = begin
-            instance['not-real']
-          rescue => e
-            e.message
-          end
-
-          expect(actual).to eq('Unknown property `not-real`')
-        end
+        expect(actual).to eq('Unknown property `not-real`')
       end
     end
   end

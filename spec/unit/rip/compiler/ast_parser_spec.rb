@@ -272,7 +272,8 @@ describe Rip::Compiler::AST do
 
     let(:parameter_nodes) { [ Rip::Nodes::Parameter.new(location.add_character(4), 'other') ] }
     let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(11), []) }
-    let(:lambda_node) { Rip::Nodes::Lambda.new(location, parameter_nodes, body_node) }
+    let(:overload_node) { Rip::Nodes::Overload.new(location, parameter_nodes, body_node) }
+    let(:lambda_node) { Rip::Nodes::Lambda.new(location, [ overload_node ]) }
 
     it 'has one top-level node' do
       expect(statements.count).to eq(1)
@@ -284,34 +285,93 @@ describe Rip::Compiler::AST do
   end
 
   context 'lambdas' do
-    let(:rip) { '-> (question, answer<Integer>) {}' }
+    let(:rip) { '-> (question, answer<System.Integer>) {}' }
 
-    let(:integer_class_node) { Rip::Nodes::Reference.new(location.add_character(21), 'Integer') }
+    let(:context) { Rip::Compiler::Driver.global_context }
+
+    let(:system_class_node) { Rip::Nodes::Reference.new(location.add_character(21), 'System') }
+    let(:integer_class_node) { Rip::Nodes::Property.new(location.add_character(27), system_class_node, 'Integer') }
     let(:parameter_nodes) do
       [
-        Rip::Nodes::Parameter.new(location.add_character(14), 'question'),
+        Rip::Nodes::Parameter.new(location.add_character(6), 'question'),
         Rip::Nodes::Parameter.new(location.add_character(14), 'answer', integer_class_node)
       ]
     end
-    let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(31), []) }
-    let(:lambda_node) { Rip::Nodes::Lambda.new(location, parameter_nodes, body_node) }
+    let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(38), []) }
+    let(:overload_node) { Rip::Nodes::Overload.new(location, parameter_nodes, body_node) }
 
-    let(:parameters) { statements.first.parameters }
+    let(:overload_nodes) { [ overload_node ] }
+    let(:lambda_node) { Rip::Nodes::Lambda.new(location, overload_nodes) }
+
+    let(:overloads) { statements.first.overloads }
+    let(:parameters) { overloads.first.parameters }
 
     it 'finds the lambda' do
       expect(statements.first).to eq(lambda_node)
     end
 
-    specify do
-      expect(parameters.first.name).to eq('question')
-      expect(parameters.first.type).to be_nil
-      expect(parameters.first).to eq(parameter_nodes.first)
+    it 'has one overload' do
+      expect(overloads.count).to eq(1)
     end
 
     specify do
-      expect(parameters.last.name).to eq('answer')
-      expect(parameters.last.type).to eq(integer_class_node)
+      expect(parameters.first).to eq(parameter_nodes.first)
+      expect(parameters.first.type(context)).to eq(Rip::Core::Object.class_instance)
+    end
+
+    specify do
       expect(parameters.last).to eq(parameter_nodes.last)
+      expect(parameters.last.type(context)).to eq(Rip::Core::Integer.class_instance)
+    end
+
+    context 'with two overloads' do
+      let(:rip) do
+        strip_heredoc(<<-RIP)
+          => {
+            -> (a) { }
+            -> (a, b) { }
+          }
+        RIP
+      end
+
+      let(:lambda_location) { location }
+      let(:lambda_node) { Rip::Nodes::Lambda.new(lambda_location, [ overload_one_node, overload_two_node ]) }
+
+
+      let(:overload_one_location) { lambda_location.add_character(4).add_line(1).add_character(2) }
+      let(:overload_one_node) { Rip::Nodes::Overload.new(overload_one_location, [ parameter_a_node_1 ], overload_one_body_node) }
+
+      let(:parameter_a_1_location) { overload_one_location.add_character(4) }
+      let(:parameter_a_node_1) { Rip::Nodes::Parameter.new(parameter_a_1_location, 'a') }
+
+      let(:overload_one_body_location) { parameter_a_1_location.add_character(3) }
+      let(:overload_one_body_node) { Rip::Nodes::BlockBody.new(overload_one_body_location, []) }
+
+
+      let(:overload_two_location) { overload_one_body_location.add_character(3).add_line(1).add_character(2) }
+      let(:overload_two_node) { Rip::Nodes::Overload.new(overload_two_location, [ parameter_a_node_2, parameter_b_node ], overload_two_body_node) }
+
+      let(:parameter_a_2_location) { overload_two_location.add_character(4) }
+      let(:parameter_a_node_2) { Rip::Nodes::Parameter.new(parameter_a_2_location, 'a') }
+
+      let(:parameter_b_location) { parameter_a_2_location.add_character(3) }
+      let(:parameter_b_node) { Rip::Nodes::Parameter.new(parameter_b_location, 'b') }
+
+      let(:overload_two_body_location) { parameter_b_location.add_character(3) }
+      let(:overload_two_body_node) { Rip::Nodes::BlockBody.new(overload_two_body_location, []) }
+
+
+      it 'finds the lambda' do
+        expect(statements.first).to eq(lambda_node)
+      end
+
+      it 'has two overloads' do
+        expect(overloads.count).to eq(2)
+
+        overloads.each do |overload|
+          expect(overload).to be_a(Rip::Nodes::Overload)
+        end
+      end
     end
   end
 
@@ -325,7 +385,8 @@ describe Rip::Compiler::AST do
 
     let(:parameter_node) { Rip::Nodes::Parameter.new(location.add_character(11), 'other') }
     let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(18), []) }
-    let(:lambda_node) { Rip::Nodes::Lambda.new(location.add_character(7), [parameter_node], body_node) }
+    let(:overload_node) { Rip::Nodes::Overload.new(location.add_character(7), [ parameter_node ], body_node) }
+    let(:lambda_node) { Rip::Nodes::Lambda.new(location.add_character(7), [ overload_node ]) }
 
     let(:assignment) { statements.first }
 

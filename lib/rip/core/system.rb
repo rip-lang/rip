@@ -6,15 +6,16 @@ module Rip::Core
     end
 
     define_class_instance do |class_instance|
-      class_instance['require'] = Rip::Core::NativeLambda.new([
+      overload = Rip::Core::NativeOverload.new([
         Rip::Nodes::Parameter.new(nil, 'module_name')
-      ]) do |this, context|
+      ]) do |context|
         module_name = context['module_name'].characters.map(&:data).join
 
         Rip::Loaders::FileSystem.load_module(module_name, context.origin).tap do |reply|
           raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`") if reply.nil?
         end
       end
+      class_instance['require'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ overload ])
 
       class_instance['Boolean']           = Rip::Core::Boolean.class_instance
       class_instance['Character']         = Rip::Core::Character.class_instance

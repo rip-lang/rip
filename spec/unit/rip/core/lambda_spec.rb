@@ -10,7 +10,9 @@ describe Rip::Core::Lambda do
   let(:body_expressions) { [] }
   let(:body) { Rip::Nodes::BlockBody.new(location, body_expressions) }
 
-  let(:rip_lambda) { Rip::Core::Lambda.new(context, parameters, body) }
+  let(:overload) { Rip::Core::Overload.new(parameters, body) }
+  let(:overloads) { [ overload ] }
+  let(:rip_lambda) { Rip::Core::Lambda.new(context, overloads) }
 
   let(:arguments) { [] }
 
@@ -32,7 +34,7 @@ describe Rip::Core::Lambda do
     let(:class_to_s) { '#< System.Lambda >' }
 
     let(:instance) { rip_lambda }
-    let(:instance_to_s) { '#< #< System.Lambda > [ bind, class ] arity = 0 >' }
+    let(:instance_to_s) { '#< #< System.Lambda > [ class ] arity = [ 0 ] >' }
   end
 
   describe '.class_instance' do
@@ -42,8 +44,8 @@ describe Rip::Core::Lambda do
 
   describe '#arity' do
     context 'no parameters' do
-      specify { expect(rip_lambda.arity).to eq(0) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] arity = 0 >') }
+      specify { expect(rip_lambda.arity).to eq([ 0 ]) }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ class ] arity = [ 0 ] >') }
     end
 
     context 'all required parameters' do
@@ -53,30 +55,8 @@ describe Rip::Core::Lambda do
           Rip::Nodes::Parameter.new(location, 'b')
         ]
       end
-      specify { expect(rip_lambda.arity).to eq(2) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] arity = 2 >') }
-    end
-
-    context 'all optional parameters' do
-      let(:parameters) do
-        [
-          Rip::Nodes::Parameter.new(location, 'a', nil, Rip::Nodes::Integer.new(location, 1)),
-          Rip::Nodes::Parameter.new(location, 'b', nil, Rip::Nodes::Integer.new(location, 2))
-        ]
-      end
-      specify { expect(rip_lambda.arity).to eq(0..2) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] arity = 0..2 >') }
-    end
-
-    context 'mixed parameters' do
-      let(:parameters) do
-        [
-          Rip::Nodes::Parameter.new(location, 'a'),
-          Rip::Nodes::Parameter.new(location, 'b', nil, Rip::Nodes::Integer.new(location, 2))
-        ]
-      end
-      specify { expect(rip_lambda.arity).to eq(1..2) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class ] arity = 1..2 >') }
+      specify { expect(rip_lambda.arity).to eq([ 2 ]) }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ class ] arity = [ 2 ] >') }
     end
   end
 
@@ -159,35 +139,12 @@ describe Rip::Core::Lambda do
       end
     end
 
-    describe 'optional parameters' do
-      let(:parameters) do
-        [
-          Rip::Nodes::Parameter.new(location, 'a'),
-          Rip::Nodes::Parameter.new(location, 'b', nil, Rip::Nodes::Integer.new(location, 2)),
-          Rip::Nodes::Parameter.new(location, 'c', nil, Rip::Nodes::Integer.new(location, 3))
-        ]
-      end
-
-      let(:body_expressions) { [ a_plus_b_plus_c ] }
-
-      let(:arguments) do
-        [
-          Rip::Core::Integer.new(3),
-          Rip::Core::Integer.new(3)
-        ]
-      end
-
-      it 'interprets to nine' do
-        expect(actual_return).to eq(Rip::Core::Integer.new(9))
-      end
-    end
-
     describe 'automatic application' do
       let(:parameters) do
         [
           Rip::Nodes::Parameter.new(location, 'a'),
           Rip::Nodes::Parameter.new(location, 'b'),
-          Rip::Nodes::Parameter.new(location, 'c', nil, Rip::Nodes::Integer.new(location, 3))
+          Rip::Nodes::Parameter.new(location, 'c')
         ]
       end
 
@@ -199,10 +156,9 @@ describe Rip::Core::Lambda do
         ]
       end
 
-      it 'returns a lambda that takes two parameters' do
+      it 'returns a lambda that takes one argument' do
         expect(actual_return).to be_a(Rip::Core::Lambda)
-        expect(actual_return.parameters.count).to eq(2)
-        expect(actual_return.parameters).to match_array(parameters[1..2])
+        expect(actual_return.overloads.count).to eq(1)
       end
 
       it 'remembers the arguments previously passed in' do
@@ -220,51 +176,58 @@ describe Rip::Core::Lambda do
         ]
         expect(actual_return.call(other_arguments)).to eq(Rip::Core::Integer.new(27))
       end
-
-      it 'can still use default values for optional arguments' do
-        other_arguments = [
-          Rip::Core::Integer.new(8)
-        ]
-        expect(actual_return.call(other_arguments)).to eq(Rip::Core::Integer.new(14))
-      end
     end
   end
 
   describe '#bind' do
     let(:two) { Rip::Core::Integer.new(2) }
     let(:five) { Rip::Core::Integer.new(5) }
+    let(:seven) { Rip::Core::Integer.new(7) }
 
     let!(:two_plus) { two['+'] }
-    let!(:five_plus) { five['+'] }
 
     specify do
-      expect(two_plus).to be_a(Rip::Core::Lambda)
-      expect(two_plus['@']).to be(two)
+      expect(two_plus).to be_a(Rip::Core::BoundLambda)
     end
 
-    specify do
-      expect(five_plus).to be_a(Rip::Core::Lambda)
-      expect(five_plus['@']).to be(five)
+    it 'keeps a reference to the receiver' do
+      expect(two_plus.receiver).to eq(two)
     end
 
+    it 'is callable' do
+      expect(two_plus.call([ five ])).to eq(seven)
+    end
+  end
+
+  describe '@.bind' do
+    let(:body_expressions) do
+      [ Rip::Nodes::Reference.new(location, '@') ]
+    end
+
+    let(:character) { Rip::Core::Character.new('c') }
+    let(:bound_lambda) { rip_lambda['bind'].call([ character ]) }
+
+    it 'has a receiver only if bound', :blur do
+      expect(rip_lambda).to_not respond_to(:receiver)
+      expect(bound_lambda.receiver).to eq(character)
+    end
+
+    it 'can return the receiver', :blur do
+      expect(bound_lambda.call(arguments)).to eq(character)
+    end
+  end
+
+  describe '#call', :blur do
     context do
       let(:body_expressions) do
-        [ Rip::Nodes::Reference.new(location, '@') ]
+        [ Rip::Nodes::Reference.new(location, 'self') ]
       end
 
-      specify do
-        expect { rip_lambda.call(arguments) }.to raise_error(Rip::Exceptions::RuntimeException)
-      end
+      let(:two) { Rip::Core::Integer.new(2) }
+      let(:two_plus) { two['+'] }
 
-      describe '@.bind' do
-        let(:character) { Rip::Core::Character.new('c') }
-        let(:bound_lambda) { rip_lambda['bind'].call([ character ]) }
-
-        specify do
-          expect { rip_lambda.call(arguments) }.to raise_error(Rip::Exceptions::RuntimeException)
-          expect(bound_lambda.call([])).to eq(Rip::Core::Character.new('c'))
-        end
-      end
+      specify { expect(rip_lambda.call(arguments)).to eq(rip_lambda) }
+      specify { expect(two_plus.call(arguments)).to eq(two_plus) }
     end
   end
 end
