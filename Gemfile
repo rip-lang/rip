@@ -7,6 +7,8 @@ group :development, :test do
   gem 'byebug'
   gem 'pry'
   gem 'pry-byebug'
+  gem 'pry-rescue'
+  gem 'pry-stack_explorer'
 end
 
 group :test do
