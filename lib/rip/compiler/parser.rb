@@ -141,6 +141,7 @@ module Rip::Compiler
     rule(:property) { whitespaces? >> dot.as(:location) >> property_name.as(:property_name) }
     rule(:property_name) do
       word |
+        str('/%') |
         str('/') |
         str('<=>') |
         str('<=') |
