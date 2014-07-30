@@ -2,7 +2,6 @@ module Rip::Core
   class Overload < Rip::Core::Base
     attr_reader :parameters
     attr_reader :body
-    attr_reader :receiver
 
     def initialize(parameters, body)
       super()
@@ -17,19 +16,33 @@ module Rip::Core
       parameters.count
     end
 
-    def bound?
-      !!receiver
-    end
-
-    def bind(receiver)
-      clone.tap do |reply|
-        reply.instance_variable_set(:@receiver, receiver)
+    def bind
+      if bound?
+        self
+      else
+        self.class.new([ parameter_for_receiver, *parameters ], body)
       end
     end
 
     def call(calling_context, arguments)
       _body_context = body_context(calling_context, arguments)
       body.interpret(_body_context)
+    end
+
+    def callable?(context, argument_signature)
+      return false unless parameters.count == argument_signature.count
+
+      parameters.zip(argument_signature).all? do |(parameter, argument_type)|
+        parameter.matches?(context, argument_type)
+      end
+    end
+
+    def matches?(context, argument_signature)
+      return false if parameters.count < argument_signature.count
+
+      parameters.zip(argument_signature).all? do |(parameter, argument_type)|
+        argument_type ? parameter.matches?(context, argument_type) : true
+      end
     end
 
     protected
@@ -40,8 +53,13 @@ module Rip::Core
       end
     end
 
-    def clone
-      self.class.new(parameters, body)
+    def bound?
+      (parameters.count > 0) &&
+        (parameters.first.name == '@')
+    end
+
+    def parameter_for_receiver
+      Rip::Nodes::Parameter.new(nil, '@')
     end
   end
 end
@@ -54,15 +72,17 @@ module Rip::Core
       @body = body
     end
 
+    def bind
+      if bound?
+        self
+      else
+        self.class.new([ parameter_for_receiver, *parameters ], &body)
+      end
+    end
+
     def call(calling_context, arguments)
       _body_context = body_context(calling_context, arguments)
       body.call(_body_context)
-    end
-
-    protected
-
-    def clone
-      self.class.new(parameters, &body)
     end
   end
 end

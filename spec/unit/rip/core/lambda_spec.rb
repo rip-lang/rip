@@ -187,11 +187,11 @@ describe Rip::Core::Lambda do
     let!(:two_plus) { two['+'] }
 
     specify do
-      expect(two_plus).to be_a(Rip::Core::BoundLambda)
+      expect(two_plus).to be_a(Rip::Core::Lambda)
     end
 
     it 'keeps a reference to the receiver' do
-      expect(two_plus.receiver).to eq(two)
+      expect(two_plus['@']).to eq(two)
     end
 
     it 'is callable' do
@@ -199,7 +199,7 @@ describe Rip::Core::Lambda do
     end
   end
 
-  describe '@.bind' do
+  describe '@.bind', :blur do
     let(:body_expressions) do
       [ Rip::Nodes::Reference.new(location, '@') ]
     end
@@ -207,12 +207,16 @@ describe Rip::Core::Lambda do
     let(:character) { Rip::Core::Character.new('c') }
     let(:bound_lambda) { rip_lambda['bind'].call([ character ]) }
 
-    it 'has a receiver only if bound', :blur do
-      expect(rip_lambda).to_not respond_to(:receiver)
-      expect(bound_lambda.receiver).to eq(character)
+    it 'has a receiver only if bound' do
+      expect(rip_lambda.symbols).to_not include('@')
+      expect(bound_lambda.symbols).to include('@')
     end
 
-    it 'can return the receiver', :blur do
+    it 'exposes its receiver' do
+      expect(bound_lambda['@']).to eq(character)
+    end
+
+    it 'can return the receiver' do
       expect(bound_lambda.call(arguments)).to eq(character)
     end
   end

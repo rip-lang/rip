@@ -63,6 +63,7 @@ describe Rip::Core::Integer do
       let(:rhs_node) { Rip::Nodes::Integer.new(nil, bo.rhs) }
       let(:invocation_node) { Rip::Nodes::Invocation.new(nil, operator_node, [ rhs_node ]) }
 
+      specify { expect(operator_node.interpret(context)['@']).to eq(lhs_node.interpret(context)) }
       specify { expect(invocation_node.interpret(context)).to eq(Rip::Core::Integer.new(bo.result)) }
 
       specify { expect(Rip::Core::Integer.new(bo.lhs)[bo.operator].call([ Rip::Core::Integer.new(bo.rhs) ])).to eq(Rip::Core::Integer.new(bo.result)) }
