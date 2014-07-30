@@ -221,7 +221,7 @@ describe Rip::Core::Lambda do
     end
   end
 
-  describe '#call', :blur do
+  describe '#call' do
     context do
       let(:body_expressions) do
         [ Rip::Nodes::Reference.new(location, 'self') ]

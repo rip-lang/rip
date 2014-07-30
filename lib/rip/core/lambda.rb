@@ -70,6 +70,7 @@ module Rip::Core
 
       if matching_overloads.count > 0
         self.class.new(context, matching_overloads, applied_arguments + arguments).tap do |reply|
+          reply['@'] = self['@'] if bound?
           @applied_overloads[full_signature] = reply
         end
       elsif arguments.count.zero?
