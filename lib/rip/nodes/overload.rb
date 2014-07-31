@@ -35,13 +35,15 @@ module Rip::Nodes
 
         reply = []
 
+        synthetic_location = overload.location
+
         optional_parameters.inject(required_parameters) do |memo, parameter|
           synthetic_arguments = memo.map do |p|
             Rip::Nodes::Reference.new(parameter.location, p.name)
           end + [ parameter.default_expression ]
 
           synthetic_body = [
-            Rip::Nodes::Invocation.new(overload.location, Rip::Nodes::Reference.new(overload.location, 'self'), synthetic_arguments)
+            Rip::Nodes::Invocation.new(synthetic_location, Rip::Nodes::Reference.new(synthetic_location, 'self'), synthetic_arguments)
           ]
 
           reply << Rip::Nodes::Overload.new(overload.location, memo, synthetic_body)
@@ -53,7 +55,7 @@ module Rip::Nodes
           Rip::Nodes::Parameter.new(parameter.location, parameter.name, parameter.type)
         end
 
-        [ *reply, Rip::Nodes::Overload.new(overload.location, final_parameters, overload.body) ]
+        [ *reply, Rip::Nodes::Overload.new(synthetic_location, final_parameters, overload.body) ]
       end.flatten
     end
   end
