@@ -34,7 +34,7 @@ describe Rip::Core::Lambda do
     let(:class_to_s) { '#< System.Lambda >' }
 
     let(:instance) { rip_lambda }
-    let(:instance_to_s) { '#< #< System.Lambda > [ class, to_string ] arity = [ 0 ] >' }
+    let(:instance_to_s) { '#< #< System.Lambda > [ bind, class, to_string ] arity = [ 0 ] >' }
   end
 
   describe '.class_instance' do
@@ -45,7 +45,7 @@ describe Rip::Core::Lambda do
   describe '#arity' do
     context 'no parameters' do
       specify { expect(rip_lambda.arity).to eq([ 0 ]) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ class, to_string ] arity = [ 0 ] >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class, to_string ] arity = [ 0 ] >') }
     end
 
     context 'all required parameters' do
@@ -56,7 +56,7 @@ describe Rip::Core::Lambda do
         ]
       end
       specify { expect(rip_lambda.arity).to eq([ 2 ]) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ class, to_string ] arity = [ 2 ] >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class, to_string ] arity = [ 2 ] >') }
     end
   end
 
@@ -216,25 +216,54 @@ describe Rip::Core::Lambda do
     end
   end
 
-  describe '@.bind', :blur do
-    let(:body_expressions) do
-      [ Rip::Nodes::Reference.new(location, '@') ]
+  describe '@.bind' do
+    let(:receiver) { Rip::Core::Integer.new(42) }
+
+    let(:the_lambda) do
+      overload = Rip::Core::NativeOverload.new([
+      ]) do |_context|
+        _context['@']['to_string'].call([])
+      end
+      Rip::Core::Lambda.new(context, [ overload ])
     end
 
-    let(:character) { Rip::Core::Character.new('c') }
-    let(:bound_lambda) { rip_lambda['bind'].call([ character ]) }
+    specify { expect(the_lambda['bind']).to be_a(Rip::Core::Lambda) }
+    specify { expect { the_lambda['@'] }.to raise_error(Rip::Exceptions::RuntimeException) }
 
-    it 'has a receiver only if bound' do
-      expect(rip_lambda.symbols).to_not include('@')
-      expect(bound_lambda.symbols).to include('@')
-    end
+    context 'invocation' do
+      let(:answer) { Rip::Core::Integer.new(42) }
+      let(:language) { Rip::Core::String.from_native('Rip') }
 
-    it 'exposes its receiver' do
-      expect(bound_lambda['@']).to eq(character)
-    end
+      let(:bound_answer) { the_lambda['bind'].call([ answer ]) }
+      let(:bound_language) { bound_answer['bind'].call([ language ]) }
 
-    it 'can return the receiver' do
-      expect(bound_lambda.call(arguments)).to eq(character)
+      let(:bound_answer_parameter) { bound_answer.overloads.first.parameters.first }
+      let(:bound_language_parameter) { bound_language.overloads.first.parameters.first }
+
+      it 'returns a lambda' do
+        expect(bound_answer).to be_a(Rip::Core::Lambda)
+        expect(bound_language).to be_a(Rip::Core::Lambda)
+      end
+
+      it 'binds a receiver' do
+        expect(bound_answer['@']).to be(answer)
+        expect(bound_language['@']).to be(language)
+      end
+
+      it 'replaces receiver parameter without appending' do
+        expect(bound_answer.overloads.first.parameters.count).to eq(1)
+        expect(bound_language.overloads.first.parameters.count).to eq(1)
+      end
+
+      it 'sets the correct parameter type' do
+        expect(bound_answer_parameter.type).to eq(Rip::Core::Integer.class_instance)
+        expect(bound_language_parameter.type).to eq(Rip::Core::String.class_instance)
+      end
+
+      it 'uses the bound receiver' do
+        expect(bound_answer.call([]).to_native).to eq('42')
+        expect(bound_language.call([]).to_native).to eq('Rip')
+      end
     end
   end
 

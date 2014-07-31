@@ -59,6 +59,16 @@ module Rip::Core
     end
 
     define_class_instance do |class_instance|
+      class_instance['@']['bind'] = Rip::Core::DelayedProperty.new do |_|
+        bind_overload = Rip::Core::NativeOverload.new([
+          Rip::Core::Parameter.new('@@', Rip::Core::Object.class_instance)
+        ]) do |context|
+          context['@'].bind(context['@@'])
+        end
+
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ bind_overload ])
+      end
+
       class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
