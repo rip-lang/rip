@@ -50,4 +50,5 @@ Patches are most welcome! Please make changes in a feature branch that merges in
 [![Build Status](https://travis-ci.org/rip-lang/rip.png)](https://travis-ci.org/rip-lang/rip)
 [![Coverage Status](https://coveralls.io/repos/rip-lang/rip/badge.png)](https://coveralls.io/r/rip-lang/rip)
 [![Dependency Status](https://gemnasium.com/rip-lang/rip.png)](https://gemnasium.com/rip-lang/rip)
-[![Stories in Ready](https://badge.waffle.io/rip-lang/rip.png?label=ready)](http://waffle.io/rip-lang/rip)
+[![Gitter Chat](https://badges.gitter.im/rip-lang/rip.png)](https://gitter.im/rip-lang/rip)
+[![Stories In Ready](https://badge.waffle.io/rip-lang/rip.png?label=ready)](http://waffle.io/rip-lang/rip)
