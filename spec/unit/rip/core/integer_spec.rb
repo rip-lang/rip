@@ -12,7 +12,7 @@ describe Rip::Core::Integer do
     let(:class_to_s) { '#< System.Integer >' }
 
     let(:instance) { forty_two }
-    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, class ] data = 42 >' }
+    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, /%, class ] data = 42 >' }
   end
 
   describe '.class_instance' do
@@ -68,5 +68,24 @@ describe Rip::Core::Integer do
 
       specify { expect(Rip::Core::Integer.new(bo.lhs)[bo.operator].call([ Rip::Core::Integer.new(bo.rhs) ])).to eq(Rip::Core::Integer.new(bo.result)) }
     end
+  end
+
+  describe '@./%' do
+    let(:lhs_node) { Rip::Nodes::Integer.new(nil, 9) }
+    let(:operator_node) { Rip::Nodes::Property.new(nil, lhs_node, '/%') }
+    let(:rhs_node) { Rip::Nodes::Integer.new(nil, 2) }
+    let(:invocation_node) { Rip::Nodes::Invocation.new(nil, operator_node, [ rhs_node ]) }
+
+    let(:one) { Rip::Core::Integer.new(1) }
+    let(:two) { Rip::Core::Integer.new(2) }
+    let(:four) { Rip::Core::Integer.new(4) }
+    let(:nine) { Rip::Core::Integer.new(9) }
+
+    let(:tuple) { Rip::Core::List.new([ four, one ]) }
+
+    specify { expect(operator_node.interpret(context)['@']).to eq(lhs_node.interpret(context)) }
+    specify { expect(invocation_node.interpret(context)).to eq(tuple) }
+
+    specify { expect(nine['/%'].call([ two ])).to eq(tuple) }
   end
 end

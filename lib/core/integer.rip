@@ -18,4 +18,14 @@ class {
 	@.% = -> (other) {
 		@.class.%(@, other)
 	}
+
+	@./% = -> (other) {
+		@.class./%(@, other)
+	}
+
+	self./% = -> (a, b) {
+		d = a / b
+		r = a % b
+		[ d, r ]
+	}
 }
