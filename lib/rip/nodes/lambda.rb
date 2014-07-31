@@ -1,25 +1,23 @@
 module Rip::Nodes
   class Lambda < Base
-    attr_reader :keyword
-    attr_reader :parameters
-    attr_reader :body
+    attr_reader :overloads
 
-    def initialize(location, keyword, parameters, body)
+    def initialize(location, overloads)
       super(location)
-      @keyword = keyword
-      @parameters = parameters
-      @body = body
+      @overloads = Rip::Nodes::Overload.expand(overloads)
     end
 
     def ==(other)
       super &&
-        (keyword == other.keyword) &&
-        (parameters == other.parameters) &&
-        (body == other.body)
+        (overloads == other.overloads)
     end
 
     def interpret(context)
-      Rip::Core::Lambda.new(context, keyword, parameters, body)
+      _overloads = overloads.map do |overload|
+        overload.interpret(context)
+      end
+
+      Rip::Core::Lambda.new(context, _overloads)
     end
 
     def to_debug(level = 0)
@@ -36,7 +34,7 @@ module Rip::Nodes
         [ [ level + 1, ']' ] ]
 
       [
-        [ level, "#{super.last.last} (#{keyword.to_debug})" ]
+        [ level, super.last.last ]
       ] + parameters_debug + body_debug
     end
   end

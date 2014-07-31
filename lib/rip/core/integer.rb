@@ -24,9 +24,14 @@ module Rip::Core
         * /
         %
       ].each do |property|
-        class_instance['@'][property] = Rip::Core::RubyLambda.binary_prototype_method do |this, other|
-          new(this.data.send(property, other.data))
+        overload = Rip::Core::NativeOverload.new([
+          Rip::Nodes::Parameter.new(nil, 'a'),
+          Rip::Nodes::Parameter.new(nil, 'b')
+        ]) do |context|
+          new(context['a'].data.send(property, context['b'].data))
         end
+
+        class_instance[property] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ overload ])
       end
 
       def class_instance.to_s

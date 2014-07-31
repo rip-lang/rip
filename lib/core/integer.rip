@@ -1,2 +1,21 @@
 class {
+	@.+ = -> (other) {
+		@.class.+(@, other)
+	}
+
+	@.- = -> (other) {
+		@.class.-(@, other)
+	}
+
+	@.* = -> (other) {
+		@.class.*(@, other)
+	}
+
+	@./ = -> (other) {
+		@.class./(@, other)
+	}
+
+	@.% = -> (other) {
+		@.class.%(@, other)
+	}
 }

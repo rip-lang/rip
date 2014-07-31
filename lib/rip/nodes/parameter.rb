@@ -2,27 +2,51 @@ module Rip::Nodes
   class Parameter < Base
     attr_reader :location
     attr_reader :name
-    attr_reader :default_expression
 
-    def initialize(location, name, default_expression = nil)
-      @location = location
+    def initialize(location, name, type = nil)
+      super(location)
+
       @name = name
-      @default_expression = default_expression
+      @type = type
     end
 
     def ==(other)
       (name == other.name) &&
-        (default_expression == other.default_expression)
+        (raw_type == other.raw_type)
     end
 
     def bind(context, argument)
-      value = if argument
-        argument
-      elsif default_expression
-        default_expression.interpret(context)
+      _type = type(context)
+
+      unless argument['class'].ancestors.include?(_type) || special_case_for_class?(argument['class'])
+        raise Rip::Exceptions::CompilerException.new("Parameter type mis-match: expected `#{name}` to be a `#{_type}`, but was a `#{argument['class']}`")
       end
 
-      BoundParameter.new(name, value) if value
+      context.tap do |reply|
+        reply[name] = argument
+      end
+    end
+
+    def matches?(context, argument_type)
+      argument_type.ancestors.include?(type(context)) || special_case_for_class?(argument_type)
+    end
+
+    def raw_type
+      @type
+    end
+
+    def required?
+      true
+    end
+
+    def type(context)
+      case @type
+        when Rip::Core::Base  then @type
+        when Rip::Nodes::Base then @type.interpret(context)
+        else                       Rip::Core::Object.class_instance
+      end.tap do |reply|
+        @type = reply
+      end
     end
 
     def to_debug(level = 0)
@@ -40,20 +64,48 @@ module Rip::Nodes
         ]
       end
     end
-  end
 
-  class BoundParameter
-    attr_reader :name
-    attr_reader :value
+    protected
 
-    def initialize(name, value)
-      @name = name
-      @value = value
+    def special_case_for_class?(argument_type)
+      raise 'special_case_for_class? called out of turn' unless raw_type.is_a?(Rip::Core::Base)
+
+      (argument_type == Rip::Core::Class.class_instance) &&
+        (raw_type == Rip::Core::Object.class_instance)
     end
 
-    def inject(context)
-      context[name] = value
-      context
+    def special_case_for_class?(argument_type)
+      raise 'special_case_for_class? called out of turn' unless raw_type.is_a?(Rip::Core::Base)
+
+      (argument_type == Rip::Core::Class.class_instance) &&
+        (raw_type == Rip::Core::Object.class_instance)
+    end
+  end
+
+  class DefaultParameter < Rip::Nodes::Parameter
+    attr_reader :default_expression
+
+    def initialize(location, name, type = nil, default_expression = nil)
+      super(location, name, type)
+
+      @default_expression = default_expression
+    end
+
+    def ==(other)
+      super &&
+        (default_expression == other.default_expression)
+    end
+
+    def bind(context, argument)
+      if (argument)
+        super(context, argument)
+      else
+        super(context, default_expression.interpret(context))
+      end
+    end
+
+    def required?
+      false
     end
   end
 end

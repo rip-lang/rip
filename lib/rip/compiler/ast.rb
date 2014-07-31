@@ -166,20 +166,35 @@ module Rip::Compiler
       Rip::Nodes::Parameter.new(location, locals[:parameter])
     end
 
-    rule(:parameter => simple(:parameter), :default_expression => simple(:default_expression)) do |locals|
+    rule(:parameter => simple(:parameter), :type_argument => simple(:type_argument) ) do |locals|
       location = location_for(locals[:origin], locals[:parameter])
-      Rip::Nodes::Parameter.new(location, locals[:parameter], locals[:default_expression])
+      Rip::Nodes::Parameter.new(location, locals[:parameter], locals[:type_argument])
     end
 
-    {
-      :dash_rocket => Rip::Nodes::Lambda,
-      :fat_rocket => Rip::Nodes::Lambda
-    }.each do |keyword, klass|
-      rule(keyword => simple(keyword), :parameters => sequence(:parameters), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
-        location = location_for(locals[:origin], locals[keyword])
-        body = block_body(locals[:origin], locals[:location_body], locals[:body])
-        klass.new(location, Rip::Utilities::Keywords[keyword], locals[:parameters], body)
+    rule(:parameter => simple(:parameter), :default_expression => simple(:default_expression)) do |locals|
+      location = location_for(locals[:origin], locals[:parameter])
+      Rip::Nodes::DefaultParameter.new(location, locals[:parameter], nil, locals[:default_expression])
+    end
+
+    rule(:parameter => simple(:parameter), :type_argument => simple(:type_argument), :default_expression => simple(:default_expression)) do |locals|
+      location = location_for(locals[:origin], locals[:parameter])
+      Rip::Nodes::DefaultParameter.new(location, locals[:parameter], locals[:type_argument], locals[:default_expression])
+    end
+
+    rule(:dash_rocket => simple(:dash_rocket), :parameters => sequence(:parameters), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+      location = location_for(locals[:origin], locals[:dash_rocket])
+      body = block_body(locals[:origin], locals[:location_body], locals[:body])
+      overload = Rip::Nodes::Overload.new(location, locals[:parameters], body)
+      overloads = Rip::Nodes::Overload.expand([ overload ])
+      Rip::Nodes::Lambda.new(location, overloads)
+    end
+
+    rule(:fat_rocket => simple(:fat_rocket), :location_body => simple(:location_body), :overload_blocks => sequence(:overload_blocks)) do |locals|
+      location = location_for(locals[:origin], locals[:fat_rocket])
+      overloads = locals[:overload_blocks].inject([]) do |memo, overload|
+        [ *memo, *overload.overloads ]
       end
+      Rip::Nodes::Lambda.new(location, overloads)
     end
 
     {

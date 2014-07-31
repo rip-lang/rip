@@ -21,9 +21,12 @@ module Rip::Core
     end
 
     define_class_instance('list') do |class_instance|
-      class_instance['@']['reverse'] = Rip::Core::RubyLambda.new(Rip::Utilities::Keywords[:dash_rocket], []) do |this, context|
+      reverse_overload = Rip::Core::NativeOverload.new([
+      ]) do |context|
+        this = context['@']
         this.class.new(this.items.reverse)
       end
+      class_instance['@']['reverse'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ reverse_overload ])
 
       class_instance['@']['head'] = Rip::Core::DynamicProperty.new do |this|
         this['head_left']
