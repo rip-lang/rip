@@ -10,10 +10,12 @@ module Rip::Exceptions
     end
 
     def dump
-      [
-        inspect,
-        ascii_tree
-      ]
+      <<-DUMP
+#{super}
+
+ASCII Tree:
+#{ascii_tree}
+      DUMP
     end
   end
 end
