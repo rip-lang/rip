@@ -4,7 +4,7 @@ module Rip::Exceptions
 
     status_code 10
 
-    def initialize(exception, location = nil, call_stack = [])
+    def initialize(exception, location, call_stack = [])
       super('Unknown exception has occurred. Please open an issue report at github.com/rip-lang/rip/issues', location, call_stack)
       @exception = exception
     end

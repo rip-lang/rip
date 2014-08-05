@@ -19,7 +19,7 @@ module Rip::Nodes
       _type = type(context)
 
       unless argument['class'].ancestors.include?(_type) || special_case_for_class?(argument['class'])
-        raise Rip::Exceptions::CompilerException.new("Parameter type mis-match: expected `#{name}` to be a `#{_type}`, but was a `#{argument['class']}`")
+        raise Rip::Exceptions::CompilerException.new("Parameter type mis-match: expected `#{name}` to be a `#{_type}`, but was a `#{argument['class']}`", location)
       end
 
       context.tap do |reply|

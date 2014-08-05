@@ -12,7 +12,7 @@ module Rip::Core
         module_name = context['module_name'].characters.map(&:data).join
 
         Rip::Loaders::FileSystem.load_module(module_name, context.origin).tap do |reply|
-          raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`") if reply.nil?
+          raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`", context.origin) if reply.nil?
         end
       end
       class_instance['require'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ overload ])

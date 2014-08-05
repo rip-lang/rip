@@ -12,7 +12,8 @@ module Rip::Core
 
     def [](key)
       _key = key.to_s
-      reply = get(_key) || (raise Rip::Exceptions::RuntimeException.new("Unknown property `#{key}`"))
+      location = key.location if key.respond_to?(:location)
+      reply = get(_key) || (raise Rip::Exceptions::RuntimeException.new("Unknown property `#{key}`", location))
 
       case reply
       when Rip::Core::DynamicProperty

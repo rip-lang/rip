@@ -4,7 +4,7 @@ module Rip::Exceptions
 
     status_code 13
 
-    def initialize(message, location = nil, call_stack = [], ascii_tree = nil)
+    def initialize(message, location, call_stack = [], ascii_tree = nil)
       super(message, location, call_stack)
       @ascii_tree = ascii_tree
     end

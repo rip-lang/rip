@@ -17,7 +17,7 @@ module Rip::Nodes
 
     def interpret(context)
       object.interpret(context)[name] ||
-        (raise Rip::Exceptions::RuntimeException.new("Unknown property `#{name}`"))
+        (raise Rip::Exceptions::RuntimeException.new("Unknown property `#{name}`", location))
     end
 
     def interpret_for_assignment(context, &block)

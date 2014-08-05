@@ -41,7 +41,7 @@ Usage:
     def debug(file = nil)
       valid_trees = Hash.new do |valid, unknown_tree|
         message = "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
-        raise Rip::Exceptions::UsageException.new(message)
+        raise Rip::Exceptions::UsageException.new(message, nil)
       end.merge({
         'raw_parse'  => :raw_parse_tree,
         'parse'  => :parse_tree,
