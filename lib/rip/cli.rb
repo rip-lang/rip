@@ -94,8 +94,9 @@ Usage:
         warn e.dump
         exit e.status_code
       rescue => e
-        warn 'Unknown exception has occurred. Please open an issue report at github.com/rip-lang/rip/issues'
-        raise e
+        ee = Rip::Exceptions::NativeException.new(e, nil)
+        warn ee.dump
+        exit ee.status_code
       end
     end
 
