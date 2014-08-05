@@ -27,7 +27,7 @@ module Rip::Compiler
         parse(source_code)
       rescue Parslet::ParseFailed => e
         location = Rip::Utilities::Location.new(origin, e.cause.pos, *e.cause.source.line_and_column)
-        raise Rip::Exceptions::SyntaxError.new(e.message, location, e.backtrace, e.cause.ascii_tree)
+        raise Rip::Exceptions::SyntaxError.new(e.message, location, [], e.cause.ascii_tree)
       end
 
       collapse_atom(ugly_tree).tap do |reply|
