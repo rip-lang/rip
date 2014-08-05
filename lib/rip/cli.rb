@@ -17,7 +17,9 @@ module Rip
 
     desc 'repl', 'Enter read, evaluate, print loop'
     def repl
-      wip :repl
+      wrap_exceptions do
+        Rip::Compiler::REPL.start
+      end
     end
 
     desc 'help [task]', 'Describe available tasks or one specific [task]'
