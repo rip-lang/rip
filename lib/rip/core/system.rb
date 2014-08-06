@@ -35,6 +35,12 @@ module Rip::Core
       class_instance['String']            = Rip::Core::String.class_instance
       # class_instance['Time']              = Rip::Core::Time.class_instance
 
+      to_string_overload = Rip::Core::NativeOverload.new([
+      ]) do |context|
+        Rip::Core::String.from_native('System')
+      end
+      class_instance['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
+
       def class_instance.to_s
         '#< System >'
       end
