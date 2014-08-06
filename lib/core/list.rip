@@ -1,7 +1,5 @@
 # class (System.Enumerable) {
 class {
-	to_string = -> { 'System.List' }
-
 	@.<< = -> (new_item) {
 		@ + [ new_item ]
 	}
@@ -27,4 +25,6 @@ class {
 		}
 		@.head
 	}
+
+	to_string = -> { 'System.List' }
 }
