@@ -20,6 +20,21 @@ describe Rip::Core::String do
     specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
   end
 
+  describe '.from_native' do
+    let(:actual) { Rip::Core::String.from_native(string) }
+    let(:expected) { Rip::Core::String.new(rip_string_nodes(location_for, string)) }
+
+    context 'empty string' do
+      let(:string) { '' }
+      specify { expect(actual).to eq(expected) }
+    end
+
+    context 'non-empty string' do
+      let(:string) { 'foo' }
+      specify { expect(actual).to eq(expected) }
+    end
+  end
+
   describe '@.class' do
     specify { expect(string['class']).to be(class_instance) }
   end

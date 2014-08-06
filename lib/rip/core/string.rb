@@ -25,6 +25,14 @@ module Rip::Core
       super + [ "characters = \"#{_characters}\"" ]
     end
 
+    def self.from_native(string)
+      characters = string.split('').map do |character|
+        Rip::Core::Character.new(character)
+      end
+
+      new(characters)
+    end
+
     define_class_instance('string') do |class_instance|
       uppercase_overload = Rip::Core::NativeOverload.new([
       ]) do |context|
