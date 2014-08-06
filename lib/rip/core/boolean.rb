@@ -30,11 +30,11 @@ module Rip::Core
       class_instance['true'] = new(true)
       class_instance['false'] = new(false)
 
-      overload = Rip::Core::NativeOverload.new([
+      to_boolean_overload = Rip::Core::NativeOverload.new([
       ]) do |context|
         context['@']
       end
-      class_instance['@']['to_boolean'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ overload ])
+      class_instance['@']['to_boolean'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_boolean_overload ])
 
       def class_instance.to_s
         '#< System.Boolean >'
