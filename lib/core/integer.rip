@@ -28,4 +28,6 @@ class {
 		r = a % b
 		[ d, r ]
 	}
+
+	to_string = -> { 'System.Integer' }
 }
