@@ -10,7 +10,6 @@ module Rip::Core
       @context = context
       @overloads = overloads
       @applied_arguments = applied_arguments
-      @applied_overloads = {}
 
       self['class'] = self.class.class_instance
     end
@@ -82,8 +81,6 @@ module Rip::Core
     protected
 
     def apply(full_signature, arguments)
-      return @applied_overloads[full_signature] if @applied_overloads.key?(full_signature)
-
       matching_overloads = overloads.select do |overload|
         overload.matches?(context.nested_context, full_signature)
       end
@@ -91,7 +88,6 @@ module Rip::Core
       if matching_overloads.count > 0
         self.class.new(context, matching_overloads, applied_arguments + arguments).tap do |reply|
           reply['@'] = self['@'] if bound?
-          @applied_overloads[full_signature] = reply
         end
       elsif arguments.count.zero?
         self
