@@ -13,7 +13,9 @@ module Rip::Compiler
         line = prompt_for_line
 
         begin
-          run_command(line, context) || execute_source(line, context)
+          unless run_command(line, context)
+            print_result(execute_source(line, context))
+          end
         rescue Rip::Exceptions::Base => e
           warn e.dump
         rescue => e
@@ -33,17 +35,9 @@ module Rip::Compiler
       line_parse_tree = Rip::Compiler::Parser.new(:repl, line)
       line_syntax_tree = line_parse_tree.syntax_tree
 
-      result = line_syntax_tree.body.statements.map do |statement|
+      line_syntax_tree.body.statements.map do |statement|
         statement.interpret(context)
       end.last
-
-      _result = result['to_string'].call([]).characters.map(&:data).join('')
-
-      if result.is_a?(Rip::Core::String)
-        puts "=> #{_result.inspect}"
-      else
-        puts "=> #{_result}"
-      end
     end
 
     def run_command(line, context)
@@ -94,6 +88,16 @@ Type "help" for help, "exit" to quit
       puts
       print "[#{@line_number += 1}] module#{' >' * level} "
       STDIN.gets
+    end
+
+    def print_result(result)
+      _result = result['to_string'].call([]).characters.map(&:data).join('')
+
+      if result.is_a?(Rip::Core::String)
+        puts _result.inspect
+      else
+        puts _result
+      end
     end
   end
 end
