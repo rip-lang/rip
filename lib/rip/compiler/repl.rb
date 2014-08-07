@@ -91,12 +91,19 @@ Type "help" for help, "exit" to quit
     end
 
     def print_result(result)
-      _result = result['to_string'].call([]).characters.map(&:data).join('')
+      warn '!!! NOT IMPLEMENTED YET !!!' unless result
 
-      if result.is_a?(Rip::Core::String)
-        puts _result.inspect
-      else
-        puts _result
+      begin
+        _result = result['to_string'].call([]).characters.map(&:data).join('')
+
+        if result.is_a?(Rip::Core::String)
+          puts _result.inspect
+        else
+          puts _result
+        end
+      rescue Rip::Exceptions::RuntimeException => e
+        warn '!!! ERROR CALLING `to_string` !!!'
+        warn result
       end
     end
   end
