@@ -40,7 +40,7 @@ GEM
     mime-types (2.0)
     multi_json (1.8.4)
     multi_test (0.0.3)
-    parslet (1.5.0)
+    parslet (1.6.0)
       blankslate (~> 2.0)
     pry (0.9.12.4)
       coderay (~> 1.0)
@@ -85,7 +85,7 @@ DEPENDENCIES
   aruba
   byebug
   coveralls
-  parslet
+  parslet (= 1.6.0)
   pry
   pry-byebug
   pry-rescue

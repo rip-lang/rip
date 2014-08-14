@@ -1,6 +1,6 @@
 source 'https://rubygems.org/'
 
-gem 'parslet'
+gem 'parslet', '1.6.0'
 gem 'thor'
 
 group :development, :test do
