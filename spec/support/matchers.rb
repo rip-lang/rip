@@ -11,7 +11,7 @@
       @actual == expected
     end
 
-    failure_message_for_should do |parser|
+    failure_message do |parser|
       <<-MESSAGE
 #{english} is:
     #{@actual}
@@ -22,7 +22,7 @@ Source:
       MESSAGE
     end
 
-    failure_message_for_should_not do |parser|
+    failure_message_when_negated do |parser|
       <<-MESSAGE
 #{english} should not be:
     #{expected}
