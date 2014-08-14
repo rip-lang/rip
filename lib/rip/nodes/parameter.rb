@@ -97,7 +97,7 @@ module Rip::Nodes
     end
 
     def bind(context, argument)
-      if (argument)
+      if argument
         super(context, argument)
       else
         super(context, default_expression.interpret(context))
