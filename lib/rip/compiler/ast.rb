@@ -166,7 +166,7 @@ module Rip::Compiler
       Rip::Nodes::Parameter.new(location, locals[:parameter])
     end
 
-    rule(:parameter => simple(:parameter), :type_argument => simple(:type_argument) ) do |locals|
+    rule(:parameter => simple(:parameter), :type_argument => simple(:type_argument)) do |locals|
       location = location_for(locals[:origin], locals[:parameter])
       Rip::Nodes::Parameter.new(location, locals[:parameter], locals[:type_argument])
     end
