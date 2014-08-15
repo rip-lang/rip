@@ -47,6 +47,7 @@ Patches are most welcome! Please make changes in a feature branch that merges in
 
 ## Badges!
 
+[![Code Climate GPA](http://img.shields.io/codeclimate/github/rip-lang/rip.svg?style=flat-square)](https://codeclimate.com/github/rip-lang/rip)
 [![Coveralls Coverage Status](http://img.shields.io/coveralls/rip-lang/rip/master.svg?style=flat-square)](https://coveralls.io/r/rip-lang/rip)
 [![Gemnasium Dependency Status](http://img.shields.io/gemnasium/rip-lang/rip.svg?style=flat-square)](https://gemnasium.com/rip-lang/rip)
 [![Travis Build Status](http://img.shields.io/travis/rip-lang/rip/master.svg?style=flat-square)](https://travis-ci.org/rip-lang/rip)
