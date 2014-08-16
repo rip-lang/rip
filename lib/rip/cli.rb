@@ -8,9 +8,8 @@ module Rip
 
     map '--version' => :version
 
-    desc '[file]', 'Read and execute [file] (or standard in)'
+    desc 'execute [file]', 'Read and execute [file] (or standard in)'
     def execute(file = nil)
-      wip :execute
       wrap_exceptions do
         Rip::Compiler::Driver.new(syntax_tree(file)).interpret
       end
@@ -30,11 +29,6 @@ Usage:
       USAGE
       puts general_usage if args.empty?
       super
-    end
-
-    desc 'do <command> [arguments...]', 'Execute specified <command>, similar to Ruby\'s rake'
-    def do(command, *args)
-      wip :do
     end
 
     desc 'version', 'Print the version'
