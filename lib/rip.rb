@@ -36,7 +36,7 @@ module Rip
   end
 
   def self.root
-    Pathname File.expand_path('..', __FILE__)
+    Pathname(__dir__).expand_path
   end
 end
 
