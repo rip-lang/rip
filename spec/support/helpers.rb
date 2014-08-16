@@ -110,3 +110,9 @@ module RSpecHelpers
       .gsub(/ @location=\#\<([^>]+)>/, '@\1')
   end
 end
+
+RSpec.configure do |config|
+  config.include RSpecHelpers
+
+  config.extend RSpecHelpers
+end
