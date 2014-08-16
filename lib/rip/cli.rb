@@ -10,7 +10,6 @@ module Rip
 
     desc 'execute [file]', 'Read and execute [file] (or standard in)'
     def execute(file = nil)
-      wip :execute
       wrap_exceptions do
         Rip::Compiler::Driver.new(syntax_tree(file)).interpret
       end
