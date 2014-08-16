@@ -12,7 +12,7 @@ describe Rip::Core::Integer do
     let(:class_to_s) { '#< System.Integer >' }
 
     let(:instance) { forty_two }
-    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, /%, class ] data = 42 >' }
+    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, /%, class, to_string ] data = 42 >' }
   end
 
   describe '.class_instance' do
@@ -87,5 +87,9 @@ describe Rip::Core::Integer do
     specify { expect(invocation_node.interpret(context)).to eq(tuple) }
 
     specify { expect(nine['/%'].call([ two ])).to eq(tuple) }
+  end
+
+  describe '@.to_string' do
+    specify { expect(forty_two['to_string'].call([])).to eq(Rip::Core::String.from_native('42')) }
   end
 end

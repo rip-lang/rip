@@ -12,7 +12,7 @@ describe Rip::Core::Character do
     let(:class_to_s) { '#< System.Character >' }
 
     let(:instance) { character }
-    let(:instance_to_s) { '#< #< System.Character > [ class, lowercase, uppercase ] data = `r >' }
+    let(:instance_to_s) { '#< #< System.Character > [ class, lowercase, to_string, uppercase ] data = `r >' }
   end
 
   describe '.class_instance' do
@@ -46,5 +46,9 @@ describe Rip::Core::Character do
 
       specify { expect(lowercase_character).to eq(Rip::Core::Character.new('g')) }
     end
+  end
+
+  describe '@.to_string' do
+    specify { expect(character['to_string'].call([])).to eq(Rip::Core::String.from_native('`r')) }
   end
 end

@@ -25,6 +25,12 @@ module Rip::Core
         end
         reply['@']['to_boolean'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_boolean_overload ])
 
+        to_string_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          Rip::Core::String.from_native(context['@'].to_s)
+        end
+        reply['@']['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
+
         def reply.ancestors
           [ self ]
         end

@@ -12,7 +12,7 @@ describe Rip::Core::List do
     let(:class_to_s) { '#< System.List >' }
 
     let(:instance) { list }
-    let(:instance_to_s) { '#< #< System.List > [ <<, class, head, head_left, head_right, inject, join, next, reverse, tail, tail_left, tail_right ] items = [  ] >' }
+    let(:instance_to_s) { '#< #< System.List > [ <<, class, head, head_left, head_right, inject, join, next, reverse, tail, tail_left, tail_right, to_string ] items = [  ] >' }
   end
 
   describe '.class_instance' do
@@ -95,6 +95,24 @@ describe Rip::Core::List do
       let(:reverse_list) { list['reverse'].call([]) }
 
       specify { expect(reverse_list).to eq(Rip::Core::List.new(reverse_objects)) }
+    end
+  end
+
+  describe '@.to_string' do
+    let(:actual) { Rip.interpret(rip)['to_string'].call([]) }
+
+    context 'empty list' do
+      let(:rip) { '[]' }
+      let(:expected) { '[ ]' }
+
+      specify { expect(actual.to_native).to eq(expected) }
+    end
+
+    context 'non-empty list' do
+      let(:rip) { '[1, 2, 3]' }
+      let(:expected) { '[ 1, 2, 3 ]' }
+
+      specify { expect(actual.to_native).to eq(expected) }
     end
   end
 end
