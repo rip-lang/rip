@@ -8,7 +8,7 @@ module Rip
 
     map '--version' => :version
 
-    desc '[file]', 'Read and execute [file] (or standard in)'
+    desc 'execute [file]', 'Read and execute [file] (or standard in)'
     def execute(file = nil)
       wip :execute
       wrap_exceptions do
