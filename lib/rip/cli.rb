@@ -32,11 +32,6 @@ Usage:
       super
     end
 
-    desc 'do <command> [arguments...]', 'Execute specified <command>, similar to Ruby\'s rake'
-    def do(command, *args)
-      wip :do
-    end
-
     desc 'version', 'Print the version'
     def version
       puts Rip::Version.to_s(options[:verbose])
