@@ -37,7 +37,13 @@ module Rip::Compiler
         statement.interpret(context)
       end.last
 
-      puts "=> #{result}"
+      _result = result['to_string'].call([]).characters.map(&:data).join('')
+
+      if result.is_a?(Rip::Core::String)
+        puts "=> #{_result.inspect}"
+      else
+        puts "=> #{_result}"
+      end
     end
 
     def run_command(line, context)
