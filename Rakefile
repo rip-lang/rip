@@ -11,7 +11,7 @@ task :notes, :types do |t, args|
   result = Hash.new { |hash, key| hash[key] = {} }
 
   `git ls-files`.split("\n").each do |p|
-    path = Pathname(p)
+    path = Pathname.new(p)
     line_number = 0
 
     path.each_line do |line|

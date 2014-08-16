@@ -51,7 +51,7 @@ Usage:
       end.merge({
         'raw_parse'  => :raw_parse_tree,
         'parse'  => :parse_tree,
-        'syntax' => :syntax_tree,
+        'syntax' => :syntax_tree
       })
 
       output = wrap_exceptions do
