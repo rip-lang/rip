@@ -28,7 +28,7 @@ module Rip
   end
 
   def self.project_path
-    Pathname(@path || '.').expand_path
+    Pathname.new(@path || '.').expand_path
   end
 
   def self.project_path=(path)
@@ -36,7 +36,7 @@ module Rip
   end
 
   def self.root
-    Pathname(__dir__).expand_path
+    Pathname.new(__dir__).expand_path
   end
 end
 

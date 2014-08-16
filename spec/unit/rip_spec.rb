@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Rip do
   describe '.project_path' do
-    specify { expect(Rip.project_path).to eq(Pathname(Dir.pwd).expand_path) }
+    specify { expect(Rip.project_path).to eq(Pathname.new(Dir.pwd).expand_path) }
   end
 
   describe '.project_path=' do
@@ -13,10 +13,10 @@ describe Rip do
       Rip.project_path = default_path
     end
 
-    specify { expect(Rip.project_path).to eq(Pathname('some/other/directory').expand_path) }
+    specify { expect(Rip.project_path).to eq(Pathname.new('some/other/directory').expand_path) }
   end
 
   describe '.root' do
-    specify { expect(Rip.root).to eq(Pathname('lib').expand_path) }
+    specify { expect(Rip.root).to eq(Pathname.new('lib').expand_path) }
   end
 end

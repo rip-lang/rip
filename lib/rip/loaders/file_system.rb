@@ -31,9 +31,9 @@ module Rip::Loaders
       when Pathname
         loading_module_origin.parent
       when String
-        (Pathname(Dir.pwd) + loading_module_origin).parent
+        (Pathname.new(Dir.pwd) + loading_module_origin).parent
       else
-        Pathname(Dir.pwd)
+        Pathname.new(Dir.pwd)
       end.expand_path
 
       new(module_name, [ load_path ]).load

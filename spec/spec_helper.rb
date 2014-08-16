@@ -12,7 +12,7 @@ require 'ruby-prof'
 
 require_relative '../lib/rip'
 
-Pathname.glob(Pathname(__dir__) + 'support' + '**' + '*.rb').each { |file| require file }
+Pathname.glob(Pathname.new(__dir__) + 'support' + '**' + '*.rb').each { |file| require file }
 
 RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
