@@ -16,7 +16,7 @@ module Rip::Core
 
       case reply
       when Rip::Core::DynamicProperty
-        properties[_key] = reply.block.call(self)
+        reply.resolve(_key, self)
       when Rip::Core::Lambda
         reply.bind(self)
       else

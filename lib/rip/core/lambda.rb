@@ -100,5 +100,11 @@ module Rip::Core
     def initialize(&block)
       @block = block
     end
+
+    def resolve(key, receiver)
+      block.call(receiver).tap do |reply|
+        receiver.properties[key] = reply
+      end
+    end
   end
 end
