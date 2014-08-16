@@ -16,6 +16,10 @@ module Rip::Core
         (characters == other.characters)
     end
 
+    def to_native
+      characters.map(&:data).join('')
+    end
+
     def to_s_prep_body
       _characters = characters.map(&:to_s).join(', ')
       super + [ "characters = \"#{_characters}\"" ]
