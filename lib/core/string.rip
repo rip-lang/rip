@@ -7,5 +7,7 @@ class (System.List) {
 	# 	@.class.new(@.map(:uppercase))
 	# }
 
+	@.to_string = -> { @ }
+
 	to_string = -> { 'System.String' }
 }
