@@ -12,12 +12,27 @@ describe Rip::Core::String do
     let(:class_to_s) { '#< System.String >' }
 
     let(:instance) { string }
-    let(:instance_to_s) { '#< #< System.String > [ class, lowercase, uppercase ] characters = "" >' }
+    let(:instance_to_s) { '#< #< System.String > [ class, lowercase, to_string, uppercase ] characters = "" >' }
   end
 
   describe '.class_instance' do
     specify { expect(class_instance).to_not be_nil }
     specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
+  end
+
+  describe '.from_native' do
+    let(:actual) { Rip::Core::String.from_native(string) }
+    let(:expected) { Rip::Core::String.new(rip_string_nodes(location_for, string)) }
+
+    context 'empty string' do
+      let(:string) { '' }
+      specify { expect(actual).to eq(expected) }
+    end
+
+    context 'non-empty string' do
+      let(:string) { 'foo' }
+      specify { expect(actual).to eq(expected) }
+    end
   end
 
   describe '@.class' do
@@ -99,6 +114,24 @@ describe Rip::Core::String do
       let(:reverse_string) { string['reverse'].call([]) }
 
       specify { expect(reverse_string).to eq(Rip::Core::String.new(reverse_characters)) }
+    end
+  end
+
+  describe '@.to_string' do
+    context 'empty string' do
+      specify { expect(string['to_string'].call([])).to eq(string) }
+    end
+
+    context 'non-empty string' do
+      let(:characters) do
+        [
+          Rip::Core::Character.new('f'),
+          Rip::Core::Character.new('o'),
+          Rip::Core::Character.new('o')
+        ]
+      end
+
+      specify { expect(string['to_string'].call([])).to eq(string) }
     end
   end
 end

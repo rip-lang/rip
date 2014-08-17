@@ -19,11 +19,17 @@ module Rip::Core
       @class_instance = new.tap do |reply|
         reply['@'] = Rip::Core::Prototype.new
 
-        overload = Rip::Core::NativeOverload.new([
+        to_boolean_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           Rip::Core::Boolean.true
         end
-        reply['@']['to_boolean'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ overload ])
+        reply['@']['to_boolean'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_boolean_overload ])
+
+        to_string_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          Rip::Core::String.from_native(context['@'].to_s)
+        end
+        reply['@']['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
 
         def reply.ancestors
           [ self ]

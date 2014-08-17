@@ -52,6 +52,20 @@ module Rip::Core
         new(this.items[0..-2].reverse)
       end
 
+      to_string_overload = Rip::Core::NativeOverload.new([
+      ]) do |context|
+        items = context['@'].items.map do |item|
+          string = item['to_string'].call([]).characters.map(&:data).join('')
+
+          item.is_a?(Rip::Core::String) ? string.inspect : string
+        end
+
+        _items = [ '[', items.join(', '), ']' ].reject(&:empty?)
+
+        Rip::Core::String.from_native(_items.join(' '))
+      end
+      class_instance['@']['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
+
       def class_instance.to_s
         '#< System.List >'
       end

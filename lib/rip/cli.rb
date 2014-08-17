@@ -17,7 +17,9 @@ module Rip
 
     desc 'repl', 'Enter read, evaluate, print loop'
     def repl
-      wip :repl
+      wrap_exceptions do
+        Rip::Compiler::REPL.start
+      end
     end
 
     desc 'help [task]', 'Describe available tasks or one specific [task]'
@@ -41,7 +43,7 @@ Usage:
     def debug(file = nil)
       valid_trees = Hash.new do |valid, unknown_tree|
         message = "Unknown argument for option --tree \"#{unknown_tree}\". Please specify one of the following: #{valid.keys.join(', ')}"
-        raise Rip::Exceptions::UsageException.new(message)
+        raise Rip::Exceptions::UsageException.new(message, nil)
       end.merge({
         'raw_parse'  => :raw_parse_tree,
         'parse'  => :parse_tree,
@@ -94,8 +96,9 @@ Usage:
         warn e.dump
         exit e.status_code
       rescue => e
-        warn 'Unknown exception has occurred. Please open an issue report at github.com/rip-lang/rip/issues'
-        raise e
+        ee = Rip::Exceptions::NativeException.new(e, nil)
+        warn ee.dump
+        exit ee.status_code
       end
     end
 

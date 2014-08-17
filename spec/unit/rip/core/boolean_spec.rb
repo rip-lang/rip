@@ -11,7 +11,7 @@ describe Rip::Core::Boolean do
     let(:class_to_s) { '#< System.Boolean >' }
 
     let(:instance) { rip_false }
-    let(:instance_to_s) { '#< #< System.Boolean > [ class, to_boolean ] false >' }
+    let(:instance_to_s) { '#< #< System.Boolean > [ class, to_boolean, to_string ] false >' }
   end
 
   describe '.true' do
@@ -27,5 +27,10 @@ describe Rip::Core::Boolean do
   describe '@.to_boolean' do
     specify { expect(rip_true['to_boolean'].call([])).to eq(rip_true) }
     specify { expect(rip_false['to_boolean'].call([])).to eq(rip_false) }
+  end
+
+  describe '@.to_string' do
+    specify { expect(rip_true['to_string'].call([])).to eq(Rip::Core::String.from_native('true')) }
+    specify { expect(rip_false['to_string'].call([])).to eq(Rip::Core::String.from_native('false')) }
   end
 end

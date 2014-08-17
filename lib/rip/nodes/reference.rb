@@ -14,7 +14,7 @@ module Rip::Nodes
 
     def interpret(context)
       context[name] ||
-        (raise Rip::Exceptions::RuntimeException.new("Unknown reference `#{name}`"))
+        (raise Rip::Exceptions::RuntimeException.new("Unknown reference `#{name}`", location))
     end
 
     def interpret_for_assignment(context, &block)

@@ -18,8 +18,8 @@ module Rip::Nodes
     def bind(context, argument)
       _type = type(context)
 
-      unless argument['class'].ancestors.include?(_type) || special_case_for_class?(argument['class'])
-        raise Rip::Exceptions::CompilerException.new("Parameter type mis-match: expected `#{name}` to be a `#{_type}`, but was a `#{argument['class']}`")
+      unless matches?(context, argument['class'])
+        raise Rip::Exceptions::CompilerException.new("Parameter type mis-match: expected `#{name}` to be a `#{_type}`, but was a `#{argument['class']}`", location)
       end
 
       context.tap do |reply|
@@ -28,7 +28,9 @@ module Rip::Nodes
     end
 
     def matches?(context, argument_type)
-      argument_type.ancestors.include?(type(context)) || special_case_for_class?(argument_type)
+      argument_type.ancestors.include?(type(context)) ||
+        special_case_for_class?(argument_type) ||
+        special_case_for_lambda?(argument_type)
     end
 
     def raw_type
@@ -74,10 +76,10 @@ module Rip::Nodes
         (raw_type == Rip::Core::Object.class_instance)
     end
 
-    def special_case_for_class?(argument_type)
-      raise 'special_case_for_class? called out of turn' unless raw_type.is_a?(Rip::Core::Base)
+    def special_case_for_lambda?(argument_type)
+      raise 'special_case_for_lambda? called out of turn' unless raw_type.is_a?(Rip::Core::Base)
 
-      (argument_type == Rip::Core::Class.class_instance) &&
+      (argument_type == Rip::Core::Lambda.class_instance) &&
         (raw_type == Rip::Core::Object.class_instance)
     end
   end

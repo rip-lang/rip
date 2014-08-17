@@ -10,7 +10,6 @@ module Rip::Core
       @context = context
       @overloads = overloads
       @applied_arguments = applied_arguments
-      @applied_overloads = {}
 
       self['class'] = self.class.class_instance
     end
@@ -29,7 +28,9 @@ module Rip::Core
 
     def bind(receiver)
       self.class.new(context, overloads.map(&:bind), applied_arguments).tap do |reply|
-        reply['@'] = receiver
+        reply['@'] = Rip::Core::DynamicProperty.new(!receiver.is_a?(self.class)) do
+          receiver
+        end
       end
     end
 
@@ -54,6 +55,24 @@ module Rip::Core
     end
 
     define_class_instance do |class_instance|
+      to_string_overload = Rip::Core::NativeOverload.new([
+      ]) do |context|
+        overloads = context['@'].overloads.map do |overload|
+          parameters = overload.parameters.map do |parameter|
+            "#{parameter.name}<#{parameter.raw_type || Rip::Core::Object.class_instance}>"
+          end
+
+          "\t-> (#{parameters.join(', ')}) { ... }"
+        end
+
+        Rip::Core::String.from_native(<<-LAMBDA)
+=> {
+#{overloads.join("\n")}
+}
+        LAMBDA
+      end
+      class_instance['@']['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
+
       def class_instance.to_s
         '#< System.Lambda >'
       end
@@ -62,8 +81,6 @@ module Rip::Core
     protected
 
     def apply(full_signature, arguments)
-      return @applied_overloads[full_signature] if @applied_overloads.key?(full_signature)
-
       matching_overloads = overloads.select do |overload|
         overload.matches?(context.nested_context, full_signature)
       end
@@ -71,7 +88,6 @@ module Rip::Core
       if matching_overloads.count > 0
         self.class.new(context, matching_overloads, applied_arguments + arguments).tap do |reply|
           reply['@'] = self['@'] if bound?
-          @applied_overloads[full_signature] = reply
         end
       elsif arguments.count.zero?
         self
@@ -97,8 +113,15 @@ module Rip::Core
   class DynamicProperty
     attr_reader :block
 
-    def initialize(&block)
+    def initialize(memoizable = true, &block)
+      @memoizable = memoizable
       @block = block
+    end
+
+    def resolve(key, receiver)
+      block.call(receiver).tap do |reply|
+        receiver.properties[key] = reply if @memoizable
+      end
     end
   end
 end

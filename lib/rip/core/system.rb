@@ -12,7 +12,7 @@ module Rip::Core
         module_name = context['module_name'].characters.map(&:data).join
 
         Rip::Loaders::FileSystem.load_module(module_name, context.origin).tap do |reply|
-          raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`") if reply.nil?
+          raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`", context.origin) if reply.nil?
         end
       end
       class_instance['require'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ overload ])
@@ -34,6 +34,12 @@ module Rip::Core
       # class_instance['RegularExpression'] = Rip::Core::RegularExpression.class_instance
       class_instance['String']            = Rip::Core::String.class_instance
       # class_instance['Time']              = Rip::Core::Time.class_instance
+
+      to_string_overload = Rip::Core::NativeOverload.new([
+      ]) do |context|
+        Rip::Core::String.from_native('System')
+      end
+      class_instance['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
 
       def class_instance.to_s
         '#< System >'
