@@ -1,0 +1,13 @@
+type {
+	to_string = -> { 'System.IO' }
+
+	puts = -> (string) {
+		out(string)
+		out("\n")
+	}
+
+	warn = -> (string) {
+		error(string)
+		error("\n")
+	}
+}
