@@ -34,7 +34,7 @@ describe Rip::Core::Lambda do
     let(:class_to_s) { '#< System.Lambda >' }
 
     let(:instance) { rip_lambda }
-    let(:instance_to_s) { '#< #< System.Lambda > [ class ] arity = [ 0 ] >' }
+    let(:instance_to_s) { '#< #< System.Lambda > [ class, to_string ] arity = [ 0 ] >' }
   end
 
   describe '.class_instance' do
@@ -45,7 +45,7 @@ describe Rip::Core::Lambda do
   describe '#arity' do
     context 'no parameters' do
       specify { expect(rip_lambda.arity).to eq([ 0 ]) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ class ] arity = [ 0 ] >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ class, to_string ] arity = [ 0 ] >') }
     end
 
     context 'all required parameters' do
@@ -56,7 +56,7 @@ describe Rip::Core::Lambda do
         ]
       end
       specify { expect(rip_lambda.arity).to eq([ 2 ]) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ class ] arity = [ 2 ] >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ class, to_string ] arity = [ 2 ] >') }
     end
   end
 
@@ -197,6 +197,23 @@ describe Rip::Core::Lambda do
     it 'is callable' do
       expect(two_plus.call([ five ])).to eq(seven)
     end
+
+    context 'when receiver is a lambda' do
+      let(:rip) { '-> { 42 }' }
+      let(:answer_lambda) { Rip.interpret(rip) }
+
+      it 'has no receiver' do
+        expect { answer_lambda['@'] }.to raise_error(Rip::Exceptions::RuntimeException)
+      end
+
+      it 'method\'s original receiver is returned' do
+        expect(answer_lambda['to_string']['@']).to eq(answer_lambda)
+      end
+
+      it 'method\'s original receiver has no receiver' do
+        expect { answer_lambda['to_string']['@']['@'] }.to raise_error(Rip::Exceptions::RuntimeException)
+      end
+    end
   end
 
   describe '@.bind', :blur do
@@ -232,6 +249,30 @@ describe Rip::Core::Lambda do
 
       specify { expect(rip_lambda.call(arguments)).to eq(rip_lambda) }
       specify { expect(two_plus.call(arguments)).to eq(two_plus) }
+    end
+  end
+
+  describe '@.to_string' do
+    let(:rip_lambda) { Rip.interpret(rip) }
+    let(:actual) { rip_lambda['to_string'].call([]) }
+    let(:expected) { Rip::Core::String.from_native(expected_native) }
+
+    context 'single overload, no parameters' do
+      let(:rip) do
+        <<-RIP
+-> { 42 }
+        RIP
+      end
+
+      let(:expected_native) do
+        <<-STRING
+=> {
+\t-> () { ... }
+}
+        STRING
+      end
+
+      specify { expect(actual.to_native).to eq(expected.to_native) }
     end
   end
 end
