@@ -58,8 +58,18 @@ module Rip::Core
       class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
-          overloads = context['@'].overloads.map do |overload|
-            parameters = overload.parameters.map do |parameter|
+          this = context['@']
+
+          overloads = this.overloads.map do |overload|
+            applied_arguments_count = if this.send(:bound?)
+              this.applied_arguments.count + 1
+            else
+              this.applied_arguments.count
+            end
+
+            unapplied_parameters = overload.parameters[applied_arguments_count..-1] || []
+
+            parameters = unapplied_parameters.map do |parameter|
               "#{parameter.name}<#{parameter.raw_type || Rip::Core::Object.class_instance}>"
             end
 
