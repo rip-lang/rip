@@ -4,6 +4,7 @@ module Rip
 end
 
 require 'rip/core/base'
+require 'rip/core/delayed_property'
 require 'rip/core/dynamic_property'
 
 require 'rip/core/object'

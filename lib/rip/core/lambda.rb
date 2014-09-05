@@ -28,7 +28,7 @@ module Rip::Core
 
     def bind(receiver)
       self.class.new(context, overloads.map(&:bind), applied_arguments).tap do |reply|
-        reply['@'] = Rip::Core::DynamicProperty.new(!receiver.is_a?(self.class)) do
+        reply['@'] = Rip::Core::DynamicProperty.new(!receiver.is_a?(self.class)) do |_|
           receiver
         end
       end
@@ -55,23 +55,26 @@ module Rip::Core
     end
 
     define_class_instance do |class_instance|
-      to_string_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        overloads = context['@'].overloads.map do |overload|
-          parameters = overload.parameters.map do |parameter|
-            "#{parameter.name}<#{parameter.raw_type || Rip::Core::Object.class_instance}>"
+      class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
+        to_string_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          overloads = context['@'].overloads.map do |overload|
+            parameters = overload.parameters.map do |parameter|
+              "#{parameter.name}<#{parameter.raw_type || Rip::Core::Object.class_instance}>"
+            end
+
+            "\t-> (#{parameters.join(', ')}) { ... }"
           end
 
-          "\t-> (#{parameters.join(', ')}) { ... }"
-        end
-
-        Rip::Core::String.from_native(<<-LAMBDA)
+          Rip::Core::String.from_native(<<-LAMBDA)
 => {
 #{overloads.join("\n")}
 }
-        LAMBDA
+          LAMBDA
+        end
+
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
       end
-      class_instance['@']['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
 
       def class_instance.to_s
         '#< System.Lambda >'

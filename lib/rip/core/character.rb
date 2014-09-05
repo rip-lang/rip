@@ -19,23 +19,29 @@ module Rip::Core
     end
 
     define_class_instance('character') do |class_instance|
-      uppercase_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        new(context['@'].data.upcase)
+      class_instance['@']['uppercase'] = Rip::Core::DelayedProperty.new do |_|
+        uppercase_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          new(context['@'].data.upcase)
+        end
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ uppercase_overload ])
       end
-      class_instance['@']['uppercase'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ uppercase_overload ])
 
-      lowercase_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        new(context['@'].data.downcase)
+      class_instance['@']['lowercase'] = Rip::Core::DelayedProperty.new do |_|
+        lowercase_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          new(context['@'].data.downcase)
+        end
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ lowercase_overload ])
       end
-      class_instance['@']['lowercase'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ lowercase_overload ])
 
-      to_string_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        Rip::Core::String.from_native("`#{context['@'].data}")
+      class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
+        to_string_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          Rip::Core::String.from_native("`#{context['@'].data}")
+        end
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
       end
-      class_instance['@']['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
 
       def class_instance.to_s
         '#< System.Character >'
