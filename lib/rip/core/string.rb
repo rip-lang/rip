@@ -34,25 +34,29 @@ module Rip::Core
     end
 
     define_class_instance('string') do |class_instance|
-      uppercase_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        this = context['@']
-        characters = this.characters.map do |character|
-          character['uppercase'].call([])
+      class_instance['@']['uppercase'] = Rip::Core::DelayedProperty.new do |_|
+        uppercase_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          this = context['@']
+          characters = this.characters.map do |character|
+            character['uppercase'].call([])
+          end
+          new(characters)
         end
-        new(characters)
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ uppercase_overload ])
       end
-      class_instance['@']['uppercase'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ uppercase_overload ])
 
-      lowercase_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        this = context['@']
-        characters = this.characters.map do |character|
-          character['lowercase'].call([])
+      class_instance['@']['lowercase'] = Rip::Core::DelayedProperty.new do |_|
+        lowercase_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          this = context['@']
+          characters = this.characters.map do |character|
+            character['lowercase'].call([])
+          end
+          new(characters)
         end
-        new(characters)
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ lowercase_overload ])
       end
-      class_instance['@']['lowercase'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ lowercase_overload ])
 
       def class_instance.to_s
         '#< System.String >'

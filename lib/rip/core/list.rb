@@ -21,12 +21,14 @@ module Rip::Core
     end
 
     define_class_instance('list') do |class_instance|
-      reverse_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        this = context['@']
-        this.class.new(this.items.reverse)
+      class_instance['@']['reverse'] = Rip::Core::DelayedProperty.new do |this|
+        reverse_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          this = context['@']
+          this.class.new(this.items.reverse)
+        end
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ reverse_overload ])
       end
-      class_instance['@']['reverse'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ reverse_overload ])
 
       class_instance['@']['head'] = Rip::Core::DynamicProperty.new do |this|
         this['head_left']
@@ -52,19 +54,21 @@ module Rip::Core
         new(this.items[0..-2].reverse)
       end
 
-      to_string_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        items = context['@'].items.map do |item|
-          string = item['to_string'].call([]).characters.map(&:data).join('')
+      class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
+        to_string_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          items = context['@'].items.map do |item|
+            string = item['to_string'].call([]).characters.map(&:data).join('')
 
-          item.is_a?(Rip::Core::String) ? string.inspect : string
+            item.is_a?(Rip::Core::String) ? string.inspect : string
+          end
+
+          _items = [ '[', items.join(', '), ']' ].reject(&:empty?)
+
+          Rip::Core::String.from_native(_items.join(' '))
         end
-
-        _items = [ '[', items.join(', '), ']' ].reject(&:empty?)
-
-        Rip::Core::String.from_native(_items.join(' '))
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
       end
-      class_instance['@']['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
 
       def class_instance.to_s
         '#< System.List >'

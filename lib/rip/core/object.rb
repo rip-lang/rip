@@ -19,17 +19,21 @@ module Rip::Core
       @class_instance = new.tap do |reply|
         reply['@'] = Rip::Core::Prototype.new
 
-        to_boolean_overload = Rip::Core::NativeOverload.new([
-        ]) do |context|
-          Rip::Core::Boolean.true
+        reply['@']['to_boolean'] = Rip::Core::DelayedProperty.new do |_|
+          to_boolean_overload = Rip::Core::NativeOverload.new([
+          ]) do |context|
+            Rip::Core::Boolean.true
+          end
+          Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_boolean_overload ])
         end
-        reply['@']['to_boolean'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_boolean_overload ])
 
-        to_string_overload = Rip::Core::NativeOverload.new([
-        ]) do |context|
-          Rip::Core::String.from_native(context['@'].to_s)
+        reply['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
+          to_string_overload = Rip::Core::NativeOverload.new([
+          ]) do |context|
+            Rip::Core::String.from_native(context['@'].to_s)
+          end
+          Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
         end
-        reply['@']['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
 
         def reply.ancestors
           [ self ]

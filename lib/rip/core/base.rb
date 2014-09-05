@@ -23,7 +23,7 @@ module Rip::Core
       end
 
       case reply
-      when Rip::Core::DynamicProperty
+      when Rip::Core::DelayedProperty
         reply.resolve(_key, self)
       when Rip::Core::Lambda
         reply.bind(self)

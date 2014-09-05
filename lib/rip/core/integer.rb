@@ -24,21 +24,25 @@ module Rip::Core
         * /
         %
       ].each do |property|
-        overload = Rip::Core::NativeOverload.new([
-          Rip::Nodes::Parameter.new(nil, 'a'),
-          Rip::Nodes::Parameter.new(nil, 'b')
-        ]) do |context|
-          new(context['a'].data.send(property, context['b'].data))
+        class_instance[property] = Rip::Core::DelayedProperty.new do |_|
+          overload = Rip::Core::NativeOverload.new([
+            Rip::Nodes::Parameter.new(nil, 'a'),
+            Rip::Nodes::Parameter.new(nil, 'b')
+          ]) do |context|
+            new(context['a'].data.send(property, context['b'].data))
+          end
+
+          Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ overload ])
         end
-
-        class_instance[property] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ overload ])
       end
 
-      to_string_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        Rip::Core::String.from_native(context['@'].data.to_s)
+      class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
+        to_string_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          Rip::Core::String.from_native(context['@'].data.to_s)
+        end
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
       end
-      class_instance['@']['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
 
       def class_instance.to_s
         '#< System.Integer >'

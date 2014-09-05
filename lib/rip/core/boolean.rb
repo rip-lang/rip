@@ -27,20 +27,24 @@ module Rip::Core
     end
 
     define_class_instance do |class_instance|
-      class_instance['true'] = new(true)
-      class_instance['false'] = new(false)
+      class_instance['true'] = Rip::Core::DynamicProperty.new { |_| new(true) }
+      class_instance['false'] = Rip::Core::DynamicProperty.new { |_| new(false) }
 
-      to_boolean_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        context['@']
+      class_instance['@']['to_boolean'] = Rip::Core::DelayedProperty.new do |_|
+        to_boolean_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          context['@']
+        end
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_boolean_overload ])
       end
-      class_instance['@']['to_boolean'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_boolean_overload ])
 
-      to_string_overload = Rip::Core::NativeOverload.new([
-      ]) do |context|
-        Rip::Core::String.from_native(context['@'].data.to_s)
+      class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
+        to_string_overload = Rip::Core::NativeOverload.new([
+        ]) do |context|
+          Rip::Core::String.from_native(context['@'].data.to_s)
+        end
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
       end
-      class_instance['@']['to_string'] = Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
 
       def class_instance.to_s
         '#< System.Boolean >'
