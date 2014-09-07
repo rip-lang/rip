@@ -70,7 +70,7 @@ module Rip::Core
             unapplied_parameters = overload.parameters[applied_arguments_count..-1] || []
 
             parameters = unapplied_parameters.map do |parameter|
-              "#{parameter.name}<#{parameter.raw_type || Rip::Core::Object.class_instance}>"
+              "#{parameter.name}<#{parameter.type(context.nested_context)}>"
             end
 
             "\t-> (#{parameters.join(', ')}) { ... }"
