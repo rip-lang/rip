@@ -32,7 +32,7 @@ module Rip::Core
             new(context['a'].data.send(property, context['b'].data))
           end
 
-          Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ overload ])
+          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
         end
       end
 
@@ -41,7 +41,7 @@ module Rip::Core
         ]) do |context|
           Rip::Core::String.from_native(context['@'].data.to_s)
         end
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end
 
       def class_instance.to_s

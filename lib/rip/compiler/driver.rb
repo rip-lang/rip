@@ -11,7 +11,7 @@ module Rip::Compiler
     end
 
     def self.global_context
-      Rip::Utilities::Scope.new({
+      @global_context ||= Rip::Utilities::Scope.new({
         'System' => Rip::Core::System.class_instance,
         'true' => Rip::Core::Boolean.true,
         'false' => Rip::Core::Boolean.false

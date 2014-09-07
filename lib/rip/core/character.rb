@@ -24,7 +24,7 @@ module Rip::Core
         ]) do |context|
           new(context['@'].data.upcase)
         end
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ uppercase_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ uppercase_overload ])
       end
 
       class_instance['@']['lowercase'] = Rip::Core::DelayedProperty.new do |_|
@@ -32,7 +32,7 @@ module Rip::Core
         ]) do |context|
           new(context['@'].data.downcase)
         end
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ lowercase_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ lowercase_overload ])
       end
 
       class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
@@ -40,7 +40,7 @@ module Rip::Core
         ]) do |context|
           Rip::Core::String.from_native("`#{context['@'].data}")
         end
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end
 
       def class_instance.to_s

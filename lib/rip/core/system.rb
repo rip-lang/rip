@@ -16,7 +16,7 @@ module Rip::Core
             raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`", context.origin) if reply.nil?
           end
         end
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
       end
 
       class_instance['Boolean']           = Rip::Core::DelayedProperty.new { |_| Rip::Core::Boolean.class_instance }
@@ -42,7 +42,7 @@ module Rip::Core
         ]) do |context|
           Rip::Core::String.from_native('System')
         end
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end
 
       def class_instance.to_s

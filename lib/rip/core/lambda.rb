@@ -83,7 +83,7 @@ module Rip::Core
           LAMBDA
         end
 
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end
 
       def class_instance.to_s

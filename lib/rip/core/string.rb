@@ -43,7 +43,7 @@ module Rip::Core
           end
           new(characters)
         end
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ uppercase_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ uppercase_overload ])
       end
 
       class_instance['@']['lowercase'] = Rip::Core::DelayedProperty.new do |_|
@@ -55,7 +55,7 @@ module Rip::Core
           end
           new(characters)
         end
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ lowercase_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ lowercase_overload ])
       end
 
       def class_instance.to_s
