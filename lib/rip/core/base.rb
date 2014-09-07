@@ -12,17 +12,15 @@ module Rip::Core
 
     def [](key)
       _key = key.to_s
-      location = key.location if key.respond_to?(:location)
 
       reply = properties['class'].ancestors.inject(properties[_key]) do |memo, ancestor|
         memo || ancestor['@'][_key]
       end
 
-      if reply.nil?
-        raise Rip::Exceptions::RuntimeException.new("Unknown property `#{key}`", location)
-      end
-
       case reply
+      when NilClass
+        location = key.location if key.respond_to?(:location)
+        raise Rip::Exceptions::RuntimeException.new("Unknown property `#{key}`", location)
       when Rip::Core::DelayedProperty
         reply.resolve(_key, self)
       when Rip::Core::Lambda
