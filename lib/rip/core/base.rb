@@ -87,8 +87,11 @@ module Rip::Core
       when NilClass
         location = key.location if key.respond_to?(:location)
         raise Rip::Exceptions::RuntimeException.new("Unknown property `#{key}`", location)
-      when Rip::Core::DelayedProperty
+      when Rip::Core::DynamicProperty
         property.resolve(key, self)
+      when Rip::Core::DelayedProperty
+        reply = property.resolve(key, self)
+        reply.is_a?(Rip::Core::Lambda) ? finalize_property(key, reply) : reply
       when Rip::Core::Lambda
         property.bind(self)
       else
