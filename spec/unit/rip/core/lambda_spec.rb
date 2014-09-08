@@ -274,5 +274,29 @@ describe Rip::Core::Lambda do
 
       specify { expect(actual.to_native).to eq(expected.to_native) }
     end
+
+    context 'multiple overloads, yes parameters', :blur do
+      let(:rip) do
+        <<-RIP
+=> {
+  -> { 42 }
+  -> (a) { 42 }
+  -> (a, b<System.Integer>) { 42 }
+}
+        RIP
+      end
+
+      let(:expected_native) do
+        <<-STRING
+=> {
+\t-> () { ... }
+\t-> (a<System.Object>) { ... }
+\t-> (a<System.Object>, b<System.Integer>) { ... }
+}
+        STRING
+      end
+
+      specify { expect(actual.to_native).to eq(expected.to_native) }
+    end
   end
 end

@@ -12,24 +12,12 @@ module Rip::Core
 
     def [](key)
       _key = key.to_s
-      location = key.location if key.respond_to?(:location)
 
       reply = properties['class'].ancestors.inject(properties[_key]) do |memo, ancestor|
         memo || ancestor['@'][_key]
       end
 
-      if reply.nil?
-        raise Rip::Exceptions::RuntimeException.new("Unknown property `#{key}`", location)
-      end
-
-      case reply
-      when Rip::Core::DelayedProperty
-        reply.resolve(_key, self)
-      when Rip::Core::Lambda
-        reply.bind(self)
-      else
-        reply
-      end
+      finalize_property(_key, reply)
     end
 
     def []=(key, value)
@@ -89,6 +77,25 @@ module Rip::Core
         block.call(@class_instance)
 
         @class_instance
+      end
+    end
+
+    protected
+
+    def finalize_property(key, property)
+      case property
+      when NilClass
+        location = key.location if key.respond_to?(:location)
+        raise Rip::Exceptions::RuntimeException.new("Unknown property `#{key}`", location)
+      when Rip::Core::DynamicProperty
+        property.resolve(key, self)
+      when Rip::Core::DelayedProperty
+        reply = property.resolve(key, self)
+        reply.is_a?(Rip::Core::Lambda) ? finalize_property(key, reply) : reply
+      when Rip::Core::Lambda
+        property.bind(self)
+      else
+        property
       end
     end
   end

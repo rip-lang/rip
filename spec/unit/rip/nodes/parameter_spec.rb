@@ -6,7 +6,7 @@ describe Rip::Nodes::Parameter do
   let(:name) { 'arg' }
   let(:parameter) { Rip::Nodes::Parameter.new(location, name) }
 
-  let(:context) { Rip::Compiler::Driver.global_context }
+  let(:context) { Rip::Compiler::Driver.global_context.nested_context }
 
   let(:forty_two) { Rip::Core::Integer.new(42) }
 

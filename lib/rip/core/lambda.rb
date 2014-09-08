@@ -58,9 +58,19 @@ module Rip::Core
       class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
-          overloads = context['@'].overloads.map do |overload|
-            parameters = overload.parameters.map do |parameter|
-              "#{parameter.name}<#{parameter.raw_type || Rip::Core::Object.class_instance}>"
+          this = context['@']
+
+          overloads = this.overloads.map do |overload|
+            applied_arguments_count = if this.send(:bound?)
+              this.applied_arguments.count + 1
+            else
+              this.applied_arguments.count
+            end
+
+            unapplied_parameters = overload.parameters[applied_arguments_count..-1] || []
+
+            parameters = unapplied_parameters.map do |parameter|
+              "#{parameter.name}<#{parameter.type(context.nested_context)}>"
             end
 
             "\t-> (#{parameters.join(', ')}) { ... }"
@@ -73,7 +83,7 @@ module Rip::Core
           LAMBDA
         end
 
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end
 
       def class_instance.to_s

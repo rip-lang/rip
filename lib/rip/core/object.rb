@@ -24,7 +24,7 @@ module Rip::Core
           ]) do |context|
             Rip::Core::Boolean.true
           end
-          Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_boolean_overload ])
+          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_boolean_overload ])
         end
 
         reply['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
@@ -32,7 +32,7 @@ module Rip::Core
           ]) do |context|
             Rip::Core::String.from_native(context['@'].to_s)
           end
-          Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ to_string_overload ])
+          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
         end
 
         def reply.ancestors
