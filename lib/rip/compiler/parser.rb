@@ -180,7 +180,7 @@ module Rip::Compiler
     rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
 
 
-    rule(:condition_block_sequence) { if_block >> whitespaces? >> else_block.maybe }
+    rule(:condition_block_sequence) { if_block >> whitespaces? >> else_block }
 
     rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat.as(:catch_blocks) >> whitespaces? >> finally_block.maybe }
 

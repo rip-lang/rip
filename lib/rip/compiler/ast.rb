@@ -214,11 +214,6 @@ module Rip::Compiler
       Rip::Utilities::TemporaryBlock.new(location, body, locals[:argument])
     end
 
-    rule(:if_block => simple(:if)) do |locals|
-      else_body = Rip::Nodes::BlockBody.new(locals[:if].body.location, [])
-      Rip::Nodes::If.new(locals[:if].location, locals[:if].argument, locals[:if].body, else_body)
-    end
-
     rule(:if_block => simple(:if), :else_block => simple(:else)) do |locals|
       Rip::Nodes::If.new(locals[:if].location, locals[:if].argument, locals[:if].body, locals[:else].body)
     end

@@ -638,7 +638,7 @@ describe Rip::Compiler::Parser do
       recognizes_as_expected 'comments inside block body' do
         let(:rip) do
           <<-RIP
-          if (true) {
+          -> (x) {
             # comment
           }
           RIP
@@ -647,12 +647,12 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => []
-                }
+                :dash_rocket => '->',
+                :parameters => [
+                  { :parameter => 'x' }
+                ],
+                :location_body => '{',
+                :body => []
               }
             ]
           }
@@ -660,19 +660,19 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'references inside block body' do
-        let(:rip) { 'if (true) { name }' }
+        let(:rip) { '-> (x) { name }' }
         let(:expected_raw) do
           {
             :module => [
               {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    { :reference => 'name' }
-                  ]
-                }
+                :dash_rocket => '->',
+                :parameters => [
+                  { :parameter => 'x' }
+                ],
+                :location_body => '{',
+                :body => [
+                  { :reference => 'name' }
+                ]
               }
             ]
           }
@@ -680,32 +680,32 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'assignments inside block body' do
-        let(:rip) { 'if (true) { x = :y }' }
+        let(:rip) { '-> (foo) { x = :y }' }
         let(:expected_raw) do
           {
             :module => [
               {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    {
-                      :atom => [
-                        { :reference => 'x' },
-                        {
-                          :assignment => {
-                            :location => '=',
-                            :rhs => {
-                              :location => ':',
-                              :string => rip_string_raw('y')
-                            }
+                :dash_rocket => '->',
+                :parameters => [
+                  { :parameter => 'foo' }
+                ],
+                :location_body => '{',
+                :body => [
+                  {
+                    :atom => [
+                      { :reference => 'x' },
+                      {
+                        :assignment => {
+                          :location => '=',
+                          :rhs => {
+                            :location => ':',
+                            :string => rip_string_raw('y')
                           }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -713,24 +713,24 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'invocations inside block body' do
-        let(:rip) { 'if (true) { run!() }' }
+        let(:rip) { '-> (run!) { run!() }' }
         let(:expected_raw) do
           {
             :module => [
               {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    {
-                      :atom => [
-                        { :reference => 'run!' },
-                        { :regular_invocation => { :location => '(', :arguments => [] } }
-                      ]
-                    }
-                  ]
-                }
+                :dash_rocket => '->',
+                :parameters => [
+                  { :parameter => 'run!' }
+                ],
+                :location_body => '{',
+                :body => [
+                  {
+                    :atom => [
+                      { :reference => 'run!' },
+                      { :regular_invocation => { :location => '(', :arguments => [] } }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -738,32 +738,32 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'operator invocations inside block body' do
-        let(:rip) { 'if (true) { steam will :rise }' }
+        let(:rip) { '-> (steam) { steam will :rise }' }
         let(:expected_raw) do
           {
             :module => [
               {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    {
-                      :atom => [
-                        { :reference => 'steam' },
-                        {
-                          :operator_invocation => {
-                            :operator => 'will',
-                            :argument => {
-                              :location => ':',
-                              :string => rip_string_raw('rise')
-                            }
+                :dash_rocket => '->',
+                :parameters => [
+                  { :parameter => 'steam' }
+                ],
+                :location_body => '{',
+                :body => [
+                  {
+                    :atom => [
+                      { :reference => 'steam' },
+                      {
+                        :operator_invocation => {
+                          :operator => 'will',
+                          :argument => {
+                            :location => ':',
+                            :string => rip_string_raw('rise')
                           }
                         }
-                      ]
-                    }
-                  ]
-                }
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -771,22 +771,22 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'literals inside block body' do
-        let(:rip) { 'if (true) { `3 }' }
+        let(:rip) { '-> (n) { `3 }' }
         let(:expected_raw) do
           {
             :module => [
               {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    {
-                      :location => '`',
-                      :character => '3'
-                    }
-                  ]
-                }
+                :dash_rocket => '->',
+                :parameters => [
+                  { :parameter => 'n' }
+                ],
+                :location_body => '{',
+                :body => [
+                  {
+                    :location => '`',
+                    :character => '3'
+                  }
+                ]
               }
             ]
           }
@@ -794,26 +794,35 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'blocks inside block body' do
-        let(:rip) { 'if (true) { if (false) { } }' }
+        let(:rip) { '-> (foo) { if (false) { 42 } else { -42 } }' }
         let(:expected_raw) do
           {
             :module => [
               {
-                :if_block => {
-                  :if => 'if',
-                  :argument => { :reference => 'true' },
-                  :location_body => '{',
-                  :body => [
-                    {
-                      :if_block => {
-                        :if => 'if',
-                        :argument => { :reference => 'false' },
-                        :location_body => '{',
-                        :body => []
-                      }
+                :dash_rocket => '->',
+                :parameters => [
+                  { :parameter => 'foo' }
+                ],
+                :location_body => '{',
+                :body => [
+                  {
+                    :if_block => {
+                      :if => 'if',
+                      :argument => { :reference => 'false' },
+                      :location_body => '{',
+                      :body => [
+                        { :integer => '42' }
+                      ]
+                    },
+                    :else_block => {
+                      :else => 'else',
+                      :location_body => '{',
+                      :body => [
+                        { :sign => '-', :integer => '42' }
+                      ]
                     }
-                  ]
-                }
+                  }
+                ]
               }
             ]
           }
