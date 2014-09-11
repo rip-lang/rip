@@ -41,7 +41,7 @@ module Rip::Utilities
     end
 
     def self.conditional
-      make_keywords(:if, :unless, :switch, :case, :else)
+      make_keywords(:if, :switch, :case, :else)
     end
 
     def self.exceptional

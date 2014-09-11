@@ -200,13 +200,13 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'block with argument' do
-        let(:rip) { 'unless (:name) {} else {}' }
+        let(:rip) { 'if (:name) {} else {}' }
         let(:expected_raw) do
           {
             :module => [
               {
-                :unless_block => {
-                  :unless => 'unless',
+                :if_block => {
+                  :if => 'if',
                   :argument => {
                     :location => ':',
                     :string => rip_string_raw('name')
@@ -794,7 +794,7 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'blocks inside block body' do
-        let(:rip) { 'if (true) { unless (false) { } }' }
+        let(:rip) { 'if (true) { if (false) { } }' }
         let(:expected_raw) do
           {
             :module => [
@@ -805,8 +805,8 @@ describe Rip::Compiler::Parser do
                   :location_body => '{',
                   :body => [
                     {
-                      :unless_block => {
-                        :unless => 'unless',
+                      :if_block => {
+                        :if => 'if',
                         :argument => { :reference => 'false' },
                         :location_body => '{',
                         :body => []

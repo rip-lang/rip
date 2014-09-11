@@ -208,26 +208,19 @@ module Rip::Compiler
       end
     end
 
-    {
-      :if => Rip::Nodes::If,
-      :unless => Rip::Nodes::Unless
-    }.each do |keyword, klass|
-      keyword_block = "#{keyword}_block".to_sym
+    rule(:if => simple(:if), :argument => simple(:argument), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
+      location = location_for(locals[:origin], locals[:if])
+      body = block_body(locals[:origin], locals[:location_body], locals[:body])
+      Rip::Utilities::TemporaryBlock.new(location, body, locals[:argument])
+    end
 
-      rule(keyword => simple(keyword), :argument => simple(:argument), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
-        location = location_for(locals[:origin], locals[keyword])
-        body = block_body(locals[:origin], locals[:location_body], locals[:body])
-        Rip::Utilities::TemporaryBlock.new(location, body, locals[:argument])
-      end
+    rule(:if_block => simple(:if)) do |locals|
+      else_body = Rip::Nodes::BlockBody.new(locals[:if].body.location, [])
+      Rip::Nodes::If.new(locals[:if].location, locals[:if].argument, locals[:if].body, else_body)
+    end
 
-      rule(keyword_block => simple(keyword)) do |locals|
-        else_body = Rip::Nodes::BlockBody.new(locals[keyword].body.location, [])
-        klass.new(locals[keyword].location, locals[keyword].argument, locals[keyword].body, else_body)
-      end
-
-      rule(keyword_block => simple(keyword), :else_block => simple(:else)) do |locals|
-        klass.new(locals[keyword].location, locals[keyword].argument, locals[keyword].body, locals[:else].body)
-      end
+    rule(:if_block => simple(:if), :else_block => simple(:else)) do |locals|
+      Rip::Nodes::If.new(locals[:if].location, locals[:if].argument, locals[:if].body, locals[:else].body)
     end
 
     rule(:switch => simple(:switch), :argument => simple(:argument), :case_blocks => sequence(:case_blocks), :else_block => simple(:else_block)) do |locals|
