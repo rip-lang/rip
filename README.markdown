@@ -1,3 +1,17 @@
+```
+         _            _          _
+        /\ \         /\ \       /\ \
+       /  \ \        \ \ \     /  \ \
+      / /\ \ \       /\ \_\   / /\ \ \
+     / / /\ \_\     / /\/_/  / / /\ \_\
+    / / /_/ / /    / / /    / / /_/ / /
+   / / /__\/ /    / / /    / / /__\/ /
+  / / /_____/    / / /    / / /_____/
+ / / /\ \ \  ___/ / /__  / / /
+/ / /  \ \ \/\__\/_/___\/ / /
+\/_/    \_\/\/_________/\/_/
+```
+
 ## What is Rip
 
 Rip is a general purpose programming language. It is a functional language with an object-oriented syntax. All objects are immutable, so it might help to think of objects as collections of partially-applied functions.
