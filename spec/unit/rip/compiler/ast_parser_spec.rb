@@ -516,6 +516,14 @@ describe Rip::Compiler::AST do
 
       expect(switch_block).to eq(switch_node)
     end
+
+    context 'without else' do
+      let(:rip) { 'switch { case (true) { 42 } }' }
+
+      it 'is invalid' do
+        expect { statements }.to raise_error(Rip::Exceptions::SyntaxError)
+      end
+    end
   end
 
   context 'interpolation for regular expression' do
