@@ -14,6 +14,10 @@ module Rip::Core
       data == other.data
     end
 
+    def to_native
+      data
+    end
+
     def to_s_prep_body
       super + [ data.to_s ]
     end
@@ -24,6 +28,10 @@ module Rip::Core
 
     def self.false
       class_instance['false']
+    end
+
+    def self.from_native(boolean)
+      boolean ? Rip::Core::Boolean.true : Rip::Core::Boolean.false
     end
 
     define_class_instance do |class_instance|
