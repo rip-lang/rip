@@ -38,6 +38,19 @@ module Rip::Core
       class_instance['true'] = Rip::Core::DynamicProperty.new { |_| new(true) }
       class_instance['false'] = Rip::Core::DynamicProperty.new { |_| new(false) }
 
+      class_instance['@']['=='] = Rip::Core::DelayedProperty.new do |_|
+        eequals_overload = Rip::Core::NativeOverload.new([
+          Rip::Nodes::Parameter.new(nil, 'other')
+        ]) do |context|
+          if context['@'].data == context['other'].data
+            Rip::Core::Boolean.true
+          else
+            Rip::Core::Boolean.false
+          end
+        end
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eequals_overload ])
+      end
+
       class_instance['@']['to_boolean'] = Rip::Core::DelayedProperty.new do |_|
         to_boolean_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
