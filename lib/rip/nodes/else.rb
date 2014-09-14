@@ -13,6 +13,7 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      body.interpret(context)
     end
 
     def to_debug(level = 0)
