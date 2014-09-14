@@ -16,6 +16,13 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      body.interpret(context)
+    end
+
+    def matches?(context, argument)
+      arguments.any? do |_argument|
+        _argument.interpret(context)['==='].call([ argument ]).to_native
+      end
     end
 
     def to_debug(level = 0)
