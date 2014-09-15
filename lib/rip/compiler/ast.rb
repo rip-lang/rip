@@ -218,6 +218,11 @@ module Rip::Compiler
       Rip::Nodes::If.new(locals[:if].location, locals[:if].argument, locals[:if].body, locals[:else].body)
     end
 
+    rule(:switch => simple(:switch), :case_blocks => sequence(:case_blocks), :else_block => simple(:else_block)) do |locals|
+      location = location_for(locals[:origin], locals[:switch])
+      Rip::Nodes::Switch.new(location, Rip::Nodes::Reference.new(location, 'true'), locals[:case_blocks], locals[:else_block])
+    end
+
     rule(:switch => simple(:switch), :argument => simple(:argument), :case_blocks => sequence(:case_blocks), :else_block => simple(:else_block)) do |locals|
       location = location_for(locals[:origin], locals[:switch])
       Rip::Nodes::Switch.new(location, locals[:argument], locals[:case_blocks], locals[:else_block])
