@@ -1,0 +1,77 @@
+NonExclusiveDisjunction < System.Exceptions
+
+ThenReturn = class {
+	@.initialize = -> (block, expressions) {
+		@.block = block
+		@.expressions = expressions
+	}
+
+	@.then_return = -> (value) {
+		@.expressions << [ @.block, value ]
+	}
+}
+
+class {
+	@.initialize = -> { @.expressions = [] }
+
+	@.on = -> (block) {
+		ThenReturn.new(block, @.expressions)
+	}
+
+	@.evaluate! = -> (input, or_else) {
+	}
+}
+
+
+
+expression.if(-> {
+}).else(-> {
+})
+
+expression.case(-> { }, -> {
+}).case(-> { }, -> {
+}).else(-> { }, -> {
+})
+
+
+
+Object = class {
+	@.when_value = -> (block) {
+		@.to_boolean().when_value(block.bind(@))
+	}
+
+	@.or_else = -> (block) {
+		@.to_boolean().or_else(block.bind(@))
+	}
+
+	@.to_boolean = -> { true }
+}
+
+class {
+	@.initialize => (state) {
+		@.state = state
+	}
+
+	@.? = -> (pair) {
+		if @ { pair.key }
+		else { pair.value }
+	}
+
+	@.to_boolean = -> { @ }
+
+	true = new(1, -> (@@) {
+		@@.when_value = -> (block) {
+			block(@)
+		}
+
+		@@.or_else = -> { @ }
+	})
+
+	false = new(0, -> (@@) {
+		@@.when_value = -> (block) { @ }
+
+		@@.or_else = -> {
+			block(@)
+		}
+	})
+}

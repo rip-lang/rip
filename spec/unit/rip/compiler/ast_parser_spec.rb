@@ -516,6 +516,14 @@ describe Rip::Compiler::AST do
 
       expect(switch_block).to eq(switch_node)
     end
+
+    context 'without else' do
+      let(:rip) { 'switch { case (true) { 42 } }' }
+
+      it 'is invalid' do
+        expect { statements }.to raise_error(Rip::Exceptions::SyntaxError)
+      end
+    end
   end
 
   context 'interpolation for regular expression' do
@@ -615,34 +623,6 @@ describe Rip::Compiler::AST do
       expect(if_else.false_body).to eq(false_body)
 
       expect(if_else).to eq(if_else_node)
-    end
-  end
-
-  context 'binary conditional block with synthesized else' do
-    let(:rip) { 'unless (false) { :implied_else }' }
-
-    let(:reference_node) { Rip::Nodes::Reference.new(location.add_character(8), 'false') }
-
-    let(:implied_node) { Rip::Nodes::String.new(location.add_character(17), rip_string_nodes(location.add_character(17), 'implied_else')) }
-    let(:false_body) { Rip::Nodes::BlockBody.new(location.add_character(15), [ implied_node ]) }
-
-    let(:true_body) { Rip::Nodes::BlockBody.new(location.add_character(15), []) }
-
-    let(:unless_else_node) { Rip::Nodes::Unless.new(location, reference_node, false_body, true_body) }
-
-    let(:unless_else) { statements.first }
-
-    it 'has one top-level node' do
-      expect(statements.count).to eq(1)
-    end
-
-    it 'transforms into unless' do
-      expect(unless_else.argument).to eq(reference_node)
-
-      expect(unless_else.false_body).to eq(false_body)
-      expect(unless_else.true_body).to eq(true_body)
-
-      expect(unless_else).to eq(unless_else_node)
     end
   end
 

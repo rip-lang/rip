@@ -180,7 +180,7 @@ module Rip::Compiler
     rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
 
 
-    rule(:condition_block_sequence) { (if_block | unless_block) >> whitespaces? >> else_block.maybe }
+    rule(:condition_block_sequence) { if_block >> whitespaces? >> else_block }
 
     rule(:exception_block_sequence) { try_block >> (whitespaces? >> catch_block).repeat.as(:catch_blocks) >> whitespaces? >> finally_block.maybe }
 
@@ -194,8 +194,7 @@ module Rip::Compiler
     rule(:switch_block) { str('switch').as(:switch) >> spaces? >> single_argument.maybe >> block_body_switch }
     rule(:catch_block)  { str('catch').as(:catch)   >> spaces? >> single_argument       >> block_body }
 
-    rule(:if_block)     { (str('if').as(:if)         >> spaces? >> single_argument >> block_body).as(:if_block) }
-    rule(:unless_block) { (str('unless').as(:unless) >> spaces? >> single_argument >> block_body).as(:unless_block) }
+    rule(:if_block)     { (str('if').as(:if) >> spaces? >> single_argument >> block_body).as(:if_block) }
 
     rule(:try_block)     { (str('try').as(:try)         >> block_body).as(:try_block) }
     rule(:finally_block) { (str('finally').as(:finally) >> block_body).as(:finally_block) }
@@ -210,7 +209,7 @@ module Rip::Compiler
     rule(:single_argument) { parenthesis_open >> whitespaces? >> phrase.as(:argument) >> whitespaces? >> parenthesis_close }
 
     rule(:block_body) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> lines.as(:body) >> whitespaces? >> brace_close }
-    rule(:block_body_switch) { whitespaces? >> brace_open >> whitespaces? >> (case_block >> whitespaces?).repeat(1).as(:case_blocks) >> else_block.maybe.as(:else_block) >> whitespaces? >> brace_close }
+    rule(:block_body_switch) { whitespaces? >> brace_open >> whitespaces? >> (case_block >> whitespaces?).repeat(1).as(:case_blocks) >> else_block >> whitespaces? >> brace_close }
     rule(:block_body_lambda) { whitespaces? >> brace_open.as(:location_body) >> whitespaces? >> (overload_block >> whitespaces?).repeat(1).as(:overload_blocks) >> whitespaces? >> brace_close }
 
 

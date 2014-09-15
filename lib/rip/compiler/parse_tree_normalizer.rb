@@ -215,15 +215,6 @@ module Rip::Compiler
       }
     end
 
-    rule(:switch => simple(:switch), :location_body => simple(:location_body), :body => subtree(:body)) do |locals|
-      {
-        :switch => locals[:switch],
-        :argument => nil,
-        :location_body => locals[:location_body],
-        :body => locals[:body]
-      }
-    end
-
     rule(:hour => simple(:hour), :minute => simple(:minute), :second => simple(:second)) do |locals|
       {
         :hour => locals[:hour],

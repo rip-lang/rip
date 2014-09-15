@@ -22,8 +22,9 @@ class {
 	@.next = -> {
 		if (@.length.zero?) {
 			raise 'no more'
+		} else {
+			@.head
 		}
-		@.head
 	}
 
 	to_string = -> { 'System.List' }

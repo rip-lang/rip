@@ -19,6 +19,23 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      _context = context.nested_context
+
+      _argument = if argument
+        argument.interpret(_context)
+      else
+        Rip::Core::Boolean.true
+      end
+
+      case_block = case_blocks.detect do |case_block|
+        case_block.matches?(_context, _argument)
+      end
+
+      if case_block
+        case_block.interpret(_context)
+      else
+        else_block.interpret(_context)
+      end
     end
 
     def to_debug(level = 0)

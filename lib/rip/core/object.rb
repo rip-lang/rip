@@ -19,6 +19,24 @@ module Rip::Core
       @class_instance = new.tap do |reply|
         reply['@'] = Rip::Core::Prototype.new
 
+        reply['@']['=='] = Rip::Core::DelayedProperty.new do |_|
+          eequals_overload = Rip::Core::NativeOverload.new([
+            Rip::Nodes::Parameter.new(nil, 'other')
+          ]) do |context|
+            Rip::Core::Boolean.from_native(context['@'].properties == context['other'].properties)
+          end
+          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eequals_overload ])
+        end
+
+        reply['@']['==='] = Rip::Core::DelayedProperty.new do |_|
+          eeequals_overload = Rip::Core::NativeOverload.new([
+            Rip::Nodes::Parameter.new(nil, 'other')
+          ]) do |context|
+            context['@']['=='].call([ context['other'] ])
+          end
+          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eeequals_overload ])
+        end
+
         reply['@']['to_boolean'] = Rip::Core::DelayedProperty.new do |_|
           to_boolean_overload = Rip::Core::NativeOverload.new([
           ]) do |context|

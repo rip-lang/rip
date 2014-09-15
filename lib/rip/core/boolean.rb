@@ -14,6 +14,10 @@ module Rip::Core
       data == other.data
     end
 
+    def to_native
+      data
+    end
+
     def to_s_prep_body
       super + [ data.to_s ]
     end
@@ -26,9 +30,26 @@ module Rip::Core
       class_instance['false']
     end
 
+    def self.from_native(boolean)
+      boolean ? Rip::Core::Boolean.true : Rip::Core::Boolean.false
+    end
+
     define_class_instance do |class_instance|
       class_instance['true'] = Rip::Core::DynamicProperty.new { |_| new(true) }
       class_instance['false'] = Rip::Core::DynamicProperty.new { |_| new(false) }
+
+      class_instance['@']['=='] = Rip::Core::DelayedProperty.new do |_|
+        eequals_overload = Rip::Core::NativeOverload.new([
+          Rip::Nodes::Parameter.new(nil, 'other')
+        ]) do |context|
+          if context['@'].data == context['other'].data
+            Rip::Core::Boolean.true
+          else
+            Rip::Core::Boolean.false
+          end
+        end
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eequals_overload ])
+      end
 
       class_instance['@']['to_boolean'] = Rip::Core::DelayedProperty.new do |_|
         to_boolean_overload = Rip::Core::NativeOverload.new([
