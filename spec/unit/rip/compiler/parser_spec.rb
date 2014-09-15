@@ -516,6 +516,128 @@ describe Rip::Compiler::Parser do
         end
       end
 
+      recognizes_as_expected 'switch' do
+        let(:rip) { 'switch (foo) { case (true) { 42 } else { 0 } }' }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :switch => 'switch',
+                :argument => { :reference => 'foo' },
+                :case_blocks => [
+                  {
+                    :case => 'case',
+                    :arguments => [
+                      { :reference => 'true' }
+                    ],
+                    :location_body => '{',
+                    :body => [
+                      { :integer => '42' }
+                    ]
+                  }
+                ],
+                :else_block => {
+                  :else => 'else',
+                  :location_body => '{',
+                  :body => [
+                    { :integer => '0' }
+                  ]
+                }
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :switch => 'switch',
+                :argument => { :reference => 'foo' },
+                :case_blocks => [
+                  {
+                    :case => 'case',
+                    :arguments => [
+                      { :reference => 'true' }
+                    ],
+                    :location_body => '{',
+                    :body => [
+                      { :sign => '+', :integer => '42' }
+                    ]
+                  }
+                ],
+                :else_block => {
+                  :else => 'else',
+                  :location_body => '{',
+                  :body => [
+                    { :sign => '+', :integer => '0' }
+                  ]
+                }
+              }
+            ]
+          }
+        end
+      end
+
+      recognizes_as_expected 'switch without argument' do
+        let(:rip) { 'switch { case (true) { 42 } else { 0 } }' }
+        let(:expected_raw) do
+          {
+            :module => [
+              {
+                :switch => 'switch',
+                :case_blocks => [
+                  {
+                    :case => 'case',
+                    :arguments => [
+                      { :reference => 'true' }
+                    ],
+                    :location_body => '{',
+                    :body => [
+                      { :integer => '42' }
+                    ]
+                  }
+                ],
+                :else_block => {
+                  :else => 'else',
+                  :location_body => '{',
+                  :body => [
+                    { :integer => '0' }
+                  ]
+                }
+              }
+            ]
+          }
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :switch => 'switch',
+                :case_blocks => [
+                  {
+                    :case => 'case',
+                    :arguments => [
+                      { :reference => 'true' }
+                    ],
+                    :location_body => '{',
+                    :body => [
+                      { :sign => '+', :integer => '42' }
+                    ]
+                  }
+                ],
+                :else_block => {
+                  :else => 'else',
+                  :location_body => '{',
+                  :body => [
+                    { :sign => '+', :integer => '0' }
+                  ]
+                }
+              }
+            ]
+          }
+        end
+      end
+
       recognizes_as_expected 'try-catch' do
         let(:rip) { 'try {} catch (Exception: e) {}' }
         let(:expected_raw) do
