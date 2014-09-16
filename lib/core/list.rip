@@ -1,30 +1,33 @@
 # class (System.Enumerable) {
 class {
+	@.+ = -> (other) {
+		@.class.+(@, other)
+	}
+
 	@.<< = -> (new_item) {
 		@ + [ new_item ]
 	}
 
-	@.inject = -> (initial, callback) {
-		if (@.length > 0) {
-			@.tail.inject(callback(initial, @.head), callback)
-		} else {
+	@.fold = -> (initial, folder) {
+		@.class.fold(folder, initial, @)
+	}
+
+	@.map = -> (mapper) {
+		@.class.map(mapper, @)
+	}
+
+	fold = -> (folder, initial, items) {
+		if (items.length == 0) {
 			initial
-		}
-	}
-
-	@.join = -> (glue) {
-		_glue = glue.to_string()
-		@.tail.inject(@.head.to_string(), -> (memo, string) {
-			memo + _glue + string.to_string()
-		})
-	}
-
-	@.next = -> {
-		if (@.length.zero?) {
-			raise 'no more'
 		} else {
-			@.head
+			fold(folder, folder(initial, items.head), items.tail)
 		}
+	}
+
+	map = -> (mapper, items) {
+		fold(-> (memo, item) {
+			memo << mapper(item)
+		}, [], items)
 	}
 
 	to_string = -> { 'System.List' }

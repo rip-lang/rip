@@ -12,7 +12,7 @@ describe Rip::Core::Integer do
     let(:class_to_s) { '#< System.Integer >' }
 
     let(:instance) { forty_two }
-    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, /%, class, to_string ] data = 42 >' }
+    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, /%, ==, class, to_string ] data = 42 >' }
   end
 
   describe '.class_instance' do
