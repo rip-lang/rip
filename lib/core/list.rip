@@ -19,12 +19,22 @@ class {
 		})
 	}
 
+	@.map = -> (mapper) {
+		@.class.map(mapper, @)
+	}
+
 	fold = -> (folder, initial, items) {
 		if (items.length == 0) {
 			initial
 		} else {
 			fold(folder, folder(initial, items.head), items.tail)
 		}
+	}
+
+	map = -> (mapper, items) {
+		fold(-> (memo, item) {
+			memo << mapper(item)
+		}, [], items)
 	}
 
 	to_string = -> { 'System.List' }

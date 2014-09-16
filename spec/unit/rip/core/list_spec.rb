@@ -12,7 +12,7 @@ describe Rip::Core::List do
     let(:class_to_s) { '#< System.List >' }
 
     let(:instance) { list }
-    let(:instance_to_s) { '#< #< System.List > [ +, <<, class, fold, head, join, length, reverse, tail, to_string ] items = [  ] >' }
+    let(:instance_to_s) { '#< #< System.List > [ +, <<, class, fold, head, join, length, map, reverse, tail, to_string ] items = [  ] >' }
   end
 
   describe '.class_instance' do
