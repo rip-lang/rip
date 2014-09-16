@@ -30,6 +30,10 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ reverse_overload ])
       end
 
+      class_instance['@']['length'] = Rip::Core::DynamicProperty.new do |this|
+        Rip::Core::Integer.new(this.items.count)
+      end
+
       class_instance['@']['head'] = Rip::Core::DynamicProperty.new do |this|
         this.items.first
       end
