@@ -12,13 +12,6 @@ class {
 		@.class.fold(folder, initial, @)
 	}
 
-	@.join = -> (glue) {
-		_glue = glue.to_string()
-		@.tail.fold(@.head.to_string(), -> (memo, string) {
-			memo + _glue + string.to_string()
-		})
-	}
-
 	@.map = -> (mapper) {
 		@.class.map(mapper, @)
 	}
