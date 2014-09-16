@@ -4,9 +4,9 @@ class {
 		@ + [ new_item ]
 	}
 
-	@.inject = -> (initial, callback) {
+	@.fold = -> (initial, callback) {
 		if (@.length > 0) {
-			@.tail.inject(callback(initial, @.head), callback)
+			@.tail.fold(callback(initial, @.head), callback)
 		} else {
 			initial
 		}
@@ -14,7 +14,7 @@ class {
 
 	@.join = -> (glue) {
 		_glue = glue.to_string()
-		@.tail.inject(@.head.to_string(), -> (memo, string) {
+		@.tail.fold(@.head.to_string(), -> (memo, string) {
 			memo + _glue + string.to_string()
 		})
 	}
