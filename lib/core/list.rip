@@ -8,12 +8,8 @@ class {
 		@ + [ new_item ]
 	}
 
-	@.fold = -> (initial, callback) {
-		if (@.length > 0) {
-			@.tail.fold(callback(initial, @.head), callback)
-		} else {
-			initial
-		}
+	@.fold = -> (initial, folder) {
+		@.class.fold(folder, initial, @)
 	}
 
 	@.join = -> (glue) {
@@ -23,11 +19,11 @@ class {
 		})
 	}
 
-	@.next = -> {
-		if (@.length.zero?) {
-			raise 'no more'
+	fold = -> (folder, initial, items) {
+		if (items.length == 0) {
+			initial
 		} else {
-			@.head
+			fold(folder, folder(initial, items.head), items.tail)
 		}
 	}
 
