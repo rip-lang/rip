@@ -12,7 +12,7 @@ describe Rip::Core::List do
     let(:class_to_s) { '#< System.List >' }
 
     let(:instance) { list }
-    let(:instance_to_s) { '#< #< System.List > [ <<, class, head, head_left, head_right, inject, join, next, reverse, tail, tail_left, tail_right, to_string ] items = [  ] >' }
+    let(:instance_to_s) { '#< #< System.List > [ <<, class, head, inject, join, next, reverse, tail, to_string ] items = [  ] >' }
   end
 
   describe '.class_instance' do
@@ -33,19 +33,11 @@ describe Rip::Core::List do
       ]
     end
 
-    describe '@.head_left' do
-      specify { expect(list['head_left']).to eq(Rip::Core::Integer.new(1)) }
-
-      describe '@.head' do
-        specify { expect(list['head']).to be(list['head_left']) }
-      end
+    describe '@.head' do
+      specify { expect(list['head']).to eq(Rip::Core::Integer.new(1)) }
     end
 
-    describe '@.head_right' do
-      specify { expect(list['head_right']).to eq(Rip::Core::Integer.new(3)) }
-    end
-
-    describe '@.tail_left' do
+    describe '@.tail' do
       let(:expected) do
         Rip::Core::List.new([
           Rip::Core::Integer.new(2),
@@ -53,22 +45,7 @@ describe Rip::Core::List do
         ])
       end
 
-      specify { expect(list['tail_left']).to eq(expected) }
-
-      describe '@.tail' do
-        specify { expect(list['tail']).to be(list['tail_left']) }
-      end
-    end
-
-    describe '@.tail_right' do
-      let(:expected) do
-        Rip::Core::List.new([
-          Rip::Core::Integer.new(2),
-          Rip::Core::Integer.new(1)
-        ])
-      end
-
-      specify { expect(list['tail_right']).to eq(expected) }
+      specify { expect(list['tail']).to eq(expected) }
     end
   end
 

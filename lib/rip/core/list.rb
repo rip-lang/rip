@@ -31,27 +31,11 @@ module Rip::Core
       end
 
       class_instance['@']['head'] = Rip::Core::DynamicProperty.new do |this|
-        this['head_left']
-      end
-
-      class_instance['@']['head_left'] = Rip::Core::DynamicProperty.new do |this|
         this.items.first
       end
 
-      class_instance['@']['head_right'] = Rip::Core::DynamicProperty.new do |this|
-        this.items.last
-      end
-
       class_instance['@']['tail'] = Rip::Core::DynamicProperty.new do |this|
-        this['tail_left']
-      end
-
-      class_instance['@']['tail_left'] = Rip::Core::DynamicProperty.new do |this|
         new(this.items[1..(this.items.count - 1)] || [])
-      end
-
-      class_instance['@']['tail_right'] = Rip::Core::DynamicProperty.new do |this|
-        new(this.items[0..-2].reverse)
       end
 
       class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
