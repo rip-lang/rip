@@ -24,6 +24,23 @@ module Rip::Core
       properties[key.to_s] = value
     end
 
+    alias :full_inspect :inspect
+    def inspect
+      _instance_variables = instance_variables.map do |ivar|
+        ivar_value = if ivar == :@properties
+          instance_variable_get(ivar).keys.sort
+        else
+          instance_variable_get(ivar).inspect
+        end
+
+        "#{ivar}=#{ivar_value}"
+      end
+
+      space = ' ' unless _instance_variables.count.zero?
+
+      "#<#{self.class}:#{object_id}#{space}#{_instance_variables.join(', ')}>"
+    end
+
     def to_s
       to_s_prep.join(' ')
     end
