@@ -1,5 +1,9 @@
 # class (System.Enumerable) {
 class {
+	@.+ = -> (other) {
+		@.class.+(@, other)
+	}
+
 	@.<< = -> (new_item) {
 		@ + [ new_item ]
 	}

@@ -42,6 +42,19 @@ module Rip::Core
         new(this.items[1..(this.items.count - 1)] || [])
       end
 
+      class_instance['+'] = Rip::Core::DelayedProperty.new do |_|
+        plus_overload = Rip::Core::NativeOverload.new([
+          Rip::Nodes::Parameter.new(nil, 'a'),
+          Rip::Nodes::Parameter.new(nil, 'b')
+        ]) do |context|
+          a = context['a']
+          b = context['b']
+          Rip::Core::List.new(a.items + b.items)
+        end
+
+        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ plus_overload ])
+      end
+
       class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
