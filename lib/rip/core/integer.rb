@@ -36,6 +36,15 @@ module Rip::Core
         end
       end
 
+      class_instance['@']['=='] = Rip::Core::DelayedProperty.new do |_|
+        eequals_overload = Rip::Core::NativeOverload.new([
+          Rip::Nodes::Parameter.new(nil, 'other')
+        ]) do |context|
+          Rip::Core::Boolean.from_native(context['@'].data == context['other'].data)
+        end
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eequals_overload ])
+      end
+
       class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
