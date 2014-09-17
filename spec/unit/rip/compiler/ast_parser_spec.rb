@@ -316,12 +316,7 @@ describe Rip::Compiler::AST do
 
     specify do
       expect(parameters.first).to eq(parameter_nodes.first)
-      expect(parameters.first.type(context)).to eq(Rip::Core::Object.class_instance)
-    end
-
-    specify do
       expect(parameters.last).to eq(parameter_nodes.last)
-      expect(parameters.last.type(context)).to eq(Rip::Core::Integer.class_instance)
     end
 
     context 'with two overloads' do

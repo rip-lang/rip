@@ -27,7 +27,11 @@ module Rip::Core
     end
 
     def bind(receiver)
-      self.class.new(context, overloads.map(&:bind), applied_arguments).tap do |reply|
+      _overloads = overloads.map do |overload|
+        overload.bind(receiver)
+      end
+
+      self.class.new(context, _overloads, applied_arguments).tap do |reply|
         reply['@'] = Rip::Core::DynamicProperty.new(!receiver.is_a?(self.class)) do |_|
           receiver
         end
@@ -44,7 +48,7 @@ module Rip::Core
       full_signature = _arguments.map { |arg| arg['class'] }
 
       overload = overloads.detect do |overload|
-        overload.callable?(context.nested_context, full_signature)
+        overload.callable?(full_signature)
       end
 
       if overload
@@ -70,7 +74,7 @@ module Rip::Core
             unapplied_parameters = overload.parameters[applied_arguments_count..-1] || []
 
             parameters = unapplied_parameters.map do |parameter|
-              "#{parameter.name}<#{parameter.type(context.nested_context)}>"
+              "#{parameter.name}<#{parameter.type}>"
             end
 
             "\t-> (#{parameters.join(', ')}) { ... }"
@@ -95,7 +99,7 @@ module Rip::Core
 
     def apply(full_signature, arguments)
       matching_overloads = overloads.select do |overload|
-        overload.matches?(context.nested_context, full_signature)
+        overload.matches?(full_signature)
       end
 
       if matching_overloads.count > 0

@@ -40,7 +40,7 @@ module Rip::Core
 
       class_instance['@']['=='] = Rip::Core::DelayedProperty.new do |_|
         eequals_overload = Rip::Core::NativeOverload.new([
-          Rip::Nodes::Parameter.new(nil, 'other')
+          Rip::Core::Parameter.new('other', class_instance)
         ]) do |context|
           if context['@'].data == context['other'].data
             Rip::Core::Boolean.true

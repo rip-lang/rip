@@ -8,7 +8,7 @@ module Rip::Core
     define_class_instance do |class_instance|
       class_instance['require'] = Rip::Core::DelayedProperty.new do |_|
         overload = Rip::Core::NativeOverload.new([
-          Rip::Nodes::Parameter.new(nil, 'module_name')
+          Rip::Core::Parameter.new('module_name', Rip::Core::String.class_instance)
         ]) do |context|
           module_name = context['module_name'].characters.map(&:data).join
 

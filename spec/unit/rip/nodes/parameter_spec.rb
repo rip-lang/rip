@@ -4,16 +4,32 @@ describe Rip::Nodes::Parameter do
   let(:location) { location_for }
 
   let(:name) { 'arg' }
-  let(:parameter) { Rip::Nodes::Parameter.new(location, name) }
+  let(:type) { nil }
+  let(:parameter) { Rip::Nodes::Parameter.new(location, name, type) }
 
   let(:context) { Rip::Compiler::Driver.global_context.nested_context }
 
-  let(:forty_two) { Rip::Core::Integer.new(42) }
+  describe '#interpret' do
+    let(:core_parameter) { parameter.interpret(context) }
 
-  describe '#bind' do
-    before(:each) { parameter.bind(context, forty_two) }
+    specify do
+      expect(core_parameter).to be_a(Rip::Core::Parameter)
+    end
 
-    specify { expect(context.symbols).to include(name) }
-    specify { expect(context[name]).to eq(forty_two) }
+    context 'without type restriction' do
+      it 'allows any type' do
+        expect(core_parameter.type).to eq(Rip::Core::Object.class_instance)
+      end
+    end
+
+    context 'with type restriction' do
+      let(:type) do
+        Rip::Nodes::Property.new(location, Rip::Nodes::Reference.new(location, 'System'), 'Integer')
+      end
+
+      it 'only allows integers' do
+        expect(core_parameter.type).to eq(Rip::Core::Integer.class_instance)
+      end
+    end
   end
 end

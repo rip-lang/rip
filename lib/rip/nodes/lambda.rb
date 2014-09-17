@@ -13,8 +13,10 @@ module Rip::Nodes
     end
 
     def interpret(context)
+      _context = context.nested_context
+
       _overloads = overloads.map do |overload|
-        overload.interpret(context)
+        overload.interpret(_context)
       end
 
       Rip::Core::Lambda.new(context, _overloads)

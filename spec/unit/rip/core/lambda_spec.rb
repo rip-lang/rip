@@ -51,8 +51,8 @@ describe Rip::Core::Lambda do
     context 'all required parameters' do
       let(:parameters) do
         [
-          Rip::Nodes::Parameter.new(location, 'a'),
-          Rip::Nodes::Parameter.new(location, 'b')
+          Rip::Core::Parameter.new('a', Rip::Core::Integer.class_instance),
+          Rip::Core::Parameter.new('b', Rip::Core::Integer.class_instance)
         ]
       end
       specify { expect(rip_lambda.arity).to eq([ 2 ]) }
@@ -83,7 +83,7 @@ describe Rip::Core::Lambda do
       context 'shadowing surrounding scope' do
         let(:parameters) do
           [
-            Rip::Nodes::Parameter.new(location, 'answer')
+            Rip::Core::Parameter.new('answer', Rip::Core::Integer.class_instance)
           ]
         end
 
@@ -118,9 +118,9 @@ describe Rip::Core::Lambda do
     describe 'required parameters' do
       let(:parameters) do
         [
-          Rip::Nodes::Parameter.new(location, 'a'),
-          Rip::Nodes::Parameter.new(location, 'b'),
-          Rip::Nodes::Parameter.new(location, 'c')
+          Rip::Core::Parameter.new('a', Rip::Core::Integer.class_instance),
+          Rip::Core::Parameter.new('b', Rip::Core::Integer.class_instance),
+          Rip::Core::Parameter.new('c', Rip::Core::Integer.class_instance)
         ]
       end
 
@@ -142,9 +142,9 @@ describe Rip::Core::Lambda do
     describe 'automatic application' do
       let(:parameters) do
         [
-          Rip::Nodes::Parameter.new(location, 'a'),
-          Rip::Nodes::Parameter.new(location, 'b'),
-          Rip::Nodes::Parameter.new(location, 'c')
+          Rip::Core::Parameter.new('a', Rip::Core::Integer.class_instance),
+          Rip::Core::Parameter.new('b', Rip::Core::Integer.class_instance),
+          Rip::Core::Parameter.new('c', Rip::Core::Integer.class_instance)
         ]
       end
 

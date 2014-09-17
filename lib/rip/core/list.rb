@@ -44,8 +44,8 @@ module Rip::Core
 
       class_instance['+'] = Rip::Core::DelayedProperty.new do |_|
         plus_overload = Rip::Core::NativeOverload.new([
-          Rip::Nodes::Parameter.new(nil, 'a'),
-          Rip::Nodes::Parameter.new(nil, 'b')
+          Rip::Core::Parameter.new('a', class_instance),
+          Rip::Core::Parameter.new('b', class_instance)
         ]) do |context|
           a = context['a']
           b = context['b']
