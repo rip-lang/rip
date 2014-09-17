@@ -17,7 +17,13 @@ module Rip::Nodes
     end
 
     def interpret(context)
-      Rip::Core::Overload.new(parameters, body)
+      _context = context.nested_context
+
+      _parameters = parameters.map do |parameter|
+        parameter.interpret(_context)
+      end
+
+      Rip::Core::Overload.new(_parameters, body)
     end
 
     # convert list of overloads, some which may have optional paramters, into list of overloads with no optional parameters
@@ -40,11 +46,11 @@ module Rip::Nodes
 
           reply << Rip::Nodes::Overload.new(overload.location, memo, synthetic_body)
 
-          [ *memo, Rip::Nodes::Parameter.new(parameter.location, parameter.name, parameter.raw_type) ]
+          [ *memo, Rip::Nodes::Parameter.new(parameter.location, parameter.name, parameter.type) ]
         end
 
         final_parameters = required_parameters + optional_parameters.map do |parameter|
-          Rip::Nodes::Parameter.new(parameter.location, parameter.name, parameter.raw_type)
+          Rip::Nodes::Parameter.new(parameter.location, parameter.name, parameter.type)
         end
 
         [ *reply, Rip::Nodes::Overload.new(overload.location, final_parameters, overload.body) ]

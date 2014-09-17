@@ -16,11 +16,11 @@ module Rip::Core
       parameters.count
     end
 
-    def bind
+    def bind(receiver)
       if bound?
         self
       else
-        self.class.new([ parameter_for_receiver, *parameters ], body)
+        self.class.new([ parameter_for_receiver(receiver), *parameters ], body)
       end
     end
 
@@ -29,19 +29,19 @@ module Rip::Core
       body.interpret(_body_context)
     end
 
-    def callable?(context, argument_signature)
+    def callable?(argument_signature)
       return false unless parameters.count == argument_signature.count
 
       parameters.zip(argument_signature).all? do |(parameter, argument_type)|
-        parameter.matches?(context, argument_type)
+        parameter.matches?(argument_type)
       end
     end
 
-    def matches?(context, argument_signature)
+    def matches?(argument_signature)
       return false if parameters.count < argument_signature.count
 
       parameters.zip(argument_signature).all? do |(parameter, argument_type)|
-        argument_type ? parameter.matches?(context, argument_type) : true
+        argument_type ? parameter.matches?(argument_type) : true
       end
     end
 
@@ -58,8 +58,8 @@ module Rip::Core
         (parameters.first.name == '@')
     end
 
-    def parameter_for_receiver
-      Rip::Nodes::Parameter.new(nil, '@')
+    def parameter_for_receiver(receiver)
+      Rip::Core::Parameter.new('@', receiver['class'])
     end
   end
 end
@@ -72,11 +72,11 @@ module Rip::Core
       @body = body
     end
 
-    def bind
+    def bind(receiver)
       if bound?
         self
       else
-        self.class.new([ parameter_for_receiver, *parameters ], &body)
+        self.class.new([ parameter_for_receiver(receiver), *parameters ], &body)
       end
     end
 

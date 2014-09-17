@@ -21,7 +21,7 @@ module Rip::Core
 
         reply['@']['=='] = Rip::Core::DelayedProperty.new do |_|
           eequals_overload = Rip::Core::NativeOverload.new([
-            Rip::Nodes::Parameter.new(nil, 'other')
+            Rip::Core::Parameter.new('other', reply)
           ]) do |context|
             Rip::Core::Boolean.from_native(context['@'].properties == context['other'].properties)
           end
@@ -30,7 +30,7 @@ module Rip::Core
 
         reply['@']['==='] = Rip::Core::DelayedProperty.new do |_|
           eeequals_overload = Rip::Core::NativeOverload.new([
-            Rip::Nodes::Parameter.new(nil, 'other')
+            Rip::Core::Parameter.new('other', reply)
           ]) do |context|
             context['@']['=='].call([ context['other'] ])
           end

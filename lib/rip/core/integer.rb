@@ -26,8 +26,8 @@ module Rip::Core
       ].each do |property|
         class_instance[property] = Rip::Core::DelayedProperty.new do |_|
           overload = Rip::Core::NativeOverload.new([
-            Rip::Nodes::Parameter.new(nil, 'a'),
-            Rip::Nodes::Parameter.new(nil, 'b')
+            Rip::Core::Parameter.new('a', class_instance),
+            Rip::Core::Parameter.new('b', class_instance)
           ]) do |context|
             new(context['a'].data.send(property, context['b'].data))
           end
@@ -38,7 +38,7 @@ module Rip::Core
 
       class_instance['@']['=='] = Rip::Core::DelayedProperty.new do |_|
         eequals_overload = Rip::Core::NativeOverload.new([
-          Rip::Nodes::Parameter.new(nil, 'other')
+          Rip::Core::Parameter.new('other', class_instance)
         ]) do |context|
           Rip::Core::Boolean.from_native(context['@'].data == context['other'].data)
         end
