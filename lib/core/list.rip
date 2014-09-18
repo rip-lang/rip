@@ -8,12 +8,26 @@ class {
 		@ + [ new_item ]
 	}
 
+	@.filter = -> (sieve) {
+		@.class.filter(sieve, @)
+	}
+
 	@.fold = -> (initial, folder) {
 		@.class.fold(folder, initial, @)
 	}
 
 	@.map = -> (mapper) {
 		@.class.map(mapper, @)
+	}
+
+	filter = -> (sieve, items) {
+		fold(-> (memo, item) {
+			if (sieve(item)) {
+				memo << item
+			} else {
+				memo
+			}
+		}, [], items)
 	}
 
 	fold = -> (folder, initial, items) {
