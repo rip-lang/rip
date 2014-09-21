@@ -17,11 +17,7 @@ module Rip::Core
     end
 
     def bind(receiver)
-      if bound?
-        self
-      else
-        self.class.new([ parameter_for_receiver(receiver), *parameters ], body)
-      end
+      self.class.new([ parameter_for_receiver(receiver), *explicit_parameters ], body)
     end
 
     def call(calling_context, arguments)
@@ -58,6 +54,10 @@ module Rip::Core
         (parameters.first.name == '@')
     end
 
+    def explicit_parameters
+      bound? ? parameters[1..-1] : parameters
+    end
+
     def parameter_for_receiver(receiver)
       Rip::Core::Parameter.new('@', receiver['class'])
     end
@@ -73,11 +73,7 @@ module Rip::Core
     end
 
     def bind(receiver)
-      if bound?
-        self
-      else
-        self.class.new([ parameter_for_receiver(receiver), *parameters ], &body)
-      end
+      self.class.new([ parameter_for_receiver(receiver), *explicit_parameters ], &body)
     end
 
     def call(calling_context, arguments)
