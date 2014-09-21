@@ -59,6 +59,28 @@ module Rip::Core
     end
 
     define_class_instance do |class_instance|
+      class_instance['@']['apply'] = Rip::Core::DelayedProperty.new do |this|
+        apply_overload = Rip::Core::NativeOverload.new([
+          Rip::Core::Parameter.new('args', Rip::Core::List.class_instance)
+        ]) do |context|
+          arguments = context['args'].items
+
+          _this = context['@']
+
+          _arguments = if _this.send(:bound?)
+            [ _this['@'], *_this.applied_arguments, *arguments ]
+          else
+            _this.applied_arguments + arguments
+          end
+
+          full_signature = _arguments.map { |arg| arg['class'] }
+
+          _this.send(:apply, full_signature, arguments)
+        end
+
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ apply_overload ])
+      end
+
       class_instance['@']['bind'] = Rip::Core::DelayedProperty.new do |_|
         bind_overload = Rip::Core::NativeOverload.new([
           Rip::Core::Parameter.new('@@', Rip::Core::Object.class_instance)

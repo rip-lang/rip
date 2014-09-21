@@ -34,7 +34,7 @@ describe Rip::Core::Lambda do
     let(:class_to_s) { '#< System.Lambda >' }
 
     let(:instance) { rip_lambda }
-    let(:instance_to_s) { '#< #< System.Lambda > [ bind, class, to_string ] arity = [ 0 ] >' }
+    let(:instance_to_s) { '#< #< System.Lambda > [ apply, bind, class, to_string ] arity = [ 0 ] >' }
   end
 
   describe '.class_instance' do
@@ -45,7 +45,7 @@ describe Rip::Core::Lambda do
   describe '#arity' do
     context 'no parameters' do
       specify { expect(rip_lambda.arity).to eq([ 0 ]) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class, to_string ] arity = [ 0 ] >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ apply, bind, class, to_string ] arity = [ 0 ] >') }
     end
 
     context 'all required parameters' do
@@ -56,7 +56,7 @@ describe Rip::Core::Lambda do
         ]
       end
       specify { expect(rip_lambda.arity).to eq([ 2 ]) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ bind, class, to_string ] arity = [ 2 ] >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ apply, bind, class, to_string ] arity = [ 2 ] >') }
     end
   end
 
@@ -212,6 +212,73 @@ describe Rip::Core::Lambda do
 
       it 'method\'s original receiver has no receiver' do
         expect { answer_lambda['to_string']['@']['@'] }.to raise_error(Rip::Exceptions::RuntimeException)
+      end
+    end
+  end
+
+  describe '@.apply' do
+    let(:lambda_context) do
+      context.nested_context.tap do |reply|
+        reply['bar'] = bar
+      end.nested_context
+    end
+
+    let(:bar) { Rip::Core::Integer.new(42) }
+    let(:a) { Rip::Core::Integer.new(111) }
+    let(:b) { Rip::Core::Integer.new(222) }
+    let(:c) { Rip::Core::Integer.new(333) }
+    let(:sum) { Rip::Core::Integer.new(666) }
+
+    let(:the_lambda) do
+      overload_1 = Rip::Core::NativeOverload.new([
+        Rip::Core::Parameter.new('a', Rip::Core::Integer.class_instance),
+        Rip::Core::Parameter.new('b', Rip::Core::Integer.class_instance),
+        Rip::Core::Parameter.new('c', Rip::Core::Integer.class_instance)
+      ]) do |_context|
+        a = _context['a']
+        b = _context['b']
+        c = _context['c']
+        a['+'].call([ b ])['+'].call([ c ])
+      end
+
+      overload_2 = Rip::Core::NativeOverload.new([
+        Rip::Core::Parameter.new('foo', Rip::Core::Integer.class_instance)
+      ]) do |_context|
+        foo = _context['foo']
+        bar = _context['bar']
+        foo['+'].call([ bar ])
+      end
+
+      Rip::Core::Lambda.new(lambda_context, [ overload_1, overload_2 ])
+    end
+
+    specify { expect(the_lambda['apply']).to be_a(Rip::Core::Lambda) }
+
+    context 'invocation' do
+      let(:apply_111) { the_lambda['apply'].call([ Rip::Core::List.new([ a ]) ]) }
+      let(:apply_222) { apply_111['apply'].call([ Rip::Core::List.new([ b ]) ]) }
+      let(:apply_333) { the_lambda['apply'].call([ Rip::Core::List.new([ a, b, c ]) ]) }
+
+      it 'returns a lambda' do
+        expect(apply_111).to be_a(Rip::Core::Lambda)
+        expect(apply_222).to be_a(Rip::Core::Lambda)
+        expect(apply_333).to be_a(Rip::Core::Lambda)
+      end
+
+      it 'only holds potential overloads' do
+        expect(apply_111.overloads.count).to eq(2)
+        expect(apply_222.overloads.count).to eq(1)
+        expect(apply_333.overloads.count).to eq(1)
+      end
+
+      it 'computes the correct total' do
+        expect(apply_111.call([ b, c ])).to eq(sum)
+        expect(apply_222.call([ c ])).to eq(sum)
+        expect(apply_333.call([ ])).to eq(sum)
+      end
+
+      it 'uses the original lambda context' do
+        expect(apply_111.call([ ])).to eq(Rip::Core::Integer.new(153))
       end
     end
   end
