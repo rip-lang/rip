@@ -11,11 +11,27 @@ module Rip::Compiler
     end
 
     def self.global_context
-      @global_context ||= Rip::Compiler::Scope.new({
-        'System' => Rip::Core::System.type_instance,
-        'true' => Rip::Core::Boolean.true,
-        'false' => Rip::Core::Boolean.false
-      })
+      @global_context ||= Rip::Compiler::Scope.new(root_state)
+    end
+
+    protected
+
+    def self.root_state
+      @root_state ||= Hash.new do |root, key|
+        _key = key.to_s
+
+        _reply = case _key
+          when 'System' then Rip::Core::System.type_instance
+          when 'true'   then Rip::Core::Boolean.true
+          when 'false'  then Rip::Core::Boolean.false
+        end
+
+        root[_key] = _reply if _reply
+      end.tap do |reply|
+        def reply.keys
+          %w[ System true false ]
+        end
+      end
     end
   end
 end
