@@ -1,4 +1,4 @@
-module Rip::Compiler
+module Rip::Utilities
   class REPL
     def initialize
       @line_number = 0
