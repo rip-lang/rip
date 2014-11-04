@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Rip::Utilities::Scope do
+describe Rip::Compiler::Scope do
   subject { scope_foo }
-  let(:scope_foo) { Rip::Utilities::Scope.new }
+  let(:scope_foo) { Rip::Compiler::Scope.new }
 
   before(:each) { scope_foo[:foo] = 111 }
 
@@ -51,7 +51,7 @@ describe Rip::Utilities::Scope do
   end
 
   describe '#==' do
-    let(:new_scope) { Rip::Utilities::Scope.new }
+    let(:new_scope) { Rip::Compiler::Scope.new }
 
     before(:each) { new_scope[:foo] = 111 }
 
@@ -59,7 +59,7 @@ describe Rip::Utilities::Scope do
   end
 
   describe '#origin' do
-    let(:origin_context) { Rip::Utilities::Scope.new(scope_foo, :ORIGIN) }
+    let(:origin_context) { Rip::Compiler::Scope.new(scope_foo, :ORIGIN) }
 
     specify { expect(scope_foo.origin).to be_nil }
     specify { expect(scope_foo.nested_context.origin).to be_nil }

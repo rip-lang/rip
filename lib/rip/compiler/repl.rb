@@ -5,7 +5,7 @@ module Rip::Compiler
     end
 
     def start
-      context = Rip::Utilities::Scope.new(Rip::Compiler::Driver.global_context, :repl)
+      context = Rip::Compiler::Scope.new(Rip::Compiler::Driver.global_context, :repl)
 
       print_welcome
 

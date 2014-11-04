@@ -4,7 +4,7 @@ describe Rip::Core::Lambda do
   let(:class_instance) { Rip::Core::Lambda.class_instance }
 
   let(:location) { location_for }
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:parameters) { [] }
   let(:body_expressions) { [] }

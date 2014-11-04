@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Rip::Core::Character do
   let(:location) { location_for }
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:class_instance) { Rip::Core::Character.class_instance }
 

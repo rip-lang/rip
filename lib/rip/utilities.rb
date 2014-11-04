@@ -4,5 +4,4 @@ end
 require 'rip/utilities/keywords'
 require 'rip/utilities/location'
 require 'rip/utilities/parse_tree_debugger'
-require 'rip/utilities/scope'
 require 'rip/utilities/temporary_block'

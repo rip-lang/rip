@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Rip::Nodes::Invocation do
   let(:location) { location_for }
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:invocation_node) { Rip::Nodes::Invocation.new(location, callable_node, argument_nodes) }
 

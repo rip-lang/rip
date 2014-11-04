@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Rip::Core::String do
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:class_instance) { Rip::Core::String.class_instance }
 

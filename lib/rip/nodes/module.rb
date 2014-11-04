@@ -13,7 +13,7 @@ module Rip::Nodes
     end
 
     def interpret(context)
-      _context = Rip::Utilities::Scope.new(context, location.origin)
+      _context = Rip::Compiler::Scope.new(context, location.origin)
       body.interpret(_context)
     end
 

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Nodes::List do
   let(:location) { location_for }
 
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:list_item_nodes) { [] }
   let(:list_node) { Rip::Nodes::List.new(location, list_item_nodes) }
