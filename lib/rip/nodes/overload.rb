@@ -42,9 +42,9 @@ module Rip::Nodes
             Rip::Nodes::Reference.new(parameter.location, p.name)
           end + [ parameter.default_expression ]
 
-          synthetic_body = [
+          synthetic_body = Rip::Nodes::BlockBody.new(synthetic_location, [
             Rip::Nodes::Invocation.new(synthetic_location, Rip::Nodes::Reference.new(synthetic_location, 'self'), synthetic_arguments)
-          ]
+          ])
 
           reply << Rip::Nodes::Overload.new(overload.location, memo, synthetic_body)
 
