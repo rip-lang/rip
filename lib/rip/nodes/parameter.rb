@@ -26,19 +26,9 @@ module Rip::Nodes
     end
 
     def to_debug(level = 0)
-      if default_expression
-        default_line_1, *default_other_lines = default_expression.to_debug(level + 1)
-        default_debug = [ [ level + 1, "default = #{Array(default_line_1).last}" ] ] +
-          default_other_lines
-
-        [
-          [ level, "#{super.last.last} (#{name})" ]
-        ] + default_debug
-      else
-        [
-          [ level, "#{super.last.last} (#{name})" ]
-        ]
-      end
+      [
+        [ level, "#{super.last.last} (#{name})" ]
+      ]
     end
   end
 
