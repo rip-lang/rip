@@ -18,7 +18,7 @@ module Rip
     desc 'repl', 'Enter read, evaluate, print loop'
     def repl
       wrap_exceptions do
-        Rip::Compiler::REPL.start
+        Rip::Utilities::REPL.start
       end
     end
 

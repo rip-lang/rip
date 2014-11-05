@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Rip::Core::Parameter do
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:name) { 'arg' }
   let(:type) { Rip::Core::Object.class_instance }

@@ -52,7 +52,7 @@ module Rip::Core
           Rip::Core::List.new(a.items + b.items)
         end
 
-        Rip::Core::Lambda.new(Rip::Utilities::Scope.new, [ plus_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.new, [ plus_overload ])
       end
 
       class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Nodes::Assignment do
   let(:location) { location_for }
 
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
   let(:integer_node) { Rip::Nodes::Integer.new(location, 42) }
 
   describe '#interpret' do

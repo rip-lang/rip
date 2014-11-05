@@ -1,4 +1,4 @@
-module Rip::Utilities
+module Rip::Compiler
   class Scope
     attr_reader :state
     attr_reader :outer_context

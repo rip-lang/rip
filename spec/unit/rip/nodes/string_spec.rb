@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Nodes::String do
   let(:location) { location_for }
 
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:character_nodes) { [] }
   let(:string_node) { Rip::Nodes::String.new(location, character_nodes) }

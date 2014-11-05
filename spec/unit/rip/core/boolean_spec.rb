@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Rip::Core::Boolean do
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:rip_true) { Rip::Core::Boolean.true }
   let(:rip_false) { Rip::Core::Boolean.false }

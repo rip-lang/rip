@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Nodes::Integer do
   let(:location) { location_for }
 
-  let(:empty_scope) { Rip::Utilities::Scope.new }
+  let(:empty_scope) { Rip::Compiler::Scope.new }
 
   let(:integer_node) { Rip::Nodes::Integer.new(location, 42) }
 

@@ -6,7 +6,7 @@ describe Rip::Nodes::Property do
   let(:character_node) { Rip::Nodes::Character.new(location, 'c') }
   let(:property_node) { Rip::Nodes::Property.new(location, character_node, 'rip') }
 
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   describe '#interpret' do
     context 'unknown property name' do

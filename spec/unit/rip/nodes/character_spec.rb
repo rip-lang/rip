@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Nodes::Character do
   let(:location) { location_for }
 
-  let(:empty_scope) { Rip::Utilities::Scope.new }
+  let(:empty_scope) { Rip::Compiler::Scope.new }
 
   let(:character_node) { Rip::Nodes::Character.new(location, 'c') }
 

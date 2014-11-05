@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Nodes::Class do
   let(:location) { location_for }
 
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:statements) { ast.body.statements }
 

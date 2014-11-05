@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Nodes::BlockBody do
   let(:location) { location_for }
 
-  let(:empty_scope) { Rip::Utilities::Scope.new }
+  let(:empty_scope) { Rip::Compiler::Scope.new }
 
   let(:block_node) { Rip::Nodes::BlockBody.new(location, expression_nodes) }
 
@@ -26,7 +26,7 @@ describe Rip::Nodes::BlockBody do
 
     it 'doesn\'t cause side-effects on outer scope' do
       block_node.interpret(empty_scope)
-      expect(empty_scope).to eq(Rip::Utilities::Scope.new)
+      expect(empty_scope).to eq(Rip::Compiler::Scope.new)
     end
 
     it 'calls the block once for each statement' do

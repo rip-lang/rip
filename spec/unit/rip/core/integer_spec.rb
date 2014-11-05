@@ -3,7 +3,7 @@ require 'spec_helper'
 BinaryOperator = Struct.new(:lhs, :operator, :rhs, :result)
 
 describe Rip::Core::Integer do
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:forty_two) { Rip::Core::Integer.new(42) }
   let(:class_instance) { Rip::Core::Integer.class_instance }

@@ -16,7 +16,7 @@ module Rip::Core
     end
 
     def nested_context
-      Rip::Utilities::Scope.new(self)
+      Rip::Compiler::Scope.new(self)
     end
 
     def self.class_instance

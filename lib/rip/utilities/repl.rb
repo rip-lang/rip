@@ -1,11 +1,11 @@
-module Rip::Compiler
+module Rip::Utilities
   class REPL
     def initialize
       @line_number = 0
     end
 
     def start
-      context = Rip::Utilities::Scope.new(Rip::Compiler::Driver.global_context, :repl)
+      context = Rip::Compiler::Scope.new(Rip::Compiler::Driver.global_context, :repl)
 
       print_welcome
 

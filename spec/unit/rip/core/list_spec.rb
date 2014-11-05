@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Rip::Core::List do
-  let(:context) { Rip::Utilities::Scope.new }
+  let(:context) { Rip::Compiler::Scope.new }
 
   let(:class_instance) { Rip::Core::List.class_instance }
 
