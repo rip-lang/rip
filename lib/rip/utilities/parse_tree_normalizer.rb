@@ -1,6 +1,6 @@
 require 'parslet'
 
-module Rip::Compiler
+module Rip::Utilities
   class ParseTreeNormalizer < Parslet::Transform
     ESCAPES = {
       '\'' => '\'',
