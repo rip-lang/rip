@@ -23,21 +23,17 @@ module Rip::Nodes
     end
 
     def to_debug(level = 0)
-      parameters_debug_inner = parameters.inject([]) do |reply, parameter|
-        reply + parameter.to_debug(level + 2)
+      overloads_debug = overloads.inject([]) do |memo, overload|
+        memo + overload.to_debug(level + 2)
       end
 
-      parameters_debug = [ [ level + 1, 'parameters = [' ] ] +
-        parameters_debug_inner +
-        [ [ level + 1, ']' ] ]
-
-      body_debug = [ [ level + 1, 'body = [' ] ] +
-        body.to_debug(level + 2) +
+      body_debug = [ [ level + 1, 'overloads = [' ] ] +
+        overloads_debug +
         [ [ level + 1, ']' ] ]
 
       [
-        [ level, super.last.last ]
-      ] + parameters_debug + body_debug
+        [ level, "#{super.last.last}" ]
+      ] + body_debug
     end
   end
 end
