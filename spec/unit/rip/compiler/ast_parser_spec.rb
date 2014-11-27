@@ -741,7 +741,7 @@ describe Rip::Compiler::AST do
     end
 
     it 'is a class (with no parents)' do
-      expect(klass.superclasses).to eq([])
+      expect(klass.super_types).to eq([])
       expect(klass.body).to eq(class_body_node)
       expect(klass).to eq(class_node)
     end
@@ -760,7 +760,7 @@ describe Rip::Compiler::AST do
     end
 
     it 'is a class (with no parents)' do
-      expect(klass.superclasses).to eq([])
+      expect(klass.super_types).to eq([])
       expect(klass.body).to eq(class_body_node)
       expect(klass).to eq(class_node)
     end
@@ -782,9 +782,9 @@ describe Rip::Compiler::AST do
     end
 
     it 'is a class (with two parents)' do
-      expect(klass.superclasses.count).to eq(2)
-      expect(klass.superclasses.first).to eq(parent_1)
-      expect(klass.superclasses.last).to eq(parent_2)
+      expect(klass.super_types.count).to eq(2)
+      expect(klass.super_types.first).to eq(parent_1)
+      expect(klass.super_types.last).to eq(parent_2)
 
       expect(klass.body).to eq(class_body_node)
 

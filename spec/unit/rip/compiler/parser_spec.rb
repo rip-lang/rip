@@ -244,7 +244,7 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'class with no superclasses' do
+      recognizes_as_expected 'class with no super_types' do
         let(:rip) do
           <<-RIP
             class {
