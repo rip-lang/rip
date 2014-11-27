@@ -1,10 +1,5 @@
 module Rip::Core
   class System < Rip::Core::Base
-    def self.class_property(property_name)
-      system_node = Rip::Nodes::Reference.new(nil, 'System')
-      Rip::Nodes::Property.new(nil, system_node, property_name)
-    end
-
     define_class_instance do |class_instance|
       class_instance['require'] = Rip::Core::DelayedProperty.new do |_|
         overload = Rip::Core::NativeOverload.new([
