@@ -7,7 +7,7 @@ module Rip::Core
 
       @pairs = pairs
 
-      self['class'] = self.class.class_instance
+      self['class'] = self.class.type_instance
     end
 
     def to_s_prep_body
@@ -15,8 +15,8 @@ module Rip::Core
       super + [ "pairs = { #{_pairs} }" ]
     end
 
-    define_class_instance do |class_instance|
-      def class_instance.to_s
+    define_type_instance do |type_instance|
+      def type_instance.to_s
         '#< System.Map >'
       end
     end

@@ -78,22 +78,22 @@ module Rip::Core
       properties.keys
     end
 
-    def self.define_class_instance(core_module_name = nil, &block)
-      define_singleton_method :class_instance do
-        return @class_instance if instance_variable_defined? :@class_instance
+    def self.define_type_instance(core_module_name = nil, &block)
+      define_singleton_method :type_instance do
+        return @type_instance if instance_variable_defined? :@type_instance
 
-        @class_instance = if core_module_name
+        @type_instance = if core_module_name
           load_path = Rip.root + 'core'
           Rip::Loaders::FileSystem.new(core_module_name, [ load_path ]).load
         else
           Rip::Core::Class.new.tap do |reply|
-            reply['class'] = Rip::Core::Class.class_instance
+            reply['class'] = Rip::Core::Class.type_instance
           end
         end
 
-        block.call(@class_instance)
+        block.call(@type_instance)
 
-        @class_instance
+        @type_instance
       end
     end
 

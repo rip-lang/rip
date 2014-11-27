@@ -34,13 +34,13 @@ module Rip::Core
     protected
 
     def special_case_for_class?(argument_type)
-      (argument_type == Rip::Core::Class.class_instance) &&
-        (type == Rip::Core::Object.class_instance)
+      (argument_type == Rip::Core::Class.type_instance) &&
+        (type == Rip::Core::Object.type_instance)
     end
 
     def special_case_for_lambda?(argument_type)
-      (argument_type == Rip::Core::Lambda.class_instance) &&
-        (type == Rip::Core::Object.class_instance)
+      (argument_type == Rip::Core::Lambda.type_instance) &&
+        (type == Rip::Core::Object.type_instance)
     end
   end
 end

@@ -5,12 +5,12 @@ module Rip::Core
     def initialize(ancestors = [])
       super()
 
-      parents = ancestors + [ Rip::Core::Object.class_instance ]
+      parents = ancestors + [ Rip::Core::Object.type_instance ]
       @ancestors = parents.inject([ self ]) do |memo, parent|
         memo + [ parent ] + parent.ancestors
       end.uniq
 
-      self['class'] = self.class.class_instance
+      self['class'] = self.class.type_instance
       self['self'] = self
       self['@'] = Rip::Core::Prototype.new
     end
@@ -19,13 +19,13 @@ module Rip::Core
       Rip::Compiler::Scope.new(self)
     end
 
-    def self.class_instance
-      return @class_instance if instance_variable_defined? :@class_instance
+    def self.type_instance
+      return @type_instance if instance_variable_defined? :@type_instance
 
-      @class_instance = Rip::Core::Object.new
-      @class_instance['class'] = @class_instance
+      @type_instance = Rip::Core::Object.new
+      @type_instance['class'] = @type_instance
 
-      @class_instance = new.tap do |reply|
+      @type_instance = new.tap do |reply|
         reply['class'] = reply
 
         def reply.to_s

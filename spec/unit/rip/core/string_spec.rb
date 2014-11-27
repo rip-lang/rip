@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Core::String do
   let(:context) { Rip::Compiler::Scope.new }
 
-  let(:class_instance) { Rip::Core::String.class_instance }
+  let(:type_instance) { Rip::Core::String.type_instance }
 
   let(:characters) { [] }
   let(:string) { Rip::Core::String.new(characters) }
@@ -15,9 +15,9 @@ describe Rip::Core::String do
     let(:instance_to_s) { '#< #< System.String > [ class, lowercase, to_string, uppercase ] characters = "" >' }
   end
 
-  describe '.class_instance' do
-    specify { expect(class_instance).to_not be_nil }
-    specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
+  describe '.type_instance' do
+    specify { expect(type_instance).to_not be_nil }
+    specify { expect(type_instance['class']).to eq(Rip::Core::Class.type_instance) }
   end
 
   describe '.from_native' do
@@ -36,7 +36,7 @@ describe Rip::Core::String do
   end
 
   describe '@.class' do
-    specify { expect(string['class']).to be(class_instance) }
+    specify { expect(string['class']).to be(type_instance) }
   end
 
   describe '@.uppercase' do

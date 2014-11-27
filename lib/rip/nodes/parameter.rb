@@ -17,7 +17,7 @@ module Rip::Nodes
     end
 
     def interpret(context)
-      _type = type ? type.interpret(context) : Rip::Core::Object.class_instance
+      _type = type ? type.interpret(context) : Rip::Core::Object.type_instance
       Rip::Core::Parameter.new(name, _type)
     end
 

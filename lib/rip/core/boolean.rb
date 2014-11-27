@@ -7,7 +7,7 @@ module Rip::Core
 
       @data = data
 
-      self['class'] = self.class.class_instance
+      self['class'] = self.class.type_instance
     end
 
     def ==(other)
@@ -23,24 +23,24 @@ module Rip::Core
     end
 
     def self.true
-      class_instance['true']
+      type_instance['true']
     end
 
     def self.false
-      class_instance['false']
+      type_instance['false']
     end
 
     def self.from_native(boolean)
       boolean ? Rip::Core::Boolean.true : Rip::Core::Boolean.false
     end
 
-    define_class_instance do |class_instance|
-      class_instance['true'] = Rip::Core::DynamicProperty.new { |_| new(true) }
-      class_instance['false'] = Rip::Core::DynamicProperty.new { |_| new(false) }
+    define_type_instance do |type_instance|
+      type_instance['true'] = Rip::Core::DynamicProperty.new { |_| new(true) }
+      type_instance['false'] = Rip::Core::DynamicProperty.new { |_| new(false) }
 
-      class_instance['@']['=='] = Rip::Core::DelayedProperty.new do |_|
+      type_instance['@']['=='] = Rip::Core::DelayedProperty.new do |_|
         eequals_overload = Rip::Core::NativeOverload.new([
-          Rip::Core::Parameter.new('other', class_instance)
+          Rip::Core::Parameter.new('other', type_instance)
         ]) do |context|
           if context['@'].data == context['other'].data
             Rip::Core::Boolean.true
@@ -51,7 +51,7 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eequals_overload ])
       end
 
-      class_instance['@']['to_boolean'] = Rip::Core::DelayedProperty.new do |_|
+      type_instance['@']['to_boolean'] = Rip::Core::DelayedProperty.new do |_|
         to_boolean_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           context['@']
@@ -59,7 +59,7 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_boolean_overload ])
       end
 
-      class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
+      type_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           Rip::Core::String.from_native(context['@'].data.to_s)
@@ -67,7 +67,7 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end
 
-      def class_instance.to_s
+      def type_instance.to_s
         '#< System.Boolean >'
       end
     end

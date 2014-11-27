@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Core::List do
   let(:context) { Rip::Compiler::Scope.new }
 
-  let(:class_instance) { Rip::Core::List.class_instance }
+  let(:type_instance) { Rip::Core::List.type_instance }
 
   let(:objects) { [] }
   let(:list) { Rip::Core::List.new(objects) }
@@ -15,13 +15,13 @@ describe Rip::Core::List do
     let(:instance_to_s) { '#< #< System.List > [ +, <<, class, filter, fold, head, length, map, reverse, tail, to_string ] items = [  ] >' }
   end
 
-  describe '.class_instance' do
-    specify { expect(class_instance).to_not be_nil }
-    specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
+  describe '.type_instance' do
+    specify { expect(type_instance).to_not be_nil }
+    specify { expect(type_instance['class']).to eq(Rip::Core::Class.type_instance) }
   end
 
   describe '@.class' do
-    specify { expect(list['class']).to be(class_instance) }
+    specify { expect(list['class']).to be(type_instance) }
   end
 
   context 'dynamically computed properties' do
@@ -89,7 +89,7 @@ describe Rip::Core::List do
     context 'invocation' do
       let(:sieve) do
         overload = Rip::Core::NativeOverload.new([
-          Rip::Core::Parameter.new('n', Rip::Core::Integer.class_instance)
+          Rip::Core::Parameter.new('n', Rip::Core::Integer.type_instance)
         ]) do |_context|
           Rip::Core::Boolean.from_native(_context['n'].data.even?)
         end

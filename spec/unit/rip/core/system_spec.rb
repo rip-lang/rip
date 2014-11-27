@@ -1,20 +1,20 @@
 require 'spec_helper'
 
 describe Rip::Core::System do
-  let(:class_instance) { Rip::Core::System.class_instance }
+  let(:type_instance) { Rip::Core::System.type_instance }
 
   describe 'debug methods' do
-    specify { expect(class_instance.to_s).to eq('#< System >') }
+    specify { expect(type_instance.to_s).to eq('#< System >') }
   end
 
-  describe '.class_instance' do
-    specify { expect(class_instance).to_not be_nil }
-    specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
+  describe '.type_instance' do
+    specify { expect(type_instance).to_not be_nil }
+    specify { expect(type_instance['class']).to eq(Rip::Core::Class.type_instance) }
   end
 
   describe '.require' do
-    specify { expect(class_instance.symbols).to match_array(['@', 'Boolean', 'Character', 'Integer', 'List', 'String', 'class', 'self', 'require', 'to_string']) }
-    specify { expect(class_instance['require']).to be_a(Rip::Core::Lambda) }
+    specify { expect(type_instance.symbols).to match_array(['@', 'Boolean', 'Character', 'Integer', 'List', 'String', 'class', 'self', 'require', 'to_string']) }
+    specify { expect(type_instance['require']).to be_a(Rip::Core::Lambda) }
 
     let(:project_dir) { Pathname.new(Dir.pwd) }
     let(:syntax_tree) { Rip::Compiler::Parser.new(main_file, main_file.read).syntax_tree }
