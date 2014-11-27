@@ -33,8 +33,8 @@ Rip is released under the MIT license. Please see LICENSE.markdown for more deta
 * static name resolution
 * tail call optimization
 * lazy iteration
-* first-class classes and lambdas (classes and lambdas may be passed around and assigned to references/properties just like any other object)
-* multiple inheritance (super classes are flattened into a simple list of ancestors when a new class is defined)
+* first-class types and lambdas (types and lambdas may be passed around and assigned to references/properties just like any other object)
+* multiple inheritance (super types are flattened into a simple list of ancestors when a new type is defined)
 * implicit returns from last statement in a block or module
 * qualified imports via System.require (uses load path)
 * exception handling
