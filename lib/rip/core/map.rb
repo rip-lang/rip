@@ -7,7 +7,7 @@ module Rip::Core
 
       @pairs = pairs
 
-      self['class'] = self.class.type_instance
+      self['type'] = self.class.type_instance
     end
 
     def to_s_prep_body

@@ -11,7 +11,7 @@ module Rip::Core
       @overloads = overloads
       @applied_arguments = applied_arguments
 
-      self['class'] = self.class.type_instance
+      self['type'] = self.class.type_instance
     end
 
     def to_s_prep_body
@@ -45,7 +45,7 @@ module Rip::Core
         applied_arguments + arguments
       end
 
-      full_signature = _arguments.map { |arg| arg['class'] }
+      full_signature = _arguments.map { |arg| arg['type'] }
 
       overload = overloads.detect do |overload|
         overload.callable?(full_signature)
@@ -73,7 +73,7 @@ module Rip::Core
             _this.applied_arguments + arguments
           end
 
-          full_signature = _arguments.map { |arg| arg['class'] }
+          full_signature = _arguments.map { |arg| arg['type'] }
 
           _this.send(:apply, full_signature, arguments)
         end

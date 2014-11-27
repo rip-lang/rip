@@ -34,7 +34,7 @@ module Rip::Utilities
 
     def self.object
       [
-        Keyword.new(:class),
+        Keyword.new(:type),
         Keyword.new(:dash_rocket, '->'),
         Keyword.new(:fat_rocket, '=>')
       ]

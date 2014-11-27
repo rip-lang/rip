@@ -7,7 +7,7 @@ module Rip::Core
 
       @data = data
 
-      self['class'] = self.class.type_instance
+      self['type'] = self.class.type_instance
     end
 
     def ==(other)

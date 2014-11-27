@@ -12,16 +12,16 @@ describe Rip::Core::Integer do
     let(:type_to_s) { '#< System.Integer >' }
 
     let(:instance) { forty_two }
-    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, /%, ==, class, to_string ] data = 42 >' }
+    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, /%, ==, to_string, type ] data = 42 >' }
   end
 
   describe '.type_instance' do
     specify { expect(type_instance).to_not be_nil }
-    specify { expect(type_instance['class']).to eq(Rip::Core::Type.type_instance) }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
   end
 
-  describe '@.class' do
-    specify { expect(forty_two['class']).to be(type_instance) }
+  describe '@.type' do
+    specify { expect(forty_two['type']).to be(type_instance) }
   end
 
   describe '@.to_boolean' do

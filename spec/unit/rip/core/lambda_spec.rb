@@ -34,18 +34,18 @@ describe Rip::Core::Lambda do
     let(:type_to_s) { '#< System.Lambda >' }
 
     let(:instance) { rip_lambda }
-    let(:instance_to_s) { '#< #< System.Lambda > [ apply, bind, class, to_string ] arity = [ 0 ] >' }
+    let(:instance_to_s) { '#< #< System.Lambda > [ apply, bind, to_string, type ] arity = [ 0 ] >' }
   end
 
   describe '.type_instance' do
     specify { expect(type_instance).to_not be_nil }
-    specify { expect(type_instance['class']).to eq(Rip::Core::Type.type_instance) }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
   end
 
   describe '#arity' do
     context 'no parameters' do
       specify { expect(rip_lambda.arity).to eq([ 0 ]) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ apply, bind, class, to_string ] arity = [ 0 ] >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ apply, bind, to_string, type ] arity = [ 0 ] >') }
     end
 
     context 'all required parameters' do
@@ -56,12 +56,12 @@ describe Rip::Core::Lambda do
         ]
       end
       specify { expect(rip_lambda.arity).to eq([ 2 ]) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ apply, bind, class, to_string ] arity = [ 2 ] >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ apply, bind, to_string, type ] arity = [ 2 ] >') }
     end
   end
 
-  describe '@.class' do
-    specify { expect(rip_lambda['class']).to be(type_instance) }
+  describe '@.type' do
+    specify { expect(rip_lambda['type']).to be(type_instance) }
   end
 
   describe 'calling semantics' do

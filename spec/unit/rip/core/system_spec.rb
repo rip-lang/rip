@@ -9,11 +9,11 @@ describe Rip::Core::System do
 
   describe '.type_instance' do
     specify { expect(type_instance).to_not be_nil }
-    specify { expect(type_instance['class']).to eq(Rip::Core::Type.type_instance) }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
   end
 
   describe '.require' do
-    specify { expect(type_instance.symbols).to match_array(['@', 'Boolean', 'Character', 'Integer', 'List', 'String', 'class', 'self', 'require', 'to_string']) }
+    specify { expect(type_instance.symbols).to match_array(['@', 'Boolean', 'Character', 'Integer', 'List', 'String', 'type', 'self', 'require', 'to_string']) }
     specify { expect(type_instance['require']).to be_a(Rip::Core::Lambda) }
 
     let(:project_dir) { Pathname.new(Dir.pwd) }

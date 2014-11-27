@@ -9,12 +9,12 @@ describe Rip::Core::Type do
     let(:type_to_s) { '#< System.Type >' }
 
     let(:instance) { type }
-    let(:instance_to_s) { '#< #< System.Type > [ @, class, self ] >' }
+    let(:instance_to_s) { '#< #< System.Type > [ @, self, type ] >' }
   end
 
   describe '.type_instance' do
     specify { expect(type_instance).to_not be_nil }
-    specify { expect(type_instance['class']).to be(Rip::Core::Type.type_instance) }
+    specify { expect(type_instance['type']).to be(Rip::Core::Type.type_instance) }
   end
 
   describe '#ancestors' do
@@ -42,8 +42,8 @@ describe Rip::Core::Type do
     specify { expect(type['@']).to eq(Rip::Core::Prototype.new) }
   end
 
-  describe '@.class' do
-    specify { expect(type['class']).to eq(type_instance) }
+  describe '@.type' do
+    specify { expect(type['type']).to eq(type_instance) }
   end
 
   describe '@.self' do

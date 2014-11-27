@@ -13,7 +13,7 @@ module Rip::Core
     def [](key)
       _key = key.to_s
 
-      reply = properties['class'].ancestors.inject(properties[_key]) do |memo, ancestor|
+      reply = properties['type'].ancestors.inject(properties[_key]) do |memo, ancestor|
         memo || ancestor['@'][_key]
       end
 
@@ -57,7 +57,7 @@ module Rip::Core
 
     def to_s_prep_body
       [
-        self['class'].to_s,
+        self['type'].to_s,
         [
           '[',
           property_names.sort.join(', '),
@@ -71,7 +71,7 @@ module Rip::Core
     end
 
     def property_names
-      self['class']['@'].properties.merge(properties).keys.uniq
+      self['type']['@'].properties.merge(properties).keys.uniq
     end
 
     def symbols
@@ -87,7 +87,7 @@ module Rip::Core
           Rip::Loaders::FileSystem.new(core_module_name, [ load_path ]).load
         else
           Rip::Core::Type.new.tap do |reply|
-            reply['class'] = Rip::Core::Type.type_instance
+            reply['type'] = Rip::Core::Type.type_instance
           end
         end
 

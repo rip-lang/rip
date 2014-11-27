@@ -1,7 +1,7 @@
-# class (System.Enumerable) {
-class {
+# type (System.Enumerable) {
+type {
 	@.+ = -> (other) {
-		@.class.+(@, other)
+		@.type.+(@, other)
 	}
 
 	@.<< = -> (new_item) {
@@ -9,15 +9,15 @@ class {
 	}
 
 	@.filter = -> (sieve) {
-		@.class.filter(sieve, @)
+		@.type.filter(sieve, @)
 	}
 
 	@.fold = -> (initial, folder) {
-		@.class.fold(folder, initial, @)
+		@.type.fold(folder, initial, @)
 	}
 
 	@.map = -> (mapper) {
-		@.class.map(mapper, @)
+		@.type.map(mapper, @)
 	}
 
 	filter = -> (sieve, items) {

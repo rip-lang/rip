@@ -5,7 +5,7 @@ describe Rip::Core::Base do
     Class.new(Rip::Core::Base) do
       def initialize
         super
-        self['class'] = self.class.type_instance
+        self['type'] = self.class.type_instance
       end
 
       define_type_instance do |type_instance|
@@ -21,16 +21,16 @@ describe Rip::Core::Base do
 
   describe '.type_instance' do
     specify { expect(type_instance).to_not be_nil }
-    specify { expect(type_instance['class']).to eq(Rip::Core::Type.type_instance) }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
     specify { expect(type_instance['@']).to be_a(Rip::Core::Prototype) }
   end
 
-  describe '[@][class]' do
-    specify { expect(instance['class']).to be(type_instance) }
+  describe '[@][type]' do
+    specify { expect(instance['type']).to be(type_instance) }
   end
 
   describe 'property lookup' do
-    context 'on classes' do
+    context 'on types' do
       specify { expect(type_instance['type_bar']).to eq(:goodbye) }
     end
 

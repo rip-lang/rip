@@ -1,4 +1,4 @@
-class {
+type {
 	to_string = -> { 'System.Object' }
 
 	@.>> = -> (list) {

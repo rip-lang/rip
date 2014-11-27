@@ -16,8 +16,8 @@ module Rip::Core
     end
 
     def bind(context, argument)
-      unless matches?(argument['class'])
-        raise Rip::Exceptions::CompilerException.new("Parameter type mis-match: expected `#{name}` to be a `#{type}`, but was a `#{argument['class']}`", location)
+      unless matches?(argument['type'])
+        raise Rip::Exceptions::CompilerException.new("Parameter type mis-match: expected `#{name}` to be a `#{type}`, but was a `#{argument['type']}`", location)
       end
 
       context.tap do |reply|

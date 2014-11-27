@@ -59,7 +59,7 @@ module Rip::Core
     end
 
     def parameter_for_receiver(receiver)
-      Rip::Core::Parameter.new('@', receiver['class'])
+      Rip::Core::Parameter.new('@', receiver['type'])
     end
   end
 end

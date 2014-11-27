@@ -10,7 +10,7 @@ module Rip::Core
         memo + [ parent ] + parent.ancestors
       end.uniq
 
-      self['class'] = self.class.type_instance
+      self['type'] = self.class.type_instance
       self['self'] = self
       self['@'] = Rip::Core::Prototype.new
     end
@@ -23,10 +23,10 @@ module Rip::Core
       return @type_instance if instance_variable_defined? :@type_instance
 
       @type_instance = Rip::Core::Object.new
-      @type_instance['class'] = @type_instance
+      @type_instance['type'] = @type_instance
 
       @type_instance = new.tap do |reply|
-        reply['class'] = reply
+        reply['type'] = reply
 
         def reply.to_s
           '#< System.Type >'

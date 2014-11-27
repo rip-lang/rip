@@ -12,12 +12,12 @@ describe Rip::Core::String do
     let(:type_to_s) { '#< System.String >' }
 
     let(:instance) { string }
-    let(:instance_to_s) { '#< #< System.String > [ class, lowercase, to_string, uppercase ] characters = "" >' }
+    let(:instance_to_s) { '#< #< System.String > [ lowercase, to_string, type, uppercase ] characters = "" >' }
   end
 
   describe '.type_instance' do
     specify { expect(type_instance).to_not be_nil }
-    specify { expect(type_instance['class']).to eq(Rip::Core::Type.type_instance) }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
   end
 
   describe '.from_native' do
@@ -35,8 +35,8 @@ describe Rip::Core::String do
     end
   end
 
-  describe '@.class' do
-    specify { expect(string['class']).to be(type_instance) }
+  describe '@.type' do
+    specify { expect(string['type']).to be(type_instance) }
   end
 
   describe '@.uppercase' do

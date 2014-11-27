@@ -12,16 +12,16 @@ describe Rip::Core::List do
     let(:type_to_s) { '#< System.List >' }
 
     let(:instance) { list }
-    let(:instance_to_s) { '#< #< System.List > [ +, <<, class, filter, fold, head, length, map, reverse, tail, to_string ] items = [  ] >' }
+    let(:instance_to_s) { '#< #< System.List > [ +, <<, filter, fold, head, length, map, reverse, tail, to_string, type ] items = [  ] >' }
   end
 
   describe '.type_instance' do
     specify { expect(type_instance).to_not be_nil }
-    specify { expect(type_instance['class']).to eq(Rip::Core::Type.type_instance) }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
   end
 
-  describe '@.class' do
-    specify { expect(list['class']).to be(type_instance) }
+  describe '@.type' do
+    specify { expect(list['type']).to be(type_instance) }
   end
 
   context 'dynamically computed properties' do

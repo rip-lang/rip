@@ -1,6 +1,6 @@
 NonExclusiveDisjunction < System.Exceptions
 
-ThenReturn = class {
+ThenReturn = type {
 	@.initialize = -> (block, expressions) {
 		@.block = block
 		@.expressions = expressions
@@ -11,7 +11,7 @@ ThenReturn = class {
 	}
 }
 
-class {
+type {
 	@.initialize = -> { @.expressions = [] }
 
 	@.on = -> (block) {
@@ -35,7 +35,7 @@ expression.case(-> { }, -> {
 
 
 
-Object = class {
+Object = type {
 	@.when_value = -> (block) {
 		@.to_boolean().when_value(block.bind(@))
 	}
@@ -47,7 +47,7 @@ Object = class {
 	@.to_boolean = -> { true }
 }
 
-class {
+type {
 	@.initialize => (state) {
 		@.state = state
 	}

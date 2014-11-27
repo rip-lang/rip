@@ -11,7 +11,7 @@ describe Rip::Core::Boolean do
     let(:type_to_s) { '#< System.Boolean >' }
 
     let(:instance) { rip_false }
-    let(:instance_to_s) { '#< #< System.Boolean > [ ==, class, to_boolean, to_string ] false >' }
+    let(:instance_to_s) { '#< #< System.Boolean > [ ==, to_boolean, to_string, type ] false >' }
   end
 
   describe '.true' do

@@ -1,4 +1,4 @@
-class (System.List) {
+type (System.List) {
 	to_string = -> { 'System.Map' }
 
 	@.keys = -> {

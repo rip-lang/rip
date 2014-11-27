@@ -8,11 +8,11 @@ module Rip::Core
 
       @characters = characters
 
-      self['class'] = self.class.type_instance
+      self['type'] = self.class.type_instance
     end
 
     def ==(other)
-      (self['class'] == other['class']) &&
+      (self['type'] == other['type']) &&
         (characters == other.characters)
     end
 

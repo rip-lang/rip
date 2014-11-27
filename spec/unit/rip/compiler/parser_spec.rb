@@ -226,12 +226,12 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'block with multiple arguments' do
-        let(:rip) { 'class (one, two) {}' }
+        let(:rip) { 'type (one, two) {}' }
         let(:expected_raw) do
           {
             :module => [
               {
-                :type => 'class',
+                :type => 'type',
                 :arguments => [
                   { :reference => 'one' },
                   { :reference => 'two' }
@@ -244,10 +244,10 @@ describe Rip::Compiler::Parser do
         end
       end
 
-      recognizes_as_expected 'class with no super_types' do
+      recognizes_as_expected 'type with no super_types' do
         let(:rip) do
           <<-RIP
-            class {
+            type {
               # comment
             }
           RIP
@@ -256,7 +256,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :type => 'class',
+                :type => 'type',
                 :location_body => '{',
                 :body => []
               }
@@ -267,7 +267,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :type => 'class',
+                :type => 'type',
                 :arguments => [],
                 :location_body => '{',
                 :body => []
@@ -494,15 +494,15 @@ describe Rip::Compiler::Parser do
       end
 
       recognizes_as_expected 'blocks with block arguments' do
-        let(:rip) { 'class (class () {}) {}' }
+        let(:rip) { 'type (type () {}) {}' }
         let(:expected_raw) do
           {
             :module => [
               {
-                :type => 'class',
+                :type => 'type',
                 :arguments => [
                   {
-                    :type => 'class',
+                    :type => 'type',
                     :arguments => [],
                     :location_body => '{',
                     :body => []

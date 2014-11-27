@@ -1,4 +1,4 @@
-class {
+type {
 	@.initialize = -> (key, value) {
 		@.key = key
 		@.value = value

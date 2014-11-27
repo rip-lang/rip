@@ -3,14 +3,14 @@ module Rip::Core
     def initialize
       super
 
-      self['class'] = self.class.type_instance
+      self['type'] = self.class.type_instance
     end
 
     def self.type_instance
       return @type_instance if instance_variable_defined? :@type_instance
 
       @type_instance = Rip::Core::Base.new
-      @type_instance['class'] = @type_instance
+      @type_instance['type'] = @type_instance
 
       def @type_instance.ancestors
         []

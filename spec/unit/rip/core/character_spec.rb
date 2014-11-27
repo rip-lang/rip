@@ -12,16 +12,16 @@ describe Rip::Core::Character do
     let(:type_to_s) { '#< System.Character >' }
 
     let(:instance) { character }
-    let(:instance_to_s) { '#< #< System.Character > [ class, lowercase, to_string, uppercase ] data = `r >' }
+    let(:instance_to_s) { '#< #< System.Character > [ lowercase, to_string, type, uppercase ] data = `r >' }
   end
 
   describe '.type_instance' do
     specify { expect(type_instance).to_not be_nil }
-    specify { expect(type_instance['class']).to eq(Rip::Core::Type.type_instance) }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
   end
 
-  describe '@.class' do
-    specify { expect(character['class']).to be(type_instance) }
+  describe '@.type' do
+    specify { expect(character['type']).to be(type_instance) }
   end
 
   describe '@.uppercase' do
