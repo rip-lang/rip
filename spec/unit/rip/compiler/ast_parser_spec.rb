@@ -289,12 +289,12 @@ describe Rip::Compiler::AST do
 
     let(:context) { Rip::Compiler::Driver.global_context }
 
-    let(:system_class_node) { Rip::Nodes::Reference.new(location.add_character(21), 'System') }
-    let(:integer_class_node) { Rip::Nodes::Property.new(location.add_character(27), system_class_node, 'Integer') }
+    let(:system_type_node) { Rip::Nodes::Reference.new(location.add_character(21), 'System') }
+    let(:integer_type_node) { Rip::Nodes::Property.new(location.add_character(27), system_type_node, 'Integer') }
     let(:parameter_nodes) do
       [
         Rip::Nodes::Parameter.new(location.add_character(6), 'question'),
-        Rip::Nodes::Parameter.new(location.add_character(14), 'answer', integer_class_node)
+        Rip::Nodes::Parameter.new(location.add_character(14), 'answer', integer_type_node)
       ]
     end
     let(:body_node) { Rip::Nodes::BlockBody.new(location.add_character(38), []) }
@@ -731,8 +731,8 @@ describe Rip::Compiler::AST do
   context 'class with ignored parents' do
     let(:rip) { 'class {}' }
 
-    let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(6), []) }
-    let(:class_node) { Rip::Nodes::Type.new(location, [], class_body_node) }
+    let(:type_body_node) { Rip::Nodes::BlockBody.new(location.add_character(6), []) }
+    let(:type_node) { Rip::Nodes::Type.new(location, [], type_body_node) }
 
     let(:type) { statements.first }
 
@@ -742,16 +742,16 @@ describe Rip::Compiler::AST do
 
     it 'is a class (with no parents)' do
       expect(type.super_types).to eq([])
-      expect(type.body).to eq(class_body_node)
-      expect(type).to eq(class_node)
+      expect(type.body).to eq(type_body_node)
+      expect(type).to eq(type_node)
     end
   end
 
   context 'class with unspecified parents' do
     let(:rip) { 'class () {}' }
 
-    let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(9), []) }
-    let(:class_node) { Rip::Nodes::Type.new(location, [], class_body_node) }
+    let(:type_body_node) { Rip::Nodes::BlockBody.new(location.add_character(9), []) }
+    let(:type_node) { Rip::Nodes::Type.new(location, [], type_body_node) }
 
     let(:type) { statements.first }
 
@@ -761,8 +761,8 @@ describe Rip::Compiler::AST do
 
     it 'is a class (with no parents)' do
       expect(type.super_types).to eq([])
-      expect(type.body).to eq(class_body_node)
-      expect(type).to eq(class_node)
+      expect(type.body).to eq(type_body_node)
+      expect(type).to eq(type_node)
     end
   end
 
@@ -772,8 +772,8 @@ describe Rip::Compiler::AST do
     let(:parent_1) { Rip::Nodes::Reference.new(location.add_character(7), 'parent_1') }
     let(:parent_2) { Rip::Nodes::Reference.new(location.add_character(17), 'parent_2') }
 
-    let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(27), []) }
-    let(:class_node) { Rip::Nodes::Type.new(location, [ parent_1, parent_2 ], class_body_node) }
+    let(:type_body_node) { Rip::Nodes::BlockBody.new(location.add_character(27), []) }
+    let(:type_node) { Rip::Nodes::Type.new(location, [ parent_1, parent_2 ], type_body_node) }
 
     let(:type) { statements.first }
 
@@ -786,9 +786,9 @@ describe Rip::Compiler::AST do
       expect(type.super_types.first).to eq(parent_1)
       expect(type.super_types.last).to eq(parent_2)
 
-      expect(type.body).to eq(class_body_node)
+      expect(type.body).to eq(type_body_node)
 
-      expect(type).to eq(class_node)
+      expect(type).to eq(type_node)
     end
   end
 

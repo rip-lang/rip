@@ -27,19 +27,19 @@ module Rip::Core
 
     def matches?(argument_type)
       argument_type.ancestors.include?(type) ||
-        special_case_for_class?(argument_type) ||
-        special_case_for_lambda?(argument_type)
+        special_case_for_lambda?(argument_type) ||
+        special_case_for_type?(argument_type)
     end
 
     protected
 
-    def special_case_for_class?(argument_type)
-      (argument_type == Rip::Core::Type.type_instance) &&
+    def special_case_for_lambda?(argument_type)
+      (argument_type == Rip::Core::Lambda.type_instance) &&
         (type == Rip::Core::Object.type_instance)
     end
 
-    def special_case_for_lambda?(argument_type)
-      (argument_type == Rip::Core::Lambda.type_instance) &&
+    def special_case_for_type?(argument_type)
+      (argument_type == Rip::Core::Type.type_instance) &&
         (type == Rip::Core::Object.type_instance)
     end
   end
