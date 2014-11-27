@@ -4,24 +4,24 @@ describe Rip::Core::Character do
   let(:location) { location_for }
   let(:context) { Rip::Compiler::Scope.new }
 
-  let(:class_instance) { Rip::Core::Character.class_instance }
+  let(:type_instance) { Rip::Core::Character.type_instance }
 
   let(:character) { Rip::Core::Character.new('r') }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { '#< System.Character >' }
+    let(:type_to_s) { '#< System.Character >' }
 
     let(:instance) { character }
-    let(:instance_to_s) { '#< #< System.Character > [ class, lowercase, to_string, uppercase ] data = `r >' }
+    let(:instance_to_s) { '#< #< System.Character > [ lowercase, to_string, type, uppercase ] data = `r >' }
   end
 
-  describe '.class_instance' do
-    specify { expect(class_instance).to_not be_nil }
-    specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
+  describe '.type_instance' do
+    specify { expect(type_instance).to_not be_nil }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
   end
 
-  describe '@.class' do
-    specify { expect(character['class']).to be(class_instance) }
+  describe '@.type' do
+    specify { expect(character['type']).to be(type_instance) }
   end
 
   describe '@.uppercase' do

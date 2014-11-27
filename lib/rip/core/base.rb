@@ -13,7 +13,7 @@ module Rip::Core
     def [](key)
       _key = key.to_s
 
-      reply = properties['class'].ancestors.inject(properties[_key]) do |memo, ancestor|
+      reply = properties['type'].ancestors.inject(properties[_key]) do |memo, ancestor|
         memo || ancestor['@'][_key]
       end
 
@@ -57,7 +57,7 @@ module Rip::Core
 
     def to_s_prep_body
       [
-        self['class'].to_s,
+        self['type'].to_s,
         [
           '[',
           property_names.sort.join(', '),
@@ -71,29 +71,29 @@ module Rip::Core
     end
 
     def property_names
-      self['class']['@'].properties.merge(properties).keys.uniq
+      self['type']['@'].properties.merge(properties).keys.uniq
     end
 
     def symbols
       properties.keys
     end
 
-    def self.define_class_instance(core_module_name = nil, &block)
-      define_singleton_method :class_instance do
-        return @class_instance if instance_variable_defined? :@class_instance
+    def self.define_type_instance(core_module_name = nil, &block)
+      define_singleton_method :type_instance do
+        return @type_instance if instance_variable_defined? :@type_instance
 
-        @class_instance = if core_module_name
+        @type_instance = if core_module_name
           load_path = Rip.root + 'core'
           Rip::Loaders::FileSystem.new(core_module_name, [ load_path ]).load
         else
-          Rip::Core::Class.new.tap do |reply|
-            reply['class'] = Rip::Core::Class.class_instance
+          Rip::Core::Type.new.tap do |reply|
+            reply['type'] = Rip::Core::Type.type_instance
           end
         end
 
-        block.call(@class_instance)
+        block.call(@type_instance)
 
-        @class_instance
+        @type_instance
       end
     end
 

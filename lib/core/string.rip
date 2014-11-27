@@ -1,10 +1,10 @@
-class (System.List) {
+type (System.List) {
 	# @.lowercase = -> {
-	# 	@.class.new(@.map(:lowercase))
+	# 	@.type.new(@.map(:lowercase))
 	# }
 
 	# @.uppercase = -> {
-	# 	@.class.new(@.map(:uppercase))
+	# 	@.type.new(@.map(:uppercase))
 	# }
 
 	@.to_string = -> { @ }

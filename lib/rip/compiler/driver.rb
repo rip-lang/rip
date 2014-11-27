@@ -12,7 +12,7 @@ module Rip::Compiler
 
     def self.global_context
       @global_context ||= Rip::Compiler::Scope.new({
-        'System' => Rip::Core::System.class_instance,
+        'System' => Rip::Core::System.type_instance,
         'true' => Rip::Core::Boolean.true,
         'false' => Rip::Core::Boolean.false
       })

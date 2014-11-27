@@ -1,24 +1,24 @@
 require 'spec_helper'
 
 describe Rip::Core::Map do
-  let(:class_instance) { Rip::Core::Map.class_instance }
+  let(:type_instance) { Rip::Core::Map.type_instance }
 
   let(:pairs) { [] }
   let(:map) { Rip::Core::Map.new(pairs) }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { '#< System.Map >' }
+    let(:type_to_s) { '#< System.Map >' }
 
     let(:instance) { map }
-    let(:instance_to_s) { '#< #< System.Map > [ class ] pairs = {  } >' }
+    let(:instance_to_s) { '#< #< System.Map > [ type ] pairs = {  } >' }
   end
 
-  describe '.class_instance' do
-    specify { expect(class_instance).to_not be_nil }
-    specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
+  describe '.type_instance' do
+    specify { expect(type_instance).to_not be_nil }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
   end
 
-  describe '@.class' do
-    specify { expect(map['class']).to be(class_instance) }
+  describe '@.type' do
+    specify { expect(map['type']).to be(type_instance) }
   end
 end

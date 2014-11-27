@@ -6,22 +6,22 @@ describe Rip::Core::Integer do
   let(:context) { Rip::Compiler::Scope.new }
 
   let(:forty_two) { Rip::Core::Integer.new(42) }
-  let(:class_instance) { Rip::Core::Integer.class_instance }
+  let(:type_instance) { Rip::Core::Integer.type_instance }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { '#< System.Integer >' }
+    let(:type_to_s) { '#< System.Integer >' }
 
     let(:instance) { forty_two }
-    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, /%, ==, class, to_string ] data = 42 >' }
+    let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, /%, ==, to_string, type ] data = 42 >' }
   end
 
-  describe '.class_instance' do
-    specify { expect(class_instance).to_not be_nil }
-    specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
+  describe '.type_instance' do
+    specify { expect(type_instance).to_not be_nil }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
   end
 
-  describe '@.class' do
-    specify { expect(forty_two['class']).to be(class_instance) }
+  describe '@.type' do
+    specify { expect(forty_two['type']).to be(type_instance) }
   end
 
   describe '@.to_boolean' do
@@ -68,7 +68,7 @@ describe Rip::Core::Integer do
 
       specify { expect(Rip::Core::Integer.new(bo.lhs)[bo.operator].call([ Rip::Core::Integer.new(bo.rhs) ])).to eq(Rip::Core::Integer.new(bo.result)) }
 
-      specify { expect(Rip::Core::Integer.class_instance[bo.operator].call([ Rip::Core::Integer.new(bo.lhs), Rip::Core::Integer.new(bo.rhs) ])).to eq(Rip::Core::Integer.new(bo.result)) }
+      specify { expect(Rip::Core::Integer.type_instance[bo.operator].call([ Rip::Core::Integer.new(bo.lhs), Rip::Core::Integer.new(bo.rhs) ])).to eq(Rip::Core::Integer.new(bo.result)) }
     end
   end
 

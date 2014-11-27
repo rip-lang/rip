@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Rip::Core::Lambda do
-  let(:class_instance) { Rip::Core::Lambda.class_instance }
+  let(:type_instance) { Rip::Core::Lambda.type_instance }
 
   let(:location) { location_for }
   let(:context) { Rip::Compiler::Scope.new }
@@ -31,37 +31,37 @@ describe Rip::Core::Lambda do
   end
 
   include_examples 'debug methods' do
-    let(:class_to_s) { '#< System.Lambda >' }
+    let(:type_to_s) { '#< System.Lambda >' }
 
     let(:instance) { rip_lambda }
-    let(:instance_to_s) { '#< #< System.Lambda > [ apply, bind, class, to_string ] arity = [ 0 ] >' }
+    let(:instance_to_s) { '#< #< System.Lambda > [ apply, bind, to_string, type ] arity = [ 0 ] >' }
   end
 
-  describe '.class_instance' do
-    specify { expect(class_instance).to_not be_nil }
-    specify { expect(class_instance['class']).to eq(Rip::Core::Class.class_instance) }
+  describe '.type_instance' do
+    specify { expect(type_instance).to_not be_nil }
+    specify { expect(type_instance['type']).to eq(Rip::Core::Type.type_instance) }
   end
 
   describe '#arity' do
     context 'no parameters' do
       specify { expect(rip_lambda.arity).to eq([ 0 ]) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ apply, bind, class, to_string ] arity = [ 0 ] >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ apply, bind, to_string, type ] arity = [ 0 ] >') }
     end
 
     context 'all required parameters' do
       let(:parameters) do
         [
-          Rip::Core::Parameter.new('a', Rip::Core::Integer.class_instance),
-          Rip::Core::Parameter.new('b', Rip::Core::Integer.class_instance)
+          Rip::Core::Parameter.new('a', Rip::Core::Integer.type_instance),
+          Rip::Core::Parameter.new('b', Rip::Core::Integer.type_instance)
         ]
       end
       specify { expect(rip_lambda.arity).to eq([ 2 ]) }
-      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ apply, bind, class, to_string ] arity = [ 2 ] >') }
+      specify { expect(rip_lambda.to_s).to eq('#< #< System.Lambda > [ apply, bind, to_string, type ] arity = [ 2 ] >') }
     end
   end
 
-  describe '@.class' do
-    specify { expect(rip_lambda['class']).to be(class_instance) }
+  describe '@.type' do
+    specify { expect(rip_lambda['type']).to be(type_instance) }
   end
 
   describe 'calling semantics' do
@@ -83,7 +83,7 @@ describe Rip::Core::Lambda do
       context 'shadowing surrounding scope' do
         let(:parameters) do
           [
-            Rip::Core::Parameter.new('answer', Rip::Core::Integer.class_instance)
+            Rip::Core::Parameter.new('answer', Rip::Core::Integer.type_instance)
           ]
         end
 
@@ -118,9 +118,9 @@ describe Rip::Core::Lambda do
     describe 'required parameters' do
       let(:parameters) do
         [
-          Rip::Core::Parameter.new('a', Rip::Core::Integer.class_instance),
-          Rip::Core::Parameter.new('b', Rip::Core::Integer.class_instance),
-          Rip::Core::Parameter.new('c', Rip::Core::Integer.class_instance)
+          Rip::Core::Parameter.new('a', Rip::Core::Integer.type_instance),
+          Rip::Core::Parameter.new('b', Rip::Core::Integer.type_instance),
+          Rip::Core::Parameter.new('c', Rip::Core::Integer.type_instance)
         ]
       end
 
@@ -142,9 +142,9 @@ describe Rip::Core::Lambda do
     describe 'automatic application' do
       let(:parameters) do
         [
-          Rip::Core::Parameter.new('a', Rip::Core::Integer.class_instance),
-          Rip::Core::Parameter.new('b', Rip::Core::Integer.class_instance),
-          Rip::Core::Parameter.new('c', Rip::Core::Integer.class_instance)
+          Rip::Core::Parameter.new('a', Rip::Core::Integer.type_instance),
+          Rip::Core::Parameter.new('b', Rip::Core::Integer.type_instance),
+          Rip::Core::Parameter.new('c', Rip::Core::Integer.type_instance)
         ]
       end
 
@@ -231,9 +231,9 @@ describe Rip::Core::Lambda do
 
     let(:the_lambda) do
       overload_1 = Rip::Core::NativeOverload.new([
-        Rip::Core::Parameter.new('a', Rip::Core::Integer.class_instance),
-        Rip::Core::Parameter.new('b', Rip::Core::Integer.class_instance),
-        Rip::Core::Parameter.new('c', Rip::Core::Integer.class_instance)
+        Rip::Core::Parameter.new('a', Rip::Core::Integer.type_instance),
+        Rip::Core::Parameter.new('b', Rip::Core::Integer.type_instance),
+        Rip::Core::Parameter.new('c', Rip::Core::Integer.type_instance)
       ]) do |_context|
         a = _context['a']
         b = _context['b']
@@ -242,7 +242,7 @@ describe Rip::Core::Lambda do
       end
 
       overload_2 = Rip::Core::NativeOverload.new([
-        Rip::Core::Parameter.new('foo', Rip::Core::Integer.class_instance)
+        Rip::Core::Parameter.new('foo', Rip::Core::Integer.type_instance)
       ]) do |_context|
         foo = _context['foo']
         bar = _context['bar']
@@ -323,8 +323,8 @@ describe Rip::Core::Lambda do
       end
 
       it 'sets the correct parameter type' do
-        expect(bound_answer_parameter.type).to eq(Rip::Core::Integer.class_instance)
-        expect(bound_language_parameter.type).to eq(Rip::Core::String.class_instance)
+        expect(bound_answer_parameter.type).to eq(Rip::Core::Integer.type_instance)
+        expect(bound_language_parameter.type).to eq(Rip::Core::String.type_instance)
       end
 
       it 'uses the bound receiver' do

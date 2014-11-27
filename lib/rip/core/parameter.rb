@@ -16,8 +16,8 @@ module Rip::Core
     end
 
     def bind(context, argument)
-      unless matches?(argument['class'])
-        raise Rip::Exceptions::CompilerException.new("Parameter type mis-match: expected `#{name}` to be a `#{type}`, but was a `#{argument['class']}`", location)
+      unless matches?(argument['type'])
+        raise Rip::Exceptions::CompilerException.new("Parameter type mis-match: expected `#{name}` to be a `#{type}`, but was a `#{argument['type']}`", location)
       end
 
       context.tap do |reply|
@@ -27,20 +27,20 @@ module Rip::Core
 
     def matches?(argument_type)
       argument_type.ancestors.include?(type) ||
-        special_case_for_class?(argument_type) ||
-        special_case_for_lambda?(argument_type)
+        special_case_for_lambda?(argument_type) ||
+        special_case_for_type?(argument_type)
     end
 
     protected
 
-    def special_case_for_class?(argument_type)
-      (argument_type == Rip::Core::Class.class_instance) &&
-        (type == Rip::Core::Object.class_instance)
+    def special_case_for_lambda?(argument_type)
+      (argument_type == Rip::Core::Lambda.type_instance) &&
+        (type == Rip::Core::Object.type_instance)
     end
 
-    def special_case_for_lambda?(argument_type)
-      (argument_type == Rip::Core::Lambda.class_instance) &&
-        (type == Rip::Core::Object.class_instance)
+    def special_case_for_type?(argument_type)
+      (argument_type == Rip::Core::Type.type_instance) &&
+        (type == Rip::Core::Object.type_instance)
     end
   end
 end

@@ -11,7 +11,7 @@ module Rip::Core
       @overloads = overloads
       @applied_arguments = applied_arguments
 
-      self['class'] = self.class.class_instance
+      self['type'] = self.class.type_instance
     end
 
     def to_s_prep_body
@@ -45,7 +45,7 @@ module Rip::Core
         applied_arguments + arguments
       end
 
-      full_signature = _arguments.map { |arg| arg['class'] }
+      full_signature = _arguments.map { |arg| arg['type'] }
 
       overload = overloads.detect do |overload|
         overload.callable?(full_signature)
@@ -58,10 +58,10 @@ module Rip::Core
       end
     end
 
-    define_class_instance do |class_instance|
-      class_instance['@']['apply'] = Rip::Core::DelayedProperty.new do |this|
+    define_type_instance do |type_instance|
+      type_instance['@']['apply'] = Rip::Core::DelayedProperty.new do |this|
         apply_overload = Rip::Core::NativeOverload.new([
-          Rip::Core::Parameter.new('args', Rip::Core::List.class_instance)
+          Rip::Core::Parameter.new('args', Rip::Core::List.type_instance)
         ]) do |context|
           arguments = context['args'].items
 
@@ -73,7 +73,7 @@ module Rip::Core
             _this.applied_arguments + arguments
           end
 
-          full_signature = _arguments.map { |arg| arg['class'] }
+          full_signature = _arguments.map { |arg| arg['type'] }
 
           _this.send(:apply, full_signature, arguments)
         end
@@ -81,9 +81,9 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ apply_overload ])
       end
 
-      class_instance['@']['bind'] = Rip::Core::DelayedProperty.new do |_|
+      type_instance['@']['bind'] = Rip::Core::DelayedProperty.new do |_|
         bind_overload = Rip::Core::NativeOverload.new([
-          Rip::Core::Parameter.new('@@', Rip::Core::Object.class_instance)
+          Rip::Core::Parameter.new('@@', Rip::Core::Object.type_instance)
         ]) do |context|
           context['@'].bind(context['@@'])
         end
@@ -91,7 +91,7 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ bind_overload ])
       end
 
-      class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
+      type_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           this = context['@']
@@ -122,7 +122,7 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end
 
-      def class_instance.to_s
+      def type_instance.to_s
         '#< System.Lambda >'
       end
     end

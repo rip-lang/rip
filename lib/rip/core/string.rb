@@ -8,11 +8,11 @@ module Rip::Core
 
       @characters = characters
 
-      self['class'] = self.class.class_instance
+      self['type'] = self.class.type_instance
     end
 
     def ==(other)
-      (self['class'] == other['class']) &&
+      (self['type'] == other['type']) &&
         (characters == other.characters)
     end
 
@@ -33,8 +33,8 @@ module Rip::Core
       new(characters)
     end
 
-    define_class_instance('string') do |class_instance|
-      class_instance['@']['uppercase'] = Rip::Core::DelayedProperty.new do |_|
+    define_type_instance('string') do |type_instance|
+      type_instance['@']['uppercase'] = Rip::Core::DelayedProperty.new do |_|
         uppercase_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           this = context['@']
@@ -46,7 +46,7 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ uppercase_overload ])
       end
 
-      class_instance['@']['lowercase'] = Rip::Core::DelayedProperty.new do |_|
+      type_instance['@']['lowercase'] = Rip::Core::DelayedProperty.new do |_|
         lowercase_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           this = context['@']
@@ -58,7 +58,7 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ lowercase_overload ])
       end
 
-      def class_instance.to_s
+      def type_instance.to_s
         '#< System.String >'
       end
     end

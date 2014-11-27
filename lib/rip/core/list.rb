@@ -7,11 +7,11 @@ module Rip::Core
 
       @items = items
 
-      self['class'] = self.class.class_instance
+      self['type'] = self.class.type_instance
     end
 
     def ==(other)
-      (self['class'] == other['class']) &&
+      (self['type'] == other['type']) &&
         (items == other.items)
     end
 
@@ -20,8 +20,8 @@ module Rip::Core
       super + [ "items = [ #{_items} ]" ]
     end
 
-    define_class_instance('list') do |class_instance|
-      class_instance['@']['reverse'] = Rip::Core::DelayedProperty.new do |this|
+    define_type_instance('list') do |type_instance|
+      type_instance['@']['reverse'] = Rip::Core::DelayedProperty.new do |this|
         reverse_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           this = context['@']
@@ -30,22 +30,22 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ reverse_overload ])
       end
 
-      class_instance['@']['length'] = Rip::Core::DynamicProperty.new do |this|
+      type_instance['@']['length'] = Rip::Core::DynamicProperty.new do |this|
         Rip::Core::Integer.new(this.items.count)
       end
 
-      class_instance['@']['head'] = Rip::Core::DynamicProperty.new do |this|
+      type_instance['@']['head'] = Rip::Core::DynamicProperty.new do |this|
         this.items.first
       end
 
-      class_instance['@']['tail'] = Rip::Core::DynamicProperty.new do |this|
+      type_instance['@']['tail'] = Rip::Core::DynamicProperty.new do |this|
         new(this.items[1..(this.items.count - 1)] || [])
       end
 
-      class_instance['+'] = Rip::Core::DelayedProperty.new do |_|
+      type_instance['+'] = Rip::Core::DelayedProperty.new do |_|
         plus_overload = Rip::Core::NativeOverload.new([
-          Rip::Core::Parameter.new('a', class_instance),
-          Rip::Core::Parameter.new('b', class_instance)
+          Rip::Core::Parameter.new('a', type_instance),
+          Rip::Core::Parameter.new('b', type_instance)
         ]) do |context|
           a = context['a']
           b = context['b']
@@ -55,7 +55,7 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Scope.new, [ plus_overload ])
       end
 
-      class_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
+      type_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           items = context['@'].items.map do |item|
@@ -72,7 +72,7 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end
 
-      def class_instance.to_s
+      def type_instance.to_s
         '#< System.List >'
       end
     end

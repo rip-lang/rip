@@ -156,7 +156,7 @@ module Rip::Compiler
     rule(:object) do
       condition_block_sequence |
         exception_block_sequence |
-        class_block |
+        type_block |
         lambda_block |
         overload_block |
         switch_block |
@@ -188,8 +188,8 @@ module Rip::Compiler
 
     rule(:overload_block) { str('->').as(:dash_rocket) >> spaces? >> parameters.maybe >> block_body }
 
-    rule(:class_block) { str('class').as(:class) >> spaces? >> multiple_arguments.maybe >> block_body }
-    rule(:case_block)  { str('case').as(:case)   >> spaces? >> multiple_arguments       >> block_body }
+    rule(:type_block) { str('type').as(:type) >> spaces? >> multiple_arguments.maybe >> block_body }
+    rule(:case_block) { str('case').as(:case) >> spaces? >> multiple_arguments       >> block_body }
 
     rule(:switch_block) { str('switch').as(:switch) >> spaces? >> single_argument.maybe >> block_body_switch }
     rule(:catch_block)  { str('catch').as(:catch)   >> spaces? >> single_argument       >> block_body }

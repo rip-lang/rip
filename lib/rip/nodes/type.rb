@@ -1,26 +1,26 @@
 module Rip::Nodes
-  class Class < Base
-    attr_reader :superclasses
+  class Type < Base
+    attr_reader :super_types
     attr_reader :body
 
-    def initialize(location, superclasses, body)
+    def initialize(location, super_types, body)
       super(location)
-      @superclasses = superclasses
+      @super_types = super_types
       @body = body
     end
 
     def ==(other)
       super &&
-        (superclasses == other.superclasses) &&
+        (super_types == other.super_types) &&
         (body == other.body)
     end
 
     def interpret(context)
-      _superclasses = superclasses.map do |superclass|
-        superclass.interpret(context)
+      _super_types = super_types.map do |super_type|
+        super_type.interpret(context)
       end
 
-      Rip::Core::Class.new(_superclasses).tap do |reply|
+      Rip::Core::Type.new(_super_types).tap do |reply|
         body.interpret(context) do |statement|
           if statement.is_a?(Rip::Nodes::Assignment)
             statement.lhs.interpret_for_assignment(reply) do
@@ -36,19 +36,19 @@ module Rip::Nodes
     end
 
     def to_debug(level = 0)
-      superclasses_debug_inner = superclasses.inject([]) do |reply, superclass|
-        reply + superclass.to_debug(level + 2)
+      super_types_debug_inner = super_types.inject([]) do |reply, super_type|
+        reply + super_type.to_debug(level + 2)
       end
 
-      superclasses_debug = [ [ level + 1, 'superclasses = [' ] ] +
-        superclasses_debug_inner +
+      super_types_debug = [ [ level + 1, 'super_types = [' ] ] +
+        super_types_debug_inner +
         [ [ level + 1, ']' ] ]
 
       body_debug = [ [ level + 1, 'body = [' ] ] +
         body.to_debug(level + 2) +
         [ [ level + 1, ']' ] ]
 
-      super + superclasses_debug + body_debug
+      super + super_types_debug + body_debug
     end
   end
 end

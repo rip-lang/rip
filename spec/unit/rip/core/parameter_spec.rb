@@ -4,7 +4,7 @@ describe Rip::Core::Parameter do
   let(:context) { Rip::Compiler::Scope.new }
 
   let(:name) { 'arg' }
-  let(:type) { Rip::Core::Object.class_instance }
+  let(:type) { Rip::Core::Object.type_instance }
   let(:parameter) { Rip::Core::Parameter.new(name, type) }
 
   let(:forty_two) { Rip::Core::Integer.new(42) }
@@ -19,19 +19,19 @@ describe Rip::Core::Parameter do
   describe '#matches?' do
     specify do
       [
-        [ Rip::Core::Object.class_instance, Rip::Core::Object.class_instance, true ],
-        [ Rip::Core::Object.class_instance, Rip::Core::Class.class_instance, true ],
-        [ Rip::Core::Object.class_instance, Rip::Core::Lambda.class_instance, true ],
-        [ Rip::Core::Object.class_instance, Rip::Core::Integer.class_instance, true ],
+        [ Rip::Core::Object.type_instance, Rip::Core::Object.type_instance, true ],
+        [ Rip::Core::Object.type_instance, Rip::Core::Type.type_instance, true ],
+        [ Rip::Core::Object.type_instance, Rip::Core::Lambda.type_instance, true ],
+        [ Rip::Core::Object.type_instance, Rip::Core::Integer.type_instance, true ],
 
-        [ Rip::Core::Class.class_instance, Rip::Core::Object.class_instance, false ],
-        [ Rip::Core::Class.class_instance, Rip::Core::Class.class_instance, true ],
-        [ Rip::Core::Class.class_instance, Rip::Core::Lambda.class_instance, false ],
-        [ Rip::Core::Class.class_instance, Rip::Core::Integer.class_instance, false ],
+        [ Rip::Core::Type.type_instance, Rip::Core::Object.type_instance, false ],
+        [ Rip::Core::Type.type_instance, Rip::Core::Type.type_instance, true ],
+        [ Rip::Core::Type.type_instance, Rip::Core::Lambda.type_instance, false ],
+        [ Rip::Core::Type.type_instance, Rip::Core::Integer.type_instance, false ],
 
-        [ Rip::Core::Integer.class_instance, Rip::Core::List.class_instance, false ],
-        [ Rip::Core::List.class_instance, Rip::Core::String.class_instance, true ],
-        [ Rip::Core::String.class_instance, Rip::Core::List.class_instance, false ]
+        [ Rip::Core::Integer.type_instance, Rip::Core::List.type_instance, false ],
+        [ Rip::Core::List.type_instance, Rip::Core::String.type_instance, true ],
+        [ Rip::Core::String.type_instance, Rip::Core::List.type_instance, false ]
       ].each do |(parameter_type, argument_type, expected)|
         parameter = Rip::Core::Parameter.new(name, parameter_type)
 

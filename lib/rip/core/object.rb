@@ -3,20 +3,20 @@ module Rip::Core
     def initialize
       super
 
-      self['class'] = self.class.class_instance
+      self['type'] = self.class.type_instance
     end
 
-    def self.class_instance
-      return @class_instance if instance_variable_defined? :@class_instance
+    def self.type_instance
+      return @type_instance if instance_variable_defined? :@type_instance
 
-      @class_instance = Rip::Core::Base.new
-      @class_instance['class'] = @class_instance
+      @type_instance = Rip::Core::Base.new
+      @type_instance['type'] = @type_instance
 
-      def @class_instance.ancestors
+      def @type_instance.ancestors
         []
       end
 
-      @class_instance = new.tap do |reply|
+      @type_instance = new.tap do |reply|
         reply['@'] = Rip::Core::Prototype.new
 
         reply['@']['=='] = Rip::Core::DelayedProperty.new do |_|

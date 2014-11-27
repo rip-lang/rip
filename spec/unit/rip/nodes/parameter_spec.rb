@@ -18,7 +18,7 @@ describe Rip::Nodes::Parameter do
 
     context 'without type restriction' do
       it 'allows any type' do
-        expect(core_parameter.type).to eq(Rip::Core::Object.class_instance)
+        expect(core_parameter.type).to eq(Rip::Core::Object.type_instance)
       end
     end
 
@@ -28,7 +28,7 @@ describe Rip::Nodes::Parameter do
       end
 
       it 'only allows integers' do
-        expect(core_parameter.type).to eq(Rip::Core::Integer.class_instance)
+        expect(core_parameter.type).to eq(Rip::Core::Integer.type_instance)
       end
     end
   end

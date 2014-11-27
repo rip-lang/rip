@@ -1,26 +1,26 @@
-class {
+type {
 	@.+ = -> (other) {
-		@.class.+(@, other)
+		@.type.+(@, other)
 	}
 
 	@.- = -> (other) {
-		@.class.-(@, other)
+		@.type.-(@, other)
 	}
 
 	@.* = -> (other) {
-		@.class.*(@, other)
+		@.type.*(@, other)
 	}
 
 	@./ = -> (other) {
-		@.class./(@, other)
+		@.type./(@, other)
 	}
 
 	@.% = -> (other) {
-		@.class.%(@, other)
+		@.type.%(@, other)
 	}
 
 	@./% = -> (other) {
-		@.class./%(@, other)
+		@.type./%(@, other)
 	}
 
 	self./% = -> (a, b) {
