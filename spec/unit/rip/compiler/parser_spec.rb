@@ -231,7 +231,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :class => 'class',
+                :type => 'class',
                 :arguments => [
                   { :reference => 'one' },
                   { :reference => 'two' }
@@ -256,7 +256,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :class => 'class',
+                :type => 'class',
                 :location_body => '{',
                 :body => []
               }
@@ -267,7 +267,7 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :class => 'class',
+                :type => 'class',
                 :arguments => [],
                 :location_body => '{',
                 :body => []
@@ -499,10 +499,10 @@ describe Rip::Compiler::Parser do
           {
             :module => [
               {
-                :class => 'class',
+                :type => 'class',
                 :arguments => [
                   {
-                    :class => 'class',
+                    :type => 'class',
                     :arguments => [],
                     :location_body => '{',
                     :body => []

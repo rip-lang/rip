@@ -206,9 +206,9 @@ module Rip::Utilities
       end
     end
 
-    rule(:class => simple(:class), :location_body => simple(:location_body), :body => subtree(:body)) do |locals|
+    rule(:type => simple(:type), :location_body => simple(:location_body), :body => subtree(:body)) do |locals|
       {
-        :class => locals[:class],
+        :type => locals[:type],
         :arguments => [],
         :location_body => locals[:location_body],
         :body => locals[:body]

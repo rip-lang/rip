@@ -199,7 +199,7 @@ module Rip::Compiler
 
     {
       :case => Rip::Nodes::Case,
-      :class => Rip::Nodes::Class
+      :type => Rip::Nodes::Class
     }.each do |keyword, klass|
       rule(keyword => simple(keyword), :arguments => sequence(:arguments), :location_body => simple(:location_body), :body => sequence(:body)) do |locals|
         location = location_for(locals[:origin], locals[keyword])
