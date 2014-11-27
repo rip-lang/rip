@@ -18,7 +18,7 @@ describe Rip::Nodes::Class do
       build_ast(<<-RIP)
         half-life = 20
 
-        Klass = class {
+        _type = class {
           number = half-life + 22
           alias = number
           alias_alias = self.alias
@@ -47,8 +47,8 @@ describe Rip::Nodes::Class do
     let(:half_life_node) { Rip::Nodes::Reference.new(location, 'half-life') }
     let(:half_life) { half_life_node.interpret(populated_context) }
 
-    let(:klass_node) { Rip::Nodes::Reference.new(location, 'Klass') }
-    let(:klass) { klass_node.interpret(populated_context) }
+    let(:type_node) { Rip::Nodes::Reference.new(location, '_type') }
+    let(:type) { type_node.interpret(populated_context) }
 
     let(:person_node) { Rip::Nodes::Reference.new(location, 'Person') }
     let(:person) { person_node.interpret(populated_context) }
@@ -64,12 +64,12 @@ describe Rip::Nodes::Class do
 
 
     specify { expect(context.symbols).to eq([]) }
-    specify { expect(populated_context.symbols).to match_array(['half-life', 'Klass', 'Person', 'Color', 'Outer']) }
+    specify { expect(populated_context.symbols).to match_array(['half-life', '_type', 'Person', 'Color', 'Outer']) }
 
-    specify { expect(klass.symbols).to match_array(['@', 'class', 'self', 'number', 'alias', 'alias_alias']) }
-    specify { expect(klass['number']).to eq(Rip::Core::Integer.new(42)) }
-    specify { expect(klass['alias']).to be(klass['number']) }
-    specify { expect(klass['alias_alias']).to be(klass['alias']) }
+    specify { expect(type.symbols).to match_array(['@', 'class', 'self', 'number', 'alias', 'alias_alias']) }
+    specify { expect(type['number']).to eq(Rip::Core::Integer.new(42)) }
+    specify { expect(type['alias']).to be(type['number']) }
+    specify { expect(type['alias_alias']).to be(type['alias']) }
 
     specify { expect(person.symbols).to match_array(['@', 'class', 'self', 'population']) }
     specify { expect(person['population']).to eq(Rip::Core::Integer.new(100)) }

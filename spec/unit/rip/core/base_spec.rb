@@ -12,8 +12,6 @@ describe Rip::Core::Base do
         type_instance['@']['instance_bar'] = :hello
 
         type_instance['class_bar'] = :goodbye
-
-        $klass = type_instance
       end
     end
   end

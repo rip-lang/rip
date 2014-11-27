@@ -734,16 +734,16 @@ describe Rip::Compiler::AST do
     let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(6), []) }
     let(:class_node) { Rip::Nodes::Class.new(location, [], class_body_node) }
 
-    let(:klass) { statements.first }
+    let(:type) { statements.first }
 
     it 'has one top-level node' do
       expect(statements.count).to eq(1)
     end
 
     it 'is a class (with no parents)' do
-      expect(klass.super_types).to eq([])
-      expect(klass.body).to eq(class_body_node)
-      expect(klass).to eq(class_node)
+      expect(type.super_types).to eq([])
+      expect(type.body).to eq(class_body_node)
+      expect(type).to eq(class_node)
     end
   end
 
@@ -753,16 +753,16 @@ describe Rip::Compiler::AST do
     let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(9), []) }
     let(:class_node) { Rip::Nodes::Class.new(location, [], class_body_node) }
 
-    let(:klass) { statements.first }
+    let(:type) { statements.first }
 
     it 'has one top-level node' do
       expect(statements.count).to eq(1)
     end
 
     it 'is a class (with no parents)' do
-      expect(klass.super_types).to eq([])
-      expect(klass.body).to eq(class_body_node)
-      expect(klass).to eq(class_node)
+      expect(type.super_types).to eq([])
+      expect(type.body).to eq(class_body_node)
+      expect(type).to eq(class_node)
     end
   end
 
@@ -775,20 +775,20 @@ describe Rip::Compiler::AST do
     let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(27), []) }
     let(:class_node) { Rip::Nodes::Class.new(location, [ parent_1, parent_2 ], class_body_node) }
 
-    let(:klass) { statements.first }
+    let(:type) { statements.first }
 
     it 'has one top-level node' do
       expect(statements.count).to eq(1)
     end
 
     it 'is a class (with two parents)' do
-      expect(klass.super_types.count).to eq(2)
-      expect(klass.super_types.first).to eq(parent_1)
-      expect(klass.super_types.last).to eq(parent_2)
+      expect(type.super_types.count).to eq(2)
+      expect(type.super_types.first).to eq(parent_1)
+      expect(type.super_types.last).to eq(parent_2)
 
-      expect(klass.body).to eq(class_body_node)
+      expect(type.body).to eq(class_body_node)
 
-      expect(klass).to eq(class_node)
+      expect(type).to eq(class_node)
     end
   end
 
