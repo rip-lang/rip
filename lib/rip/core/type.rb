@@ -1,5 +1,5 @@
 module Rip::Core
-  class Class < Rip::Core::Base
+  class Type < Rip::Core::Base
     attr_reader :ancestors
 
     def initialize(ancestors = [])
@@ -29,7 +29,7 @@ module Rip::Core
         reply['class'] = reply
 
         def reply.to_s
-          '#< System.Class >'
+          '#< System.Type >'
         end
       end
     end

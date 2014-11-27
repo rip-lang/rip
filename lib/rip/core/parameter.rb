@@ -34,7 +34,7 @@ module Rip::Core
     protected
 
     def special_case_for_class?(argument_type)
-      (argument_type == Rip::Core::Class.type_instance) &&
+      (argument_type == Rip::Core::Type.type_instance) &&
         (type == Rip::Core::Object.type_instance)
     end
 

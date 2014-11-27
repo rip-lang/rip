@@ -86,8 +86,8 @@ module Rip::Core
           load_path = Rip.root + 'core'
           Rip::Loaders::FileSystem.new(core_module_name, [ load_path ]).load
         else
-          Rip::Core::Class.new.tap do |reply|
-            reply['class'] = Rip::Core::Class.type_instance
+          Rip::Core::Type.new.tap do |reply|
+            reply['class'] = Rip::Core::Type.type_instance
           end
         end
 

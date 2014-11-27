@@ -1,5 +1,5 @@
 module Rip::Nodes
-  class Class < Base
+  class Type < Base
     attr_reader :super_types
     attr_reader :body
 
@@ -20,7 +20,7 @@ module Rip::Nodes
         super_type.interpret(context)
       end
 
-      Rip::Core::Class.new(_super_types).tap do |reply|
+      Rip::Core::Type.new(_super_types).tap do |reply|
         body.interpret(context) do |statement|
           if statement.is_a?(Rip::Nodes::Assignment)
             statement.lhs.interpret_for_assignment(reply) do

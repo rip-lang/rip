@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-describe Rip::Core::Class do
+describe Rip::Core::Type do
   let(:ancestors) { [] }
-  let(:type) { Rip::Core::Class.new(ancestors) }
-  let(:type_instance) { Rip::Core::Class.type_instance }
+  let(:type) { Rip::Core::Type.new(ancestors) }
+  let(:type_instance) { Rip::Core::Type.type_instance }
 
   include_examples 'debug methods' do
-    let(:type_to_s) { '#< System.Class >' }
+    let(:type_to_s) { '#< System.Type >' }
 
     let(:instance) { type }
-    let(:instance_to_s) { '#< #< System.Class > [ @, class, self ] >' }
+    let(:instance_to_s) { '#< #< System.Type > [ @, class, self ] >' }
   end
 
   describe '.type_instance' do
     specify { expect(type_instance).to_not be_nil }
-    specify { expect(type_instance['class']).to be(Rip::Core::Class.type_instance) }
+    specify { expect(type_instance['class']).to be(Rip::Core::Type.type_instance) }
   end
 
   describe '#ancestors' do

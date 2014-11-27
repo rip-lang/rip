@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Rip::Nodes::Class do
+describe Rip::Nodes::Type do
   let(:location) { location_for }
 
   let(:context) { Rip::Compiler::Scope.new }

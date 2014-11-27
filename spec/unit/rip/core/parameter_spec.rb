@@ -20,14 +20,14 @@ describe Rip::Core::Parameter do
     specify do
       [
         [ Rip::Core::Object.type_instance, Rip::Core::Object.type_instance, true ],
-        [ Rip::Core::Object.type_instance, Rip::Core::Class.type_instance, true ],
+        [ Rip::Core::Object.type_instance, Rip::Core::Type.type_instance, true ],
         [ Rip::Core::Object.type_instance, Rip::Core::Lambda.type_instance, true ],
         [ Rip::Core::Object.type_instance, Rip::Core::Integer.type_instance, true ],
 
-        [ Rip::Core::Class.type_instance, Rip::Core::Object.type_instance, false ],
-        [ Rip::Core::Class.type_instance, Rip::Core::Class.type_instance, true ],
-        [ Rip::Core::Class.type_instance, Rip::Core::Lambda.type_instance, false ],
-        [ Rip::Core::Class.type_instance, Rip::Core::Integer.type_instance, false ],
+        [ Rip::Core::Type.type_instance, Rip::Core::Object.type_instance, false ],
+        [ Rip::Core::Type.type_instance, Rip::Core::Type.type_instance, true ],
+        [ Rip::Core::Type.type_instance, Rip::Core::Lambda.type_instance, false ],
+        [ Rip::Core::Type.type_instance, Rip::Core::Integer.type_instance, false ],
 
         [ Rip::Core::Integer.type_instance, Rip::Core::List.type_instance, false ],
         [ Rip::Core::List.type_instance, Rip::Core::String.type_instance, true ],

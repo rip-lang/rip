@@ -732,7 +732,7 @@ describe Rip::Compiler::AST do
     let(:rip) { 'class {}' }
 
     let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(6), []) }
-    let(:class_node) { Rip::Nodes::Class.new(location, [], class_body_node) }
+    let(:class_node) { Rip::Nodes::Type.new(location, [], class_body_node) }
 
     let(:type) { statements.first }
 
@@ -751,7 +751,7 @@ describe Rip::Compiler::AST do
     let(:rip) { 'class () {}' }
 
     let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(9), []) }
-    let(:class_node) { Rip::Nodes::Class.new(location, [], class_body_node) }
+    let(:class_node) { Rip::Nodes::Type.new(location, [], class_body_node) }
 
     let(:type) { statements.first }
 
@@ -773,7 +773,7 @@ describe Rip::Compiler::AST do
     let(:parent_2) { Rip::Nodes::Reference.new(location.add_character(17), 'parent_2') }
 
     let(:class_body_node) { Rip::Nodes::BlockBody.new(location.add_character(27), []) }
-    let(:class_node) { Rip::Nodes::Class.new(location, [ parent_1, parent_2 ], class_body_node) }
+    let(:class_node) { Rip::Nodes::Type.new(location, [ parent_1, parent_2 ], class_body_node) }
 
     let(:type) { statements.first }
 
