@@ -31,7 +31,7 @@ describe Rip::Core::Lambda do
   end
 
   include_examples 'debug methods' do
-    let(:class_to_s) { '#< System.Lambda >' }
+    let(:type_to_s) { '#< System.Lambda >' }
 
     let(:instance) { rip_lambda }
     let(:instance_to_s) { '#< #< System.Lambda > [ apply, bind, class, to_string ] arity = [ 0 ] >' }

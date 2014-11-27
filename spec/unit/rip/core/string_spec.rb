@@ -9,7 +9,7 @@ describe Rip::Core::String do
   let(:string) { Rip::Core::String.new(characters) }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { '#< System.String >' }
+    let(:type_to_s) { '#< System.String >' }
 
     let(:instance) { string }
     let(:instance_to_s) { '#< #< System.String > [ class, lowercase, to_string, uppercase ] characters = "" >' }

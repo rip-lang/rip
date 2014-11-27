@@ -6,7 +6,7 @@ describe Rip::Core::Class do
   let(:type_instance) { Rip::Core::Class.type_instance }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { '#< System.Class >' }
+    let(:type_to_s) { '#< System.Class >' }
 
     let(:instance) { type }
     let(:instance_to_s) { '#< #< System.Class > [ @, class, self ] >' }

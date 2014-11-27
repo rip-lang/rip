@@ -11,7 +11,7 @@ describe Rip::Core::Base do
       define_type_instance do |type_instance|
         type_instance['@']['instance_bar'] = :hello
 
-        type_instance['class_bar'] = :goodbye
+        type_instance['type_bar'] = :goodbye
       end
     end
   end
@@ -31,7 +31,7 @@ describe Rip::Core::Base do
 
   describe 'property lookup' do
     context 'on classes' do
-      specify { expect(type_instance['class_bar']).to eq(:goodbye) }
+      specify { expect(type_instance['type_bar']).to eq(:goodbye) }
     end
 
     context 'on instances' do

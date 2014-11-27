@@ -9,7 +9,7 @@ describe Rip::Core::Integer do
   let(:type_instance) { Rip::Core::Integer.type_instance }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { '#< System.Integer >' }
+    let(:type_to_s) { '#< System.Integer >' }
 
     let(:instance) { forty_two }
     let(:instance_to_s) { '#< #< System.Integer > [ %, *, +, -, /, /%, ==, class, to_string ] data = 42 >' }

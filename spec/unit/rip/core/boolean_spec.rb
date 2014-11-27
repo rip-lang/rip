@@ -8,7 +8,7 @@ describe Rip::Core::Boolean do
 
   include_examples 'debug methods' do
     let(:type_instance) { Rip::Core::Boolean.type_instance }
-    let(:class_to_s) { '#< System.Boolean >' }
+    let(:type_to_s) { '#< System.Boolean >' }
 
     let(:instance) { rip_false }
     let(:instance_to_s) { '#< #< System.Boolean > [ ==, class, to_boolean, to_string ] false >' }

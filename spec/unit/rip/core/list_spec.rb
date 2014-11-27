@@ -9,7 +9,7 @@ describe Rip::Core::List do
   let(:list) { Rip::Core::List.new(objects) }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { '#< System.List >' }
+    let(:type_to_s) { '#< System.List >' }
 
     let(:instance) { list }
     let(:instance_to_s) { '#< #< System.List > [ +, <<, class, filter, fold, head, length, map, reverse, tail, to_string ] items = [  ] >' }

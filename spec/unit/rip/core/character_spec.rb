@@ -9,7 +9,7 @@ describe Rip::Core::Character do
   let(:character) { Rip::Core::Character.new('r') }
 
   include_examples 'debug methods' do
-    let(:class_to_s) { '#< System.Character >' }
+    let(:type_to_s) { '#< System.Character >' }
 
     let(:instance) { character }
     let(:instance_to_s) { '#< #< System.Character > [ class, lowercase, to_string, uppercase ] data = `r >' }

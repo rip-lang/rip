@@ -1,6 +1,6 @@
 shared_examples 'debug methods' do
   context '.type_instance.to_s' do
-    specify { expect(type_instance.to_s).to eq(class_to_s) }
+    specify { expect(type_instance.to_s).to eq(type_to_s) }
   end
 
   context '#to_s' do
