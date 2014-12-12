@@ -1,9 +1,9 @@
 module Rip::Utilities
   class Location
     attr_reader :origin
-    attr_reader :offset
-    attr_reader :line
-    attr_reader :column
+    attr_reader :offset  # zero-based offset from begining of file
+    attr_reader :line    # one-based line
+    attr_reader :column  # one-based character on line
 
     def initialize(origin, offset, line, column)
       @origin = origin
