@@ -45,6 +45,22 @@ module Rip::Core
         end
       end
 
+      %w[
+        < <=
+        > >=
+      ].each do |property|
+        type_instance[property] = Rip::Core::DelayedProperty.new do |_|
+          overload = Rip::Core::NativeOverload.new([
+            Rip::Core::Parameter.new('a', type_instance),
+            Rip::Core::Parameter.new('b', type_instance)
+          ]) do |context|
+            Rip::Core::Boolean.from_native(context['a'].data.send(property, context['b'].data))
+          end
+
+          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
+        end
+      end
+
       type_instance['@']['=='] = Rip::Core::DelayedProperty.new do |_|
         eequals_overload = Rip::Core::NativeOverload.new([
           Rip::Core::Parameter.new('other', type_instance)

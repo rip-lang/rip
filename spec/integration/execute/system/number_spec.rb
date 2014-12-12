@@ -78,6 +78,37 @@ describe 'System.Number' do
     end
   end
 
+  describe do
+    zero = '0'
+
+    one_n = '-1'
+    one_p = '+1'
+
+    [
+      [ one_n, :<, one_p, true ],
+      [ one_p, :<, one_n, false ],
+      [ zero, :<, zero, false ],
+
+      [ one_n, :<=, one_p, true ],
+      [ one_p, :<=, one_n, false ],
+      [ zero, :<=, zero, true ],
+
+      [ one_n, :<, one_p, true ],
+      [ one_p, :>, one_n, true ],
+      [ zero, :>, zero, false ],
+
+      [ one_n, :>=, one_p, false ],
+      [ one_p, :>=, one_n, true ],
+      [ zero, :>=, zero, true ]
+    ].each do |(a, operator, b, result)|
+      it "#{a} #{operator} #{b} == #{result}" do
+        expect(<<-RIP).to output_as(result.to_s)
+          System.IO.out(#{a} #{operator} #{b}) # #{result}
+        RIP
+      end
+    end
+  end
+
   describe '@.round' do
     it 'rounds to specified decimal places' do
       expect(<<-RIP).to output_as('(1571 / 500)', 'round.rip')
