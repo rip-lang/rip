@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'System.Integer', :blur do
+describe 'System.Integer' do
   after(:each) { assert_exit_status(0) }
 
   [
@@ -10,7 +10,7 @@ describe 'System.Integer', :blur do
       specify do
         write_file 'sample.rip', <<-RIP
 result = System.Integer.#{operator}(#{a}, #{b})
-System.IO.out(result)
+System.IO.puts(result)
         RIP
 
         run_simple 'rip execute sample.rip'
@@ -22,7 +22,7 @@ System.IO.out(result)
     describe ".@.#{operator}" do
       specify do
         write_file 'sample.rip', <<-RIP
-System.IO.out(#{a} #{operator} #{b})
+System.IO.puts(#{a} #{operator} #{b})
         RIP
 
         run_simple 'rip execute sample.rip'
