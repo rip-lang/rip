@@ -12,7 +12,7 @@ describe Rip::Core::String do
     let(:type_to_s) { '#< System.String >' }
 
     let(:instance) { string }
-    let(:instance_to_s) { '#< #< System.String > [ lowercase, to_string, type, uppercase ] characters = "" >' }
+    let(:instance_to_s) { '#< #< System.String > [ lowercase, strip, to_string, type, uppercase ] characters = "" >' }
   end
 
   describe '.type_instance' do

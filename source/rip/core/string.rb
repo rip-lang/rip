@@ -70,6 +70,16 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ lowercase_overload ])
       end
 
+      type_instance['strip'] = Rip::Core::DelayedProperty.new do |_|
+        strip_overload = Rip::Core::NativeOverload.new([
+          Rip::Core::Parameter.new('string', type_instance)
+        ]) do |context|
+          this = context['string']
+          from_native(this.to_native.strip)
+        end
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ strip_overload ])
+      end
+
       def type_instance.to_s
         '#< System.String >'
       end

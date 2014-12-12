@@ -7,6 +7,10 @@ type (System.List) {
 	# 	@.type.new(@.map(:uppercase))
 	# }
 
+	@.strip = -> {
+		@.type.strip(@)
+	}
+
 	@.to_string = -> { @ }
 
 	to_string = -> { 'System.String' }
