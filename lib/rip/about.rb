@@ -9,6 +9,22 @@ module Rip
       SIGNATURE <=> Array(other)
     end
 
+    def self.logo
+      <<-'RIP'
+         _            _          _
+        /\ \         /\ \       /\ \
+       /  \ \        \ \ \     /  \ \
+      / /\ \ \       /\ \_\   / /\ \ \
+     / / /\ \_\     / /\/_/  / / /\ \_\
+    / / /_/ / /    / / /    / / /_/ / /
+   / / /__\/ /    / / /    / / /__\/ /
+  / / /_____/    / / /    / / /_____/
+ / / /\ \ \  ___/ / /__  / / /
+/ / /  \ \ \/\__\/_/___\/ / /
+\/_/    \_\/\/_________/\/_/
+      RIP
+    end
+
     def self.summary(verbose = false)
       reply = SIGNATURE.join('.')
       verbose ? "Rip version #{reply}" : reply
