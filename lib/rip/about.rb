@@ -1,13 +1,6 @@
 module Rip
   module About
-    extend Comparable
-
-    SIGNATURE = [0, 1, 0]
-
-    def self.<=>(other)
-      other = other.split('.').map(&:to_i) if other.respond_to? :split
-      SIGNATURE <=> Array(other)
-    end
+    VERSION = [0, 1, 0]
 
     def self.logo
       <<-'RIP'
@@ -37,7 +30,7 @@ module Rip
     end
 
     def self.version(verbose = false)
-      reply = SIGNATURE.join('.')
+      reply = VERSION.join('.')
       verbose ? "Rip version #{reply}" : reply
     end
   end
