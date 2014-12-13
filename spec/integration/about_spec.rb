@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe 'rip about' do
-  after(:each) { assert_exit_status(0) }
+  after(:each) do
+    expect(all_stdout).to match(/^copyright/)
+    assert_exit_status(0)
+  end
 
   specify do
     run_simple 'rip about'

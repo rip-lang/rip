@@ -26,6 +26,17 @@ module Rip
     end
 
     def self.summary(verbose = false)
+        <<-SUMMARY
+#{version(verbose)}
+#{copyright(verbose)}
+        SUMMARY
+    end
+
+    def self.copyright(verbose = false)
+      'copyright © Thomas Ingram'
+    end
+
+    def self.version(verbose = false)
       reply = SIGNATURE.join('.')
       verbose ? "Rip version #{reply}" : reply
     end
