@@ -52,6 +52,6 @@ require 'rip/exceptions'
 require 'rip/nodes'
 require 'rip/utilities'
 
+require 'rip/about'
 require 'rip/compiler'
 require 'rip/loaders'
-require 'rip/version'

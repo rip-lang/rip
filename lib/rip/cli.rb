@@ -8,6 +8,11 @@ module Rip
 
     map '--version' => :about
 
+    desc 'about', 'Print information about Rip'
+    def about
+      puts Rip::About.to_s(options[:verbose])
+    end
+
     desc 'execute [file]', 'Read and execute [file] (or standard in)'
     def execute(file = nil)
       wrap_exceptions do
@@ -31,11 +36,6 @@ Usage:
       USAGE
       puts general_usage if args.empty?
       super
-    end
-
-    desc 'about', 'Print information about Rip'
-    def about
-      puts Rip::Version.to_s(options[:verbose])
     end
 
     desc 'debug [file]', 'Print the compiler information for [file] (or standard in)'

@@ -1,5 +1,5 @@
 module Rip
-  module Version
+  module About
     extend Comparable
 
     SIGNATURE = [0, 1, 0]
