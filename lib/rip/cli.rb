@@ -10,7 +10,7 @@ module Rip
 
     desc 'about', 'Print information about Rip'
     def about
-      puts Rip::About.to_s(options[:verbose])
+      puts Rip::About.summary(options[:verbose])
     end
 
     desc 'execute [file]', 'Read and execute [file] (or standard in)'

@@ -9,7 +9,7 @@ module Rip
       SIGNATURE <=> Array(other)
     end
 
-    def self.to_s(verbose = false)
+    def self.summary(verbose = false)
       reply = SIGNATURE.join('.')
       verbose ? "Rip version #{reply}" : reply
     end
