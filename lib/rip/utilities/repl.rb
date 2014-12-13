@@ -78,7 +78,7 @@ This should be a helpful message
 
     def print_welcome
       puts <<-MESSAGE
-#{Rip.logo}
+#{Rip::About.summary(true)}
 
 Type "help" for help, "exit" to quit
       MESSAGE
