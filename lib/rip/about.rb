@@ -30,8 +30,8 @@ module Rip
     end
 
     def self.version(verbose = false)
-      reply = VERSION.join('.')
-      verbose ? "Rip version #{reply}" : reply
+      reply = "v#{VERSION.join('.')}"
+      verbose ? "#{logo.rstrip} #{reply}" : reply
     end
   end
 end

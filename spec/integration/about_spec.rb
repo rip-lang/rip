@@ -8,21 +8,21 @@ describe 'rip about' do
 
   specify do
     run_simple 'rip about'
-    expect(all_stdout).to match(/^\d.\d.\d$/)
+    expect(all_stdout).to match(/^v\d.\d.\d$/)
   end
 
   specify do
     run_simple 'rip --version'
-    expect(all_stdout).to match(/^\d.\d.\d$/)
+    expect(all_stdout).to match(/^v\d.\d.\d$/)
   end
 
   specify do
     run_simple 'rip about --verbose'
-    expect(all_stdout).to match(/^Rip version \d.\d.\d$/)
+    expect(all_stdout).to match(/^[ _\/\\]+ v\d.\d.\d$/)
   end
 
   specify do
     run_simple 'rip --version --verbose'
-    expect(all_stdout).to match(/^Rip version \d.\d.\d$/)
+    expect(all_stdout).to match(/^[ _\/\\]+ v\d.\d.\d$/)
   end
 end
