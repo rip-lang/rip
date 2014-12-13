@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe 'rip version' do
+describe 'rip about' do
   after(:each) { assert_exit_status(0) }
 
   specify do
-    run_simple 'rip version'
+    run_simple 'rip about'
     expect(all_stdout).to match(/^\d.\d.\d$/)
   end
 
@@ -14,7 +14,7 @@ describe 'rip version' do
   end
 
   specify do
-    run_simple 'rip version --verbose'
+    run_simple 'rip about --verbose'
     expect(all_stdout).to match(/^Rip version \d.\d.\d$/)
   end
 

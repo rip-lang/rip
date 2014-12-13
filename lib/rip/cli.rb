@@ -6,7 +6,7 @@ module Rip
 
     default_task :execute
 
-    map '--version' => :version
+    map '--version' => :about
 
     desc 'execute [file]', 'Read and execute [file] (or standard in)'
     def execute(file = nil)
@@ -33,8 +33,8 @@ Usage:
       super
     end
 
-    desc 'version', 'Print the version'
-    def version
+    desc 'about', 'Print information about Rip'
+    def about
       puts Rip::Version.to_s(options[:verbose])
     end
 
