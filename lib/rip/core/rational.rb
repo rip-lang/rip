@@ -1,5 +1,5 @@
 module Rip::Core
-  class Decimal < Rip::Core::Base
+  class Rational < Rip::Core::Base
     attr_reader :data
     attr_reader :sign
 
