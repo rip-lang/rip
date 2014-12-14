@@ -5,7 +5,7 @@ module Rip::Core
     def initialize(data, sign = :+)
       super()
 
-      @data = data.to_i * (sign.to_sym == :+ ? 1 : -1)
+      @data = data * (sign.to_sym == :+ ? 1 : -1)
 
       self['type'] = self.class.type_instance
     end
