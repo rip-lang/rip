@@ -1,2 +1,33 @@
 type {
+	@.+ = -> (other) {
+		@.type.+(@, other)
+	}
+
+	@.- = -> (other) {
+		@.type.-(@, other)
+	}
+
+	@.* = -> (other) {
+		@.type.*(@, other)
+	}
+
+	@./ = -> (other) {
+		@.type./(@, other)
+	}
+
+	@.% = -> (other) {
+		@.type.%(@, other)
+	}
+
+	@./% = -> (other) {
+		@.type./%(@, other)
+	}
+
+	self./% = -> (a, b) {
+		d = a / b
+		r = a % b
+		[ d, r ]
+	}
+
+	to_string = -> { 'System.Rational' }
 }
