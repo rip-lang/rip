@@ -22,6 +22,10 @@ module Rip::Core
       super + [ "numerator = #{numerator}, denominator = #{denominator}" ]
     end
 
+    def self.from_native(rational)
+      new(rational.numerator, rational.denominator)
+    end
+
     define_type_instance('rational') do |type_instance|
       %w[
         + -
@@ -33,8 +37,8 @@ module Rip::Core
             Rip::Core::Parameter.new('a', type_instance),
             Rip::Core::Parameter.new('b', type_instance)
           ]) do |context|
-            result = (context['a'].data.send(property, context['b'].data))
-            new(result.numerator, result.denominator)
+            result = context['a'].data.send(property, context['b'].data)
+            from_native(result)
           end
 
           Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
