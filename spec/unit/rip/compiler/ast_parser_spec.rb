@@ -284,6 +284,22 @@ describe Rip::Compiler::AST do
     end
   end
 
+  context 'numbers' do
+    context 'decimal' do
+      let(:rip) { '3.14' }
+      let(:decimal_node) { Rip::Nodes::Decimal.new(location, rip) }
+
+      specify { expect(statements.first).to eq(decimal_node) }
+    end
+
+    context 'integer' do
+      let(:rip) { '42' }
+      let(:integer_node) { Rip::Nodes::Integer.new(location, rip) }
+
+      specify { expect(statements.first).to eq(integer_node) }
+    end
+  end
+
   context 'lambdas' do
     let(:rip) { '-> (question, answer<System.Integer>) {}' }
 

@@ -1,11 +1,15 @@
 module Rip::Core
-  class Integer < Rip::Core::Base
+  class Rational < Rip::Core::Base
+    attr_reader :numerator
+    attr_reader :denominator
     attr_reader :data
 
-    def initialize(data, sign = :+)
+    def initialize(numerator, denominator, sign = :+)
       super()
 
-      @data = data * (sign.to_sym == :+ ? 1 : -1)
+      @numerator = numerator
+      @denominator = denominator
+      @data = Rational(numerator, denominator) * (sign.to_sym == :+ ? 1 : -1)
 
       self['type'] = self.class.type_instance
     end
@@ -15,10 +19,14 @@ module Rip::Core
     end
 
     def to_s_prep_body
-      super + [ "data = #{data}" ]
+      super + [ "numerator = #{numerator}, denominator = #{denominator}" ]
     end
 
-    define_type_instance('integer') do |type_instance|
+    def self.from_native(rational)
+      new(rational.numerator, rational.denominator)
+    end
+
+    define_type_instance('rational') do |type_instance|
       %w[
         + -
         * /
@@ -29,7 +37,8 @@ module Rip::Core
             Rip::Core::Parameter.new('a', type_instance),
             Rip::Core::Parameter.new('b', type_instance)
           ]) do |context|
-            new(context['a'].data.send(property, context['b'].data))
+            result = context['a'].data.send(property, context['b'].data)
+            from_native(result)
           end
 
           Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
@@ -48,13 +57,14 @@ module Rip::Core
       type_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
-          Rip::Core::String.from_native(context['@'].data.to_s)
+          this = context['@']
+          Rip::Core::String.from_native("(#{this.numerator} / #{this.denominator})")
         end
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end
 
       def type_instance.to_s
-        '#< System.Integer >'
+        '#< System.Rational >'
       end
     end
   end
