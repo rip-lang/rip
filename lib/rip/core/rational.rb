@@ -29,7 +29,15 @@ module Rip::Core
         %
       ].each do |property|
         type_instance[property] = Rip::Core::DelayedProperty.new do |_|
-          overload = Rip::Core::NativeOverload.new([
+          overload_r_i = Rip::Core::NativeOverload.new([
+            Rip::Core::Parameter.new('a', type_instance),
+            Rip::Core::Parameter.new('b', Rip::Core::Integer.type_instance)
+          ]) do |context|
+            result = context['a'].data.send(property, context['b'].data)
+            from_native(result)
+          end
+
+          overload_r_r = Rip::Core::NativeOverload.new([
             Rip::Core::Parameter.new('a', type_instance),
             Rip::Core::Parameter.new('b', type_instance)
           ]) do |context|
@@ -37,7 +45,7 @@ module Rip::Core
             from_native(result)
           end
 
-          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
+          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload_r_i, overload_r_r ])
         end
       end
 

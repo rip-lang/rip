@@ -65,12 +65,11 @@ describe Rip::Core::Rational do
     BinaryOperator.new([-91, 39], :%, [-39, 63], [-10, 21]),
     BinaryOperator.new([-39, 63], :%, [63, 87], [64, 609])
   ].each do |bo|
-    describe "@.#{bo.operator}" do
+    describe "type_instance.#{bo.operator}" do
       let(:lhs) { Rip::Core::Rational.new(*bo.lhs) }
       let(:rhs) { Rip::Core::Rational.new(*bo.rhs) }
       let(:result) { Rip::Core::Rational.new(*bo.result) }
 
-      specify { expect(lhs[bo.operator].call([ rhs ])).to eq(result) }
       specify { expect(Rip::Core::Rational.type_instance[bo.operator].call([ lhs, rhs ])).to eq(result) }
     end
   end
