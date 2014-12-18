@@ -1,7 +1,7 @@
 module Rip::Nodes
   class Decimal < Number
     def interpret(context)
-      parts = data.split('.')
+      parts = data.to_s.split('.')
 
       denominator = 10 ** parts.last.size
       numerator = (parts.first.to_i * denominator) + parts.last.to_i
