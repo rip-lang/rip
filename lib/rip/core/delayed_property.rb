@@ -7,6 +7,10 @@ module Rip::Core
       @block = block
     end
 
+    def properties
+      {}
+    end
+
     def resolve(key, receiver)
       block.call(receiver).tap do |reply|
         receiver.properties[key] = reply if @memoizable
