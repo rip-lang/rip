@@ -29,5 +29,9 @@ type {
 		[ d, r ]
 	}
 
+	@.to_integer = -> { @ }
+
+	@.to_rational = -> { @.type.to_rational(@) }
+
 	to_string = -> { 'System.Integer' }
 }

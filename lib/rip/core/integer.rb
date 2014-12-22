@@ -45,6 +45,15 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eequals_overload ])
       end
 
+      type_instance['to_rational'] = Rip::Core::DelayedProperty.new do |_|
+        to_rational_overload = Rip::Core::NativeOverload.new([
+          Rip::Core::Parameter.new('integer', type_instance)
+        ]) do |context|
+          Rip::Core::Rational.new(context['integer'].data, 1)
+        end
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_rational_overload ])
+      end
+
       type_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
