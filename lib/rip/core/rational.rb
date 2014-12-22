@@ -1,14 +1,10 @@
 module Rip::Core
   class Rational < Rip::Core::Base
-    attr_reader :numerator
-    attr_reader :denominator
     attr_reader :data
 
     def initialize(numerator, denominator, sign = :+)
       super()
 
-      @numerator = numerator
-      @denominator = denominator
       @data = Rational(numerator, denominator) * (sign.to_sym == :+ ? 1 : -1)
 
       self['type'] = self.class.type_instance
@@ -19,7 +15,7 @@ module Rip::Core
     end
 
     def to_s_prep_body
-      super + [ "numerator = #{numerator}, denominator = #{denominator}" ]
+      super + [ "numerator = #{data.numerator}, denominator = #{data.denominator}" ]
     end
 
     def self.from_native(rational)
@@ -57,8 +53,8 @@ module Rip::Core
       type_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
-          this = context['@']
-          Rip::Core::String.from_native("(#{this.numerator} / #{this.denominator})")
+          this_data = context['@'].data
+          Rip::Core::String.from_native("(#{this_data.numerator} / #{this_data.denominator})")
         end
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end

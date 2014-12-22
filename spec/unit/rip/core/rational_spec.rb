@@ -12,7 +12,7 @@ describe Rip::Core::Rational do
     let(:type_to_s) { '#< System.Rational >' }
 
     let(:instance) { pi }
-    let(:instance_to_s) { '#< #< System.Rational > [ %, *, +, -, /, /%, ==, to_string, type ] numerator = 314, denominator = 100 >' }
+    let(:instance_to_s) { '#< #< System.Rational > [ %, *, +, -, /, /%, ==, to_string, type ] numerator = 157, denominator = 50 >' }
   end
 
   describe '.type_instance' do
@@ -29,7 +29,7 @@ describe Rip::Core::Rational do
   end
 
   describe '@.to_string' do
-    specify { expect(pi['to_string'].call([]).to_native).to eq('(314 / 100)') }
+    specify { expect(pi['to_string'].call([]).to_native).to eq('(157 / 50)') }
   end
 
   describe '@.==' do
