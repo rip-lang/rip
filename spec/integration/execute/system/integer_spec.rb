@@ -8,26 +8,18 @@ describe 'System.Integer' do
   ].each do |(operator, a, b, result)|
     describe ".#{operator}" do
       specify do
-        write_file 'sample.rip', <<-RIP
-result = System.Integer.#{operator}(#{a}, #{b})
-System.IO.puts(result)
+        expect(<<-RIP).to output_as("#{result}\n")
+          result = System.Integer.#{operator}(#{a}, #{b})
+          System.IO.puts(result)
         RIP
-
-        run_simple 'rip execute sample.rip'
-
-        expect(all_stdout).to eq("#{result}\n")
       end
     end
 
     describe ".@.#{operator}" do
       specify do
-        write_file 'sample.rip', <<-RIP
-System.IO.puts(#{a} #{operator} #{b})
+        expect(<<-RIP).to output_as("#{result}\n")
+          System.IO.puts(#{a} #{operator} #{b})
         RIP
-
-        run_simple 'rip execute sample.rip'
-
-        expect(all_stdout).to eq("#{result}\n")
       end
     end
   end
