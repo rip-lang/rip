@@ -12,7 +12,7 @@ describe Rip::Core::Rational do
     let(:type_to_s) { '#< System.Rational >' }
 
     let(:instance) { pi }
-    let(:instance_to_s) { '#< #< System.Rational > [ %, *, +, -, /, /%, ==, to_string, type ] numerator = 314, denominator = 100 >' }
+    let(:instance_to_s) { '#< #< System.Rational > [ %, *, +, -, /, /%, ==, to_integer, to_rational, to_string, type ] numerator = 157, denominator = 50 >' }
   end
 
   describe '.type_instance' do
@@ -29,7 +29,7 @@ describe Rip::Core::Rational do
   end
 
   describe '@.to_string' do
-    specify { expect(pi['to_string'].call([]).to_native).to eq('(314 / 100)') }
+    specify { expect(pi['to_string'].call([]).to_native).to eq('(157 / 50)') }
   end
 
   describe '@.==' do
@@ -65,12 +65,11 @@ describe Rip::Core::Rational do
     BinaryOperator.new([-91, 39], :%, [-39, 63], [-10, 21]),
     BinaryOperator.new([-39, 63], :%, [63, 87], [64, 609])
   ].each do |bo|
-    describe "@.#{bo.operator}" do
+    describe "type_instance.#{bo.operator}" do
       let(:lhs) { Rip::Core::Rational.new(*bo.lhs) }
       let(:rhs) { Rip::Core::Rational.new(*bo.rhs) }
       let(:result) { Rip::Core::Rational.new(*bo.result) }
 
-      specify { expect(lhs[bo.operator].call([ rhs ])).to eq(result) }
       specify { expect(Rip::Core::Rational.type_instance[bo.operator].call([ lhs, rhs ])).to eq(result) }
     end
   end
