@@ -17,6 +17,6 @@ describe Rip do
   end
 
   describe '.root' do
-    specify { expect(Rip.root).to eq(Pathname.new('lib').expand_path) }
+    specify { expect(Rip.root).to eq(Pathname.new('source').expand_path) }
   end
 end
