@@ -3,7 +3,7 @@ module Rip
   end
 end
 
-require 'rip/compiler/ast'
-require 'rip/compiler/driver'
-require 'rip/compiler/parser'
-require 'rip/compiler/scope'
+require_relative 'compiler/ast'
+require_relative 'compiler/driver'
+require_relative 'compiler/parser'
+require_relative 'compiler/scope'

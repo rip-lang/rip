@@ -1,9 +1,9 @@
 module Rip::Utilities
 end
 
-require 'rip/utilities/keywords'
-require 'rip/utilities/location'
-require 'rip/utilities/parse_tree_debugger'
-require 'rip/utilities/parse_tree_normalizer'
-require 'rip/utilities/repl'
-require 'rip/utilities/temporary_block'
+require_relative 'utilities/keywords'
+require_relative 'utilities/location'
+require_relative 'utilities/parse_tree_debugger'
+require_relative 'utilities/parse_tree_normalizer'
+require_relative 'utilities/repl'
+require_relative 'utilities/temporary_block'

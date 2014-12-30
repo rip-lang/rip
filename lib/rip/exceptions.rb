@@ -3,11 +3,11 @@ module Rip
   end
 end
 
-require 'rip/exceptions/base'
-require 'rip/exceptions/compiler_exception'
-require 'rip/exceptions/load_exception'
-require 'rip/exceptions/native_exception'
-require 'rip/exceptions/runtime_exception'
+require_relative 'exceptions/base'
+require_relative 'exceptions/compiler_exception'
+require_relative 'exceptions/load_exception'
+require_relative 'exceptions/native_exception'
+require_relative 'exceptions/runtime_exception'
 
-require 'rip/exceptions/syntax_error'
-require 'rip/exceptions/usage_exception'
+require_relative 'exceptions/syntax_error'
+require_relative 'exceptions/usage_exception'

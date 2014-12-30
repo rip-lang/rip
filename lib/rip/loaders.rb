@@ -1,4 +1,4 @@
 module Rip::Loaders
 end
 
-require 'rip/loaders/file_system'
+require_relative 'loaders/file_system'
