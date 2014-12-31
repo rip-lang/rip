@@ -44,6 +44,14 @@ Rip is released under the MIT license. Please see LICENSE.markdown for more deta
 
 Rip is currently implemented as an interpreter written in [Ruby](http://www.ruby-lang.org/). Likely any recent version will due. Eventually Rip will be implemented as a front-end for [LLVM](http://llvm.org/) (implemented in itself).
 
+### Quick start (users):
+
+0. Download an appropriate prepackaged executable from the [release page](http://www.rip-lang.org/downloads).
+   0. If a download isn't available for your platform, try following the contributer instructions below.
+0. Extract the archive somewhere, like `~/bin/rip`.
+0. The `rip` executable will be in `~/bin/rip`, so you'll want to add that directory to your `$PATH`.
+0. `$ rip help`
+
 ### Quick start (contributers):
 
 0. Install Ruby 2. I use [rbenv](https://github.com/sstephenson/rbenv) and [ruby-build](https://github.com/sstephenson/ruby-build), but use whatever floats your boat.
