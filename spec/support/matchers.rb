@@ -47,6 +47,9 @@ RSpec::Matchers.define :output_as do |expected|
 
     run_simple 'rip execute sample.rip'
 
-    all_stdout == expected
+    @expected = expected
+    @actual = all_stdout
+
+    @actual == @expected
   end
 end
