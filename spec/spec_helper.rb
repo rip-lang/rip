@@ -6,7 +6,7 @@ require 'pathname'
 require 'pry'
 require 'ruby-prof'
 
-require_relative '../lib/rip'
+require_relative '../source/rip'
 
 Pathname.glob(Pathname.new(__dir__) + 'support' + '**' + '*.rb').each { |file| require file }
 

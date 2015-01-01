@@ -1,7 +1,5 @@
 module Rip
   module About
-    VERSION = [0, 1, 0]
-
     def self.logo
       <<-'RIP'
          _            _          _
@@ -30,7 +28,7 @@ module Rip
     end
 
     def self.version(verbose = false)
-      reply = "v#{VERSION.join('.')}"
+      reply = 'v0.2.0-pre'
       verbose ? "#{logo.rstrip} #{reply}" : reply
     end
   end

@@ -6,8 +6,6 @@ if File.exists?(ENV['BUNDLE_GEMFILE'])
   Bundler.setup
 end
 
-$LOAD_PATH.unshift(File.expand_path(__dir__ + '/../lib'))
-
 require 'pathname'
 
 module Rip
@@ -29,13 +27,13 @@ module Rip
   end
 end
 
-require 'rip/cli'
+require_relative 'rip/cli'
 
-require 'rip/core'
-require 'rip/exceptions'
-require 'rip/nodes'
-require 'rip/utilities'
+require_relative 'rip/core'
+require_relative 'rip/exceptions'
+require_relative 'rip/nodes'
+require_relative 'rip/utilities'
 
-require 'rip/about'
-require 'rip/compiler'
-require 'rip/loaders'
+require_relative 'rip/about'
+require_relative 'rip/compiler'
+require_relative 'rip/loaders'
