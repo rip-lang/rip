@@ -78,6 +78,14 @@ describe 'System.Number' do
     end
   end
 
+  describe '@.round' do
+    it 'rounds to specified decimal places' do
+      expect(<<-RIP).to output_as('(1571 / 500)', 'round.rip')
+        System.IO.out(3.14159.round(3))
+      RIP
+    end
+  end
+
   describe '@.round_up' do
     it 'rounds positive up to the nearest whole number' do
       expect(<<-RIP).to output_as('(4 / 1)', 'positive_ceiling.rip')
