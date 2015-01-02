@@ -21,7 +21,7 @@ describe Rip::Nodes::BlockBody do
 
   describe '#interpret' do
     it 'returns the last expression' do
-      expect(block_node.interpret(empty_scope)).to eq(Rip::Core::Integer.new(42))
+      expect(block_node.interpret(empty_scope)).to eq(Rip::Core::Rational.integer(42))
     end
 
     it 'doesn\'t cause side-effects on outer scope' do
@@ -50,7 +50,7 @@ describe Rip::Nodes::BlockBody do
       last_value = block_node.interpret(empty_scope) do |statement|
       end
 
-      expect(last_value).to eq(Rip::Core::Integer.new(42))
+      expect(last_value).to eq(Rip::Core::Rational.integer(42))
     end
   end
 end

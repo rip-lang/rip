@@ -11,6 +11,6 @@ describe Rip::Nodes::Invocation do
     let(:callable_node) { Rip::Nodes::Property.new(location, one_node, '+') }
     let(:argument_nodes) { [ Rip::Nodes::Integer.new(location, 2) ] }
 
-    specify { expect(invocation_node.interpret(context)).to eq(Rip::Core::Integer.new(3)) }
+    specify { expect(invocation_node.interpret(context)).to eq(Rip::Core::Rational.integer(3)) }
   end
 end

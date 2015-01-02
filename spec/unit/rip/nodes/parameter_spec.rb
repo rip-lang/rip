@@ -24,11 +24,11 @@ describe Rip::Nodes::Parameter do
 
     context 'with type restriction' do
       let(:type) do
-        Rip::Nodes::Property.new(location, Rip::Nodes::Reference.new(location, 'System'), 'Integer')
+        Rip::Nodes::Property.new(location, Rip::Nodes::Reference.new(location, 'System'), 'Rational')
       end
 
-      it 'only allows integers' do
-        expect(core_parameter.type).to eq(Rip::Core::Integer.type_instance)
+      it 'only allows rationals' do
+        expect(core_parameter.type).to eq(Rip::Core::Rational.type_instance)
       end
     end
   end

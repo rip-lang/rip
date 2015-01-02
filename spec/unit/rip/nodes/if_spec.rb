@@ -22,19 +22,19 @@ describe Rip::Nodes::If do
     context 'argument is true' do
       let(:argument) { Rip::Nodes::Reference.new(location, 'true') }
 
-      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Integer.new(5)) }
+      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Rational.integer(5)) }
     end
 
     context 'argument is false' do
       let(:argument) { Rip::Nodes::Reference.new(location, 'false') }
 
-      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Integer.new(10)) }
+      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Rational.integer(10)) }
     end
 
     context 'argument is converted to boolean' do
       let(:argument) { Rip::Nodes::Integer.new(location, 0) }
 
-      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Integer.new(5)) }
+      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Rational.integer(5)) }
     end
   end
 end

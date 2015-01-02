@@ -12,7 +12,7 @@ describe Rip::Core::Rational do
     let(:type_to_s) { '#< System.Rational >' }
 
     let(:instance) { pi }
-    let(:instance_to_s) { '#< #< System.Rational > [ %, *, +, -, /, /%, ==, to_integer, to_rational, to_string, type ] numerator = 157, denominator = 50 >' }
+    let(:instance_to_s) { '#< #< System.Rational > [ %, *, +, -, /, /%, ==, to_string, type ] numerator = 157, denominator = 50 >' }
   end
 
   describe '.type_instance' do
