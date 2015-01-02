@@ -54,6 +54,24 @@ module Rip::Core
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eequals_overload ])
       end
 
+      type_instance['round_up'] = Rip::Core::DelayedProperty.new do |_|
+        ceiling_overload = Rip::Core::NativeOverload.new([
+          Rip::Core::Parameter.new('number', type_instance)
+        ]) do |context|
+          new(context['number'].data.ceil, 1)
+        end
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ ceiling_overload ])
+      end
+
+      type_instance['round_down'] = Rip::Core::DelayedProperty.new do |_|
+        floor_overload = Rip::Core::NativeOverload.new([
+          Rip::Core::Parameter.new('number', type_instance)
+        ]) do |context|
+          new(context['number'].data.floor, 1)
+        end
+        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ floor_overload ])
+      end
+
       type_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
