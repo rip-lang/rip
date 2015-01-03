@@ -71,7 +71,7 @@ describe 'System.Number' do
       [ nine_i, :%, two_i, one_i_to_s, 'integer % integer, integer result' ],
       [ nine_i, :%, two_d, one_r_to_s, 'integer % rational, rational result' ],
       [ nine_d, :%, two_i, one_r_to_s, 'rational % integer, rational result' ],
-      [ nine_d, :%, two_d, one_r_to_s, 'rational % rational, rational result' ],
+      [ nine_d, :%, two_d, one_r_to_s, 'rational % rational, rational result' ]
     ].each do |(a, operator, b, result, message)|
       specify message do
         expect(<<-RIP).to output_as(result)
