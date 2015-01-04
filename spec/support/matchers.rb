@@ -41,12 +41,15 @@ RSpec::Matchers.define :not_parse do
 end
 
 
-RSpec::Matchers.define :output_as do |expected|
+RSpec::Matchers.define :output_as do |expected, filename = 'sample.rip'|
   match do |source|
-    write_file 'sample.rip', source
+    write_file filename, source
 
-    run_simple 'rip execute sample.rip'
+    run_simple "rip execute #{filename}"
 
-    all_stdout == expected
+    @expected = expected
+    @actual = all_stdout
+
+    @actual == @expected
   end
 end

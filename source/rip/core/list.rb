@@ -31,7 +31,7 @@ module Rip::Core
       end
 
       type_instance['@']['length'] = Rip::Core::DynamicProperty.new do |this|
-        Rip::Core::Integer.new(this.items.count)
+        Rip::Core::Rational.integer(this.items.count)
       end
 
       type_instance['@']['head'] = Rip::Core::DynamicProperty.new do |this|

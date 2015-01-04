@@ -27,21 +27,21 @@ describe Rip::Core::List do
   context 'dynamically computed properties' do
     let(:objects) do
       [
-        Rip::Core::Integer.new(1),
-        Rip::Core::Integer.new(2),
-        Rip::Core::Integer.new(3)
+        Rip::Core::Rational.integer(1),
+        Rip::Core::Rational.integer(2),
+        Rip::Core::Rational.integer(3)
       ]
     end
 
     describe '@.head' do
-      specify { expect(list['head']).to eq(Rip::Core::Integer.new(1)) }
+      specify { expect(list['head']).to eq(Rip::Core::Rational.integer(1)) }
     end
 
     describe '@.tail' do
       let(:expected) do
         Rip::Core::List.new([
-          Rip::Core::Integer.new(2),
-          Rip::Core::Integer.new(3)
+          Rip::Core::Rational.integer(2),
+          Rip::Core::Rational.integer(3)
         ])
       end
 
@@ -52,9 +52,9 @@ describe Rip::Core::List do
   describe '@.reverse' do
     let(:objects) do
       [
-        Rip::Core::Integer.new(1),
-        Rip::Core::Integer.new(10),
-        Rip::Core::Integer.new(100)
+        Rip::Core::Rational.integer(1),
+        Rip::Core::Rational.integer(10),
+        Rip::Core::Rational.integer(100)
       ]
     end
 
@@ -63,9 +63,9 @@ describe Rip::Core::List do
     context 'invocation' do
       let(:reverse_objects) do
         [
-          Rip::Core::Integer.new(100),
-          Rip::Core::Integer.new(10),
-          Rip::Core::Integer.new(1)
+          Rip::Core::Rational.integer(100),
+          Rip::Core::Rational.integer(10),
+          Rip::Core::Rational.integer(1)
         ]
       end
 
@@ -78,9 +78,9 @@ describe Rip::Core::List do
   describe '@.filter' do
     let(:objects) do
       [
-        Rip::Core::Integer.new(1),
-        Rip::Core::Integer.new(2),
-        Rip::Core::Integer.new(3)
+        Rip::Core::Rational.integer(1),
+        Rip::Core::Rational.integer(2),
+        Rip::Core::Rational.integer(3)
       ]
     end
 
@@ -89,16 +89,16 @@ describe Rip::Core::List do
     context 'invocation' do
       let(:sieve) do
         overload = Rip::Core::NativeOverload.new([
-          Rip::Core::Parameter.new('n', Rip::Core::Integer.type_instance)
+          Rip::Core::Parameter.new('n', Rip::Core::Rational.type_instance)
         ]) do |_context|
-          Rip::Core::Boolean.from_native(_context['n'].data.even?)
+          Rip::Core::Boolean.from_native(_context['n'].data.numerator.even?)
         end
         Rip::Core::Lambda.new(context, [ overload ])
       end
 
       let(:expected_items) do
         [
-          Rip::Core::Integer.new(2)
+          Rip::Core::Rational.integer(2)
         ]
       end
 
@@ -118,7 +118,7 @@ describe Rip::Core::List do
 
     context 'non-empty list' do
       let(:rip) { '[1, 2, 3]' }
-      let(:expected) { '[ 1, 2, 3 ]' }
+      let(:expected) { '[ (1 / 1), (2 / 1), (3 / 1) ]' }
 
       specify { expect(actual.to_native).to eq(expected) }
     end

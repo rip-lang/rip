@@ -23,15 +23,23 @@ type {
 		@.type./%(@, other)
 	}
 
+	@.round = -> (precision) {
+		@.type.round(precision, @)
+	}
+
+	@.round_up = -> () {
+		@.type.round_up(@)
+	}
+
+	@.round_down = -> () {
+		@.type.round_down(@)
+	}
+
 	self./% = -> (a, b) {
 		d = a / b
 		r = a % b
 		[ d, r ]
 	}
-
-	@.to_integer = -> { @.type.to_integer(@) }
-
-	@.to_rational = -> { @ }
 
 	to_string = -> { 'System.Rational' }
 }

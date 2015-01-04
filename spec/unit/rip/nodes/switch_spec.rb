@@ -41,7 +41,7 @@ describe Rip::Nodes::Switch do
       let(:switch_argument) { Rip::Nodes::Reference.new(location, 'true') }
 
       it 'interprets the matching case' do
-        expect(switch_node.interpret(context)).to eq(Rip::Core::Integer.new(42))
+        expect(switch_node.interpret(context)).to eq(Rip::Core::Rational.integer(42))
       end
     end
 
@@ -49,7 +49,7 @@ describe Rip::Nodes::Switch do
       let(:switch_argument) { Rip::Nodes::Reference.new(location, 'false') }
 
       it 'interprets the else block' do
-        expect(switch_node.interpret(context)).to eq(Rip::Core::Integer.new(0))
+        expect(switch_node.interpret(context)).to eq(Rip::Core::Rational.integer(0))
       end
     end
 
@@ -57,7 +57,7 @@ describe Rip::Nodes::Switch do
       let(:switch_argument) { nil }
 
       it 'interprets the first case that matches true' do
-        expect(switch_node.interpret(context)).to eq(Rip::Core::Integer.new(42))
+        expect(switch_node.interpret(context)).to eq(Rip::Core::Rational.integer(42))
       end
     end
   end

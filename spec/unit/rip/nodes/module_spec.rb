@@ -17,7 +17,7 @@ describe Rip::Nodes::Module do
     end
 
     it 'returns the last expression' do
-      expect(module_node.interpret(empty_scope)).to eq(Rip::Core::Integer.new(42))
+      expect(module_node.interpret(empty_scope)).to eq(Rip::Core::Rational.integer(42))
     end
   end
 end

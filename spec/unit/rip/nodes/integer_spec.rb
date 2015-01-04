@@ -9,7 +9,7 @@ describe Rip::Nodes::Integer do
 
   describe '#interpret' do
     it 'returns a Rip object representing a number' do
-      expect(integer_node.interpret(empty_scope)).to eq(Rip::Core::Integer.new(42))
+      expect(integer_node.interpret(empty_scope)).to eq(Rip::Core::Rational.integer(42))
     end
   end
 end

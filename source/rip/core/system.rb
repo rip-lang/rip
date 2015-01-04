@@ -20,7 +20,6 @@ module Rip::Core
       # type_instance['DateTime']          = Rip::Core::DelayedProperty.new { |_| Rip::Core::DateTime.type_instance }
       # type_instance['Decimal']           = Rip::Core::DelayedProperty.new { |_| Rip::Core::Decimal.type_instance }
       # type_instance['Exception']         = Rip::Core::DelayedProperty.new { |_| Rip::Core::Exception.type_instance }
-      type_instance['Integer']           = Rip::Core::DelayedProperty.new { |_| Rip::Core::Integer.type_instance }
       type_instance['IO']                = Rip::Core::DelayedProperty.new { |_| Rip::Core::IO.type_instance }
       # type_instance['KeyValue']          = Rip::Core::DelayedProperty.new { |_| Rip::Core::KeyValue.type_instance }
       # type_instance['Lambda']            = Rip::Core::DelayedProperty.new { |_| Rip::Core::Lambda.type_instance }

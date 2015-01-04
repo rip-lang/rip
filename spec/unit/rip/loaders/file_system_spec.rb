@@ -19,7 +19,7 @@ describe Rip::Loaders::FileSystem do
 
   describe '#load' do
     context 'module found' do
-      specify { expect(loader.load).to eq(Rip::Core::Integer.new(42)) }
+      specify { expect(loader.load).to eq(Rip::Core::Rational.integer(42)) }
     end
 
     context 'module not found' do

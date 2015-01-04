@@ -1,7 +1,7 @@
 module Rip::Nodes
   class Integer < Number
     def interpret(context)
-      Rip::Core::Integer.new(data.to_i, sign)
+      Rip::Core::Rational.new(data.to_i, 1, sign)
     end
   end
 end
