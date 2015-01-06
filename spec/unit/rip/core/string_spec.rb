@@ -39,6 +39,34 @@ describe Rip::Core::String do
     specify { expect(string['type']).to be(type_instance) }
   end
 
+  describe '@.+' do
+    let(:characters) do
+      [
+        Rip::Core::Character.new('c'),
+        Rip::Core::Character.new('a'),
+        Rip::Core::Character.new('t')
+      ]
+    end
+
+    specify { expect(string['+']).to be_a(Rip::Core::Lambda) }
+
+    context 'invocation' do
+      let(:actual) do
+        dog = Rip::Core::String.new([
+          Rip::Core::Character.new('D'),
+          Rip::Core::Character.new('O'),
+          Rip::Core::Character.new('G')
+        ])
+
+        string['+'].call([ dog ])
+      end
+
+      let(:expected) { Rip::Core::String.from_native('catDOG') }
+
+      specify { expect(actual).to eq(expected) }
+    end
+  end
+
   describe '@.uppercase' do
     let(:characters) do
       [

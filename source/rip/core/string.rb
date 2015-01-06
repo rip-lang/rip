@@ -34,6 +34,18 @@ module Rip::Core
     end
 
     define_type_instance('string') do |type_instance|
+      type_instance['+'] = Rip::Core::DelayedProperty.new do |_|
+        plus_overload = Rip::Core::NativeOverload.new([
+          Rip::Core::Parameter.new('a', type_instance),
+          Rip::Core::Parameter.new('b', type_instance)
+        ]) do |context|
+          a = context['a']
+          b = context['b']
+          Rip::Core::String.new(a.characters + b.characters)
+        end
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.new, [ plus_overload ])
+      end
+
       type_instance['@']['uppercase'] = Rip::Core::DelayedProperty.new do |_|
         uppercase_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
