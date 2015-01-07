@@ -5,7 +5,7 @@ describe 'System.Number' do
 
   context 'convert between integers and rationals' do
     let(:answer) { '42' }
-    let(:answer_to_s) { '(42 / 1)' }
+    let(:answer_to_s) { '42' }
 
     let(:pi) { '3.14' }
     let(:pi_to_s) { '(157 / 50)' }
@@ -24,20 +24,20 @@ describe 'System.Number' do
   end
 
   describe do
-    one_to_s = '(1 / 1)'
+    one_to_s = '1'
 
     two_i = '2'
     two_d = '2.0'
 
     three_i = '3'
     three_d = '3.0'
-    three_to_s = '(3 / 1)'
+    three_to_s = '3'
 
     nine_halfs_to_s = '(9 / 2)'
 
-    five_to_s = '(5 / 1)'
+    five_to_s = '5'
 
-    six_to_s = '(6 / 1)'
+    six_to_s = '6'
 
     nine_i = '9'
     nine_d = '9.0'
@@ -88,13 +88,13 @@ describe 'System.Number' do
 
   describe '@.round_up' do
     it 'rounds positive up to the nearest whole number' do
-      expect(<<-RIP).to output_as('(4 / 1)', 'positive_ceiling.rip')
+      expect(<<-RIP).to output_as('4', 'positive_ceiling.rip')
         System.IO.out(3.14.round_up())
       RIP
     end
 
     it 'rounds negative up to the nearest whole number' do
-      expect(<<-RIP).to output_as('(-3 / 1)', 'negative_ceiling.rip')
+      expect(<<-RIP).to output_as('-3', 'negative_ceiling.rip')
         System.IO.out(-3.14.round_up())
       RIP
     end
@@ -102,13 +102,13 @@ describe 'System.Number' do
 
   describe '@.round_down' do
     it 'rounds positive down to the nearest whole number' do
-      expect(<<-RIP).to output_as('(3 / 1)', 'positive_floor.rip')
+      expect(<<-RIP).to output_as('3', 'positive_floor.rip')
         System.IO.out(3.14.round_down())
       RIP
     end
 
     it 'rounds negative down to the nearest whole number' do
-      expect(<<-RIP).to output_as('(-4 / 1)', 'negative_floor.rip')
+      expect(<<-RIP).to output_as('-4', 'negative_floor.rip')
         System.IO.out(-3.14.round_down())
       RIP
     end

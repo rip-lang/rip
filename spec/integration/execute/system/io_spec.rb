@@ -21,7 +21,7 @@ System.IO.out(42)
 
       run_simple 'rip execute sample.rip'
 
-      expect(all_stdout).to eq('(42 / 1)')
+      expect(all_stdout).to eq('42')
     end
   end
 
@@ -44,7 +44,7 @@ System.IO.error(42)
 
       run_simple 'rip execute sample.rip'
 
-      expect(all_stderr).to eq('(42 / 1)')
+      expect(all_stderr).to eq('42')
     end
   end
 

@@ -88,7 +88,8 @@ module Rip::Core
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           this_data = context['@'].data
-          Rip::Core::String.from_native("(#{this_data.numerator} / #{this_data.denominator})")
+          native = this_data.denominator == 1 ? this_data.numerator.to_s : "(#{this_data.numerator} / #{this_data.denominator})"
+          Rip::Core::String.from_native(native)
         end
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end

@@ -118,7 +118,7 @@ describe Rip::Core::List do
 
     context 'non-empty list' do
       let(:rip) { '[1, 2, 3]' }
-      let(:expected) { '[ (1 / 1), (2 / 1), (3 / 1) ]' }
+      let(:expected) { '[ 1, 2, 3 ]' }
 
       specify { expect(actual.to_native).to eq(expected) }
     end
