@@ -59,7 +59,7 @@ module Rip::Core
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           items = context['@'].items.map do |item|
-            string = item['to_string'].call([]).characters.map(&:data).join('')
+            string = item['to_string'].call([]).to_native
 
             item.is_a?(Rip::Core::String) ? string.inspect : string
           end

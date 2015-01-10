@@ -94,7 +94,7 @@ Type "help" for help, "exit" to quit
       warn '!!! NOT IMPLEMENTED YET !!!' unless result
 
       begin
-        _result = result['to_string'].call([]).characters.map(&:data).join('')
+        _result = result['to_string'].call([]).to_native
 
         if result.is_a?(Rip::Core::String)
           puts _result.inspect

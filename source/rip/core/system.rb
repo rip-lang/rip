@@ -5,7 +5,7 @@ module Rip::Core
         overload = Rip::Core::NativeOverload.new([
           Rip::Core::Parameter.new('module_name', Rip::Core::String.type_instance)
         ]) do |context|
-          module_name = context['module_name'].characters.map(&:data).join
+          module_name = context['module_name'].to_native
 
           Rip::Loaders::FileSystem.load_module(module_name, context.origin).tap do |reply|
             raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`", context.origin) if reply.nil?
