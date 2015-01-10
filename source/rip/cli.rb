@@ -69,7 +69,7 @@ Usage:
       if origin.nil?
         STDIN
       else
-        Rip.project_path.join(origin).expand_path
+        (Pathname.pwd + origin).expand_path
       end
     end
 

@@ -14,14 +14,6 @@ module Rip
     Rip::Compiler::Driver.new(parser.syntax_tree).interpret
   end
 
-  def self.project_path
-    Pathname.new(@path || '.').expand_path
-  end
-
-  def self.project_path=(path)
-    @path = path
-  end
-
   def self.root
     Pathname.new(__dir__).expand_path
   end
