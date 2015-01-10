@@ -6,10 +6,7 @@ module Rip::Core
           Rip::Core::Parameter.new('module_name', Rip::Core::String.type_instance)
         ]) do |context|
           module_name = context['module_name'].to_native
-
-          Rip::Loaders::FileSystem.load_module(module_name, context.origin).tap do |reply|
-            raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`", context.origin) if reply.nil?
-          end
+          Rip::Loaders::FileSystem.new(context.origin + module_name).load
         end
 
         Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ overload ])

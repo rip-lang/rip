@@ -16,7 +16,7 @@ module Rip
     desc 'execute [file]', 'Read and execute [file] (or standard in)'
     def execute(file = nil)
       wrap_exceptions do
-        Rip::Compiler::Driver.new(syntax_tree(file)).interpret
+        loader(file).load
       end
     end
 
@@ -61,32 +61,24 @@ Usage:
 
     protected
 
-    def load_source_code(origin)
-      resolve_origin(origin).read
-    end
-
-    def resolve_origin(origin)
-      if origin.nil?
-        STDIN
+    def loader(origin)
+      if origin
+        Rip::Loaders::FileSystem.new((Pathname.pwd + origin).expand_path)
       else
-        (Pathname.pwd + origin).expand_path
+        Rip::Loaders::StandardIn.new
       end
     end
 
-    def parser(origin)
-      Rip::Compiler::Parser.new(resolve_origin(origin), load_source_code(origin))
-    end
-
     def raw_parse_tree(origin)
-      parser(origin).raw_parse_tree
+      loader(origin).parser.raw_parse_tree
     end
 
     def parse_tree(origin)
-      parser(origin).parse_tree
+      loader(origin).parser.parse_tree
     end
 
     def syntax_tree(origin)
-      parser(origin).syntax_tree
+      loader(origin).parser.syntax_tree
     end
 
     def wrap_exceptions(&block)
