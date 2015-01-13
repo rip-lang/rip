@@ -12,7 +12,7 @@ describe Rip::Core::List do
     let(:type_to_s) { '#< System.List >' }
 
     let(:instance) { list }
-    let(:instance_to_s) { '#< #< System.List > [ +, <<, filter, fold, head, length, map, reverse, tail, to_string, type ] items = [  ] >' }
+    let(:instance_to_s) { '#< #< System.List > [ +, <<, filter, fold, head, join, length, map, reverse, tail, to_string, type ] items = [  ] >' }
   end
 
   describe '.type_instance' do
@@ -47,6 +47,20 @@ describe Rip::Core::List do
 
       specify { expect(list['tail']).to eq(expected) }
     end
+  end
+
+  describe '@.join' do
+    let(:objects) do
+      [
+        Rip::Core::Rational.new(1, 1),
+        Rip::Core::Rational.new(2, 1),
+        Rip::Core::Rational.new(3, 1)
+      ]
+    end
+    let(:glue) { Rip::Core::String.from_native('+') }
+    let(:expected) { Rip::Core::String.from_native('1+2+3') }
+
+    specify { expect(list['join'].call(glue)).to eq(expected) }
   end
 
   describe '@.reverse' do
@@ -118,7 +132,7 @@ describe Rip::Core::List do
 
     context 'non-empty list' do
       let(:rip) { '[1, 2, 3]' }
-      let(:expected) { '[ (1 / 1), (2 / 1), (3 / 1) ]' }
+      let(:expected) { '[ 1, 2, 3 ]' }
 
       specify { expect(actual.to_native).to eq(expected) }
     end

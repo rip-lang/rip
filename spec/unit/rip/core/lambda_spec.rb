@@ -328,7 +328,7 @@ describe Rip::Core::Lambda do
       end
 
       it 'uses the bound receiver' do
-        expect(bound_answer.call([]).to_native).to eq('(42 / 1)')
+        expect(bound_answer.call([]).to_native).to eq('42')
         expect(bound_language.call([]).to_native).to eq('Rip')
       end
     end

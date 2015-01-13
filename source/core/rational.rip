@@ -1,4 +1,20 @@
 type {
+	@.< = -> (other) {
+		@.type.<(@, other)
+	}
+
+	@.<= = -> (other) {
+		@.type.<=(@, other)
+	}
+
+	@.> = -> (other) {
+		@.type.>(@, other)
+	}
+
+	@.>= = -> (other) {
+		@.type.>=(@, other)
+	}
+
 	@.+ = -> (other) {
 		@.type.+(@, other)
 	}

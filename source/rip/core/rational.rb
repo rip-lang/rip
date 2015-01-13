@@ -45,6 +45,22 @@ module Rip::Core
         end
       end
 
+      %w[
+        < <=
+        > >=
+      ].each do |property|
+        type_instance[property] = Rip::Core::DelayedProperty.new do |_|
+          overload = Rip::Core::NativeOverload.new([
+            Rip::Core::Parameter.new('a', type_instance),
+            Rip::Core::Parameter.new('b', type_instance)
+          ]) do |context|
+            Rip::Core::Boolean.from_native(context['a'].data.send(property, context['b'].data))
+          end
+
+          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
+        end
+      end
+
       type_instance['@']['=='] = Rip::Core::DelayedProperty.new do |_|
         eequals_overload = Rip::Core::NativeOverload.new([
           Rip::Core::Parameter.new('other', type_instance)
@@ -88,7 +104,8 @@ module Rip::Core
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           this_data = context['@'].data
-          Rip::Core::String.from_native("(#{this_data.numerator} / #{this_data.denominator})")
+          native = this_data.denominator == 1 ? this_data.numerator.to_s : "(#{this_data.numerator} / #{this_data.denominator})"
+          Rip::Core::String.from_native(native)
         end
         Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
       end

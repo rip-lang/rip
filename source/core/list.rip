@@ -16,6 +16,10 @@ type {
 		@.type.fold(folder, initial, @)
 	}
 
+	@.join = -> (glue) {
+		@.type.join(glue, @)
+	}
+
 	@.map = -> (mapper) {
 		@.type.map(mapper, @)
 	}
@@ -36,6 +40,14 @@ type {
 		} else {
 			fold(folder, folder(initial, items.head), items.tail)
 		}
+	}
+
+	join = -> (glue, items) {
+		_glue = glue.to_string()
+
+		fold(-> (memo, item) {
+			memo + _glue + item.to_string()
+		}, items.head.to_string(), items.tail)
 	}
 
 	map = -> (mapper, items) {
