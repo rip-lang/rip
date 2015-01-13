@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Nodes::Case do
   let(:location) { location_for }
 
-  let(:context) { Rip::Compiler::Driver.global_context.nested_context }
+  let(:context) { Rip::Compiler::Scope.global_context.nested_context }
 
   let(:case_body_nodes) { [] }
 

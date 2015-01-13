@@ -7,7 +7,7 @@ describe Rip::Nodes::Parameter do
   let(:type) { nil }
   let(:parameter) { Rip::Nodes::Parameter.new(location, name, type) }
 
-  let(:context) { Rip::Compiler::Driver.global_context.nested_context }
+  let(:context) { Rip::Compiler::Scope.global_context.nested_context }
 
   describe '#interpret' do
     let(:core_parameter) { parameter.interpret(context) }

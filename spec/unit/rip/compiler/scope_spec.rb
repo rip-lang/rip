@@ -74,4 +74,30 @@ describe Rip::Compiler::Scope do
   describe '#symbols' do
     specify { expect(scope_foo.symbols).to match_array(['foo']) }
   end
+
+  describe '.global_context' do
+    let(:location) { location_for }
+
+    context 'provides globally assumed members' do
+      specify { expect(Rip::Compiler::Scope.global_context.symbols).to match_array(['System', 'true', 'false']) }
+
+      context 'System' do
+        let(:expected) { Rip::Nodes::Reference.new(location, 'System').interpret(Rip::Compiler::Scope.global_context) }
+
+        specify { expect(Rip::Compiler::Scope.global_context['System']).to eq(expected) }
+      end
+
+      context 'true' do
+        let(:expected) { Rip::Nodes::Reference.new(location, 'true').interpret(Rip::Compiler::Scope.global_context) }
+
+        specify { expect(Rip::Compiler::Scope.global_context['true']).to eq(expected) }
+      end
+
+      context 'false' do
+        let(:expected) { Rip::Nodes::Reference.new(location, 'false').interpret(Rip::Compiler::Scope.global_context) }
+
+        specify { expect(Rip::Compiler::Scope.global_context['false']).to eq(expected) }
+      end
+    end
+  end
 end

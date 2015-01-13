@@ -57,8 +57,7 @@ describe Rip::Core::System do
 
       specify do
         in_current_dir do
-          characters = 'hello, world'.split('').map { |c| Rip::Core::Character.new(c) }
-          expect(final_result).to eq(Rip::Core::String.new(characters))
+          expect(final_result).to eq(Rip::Core::String.from_native('hello, world'))
         end
       end
     end

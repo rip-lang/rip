@@ -50,10 +50,32 @@ module Rip::Compiler
       inspect
     end
 
+    def self.global_context
+      @global_context ||= new(root_state, Pathname.pwd)
+    end
+
     protected
 
     def keys
       state.keys
+    end
+
+    def self.root_state
+      @root_state ||= Hash.new do |root, key|
+        _key = key.to_s
+
+        _reply = case _key
+          when 'System' then Rip::Core::System.type_instance
+          when 'true'   then Rip::Core::Boolean.true
+          when 'false'  then Rip::Core::Boolean.false
+        end
+
+        root[_key] = _reply if _reply
+      end.tap do |reply|
+        def reply.keys
+          %w[ System true false ]
+        end
+      end
     end
   end
 end
