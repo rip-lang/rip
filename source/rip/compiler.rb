@@ -4,6 +4,5 @@ module Rip
 end
 
 require_relative 'compiler/ast'
-require_relative 'compiler/driver'
 require_relative 'compiler/parser'
 require_relative 'compiler/scope'

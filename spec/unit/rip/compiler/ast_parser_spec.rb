@@ -303,8 +303,6 @@ describe Rip::Compiler::AST do
   context 'lambdas' do
     let(:rip) { '-> (question, answer<System.Integer>) {}' }
 
-    let(:context) { Rip::Compiler::Driver.global_context }
-
     let(:system_type_node) { Rip::Nodes::Reference.new(location.add_character(21), 'System') }
     let(:integer_type_node) { Rip::Nodes::Property.new(location.add_character(27), system_type_node, 'Integer') }
     let(:parameter_nodes) do
