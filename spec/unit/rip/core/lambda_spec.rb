@@ -199,8 +199,14 @@ describe Rip::Core::Lambda do
     end
 
     context 'when receiver is a lambda' do
-      let(:rip) { '-> { 42 }' }
-      let(:answer_lambda) { Rip.interpret(rip) }
+      let(:answer_body) do
+        Rip::Nodes::BlockBody.new(location, [
+          Rip::Nodes::Integer.new(location, 42)
+        ])
+      end
+
+      let(:answer_overload) { Rip::Core::Overload.new([], answer_body) }
+      let(:answer_lambda) { Rip::Core::Lambda.new(context, [ answer_overload ]) }
 
       it 'has no receiver' do
         expect { answer_lambda['@'] }.to raise_error(Rip::Exceptions::RuntimeException)
@@ -349,16 +355,19 @@ describe Rip::Core::Lambda do
   end
 
   describe '@.to_string' do
-    let(:rip_lambda) { Rip.interpret(rip) }
+    let(:body) do
+      Rip::Nodes::BlockBody.new(location, [
+        Rip::Nodes::Integer.new(location, 42)
+      ])
+    end
+
+    let(:rip_lambda) { Rip::Core::Lambda.new(context, overloads) }
+
     let(:actual) { rip_lambda['to_string'].call([]) }
     let(:expected) { Rip::Core::String.from_native(expected_native) }
 
     context 'single overload, no parameters' do
-      let(:rip) do
-        <<-RIP
--> { 42 }
-        RIP
-      end
+      let(:overloads) { [ Rip::Core::Overload.new([], body) ] }
 
       let(:expected_native) do
         <<-STRING
@@ -372,14 +381,17 @@ describe Rip::Core::Lambda do
     end
 
     context 'multiple overloads, yes parameters', :blur do
-      let(:rip) do
-        <<-RIP
-=> {
-  -> { 42 }
-  -> (a) { 42 }
-  -> (a, b<System.Rational>) { 42 }
-}
-        RIP
+      let(:overloads) do
+        [
+          Rip::Core::Overload.new([], body),
+          Rip::Core::Overload.new([
+            Rip::Core::Parameter.new('a', Rip::Core::Object.type_instance)
+          ], body),
+          Rip::Core::Overload.new([
+            Rip::Core::Parameter.new('a', Rip::Core::Object.type_instance),
+            Rip::Core::Parameter.new('b', Rip::Core::Rational.type_instance)
+          ], body)
+        ]
       end
 
       let(:expected_native) do
