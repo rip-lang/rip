@@ -8,10 +8,8 @@ module Rip::Loaders
     end
 
     def load
-      syntax_tree = parser.syntax_tree
-
-      if syntax_tree
-        syntax_tree.interpret(context)
+      if parser
+        parser.syntax_tree.interpret(context)
       else
         raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`", nil, caller)
       end
