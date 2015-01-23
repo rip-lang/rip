@@ -19,7 +19,10 @@ module Rip::Nodes
       _arguments = arguments.map do |argument|
         argument.interpret(context)
       end
-      callable.interpret(context).call(_arguments)
+
+      _context = Rip::Compiler::Scope.new(context, callable.location.origin)
+
+      callable.interpret(_context).call(_context, _arguments)
     end
 
     def to_debug(level = 0)

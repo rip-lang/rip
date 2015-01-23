@@ -19,7 +19,7 @@ module Rip::Nodes
     end
 
     def interpret(context)
-      _argument = argument.interpret(context)['to_boolean'].call([])
+      _argument = argument.interpret(context)['to_boolean'].call(context, [])
 
       if _argument == Rip::Core::Boolean.true
         true_body.interpret(context)

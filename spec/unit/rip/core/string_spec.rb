@@ -58,7 +58,7 @@ describe Rip::Core::String do
           Rip::Core::Character.new('G')
         ])
 
-        string['+'].call([ dog ])
+        string['+'].call(context, [ dog ])
       end
 
       let(:expected) { Rip::Core::String.from_native('catDOG') }
@@ -87,7 +87,7 @@ describe Rip::Core::String do
         ]
       end
 
-      let(:uppercase_string) { string['uppercase'].call([]) }
+      let(:uppercase_string) { string['uppercase'].call(context, []) }
 
       specify { expect(uppercase_string).to eq(Rip::Core::String.new(uppercase_characters)) }
     end
@@ -113,7 +113,7 @@ describe Rip::Core::String do
         ]
       end
 
-      let(:lowercase_string) { string['lowercase'].call([]) }
+      let(:lowercase_string) { string['lowercase'].call(context, []) }
 
       specify { expect(lowercase_string).to eq(Rip::Core::String.new(lowercase_characters)) }
     end
@@ -139,7 +139,7 @@ describe Rip::Core::String do
         ]
       end
 
-      let(:reverse_string) { string['reverse'].call([]) }
+      let(:reverse_string) { string['reverse'].call(context, []) }
 
       specify { expect(reverse_string).to eq(Rip::Core::String.new(reverse_characters)) }
     end
@@ -147,7 +147,7 @@ describe Rip::Core::String do
 
   describe '@.to_string' do
     context 'empty string' do
-      specify { expect(string['to_string'].call([])).to eq(string) }
+      specify { expect(string['to_string'].call(context, [])).to eq(string) }
     end
 
     context 'non-empty string' do
@@ -159,7 +159,7 @@ describe Rip::Core::String do
         ]
       end
 
-      specify { expect(string['to_string'].call([])).to eq(string) }
+      specify { expect(string['to_string'].call(context, [])).to eq(string) }
     end
   end
 end

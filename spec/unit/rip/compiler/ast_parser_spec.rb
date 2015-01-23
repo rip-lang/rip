@@ -241,7 +241,7 @@ describe Rip::Compiler::AST do
   end
 
   context 'assignment' do
-    let(:line_two) { new_location(:rspec, 10, 2, 1) }
+    let(:line_two) { new_location(Pathname.pwd, 10, 2, 1) }
     let(:rip) { "# find me\nlanguage = :rip" }
     let(:reference_node) { Rip::Nodes::Reference.new(line_two, 'language') }
     let(:characters) do

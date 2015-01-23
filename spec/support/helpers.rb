@@ -1,6 +1,6 @@
 module RSpecHelpers
   def build_ast(source)
-    Rip::Compiler::Parser.new(:rspec, source).syntax_tree
+    Rip::Compiler::Parser.new(Pathname.pwd, source).syntax_tree
   end
 
   def debug_ast(ast)
@@ -51,7 +51,7 @@ module RSpecHelpers
   end
 
   def location_for(options = {})
-    origin = options[:origin] || :rspec
+    origin = options[:origin] || Pathname.pwd
     offset = options[:offset] || 0
     line = options[:line] || 1
     column = options[:column] || 1
@@ -59,7 +59,7 @@ module RSpecHelpers
   end
 
   def parser(source_code)
-    Rip::Compiler::Parser.new(:rspec, source_code)
+    Rip::Compiler::Parser.new(Pathname.pwd, source_code)
   end
 
   def raw_parse_tree(source_code)

@@ -51,7 +51,7 @@ module Rip::Core
         ]) do |context|
           this = context['@']
           characters = this.characters.map do |character|
-            character['uppercase'].call([])
+            character['uppercase'].call(context, [])
           end
           new(characters)
         end
@@ -63,7 +63,7 @@ module Rip::Core
         ]) do |context|
           this = context['@']
           characters = this.characters.map do |character|
-            character['lowercase'].call([])
+            character['lowercase'].call(context, [])
           end
           new(characters)
         end

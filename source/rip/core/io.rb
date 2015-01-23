@@ -23,7 +23,7 @@ module Rip::Core
           overload_2 = Rip::Core::NativeOverload.new([
             Rip::Core::Parameter.new('object', Rip::Core::Object.type_instance)
           ]) do |context|
-            context['self'].call([ context['object']['to_string'].call([]) ])
+            context['self'].call(context, [ context['object']['to_string'].call(context, []) ])
           end
 
           Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ overload_1, overload_2 ])

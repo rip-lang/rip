@@ -6,7 +6,7 @@ module Rip::Compiler
     def initialize(outer_context = {}, origin = nil)
       @state = {}
       @outer_context = outer_context
-      @origin = origin
+      @origin = origin.file? ? origin.dirname : origin if origin
     end
 
     def ==(other)

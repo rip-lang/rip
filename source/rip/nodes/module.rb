@@ -13,8 +13,7 @@ module Rip::Nodes
     end
 
     def interpret(context)
-      _context = Rip::Compiler::Scope.new(context, location.origin)
-      body.interpret(_context)
+      body.interpret(context.nested_context)
     end
 
     def to_debug(level = 0)

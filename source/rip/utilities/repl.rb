@@ -5,7 +5,7 @@ module Rip::Utilities
     end
 
     def start
-      context = Rip::Compiler::Scope.new(Rip::Compiler::Scope.global_context, :repl)
+      context = Rip::Compiler::Scope.new(Rip::Compiler::Scope.global_context, Pathname.pwd)
 
       print_welcome
 
@@ -14,7 +14,7 @@ module Rip::Utilities
 
         begin
           unless run_command(line, context)
-            print_result(execute_source(line, context))
+            print_result(execute_source(line, context), context)
           end
         rescue Rip::Exceptions::Base => e
           warn e.dump
@@ -32,7 +32,7 @@ module Rip::Utilities
     protected
 
     def execute_source(line, context)
-      line_parse_tree = Rip::Compiler::Parser.new(:repl, line)
+      line_parse_tree = Rip::Compiler::Parser.new(Pathname.pwd, line)
       line_syntax_tree = line_parse_tree.syntax_tree
 
       line_syntax_tree.body.statements.map do |statement|
@@ -90,11 +90,11 @@ Type "help" for help, "exit" to quit
       STDIN.gets
     end
 
-    def print_result(result)
+    def print_result(result, context)
       warn '!!! NOT IMPLEMENTED YET !!!' unless result
 
       begin
-        _result = result['to_string'].call([]).to_native
+        _result = result['to_string'].call(context, []).to_native
 
         if result.is_a?(Rip::Core::String)
           puts _result.inspect

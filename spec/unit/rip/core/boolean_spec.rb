@@ -25,12 +25,12 @@ describe Rip::Core::Boolean do
   end
 
   describe '@.to_boolean' do
-    specify { expect(rip_true['to_boolean'].call([])).to eq(rip_true) }
-    specify { expect(rip_false['to_boolean'].call([])).to eq(rip_false) }
+    specify { expect(rip_true['to_boolean'].call(context, [])).to eq(rip_true) }
+    specify { expect(rip_false['to_boolean'].call(context, [])).to eq(rip_false) }
   end
 
   describe '@.to_string' do
-    specify { expect(rip_true['to_string'].call([])).to eq(Rip::Core::String.from_native('true')) }
-    specify { expect(rip_false['to_string'].call([])).to eq(Rip::Core::String.from_native('false')) }
+    specify { expect(rip_true['to_string'].call(context, [])).to eq(Rip::Core::String.from_native('true')) }
+    specify { expect(rip_false['to_string'].call(context, [])).to eq(Rip::Core::String.from_native('false')) }
   end
 end

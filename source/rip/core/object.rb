@@ -32,7 +32,7 @@ module Rip::Core
           eeequals_overload = Rip::Core::NativeOverload.new([
             Rip::Core::Parameter.new('other', reply)
           ]) do |context|
-            context['@']['=='].call([ context['other'] ])
+            context['@']['=='].call(context, [ context['other'] ])
           end
           Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ eeequals_overload ])
         end
