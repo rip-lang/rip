@@ -15,7 +15,7 @@ module Rip::Loaders
     end
 
     def parser
-      Rip::Compiler::Parser.new(module_name, module_name.read) if module_name.file?
+      @parser ||= Rip::Compiler::Parser.new(module_name, module_name.read) if module_name.file?
     end
   end
 end

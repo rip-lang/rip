@@ -6,7 +6,7 @@ module Rip::Loaders
     end
 
     def parser
-      Rip::Compiler::Parser.new(module_name, STDIN.read)
+      @parser ||= Rip::Compiler::Parser.new(module_name, STDIN.read)
     end
   end
 end
