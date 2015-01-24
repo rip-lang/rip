@@ -9,10 +9,10 @@ module Rip::Core
       # type_instance['Exception']         = Rip::Core::DelayedProperty.new { |_| Rip::Core::Exception.type_instance }
       type_instance['IO']                = Rip::Core::DelayedProperty.new { |_| Rip::Core::IO.type_instance }
       # type_instance['KeyValue']          = Rip::Core::DelayedProperty.new { |_| Rip::Core::KeyValue.type_instance }
-      # type_instance['Lambda']            = Rip::Core::DelayedProperty.new { |_| Rip::Core::Lambda.type_instance }
+      type_instance['Lambda']            = Rip::Core::DelayedProperty.new { |_| Rip::Core::Lambda.type_instance }
       type_instance['List']              = Rip::Core::DelayedProperty.new { |_| Rip::Core::List.type_instance }
       # type_instance['Map']               = Rip::Core::DelayedProperty.new { |_| Rip::Core::Map.type_instance }
-      # type_instance['Object']            = Rip::Core::DelayedProperty.new { |_| Rip::Core::Object.type_instance }
+      type_instance['Object']            = Rip::Core::DelayedProperty.new { |_| Rip::Core::Object.type_instance }
       # type_instance['Range']             = Rip::Core::DelayedProperty.new { |_| Rip::Core::Range.type_instance }
       type_instance['Rational']          = Rip::Core::DelayedProperty.new { |_| Rip::Core::Rational.type_instance }
       # type_instance['RegularExpression'] = Rip::Core::DelayedProperty.new { |_| Rip::Core::RegularExpression.type_instance }
