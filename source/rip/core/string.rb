@@ -51,11 +51,11 @@ module Rip::Core
         ]) do |context|
           this = context['@']
           characters = this.characters.map do |character|
-            character['uppercase'].call([])
+            character['uppercase'].call(context, [])
           end
           new(characters)
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ uppercase_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ uppercase_overload ])
       end
 
       type_instance['@']['lowercase'] = Rip::Core::DelayedProperty.new do |_|
@@ -63,11 +63,11 @@ module Rip::Core
         ]) do |context|
           this = context['@']
           characters = this.characters.map do |character|
-            character['lowercase'].call([])
+            character['lowercase'].call(context, [])
           end
           new(characters)
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ lowercase_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ lowercase_overload ])
       end
 
       type_instance['strip'] = Rip::Core::DelayedProperty.new do |_|
@@ -77,7 +77,7 @@ module Rip::Core
           this = context['string']
           from_native(this.to_native.strip)
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ strip_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ strip_overload ])
       end
 
       def type_instance.to_s

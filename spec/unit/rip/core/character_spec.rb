@@ -30,7 +30,7 @@ describe Rip::Core::Character do
     specify { expect(character['uppercase']).to be_a(Rip::Core::Lambda) }
 
     context 'invocation' do
-      let(:uppercase_character) { character['uppercase'].call([]) }
+      let(:uppercase_character) { character['uppercase'].call(context, []) }
 
       specify { expect(uppercase_character).to eq(Rip::Core::Character.new('T')) }
     end
@@ -42,13 +42,13 @@ describe Rip::Core::Character do
     specify { expect(character['lowercase']).to be_a(Rip::Core::Lambda) }
 
     context 'invocation' do
-      let(:lowercase_character) { character['lowercase'].call([]) }
+      let(:lowercase_character) { character['lowercase'].call(context, []) }
 
       specify { expect(lowercase_character).to eq(Rip::Core::Character.new('g')) }
     end
   end
 
   describe '@.to_string' do
-    specify { expect(character['to_string'].call([])).to eq(Rip::Core::String.from_native('`r')) }
+    specify { expect(character['to_string'].call(context, [])).to eq(Rip::Core::String.from_native('`r')) }
   end
 end

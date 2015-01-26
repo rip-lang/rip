@@ -5,13 +5,11 @@ module Rip::Core
         overload = Rip::Core::NativeOverload.new([
           Rip::Core::Parameter.new('module_name', Rip::Core::String.type_instance)
         ]) do |context|
-          module_name = context['module_name'].characters.map(&:data).join
-
-          Rip::Loaders::FileSystem.load_module(module_name, context.origin).tap do |reply|
-            raise Rip::Exceptions::LoadException.new("Cannot load module: `#{module_name}`", context.origin) if reply.nil?
-          end
+          module_name = context['module_name'].to_native
+          Rip::Loaders::FileSystem.new(context.origin + module_name).load
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
+
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ overload ])
       end
 
       type_instance['Boolean']           = Rip::Core::DelayedProperty.new { |_| Rip::Core::Boolean.type_instance }
@@ -38,7 +36,7 @@ module Rip::Core
         ]) do |context|
           Rip::Core::String.from_native('System')
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ to_string_overload ])
       end
 
       def type_instance.to_s

@@ -83,8 +83,7 @@ module Rip::Core
         return @type_instance if instance_variable_defined? :@type_instance
 
         @type_instance = if core_module_name
-          load_path = Rip.root + 'core'
-          Rip::Loaders::FileSystem.new(core_module_name, [ load_path ]).load
+          Rip::Loaders::FileSystem.new(Rip.root + 'core' + core_module_name).load
         else
           Rip::Core::Type.new.tap do |reply|
             reply['type'] = Rip::Core::Type.type_instance

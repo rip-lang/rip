@@ -41,7 +41,7 @@ module Rip::Core
             from_native(result)
           end
 
-          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
+          Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ overload ])
         end
       end
 
@@ -57,7 +57,7 @@ module Rip::Core
             Rip::Core::Boolean.from_native(context['a'].data.send(property, context['b'].data))
           end
 
-          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
+          Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ overload ])
         end
       end
 
@@ -67,7 +67,7 @@ module Rip::Core
         ]) do |context|
           Rip::Core::Boolean.from_native(context['@'].data == context['other'].data)
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eequals_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ eequals_overload ])
       end
 
       type_instance['round'] = Rip::Core::DelayedProperty.new do |_|
@@ -79,7 +79,7 @@ module Rip::Core
           precision = context['precision'].data.round(0)
           from_native(number.round(precision))
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ round_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ round_overload ])
       end
 
       type_instance['round_up'] = Rip::Core::DelayedProperty.new do |_|
@@ -88,7 +88,7 @@ module Rip::Core
         ]) do |context|
           new(context['number'].data.ceil, 1)
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ ceiling_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ ceiling_overload ])
       end
 
       type_instance['round_down'] = Rip::Core::DelayedProperty.new do |_|
@@ -97,7 +97,7 @@ module Rip::Core
         ]) do |context|
           new(context['number'].data.floor, 1)
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ floor_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ floor_overload ])
       end
 
       type_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
@@ -107,7 +107,7 @@ module Rip::Core
           native = this_data.denominator == 1 ? this_data.numerator.to_s : "(#{this_data.numerator} / #{this_data.denominator})"
           Rip::Core::String.from_native(native)
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ to_string_overload ])
       end
 
       def type_instance.to_s

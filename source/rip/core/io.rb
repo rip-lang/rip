@@ -23,10 +23,10 @@ module Rip::Core
           overload_2 = Rip::Core::NativeOverload.new([
             Rip::Core::Parameter.new('object', Rip::Core::Object.type_instance)
           ]) do |context|
-            context['self'].call([ context['object']['to_string'].call([]) ])
+            context['self'].call(context, [ context['object']['to_string'].call(context, []) ])
           end
 
-          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload_1, overload_2 ])
+          Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ overload_1, overload_2 ])
         end
       end
 
@@ -36,7 +36,7 @@ module Rip::Core
           Rip::Core::String.from_native(STDIN.gets)
         end
 
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ overload ])
       end
 
       def type_instance.to_s

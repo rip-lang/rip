@@ -4,7 +4,7 @@ describe Rip::Nodes::Switch do
   let(:location) { location_for }
 
   let(:context) do
-    Rip::Compiler::Driver.global_context.nested_context.tap do |reply|
+    Rip::Compiler::Scope.global_context.nested_context.tap do |reply|
       reply['foo'] = Rip::Core::Boolean.true
     end
   end

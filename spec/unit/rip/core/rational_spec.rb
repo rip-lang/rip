@@ -25,18 +25,18 @@ describe Rip::Core::Rational do
   end
 
   describe '@.to_boolean' do
-    specify { expect(pi['to_boolean'].call([])).to eq(Rip::Core::Boolean.true) }
+    specify { expect(pi['to_boolean'].call(context, [])).to eq(Rip::Core::Boolean.true) }
   end
 
   describe '@.to_string' do
-    specify { expect(pi['to_string'].call([]).to_native).to eq('(157 / 50)') }
+    specify { expect(pi['to_string'].call(context, []).to_native).to eq('(157 / 50)') }
   end
 
   describe '@.==' do
     let(:a) { Rip::Core::Rational.new(1, 2) }
     let(:b) { Rip::Core::Rational.new(2, 4) }
 
-    specify { expect(a['=='].call([ b ])).to eq(Rip::Core::Boolean.true) }
+    specify { expect(a['=='].call(context, [ b ])).to eq(Rip::Core::Boolean.true) }
   end
 
   [
@@ -70,7 +70,7 @@ describe Rip::Core::Rational do
       let(:rhs) { Rip::Core::Rational.new(*bo.rhs) }
       let(:result) { Rip::Core::Rational.new(*bo.result) }
 
-      specify { expect(Rip::Core::Rational.type_instance[bo.operator].call([ lhs, rhs ])).to eq(result) }
+      specify { expect(Rip::Core::Rational.type_instance[bo.operator].call(context, [ lhs, rhs ])).to eq(result) }
     end
   end
 
@@ -82,6 +82,6 @@ describe Rip::Core::Rational do
 
     let(:tuple) { Rip::Core::List.new([ three_halfs, sixth ]) }
 
-    specify { expect(half['/%'].call([ third ])).to eq(tuple) }
+    specify { expect(half['/%'].call(context, [ third ])).to eq(tuple) }
   end
 end

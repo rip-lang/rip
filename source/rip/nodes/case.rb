@@ -21,7 +21,7 @@ module Rip::Nodes
 
     def matches?(context, argument)
       arguments.any? do |_argument|
-        _argument.interpret(context)['==='].call([ argument ]).to_native
+        _argument.interpret(context)['==='].call(context, [ argument ]).to_native
       end
     end
 

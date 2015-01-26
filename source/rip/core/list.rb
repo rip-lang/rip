@@ -27,7 +27,7 @@ module Rip::Core
           this = context['@']
           this.class.new(this.items.reverse)
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ reverse_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ reverse_overload ])
       end
 
       type_instance['@']['length'] = Rip::Core::DynamicProperty.new do |this|
@@ -59,7 +59,7 @@ module Rip::Core
         to_string_overload = Rip::Core::NativeOverload.new([
         ]) do |context|
           items = context['@'].items.map do |item|
-            string = item['to_string'].call([]).characters.map(&:data).join('')
+            string = item['to_string'].call(context, []).to_native
 
             item.is_a?(Rip::Core::String) ? string.inspect : string
           end
@@ -69,7 +69,7 @@ module Rip::Core
           Rip::Core::String.from_native(_items.join(' '))
         end
 
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ to_string_overload ])
       end
 
       def type_instance.to_s

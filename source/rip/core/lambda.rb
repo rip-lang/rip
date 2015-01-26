@@ -38,7 +38,7 @@ module Rip::Core
       end
     end
 
-    def call(arguments)
+    def call(invocation_context, arguments)
       _arguments = if bound?
         [ self['@'], *applied_arguments, *arguments ]
       else
@@ -52,7 +52,7 @@ module Rip::Core
       end
 
       if overload
-        overload.call(calling_context, _arguments)
+        overload.call(calling_context(invocation_context), _arguments)
       else
         apply(full_signature, arguments)
       end
@@ -78,7 +78,7 @@ module Rip::Core
           _this.send(:apply, full_signature, arguments)
         end
 
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ apply_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ apply_overload ])
       end
 
       type_instance['@']['bind'] = Rip::Core::DelayedProperty.new do |_|
@@ -88,7 +88,7 @@ module Rip::Core
           context['@'].bind(context['@@'])
         end
 
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ bind_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ bind_overload ])
       end
 
       type_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
@@ -119,7 +119,7 @@ module Rip::Core
           LAMBDA
         end
 
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ to_string_overload ])
       end
 
       def type_instance.to_s
@@ -149,8 +149,8 @@ module Rip::Core
       properties.key?('@')
     end
 
-    def calling_context
-      context.nested_context.tap do |reply|
+    def calling_context(invocation_context)
+      Rip::Compiler::Scope.new(context, invocation_context.origin).tap do |reply|
         reply['@'] = self['@'] if bound?
         reply['self'] = self
       end

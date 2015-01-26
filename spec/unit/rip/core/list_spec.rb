@@ -60,7 +60,7 @@ describe Rip::Core::List do
     let(:glue) { Rip::Core::String.from_native('+') }
     let(:expected) { Rip::Core::String.from_native('1+2+3') }
 
-    specify { expect(list['join'].call(glue)).to eq(expected) }
+    specify { expect(list['join'].call(context, glue)).to eq(expected) }
   end
 
   describe '@.reverse' do
@@ -83,7 +83,7 @@ describe Rip::Core::List do
         ]
       end
 
-      let(:reverse_list) { list['reverse'].call([]) }
+      let(:reverse_list) { list['reverse'].call(context, []) }
 
       specify { expect(reverse_list).to eq(Rip::Core::List.new(reverse_objects)) }
     end
@@ -116,22 +116,30 @@ describe Rip::Core::List do
         ]
       end
 
-      specify { expect(list['filter'].call([ sieve ])).to eq(Rip::Core::List.new(expected_items)) }
+      specify { expect(list['filter'].call(context, [ sieve ])).to eq(Rip::Core::List.new(expected_items)) }
     end
   end
 
   describe '@.to_string' do
-    let(:actual) { Rip.interpret(rip)['to_string'].call([]) }
+    let(:list) { Rip::Core::List.new(items) }
+    let(:actual) { list['to_string'].call(context, objects) }
 
     context 'empty list' do
-      let(:rip) { '[]' }
+      let(:items) { [] }
       let(:expected) { '[ ]' }
 
       specify { expect(actual.to_native).to eq(expected) }
     end
 
     context 'non-empty list' do
-      let(:rip) { '[1, 2, 3]' }
+      let(:items) do
+        [
+          Rip::Core::Rational.integer(1),
+          Rip::Core::Rational.integer(2),
+          Rip::Core::Rational.integer(3)
+        ]
+      end
+
       let(:expected) { '[ 1, 2, 3 ]' }
 
       specify { expect(actual.to_native).to eq(expected) }

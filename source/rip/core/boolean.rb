@@ -48,7 +48,7 @@ module Rip::Core
             Rip::Core::Boolean.false
           end
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eequals_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ eequals_overload ])
       end
 
       type_instance['@']['to_boolean'] = Rip::Core::DelayedProperty.new do |_|
@@ -56,7 +56,7 @@ module Rip::Core
         ]) do |context|
           context['@']
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_boolean_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ to_boolean_overload ])
       end
 
       type_instance['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
@@ -64,7 +64,7 @@ module Rip::Core
         ]) do |context|
           Rip::Core::String.from_native(context['@'].data.to_s)
         end
-        Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
+        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ to_string_overload ])
       end
 
       def type_instance.to_s

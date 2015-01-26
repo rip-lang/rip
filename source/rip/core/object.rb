@@ -25,16 +25,16 @@ module Rip::Core
           ]) do |context|
             Rip::Core::Boolean.from_native(context['@'].properties == context['other'].properties)
           end
-          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eequals_overload ])
+          Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ eequals_overload ])
         end
 
         reply['@']['==='] = Rip::Core::DelayedProperty.new do |_|
           eeequals_overload = Rip::Core::NativeOverload.new([
             Rip::Core::Parameter.new('other', reply)
           ]) do |context|
-            context['@']['=='].call([ context['other'] ])
+            context['@']['=='].call(context, [ context['other'] ])
           end
-          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ eeequals_overload ])
+          Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ eeequals_overload ])
         end
 
         reply['@']['to_boolean'] = Rip::Core::DelayedProperty.new do |_|
@@ -42,7 +42,7 @@ module Rip::Core
           ]) do |context|
             Rip::Core::Boolean.true
           end
-          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_boolean_overload ])
+          Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ to_boolean_overload ])
         end
 
         reply['@']['to_string'] = Rip::Core::DelayedProperty.new do |_|
@@ -50,7 +50,7 @@ module Rip::Core
           ]) do |context|
             Rip::Core::String.from_native(context['@'].to_s)
           end
-          Rip::Core::Lambda.new(Rip::Compiler::Driver.global_context.nested_context, [ to_string_overload ])
+          Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ to_string_overload ])
         end
 
         def reply.ancestors
