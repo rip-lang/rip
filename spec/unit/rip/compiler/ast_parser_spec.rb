@@ -241,7 +241,7 @@ describe Rip::Compiler::AST do
   end
 
   context 'assignment' do
-    let(:line_two) { new_location(:rspec, 10, 2, 1) }
+    let(:line_two) { new_location(Pathname.pwd, 10, 2, 1) }
     let(:rip) { "# find me\nlanguage = :rip" }
     let(:reference_node) { Rip::Nodes::Reference.new(line_two, 'language') }
     let(:characters) do
@@ -284,10 +284,24 @@ describe Rip::Compiler::AST do
     end
   end
 
+  context 'numbers' do
+    context 'decimal' do
+      let(:rip) { '3.14' }
+      let(:decimal_node) { Rip::Nodes::Decimal.new(location, rip) }
+
+      specify { expect(statements.first).to eq(decimal_node) }
+    end
+
+    context 'integer' do
+      let(:rip) { '42' }
+      let(:integer_node) { Rip::Nodes::Integer.new(location, rip) }
+
+      specify { expect(statements.first).to eq(integer_node) }
+    end
+  end
+
   context 'lambdas' do
     let(:rip) { '-> (question, answer<System.Integer>) {}' }
-
-    let(:context) { Rip::Compiler::Driver.global_context }
 
     let(:system_type_node) { Rip::Nodes::Reference.new(location.add_character(21), 'System') }
     let(:integer_type_node) { Rip::Nodes::Property.new(location.add_character(27), system_type_node, 'Integer') }

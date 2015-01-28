@@ -39,3 +39,17 @@ RSpec::Matchers.define :not_parse do
     parser.raw_parse_tree.nil?
   end
 end
+
+
+RSpec::Matchers.define :output_as do |expected, filename = 'sample.rip'|
+  match do |source|
+    write_file filename, source
+
+    run_simple "rip execute #{filename}"
+
+    @expected = expected
+    @actual = all_stdout
+
+    @actual == @expected
+  end
+end

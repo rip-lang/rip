@@ -1,0 +1,60 @@
+# type (System.Enumerable) {
+type {
+	@.+ = -> (other) {
+		@.type.+(@, other)
+	}
+
+	@.<< = -> (new_item) {
+		@ + [ new_item ]
+	}
+
+	@.filter = -> (sieve) {
+		@.type.filter(sieve, @)
+	}
+
+	@.fold = -> (initial, folder) {
+		@.type.fold(folder, initial, @)
+	}
+
+	@.join = -> (glue) {
+		@.type.join(glue, @)
+	}
+
+	@.map = -> (mapper) {
+		@.type.map(mapper, @)
+	}
+
+	filter = -> (sieve, items) {
+		fold(-> (memo, item) {
+			if (sieve(item)) {
+				memo << item
+			} else {
+				memo
+			}
+		}, [], items)
+	}
+
+	fold = -> (folder, initial, items) {
+		if (items.length == 0) {
+			initial
+		} else {
+			fold(folder, folder(initial, items.head), items.tail)
+		}
+	}
+
+	join = -> (glue, items) {
+		_glue = glue.to_string()
+
+		fold(-> (memo, item) {
+			memo + _glue + item.to_string()
+		}, items.head.to_string(), items.tail)
+	}
+
+	map = -> (mapper, items) {
+		fold(-> (memo, item) {
+			memo << mapper(item)
+		}, [], items)
+	}
+
+	to_string = -> { 'System.List' }
+}

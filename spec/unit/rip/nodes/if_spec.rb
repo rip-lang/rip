@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rip::Nodes::If do
   let(:location) { location_for }
 
-  let(:context) { Rip::Compiler::Driver.global_context.nested_context }
+  let(:context) { Rip::Compiler::Scope.global_context.nested_context }
 
   let(:true_body) { Rip::Nodes::BlockBody.new(location, true_body_nodes) }
   let(:false_body) { Rip::Nodes::BlockBody.new(location, false_body_nodes) }
@@ -22,19 +22,19 @@ describe Rip::Nodes::If do
     context 'argument is true' do
       let(:argument) { Rip::Nodes::Reference.new(location, 'true') }
 
-      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Integer.new(5)) }
+      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Rational.integer(5)) }
     end
 
     context 'argument is false' do
       let(:argument) { Rip::Nodes::Reference.new(location, 'false') }
 
-      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Integer.new(10)) }
+      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Rational.integer(10)) }
     end
 
     context 'argument is converted to boolean' do
       let(:argument) { Rip::Nodes::Integer.new(location, 0) }
 
-      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Integer.new(5)) }
+      specify { expect(if_node.interpret(context)).to eq(Rip::Core::Rational.integer(5)) }
     end
   end
 end

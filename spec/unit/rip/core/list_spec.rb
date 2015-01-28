@@ -12,7 +12,7 @@ describe Rip::Core::List do
     let(:type_to_s) { '#< System.List >' }
 
     let(:instance) { list }
-    let(:instance_to_s) { '#< #< System.List > [ +, <<, filter, fold, head, length, map, reverse, tail, to_string, type ] items = [  ] >' }
+    let(:instance_to_s) { '#< #< System.List > [ +, <<, filter, fold, head, join, length, map, reverse, tail, to_string, type ] items = [  ] >' }
   end
 
   describe '.type_instance' do
@@ -27,21 +27,21 @@ describe Rip::Core::List do
   context 'dynamically computed properties' do
     let(:objects) do
       [
-        Rip::Core::Integer.new(1),
-        Rip::Core::Integer.new(2),
-        Rip::Core::Integer.new(3)
+        Rip::Core::Rational.integer(1),
+        Rip::Core::Rational.integer(2),
+        Rip::Core::Rational.integer(3)
       ]
     end
 
     describe '@.head' do
-      specify { expect(list['head']).to eq(Rip::Core::Integer.new(1)) }
+      specify { expect(list['head']).to eq(Rip::Core::Rational.integer(1)) }
     end
 
     describe '@.tail' do
       let(:expected) do
         Rip::Core::List.new([
-          Rip::Core::Integer.new(2),
-          Rip::Core::Integer.new(3)
+          Rip::Core::Rational.integer(2),
+          Rip::Core::Rational.integer(3)
         ])
       end
 
@@ -49,12 +49,26 @@ describe Rip::Core::List do
     end
   end
 
+  describe '@.join' do
+    let(:objects) do
+      [
+        Rip::Core::Rational.new(1, 1),
+        Rip::Core::Rational.new(2, 1),
+        Rip::Core::Rational.new(3, 1)
+      ]
+    end
+    let(:glue) { Rip::Core::String.from_native('+') }
+    let(:expected) { Rip::Core::String.from_native('1+2+3') }
+
+    specify { expect(list['join'].call(context, glue)).to eq(expected) }
+  end
+
   describe '@.reverse' do
     let(:objects) do
       [
-        Rip::Core::Integer.new(1),
-        Rip::Core::Integer.new(10),
-        Rip::Core::Integer.new(100)
+        Rip::Core::Rational.integer(1),
+        Rip::Core::Rational.integer(10),
+        Rip::Core::Rational.integer(100)
       ]
     end
 
@@ -63,13 +77,13 @@ describe Rip::Core::List do
     context 'invocation' do
       let(:reverse_objects) do
         [
-          Rip::Core::Integer.new(100),
-          Rip::Core::Integer.new(10),
-          Rip::Core::Integer.new(1)
+          Rip::Core::Rational.integer(100),
+          Rip::Core::Rational.integer(10),
+          Rip::Core::Rational.integer(1)
         ]
       end
 
-      let(:reverse_list) { list['reverse'].call([]) }
+      let(:reverse_list) { list['reverse'].call(context, []) }
 
       specify { expect(reverse_list).to eq(Rip::Core::List.new(reverse_objects)) }
     end
@@ -78,9 +92,9 @@ describe Rip::Core::List do
   describe '@.filter' do
     let(:objects) do
       [
-        Rip::Core::Integer.new(1),
-        Rip::Core::Integer.new(2),
-        Rip::Core::Integer.new(3)
+        Rip::Core::Rational.integer(1),
+        Rip::Core::Rational.integer(2),
+        Rip::Core::Rational.integer(3)
       ]
     end
 
@@ -89,35 +103,43 @@ describe Rip::Core::List do
     context 'invocation' do
       let(:sieve) do
         overload = Rip::Core::NativeOverload.new([
-          Rip::Core::Parameter.new('n', Rip::Core::Integer.type_instance)
+          Rip::Core::Parameter.new('n', Rip::Core::Rational.type_instance)
         ]) do |_context|
-          Rip::Core::Boolean.from_native(_context['n'].data.even?)
+          Rip::Core::Boolean.from_native(_context['n'].data.numerator.even?)
         end
         Rip::Core::Lambda.new(context, [ overload ])
       end
 
       let(:expected_items) do
         [
-          Rip::Core::Integer.new(2)
+          Rip::Core::Rational.integer(2)
         ]
       end
 
-      specify { expect(list['filter'].call([ sieve ])).to eq(Rip::Core::List.new(expected_items)) }
+      specify { expect(list['filter'].call(context, [ sieve ])).to eq(Rip::Core::List.new(expected_items)) }
     end
   end
 
   describe '@.to_string' do
-    let(:actual) { Rip.interpret(rip)['to_string'].call([]) }
+    let(:list) { Rip::Core::List.new(items) }
+    let(:actual) { list['to_string'].call(context, objects) }
 
     context 'empty list' do
-      let(:rip) { '[]' }
+      let(:items) { [] }
       let(:expected) { '[ ]' }
 
       specify { expect(actual.to_native).to eq(expected) }
     end
 
     context 'non-empty list' do
-      let(:rip) { '[1, 2, 3]' }
+      let(:items) do
+        [
+          Rip::Core::Rational.integer(1),
+          Rip::Core::Rational.integer(2),
+          Rip::Core::Rational.integer(3)
+        ]
+      end
+
       let(:expected) { '[ 1, 2, 3 ]' }
 
       specify { expect(actual.to_native).to eq(expected) }

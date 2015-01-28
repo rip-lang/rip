@@ -6,11 +6,11 @@ describe 'rip help' do
   after(:each) { assert_exit_status(0) }
 
   specify do
+    expect(all_stdout).to match(/^  rip about .+ # .{10,}$/)
     expect(all_stdout).to match(/^  rip execute .+ # .{10,}$/)
     expect(all_stdout).to match(/^  rip help .+ # .{10,}$/)
     expect(all_stdout).to match(/^  rip repl .+ # .{10,}$/)
     expect(all_stdout).to match(/^  rip debug .+ # .{10,}$/)
-    expect(all_stdout).to match(/^  rip version .+ # .{10,}$/)
   end
 
   specify do

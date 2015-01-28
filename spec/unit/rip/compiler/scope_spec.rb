@@ -59,19 +59,45 @@ describe Rip::Compiler::Scope do
   end
 
   describe '#origin' do
-    let(:origin_context) { Rip::Compiler::Scope.new(scope_foo, :ORIGIN) }
+    let(:origin_context) { Rip::Compiler::Scope.new(scope_foo, Pathname.pwd) }
 
     specify { expect(scope_foo.origin).to be_nil }
     specify { expect(scope_foo.nested_context.origin).to be_nil }
     specify { expect(scope_foo.nested_context.nested_context.origin).to be_nil }
 
     specify { expect(origin_context.outer_context.origin).to be_nil }
-    specify { expect(origin_context.origin).to eq(:ORIGIN) }
-    specify { expect(origin_context.nested_context.origin).to eq(:ORIGIN) }
-    specify { expect(origin_context.nested_context.nested_context.origin).to eq(:ORIGIN) }
+    specify { expect(origin_context.origin).to eq(Pathname.pwd) }
+    specify { expect(origin_context.nested_context.origin).to eq(Pathname.pwd) }
+    specify { expect(origin_context.nested_context.nested_context.origin).to eq(Pathname.pwd) }
   end
 
   describe '#symbols' do
     specify { expect(scope_foo.symbols).to match_array(['foo']) }
+  end
+
+  describe '.global_context' do
+    let(:location) { location_for }
+
+    context 'provides globally assumed members' do
+      specify { expect(Rip::Compiler::Scope.global_context.symbols).to match_array(['System', 'true', 'false']) }
+
+      context 'System' do
+        let(:expected) { Rip::Nodes::Reference.new(location, 'System').interpret(Rip::Compiler::Scope.global_context) }
+
+        specify { expect(Rip::Compiler::Scope.global_context['System']).to eq(expected) }
+      end
+
+      context 'true' do
+        let(:expected) { Rip::Nodes::Reference.new(location, 'true').interpret(Rip::Compiler::Scope.global_context) }
+
+        specify { expect(Rip::Compiler::Scope.global_context['true']).to eq(expected) }
+      end
+
+      context 'false' do
+        let(:expected) { Rip::Nodes::Reference.new(location, 'false').interpret(Rip::Compiler::Scope.global_context) }
+
+        specify { expect(Rip::Compiler::Scope.global_context['false']).to eq(expected) }
+      end
+    end
   end
 end

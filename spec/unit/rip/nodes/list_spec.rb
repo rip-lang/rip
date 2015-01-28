@@ -24,9 +24,9 @@ describe Rip::Nodes::List do
 
       let(:integers) do
         [
-          Rip::Core::Integer.new(1),
-          Rip::Core::Integer.new(2),
-          Rip::Core::Integer.new(3)
+          Rip::Core::Rational.integer(1),
+          Rip::Core::Rational.integer(2),
+          Rip::Core::Rational.integer(3)
         ]
       end
 

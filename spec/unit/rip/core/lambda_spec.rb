@@ -16,7 +16,7 @@ describe Rip::Core::Lambda do
 
   let(:arguments) { [] }
 
-  let(:actual_return) { rip_lambda.call(arguments) }
+  let(:actual_return) { rip_lambda.call(context, arguments) }
 
   let(:a_plus_b_plus_c) do
     reference_a = Rip::Nodes::Reference.new(location, 'a')
@@ -51,8 +51,8 @@ describe Rip::Core::Lambda do
     context 'all required parameters' do
       let(:parameters) do
         [
-          Rip::Core::Parameter.new('a', Rip::Core::Integer.type_instance),
-          Rip::Core::Parameter.new('b', Rip::Core::Integer.type_instance)
+          Rip::Core::Parameter.new('a', Rip::Core::Rational.type_instance),
+          Rip::Core::Parameter.new('b', Rip::Core::Rational.type_instance)
         ]
       end
       specify { expect(rip_lambda.arity).to eq([ 2 ]) }
@@ -67,7 +67,7 @@ describe Rip::Core::Lambda do
   describe 'calling semantics' do
     describe 'capturing lexical scope' do
       before(:each) do
-        context['answer'] = Rip::Core::Integer.new(42)
+        context['answer'] = Rip::Core::Rational.integer(42)
       end
 
       let(:body_expressions) do
@@ -77,27 +77,27 @@ describe Rip::Core::Lambda do
       end
 
       context 'accessing surrounding scope' do
-        specify { expect(actual_return).to eq(Rip::Core::Integer.new(42)) }
+        specify { expect(actual_return).to eq(Rip::Core::Rational.integer(42)) }
       end
 
       context 'shadowing surrounding scope' do
         let(:parameters) do
           [
-            Rip::Core::Parameter.new('answer', Rip::Core::Integer.type_instance)
+            Rip::Core::Parameter.new('answer', Rip::Core::Rational.type_instance)
           ]
         end
 
         let(:arguments) do
           [
-            Rip::Core::Integer.new(85)
+            Rip::Core::Rational.integer(85)
           ]
         end
 
-        specify { expect(actual_return).to eq(Rip::Core::Integer.new(85)) }
+        specify { expect(actual_return).to eq(Rip::Core::Rational.integer(85)) }
 
         it 'does not mutate surrounding scope' do
           actual_return
-          expect(context['answer']).to eq(Rip::Core::Integer.new(42))
+          expect(context['answer']).to eq(Rip::Core::Rational.integer(42))
         end
       end
     end
@@ -118,9 +118,9 @@ describe Rip::Core::Lambda do
     describe 'required parameters' do
       let(:parameters) do
         [
-          Rip::Core::Parameter.new('a', Rip::Core::Integer.type_instance),
-          Rip::Core::Parameter.new('b', Rip::Core::Integer.type_instance),
-          Rip::Core::Parameter.new('c', Rip::Core::Integer.type_instance)
+          Rip::Core::Parameter.new('a', Rip::Core::Rational.type_instance),
+          Rip::Core::Parameter.new('b', Rip::Core::Rational.type_instance),
+          Rip::Core::Parameter.new('c', Rip::Core::Rational.type_instance)
         ]
       end
 
@@ -128,23 +128,23 @@ describe Rip::Core::Lambda do
 
       let(:arguments) do
         [
-          Rip::Core::Integer.new(1),
-          Rip::Core::Integer.new(2),
-          Rip::Core::Integer.new(3)
+          Rip::Core::Rational.integer(1),
+          Rip::Core::Rational.integer(2),
+          Rip::Core::Rational.integer(3)
         ]
       end
 
       it 'interprets to six' do
-        expect(actual_return).to eq(Rip::Core::Integer.new(6))
+        expect(actual_return).to eq(Rip::Core::Rational.integer(6))
       end
     end
 
     describe 'automatic application' do
       let(:parameters) do
         [
-          Rip::Core::Parameter.new('a', Rip::Core::Integer.type_instance),
-          Rip::Core::Parameter.new('b', Rip::Core::Integer.type_instance),
-          Rip::Core::Parameter.new('c', Rip::Core::Integer.type_instance)
+          Rip::Core::Parameter.new('a', Rip::Core::Rational.type_instance),
+          Rip::Core::Parameter.new('b', Rip::Core::Rational.type_instance),
+          Rip::Core::Parameter.new('c', Rip::Core::Rational.type_instance)
         ]
       end
 
@@ -152,7 +152,7 @@ describe Rip::Core::Lambda do
 
       let(:arguments) do
         [
-          Rip::Core::Integer.new(3)
+          Rip::Core::Rational.integer(3)
         ]
       end
 
@@ -163,26 +163,26 @@ describe Rip::Core::Lambda do
 
       it 'remembers the arguments previously passed in' do
         other_arguments = [
-          Rip::Core::Integer.new(3),
-          Rip::Core::Integer.new(3)
+          Rip::Core::Rational.integer(3),
+          Rip::Core::Rational.integer(3)
         ]
-        expect(actual_return.call(other_arguments)).to eq(Rip::Core::Integer.new(9))
+        expect(actual_return.call(context, other_arguments)).to eq(Rip::Core::Rational.integer(9))
       end
 
       it 'can be called with different arguments' do
         other_arguments = [
-          Rip::Core::Integer.new(8),
-          Rip::Core::Integer.new(16)
+          Rip::Core::Rational.integer(8),
+          Rip::Core::Rational.integer(16)
         ]
-        expect(actual_return.call(other_arguments)).to eq(Rip::Core::Integer.new(27))
+        expect(actual_return.call(context, other_arguments)).to eq(Rip::Core::Rational.integer(27))
       end
     end
   end
 
   describe '#bind' do
-    let(:two) { Rip::Core::Integer.new(2) }
-    let(:five) { Rip::Core::Integer.new(5) }
-    let(:seven) { Rip::Core::Integer.new(7) }
+    let(:two) { Rip::Core::Rational.integer(2) }
+    let(:five) { Rip::Core::Rational.integer(5) }
+    let(:seven) { Rip::Core::Rational.integer(7) }
 
     let!(:two_plus) { two['+'] }
 
@@ -195,12 +195,18 @@ describe Rip::Core::Lambda do
     end
 
     it 'is callable' do
-      expect(two_plus.call([ five ])).to eq(seven)
+      expect(two_plus.call(context, [ five ])).to eq(seven)
     end
 
     context 'when receiver is a lambda' do
-      let(:rip) { '-> { 42 }' }
-      let(:answer_lambda) { Rip.interpret(rip) }
+      let(:answer_body) do
+        Rip::Nodes::BlockBody.new(location, [
+          Rip::Nodes::Integer.new(location, 42)
+        ])
+      end
+
+      let(:answer_overload) { Rip::Core::Overload.new([], answer_body) }
+      let(:answer_lambda) { Rip::Core::Lambda.new(context, [ answer_overload ]) }
 
       it 'has no receiver' do
         expect { answer_lambda['@'] }.to raise_error(Rip::Exceptions::RuntimeException)
@@ -223,30 +229,30 @@ describe Rip::Core::Lambda do
       end.nested_context
     end
 
-    let(:bar) { Rip::Core::Integer.new(42) }
-    let(:a) { Rip::Core::Integer.new(111) }
-    let(:b) { Rip::Core::Integer.new(222) }
-    let(:c) { Rip::Core::Integer.new(333) }
-    let(:sum) { Rip::Core::Integer.new(666) }
+    let(:bar) { Rip::Core::Rational.integer(42) }
+    let(:a) { Rip::Core::Rational.integer(111) }
+    let(:b) { Rip::Core::Rational.integer(222) }
+    let(:c) { Rip::Core::Rational.integer(333) }
+    let(:sum) { Rip::Core::Rational.integer(666) }
 
     let(:the_lambda) do
       overload_1 = Rip::Core::NativeOverload.new([
-        Rip::Core::Parameter.new('a', Rip::Core::Integer.type_instance),
-        Rip::Core::Parameter.new('b', Rip::Core::Integer.type_instance),
-        Rip::Core::Parameter.new('c', Rip::Core::Integer.type_instance)
+        Rip::Core::Parameter.new('a', Rip::Core::Rational.type_instance),
+        Rip::Core::Parameter.new('b', Rip::Core::Rational.type_instance),
+        Rip::Core::Parameter.new('c', Rip::Core::Rational.type_instance)
       ]) do |_context|
         a = _context['a']
         b = _context['b']
         c = _context['c']
-        a['+'].call([ b ])['+'].call([ c ])
+        a['+'].call(context, [ b ])['+'].call(context, [ c ])
       end
 
       overload_2 = Rip::Core::NativeOverload.new([
-        Rip::Core::Parameter.new('foo', Rip::Core::Integer.type_instance)
+        Rip::Core::Parameter.new('foo', Rip::Core::Rational.type_instance)
       ]) do |_context|
         foo = _context['foo']
         bar = _context['bar']
-        foo['+'].call([ bar ])
+        foo['+'].call(context, [ bar ])
       end
 
       Rip::Core::Lambda.new(lambda_context, [ overload_1, overload_2 ])
@@ -255,9 +261,9 @@ describe Rip::Core::Lambda do
     specify { expect(the_lambda['apply']).to be_a(Rip::Core::Lambda) }
 
     context 'invocation' do
-      let(:apply_111) { the_lambda['apply'].call([ Rip::Core::List.new([ a ]) ]) }
-      let(:apply_222) { apply_111['apply'].call([ Rip::Core::List.new([ b ]) ]) }
-      let(:apply_333) { the_lambda['apply'].call([ Rip::Core::List.new([ a, b, c ]) ]) }
+      let(:apply_111) { the_lambda['apply'].call(context, [ Rip::Core::List.new([ a ]) ]) }
+      let(:apply_222) { apply_111['apply'].call(context, [ Rip::Core::List.new([ b ]) ]) }
+      let(:apply_333) { the_lambda['apply'].call(context, [ Rip::Core::List.new([ a, b, c ]) ]) }
 
       it 'returns a lambda' do
         expect(apply_111).to be_a(Rip::Core::Lambda)
@@ -272,24 +278,24 @@ describe Rip::Core::Lambda do
       end
 
       it 'computes the correct total' do
-        expect(apply_111.call([ b, c ])).to eq(sum)
-        expect(apply_222.call([ c ])).to eq(sum)
-        expect(apply_333.call([ ])).to eq(sum)
+        expect(apply_111.call(context, [ b, c ])).to eq(sum)
+        expect(apply_222.call(context, [ c ])).to eq(sum)
+        expect(apply_333.call(context, [ ])).to eq(sum)
       end
 
       it 'uses the original lambda context' do
-        expect(apply_111.call([ ])).to eq(Rip::Core::Integer.new(153))
+        expect(apply_111.call(context, [ ])).to eq(Rip::Core::Rational.integer(153))
       end
     end
   end
 
   describe '@.bind' do
-    let(:receiver) { Rip::Core::Integer.new(42) }
+    let(:receiver) { Rip::Core::Rational.integer(42) }
 
     let(:the_lambda) do
       overload = Rip::Core::NativeOverload.new([
       ]) do |_context|
-        _context['@']['to_string'].call([])
+        _context['@']['to_string'].call(context, [])
       end
       Rip::Core::Lambda.new(context, [ overload ])
     end
@@ -298,11 +304,11 @@ describe Rip::Core::Lambda do
     specify { expect { the_lambda['@'] }.to raise_error(Rip::Exceptions::RuntimeException) }
 
     context 'invocation' do
-      let(:answer) { Rip::Core::Integer.new(42) }
+      let(:answer) { Rip::Core::Rational.integer(42) }
       let(:language) { Rip::Core::String.from_native('Rip') }
 
-      let(:bound_answer) { the_lambda['bind'].call([ answer ]) }
-      let(:bound_language) { bound_answer['bind'].call([ language ]) }
+      let(:bound_answer) { the_lambda['bind'].call(context, [ answer ]) }
+      let(:bound_language) { bound_answer['bind'].call(context, [ language ]) }
 
       let(:bound_answer_parameter) { bound_answer.overloads.first.parameters.first }
       let(:bound_language_parameter) { bound_language.overloads.first.parameters.first }
@@ -323,13 +329,13 @@ describe Rip::Core::Lambda do
       end
 
       it 'sets the correct parameter type' do
-        expect(bound_answer_parameter.type).to eq(Rip::Core::Integer.type_instance)
+        expect(bound_answer_parameter.type).to eq(Rip::Core::Rational.type_instance)
         expect(bound_language_parameter.type).to eq(Rip::Core::String.type_instance)
       end
 
       it 'uses the bound receiver' do
-        expect(bound_answer.call([]).to_native).to eq('42')
-        expect(bound_language.call([]).to_native).to eq('Rip')
+        expect(bound_answer.call(context, []).to_native).to eq('42')
+        expect(bound_language.call(context, []).to_native).to eq('Rip')
       end
     end
   end
@@ -340,25 +346,28 @@ describe Rip::Core::Lambda do
         [ Rip::Nodes::Reference.new(location, 'self') ]
       end
 
-      let(:two) { Rip::Core::Integer.new(2) }
+      let(:two) { Rip::Core::Rational.integer(2) }
       let(:two_plus) { two['+'] }
 
-      specify { expect(rip_lambda.call(arguments)).to eq(rip_lambda) }
-      specify { expect(two_plus.call(arguments)).to eq(two_plus) }
+      specify { expect(rip_lambda.call(context, arguments)).to eq(rip_lambda) }
+      specify { expect(two_plus.call(context, arguments)).to eq(two_plus) }
     end
   end
 
   describe '@.to_string' do
-    let(:rip_lambda) { Rip.interpret(rip) }
-    let(:actual) { rip_lambda['to_string'].call([]) }
+    let(:body) do
+      Rip::Nodes::BlockBody.new(location, [
+        Rip::Nodes::Integer.new(location, 42)
+      ])
+    end
+
+    let(:rip_lambda) { Rip::Core::Lambda.new(context, overloads) }
+
+    let(:actual) { rip_lambda['to_string'].call(context, []) }
     let(:expected) { Rip::Core::String.from_native(expected_native) }
 
     context 'single overload, no parameters' do
-      let(:rip) do
-        <<-RIP
--> { 42 }
-        RIP
-      end
+      let(:overloads) { [ Rip::Core::Overload.new([], body) ] }
 
       let(:expected_native) do
         <<-STRING
@@ -372,14 +381,17 @@ describe Rip::Core::Lambda do
     end
 
     context 'multiple overloads, yes parameters', :blur do
-      let(:rip) do
-        <<-RIP
-=> {
-  -> { 42 }
-  -> (a) { 42 }
-  -> (a, b<System.Integer>) { 42 }
-}
-        RIP
+      let(:overloads) do
+        [
+          Rip::Core::Overload.new([], body),
+          Rip::Core::Overload.new([
+            Rip::Core::Parameter.new('a', Rip::Core::Object.type_instance)
+          ], body),
+          Rip::Core::Overload.new([
+            Rip::Core::Parameter.new('a', Rip::Core::Object.type_instance),
+            Rip::Core::Parameter.new('b', Rip::Core::Rational.type_instance)
+          ], body)
+        ]
       end
 
       let(:expected_native) do
@@ -387,7 +399,7 @@ describe Rip::Core::Lambda do
 => {
 \t-> () { ... }
 \t-> (a<System.Object>) { ... }
-\t-> (a<System.Object>, b<System.Integer>) { ... }
+\t-> (a<System.Object>, b<System.Rational>) { ... }
 }
         STRING
       end

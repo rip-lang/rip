@@ -1,0 +1,17 @@
+type (System.List) {
+	# @.lowercase = -> {
+	# 	@.type.new(@.map(:lowercase))
+	# }
+
+	# @.uppercase = -> {
+	# 	@.type.new(@.map(:uppercase))
+	# }
+
+	@.strip = -> {
+		@.type.strip(@)
+	}
+
+	@.to_string = -> { @ }
+
+	to_string = -> { 'System.String' }
+}
