@@ -28,7 +28,7 @@ module Rip
     end
 
     def self.version(verbose = false)
-      reply = 'v0.2.0'
+      reply = 'v0.3.0'
       verbose ? "#{logo.rstrip} #{reply}" : reply
     end
   end
