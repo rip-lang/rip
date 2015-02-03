@@ -22,7 +22,10 @@ module Rip::Nodes
 
       _context = Rip::Compiler::Scope.new(context, callable.location.origin)
 
-      callable.interpret(_context).call(_context, _arguments)
+      binding.pry if $stopnow
+      callable.interpret(_context).tap do |rip_lambda|
+        binding.pry if $stopnow
+      end.call(_context, _arguments)
     end
 
     def resolve

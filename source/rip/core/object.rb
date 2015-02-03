@@ -53,6 +53,18 @@ module Rip::Core
           Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ to_string_overload ])
         end
 
+        # reply['debug'] = Rip::Core::DelayedProperty.new do |_|
+        #   overload = Rip::Core::NativeOverload.new([
+        #     Rip::Core::Parameter.new('@@', reply)
+        #   ]) do |context|
+        #     this = context['@@']
+        #     require 'pry'
+        #     binding.pry
+        #   end
+
+        #   Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ overload ])
+        # end
+
         def reply.ancestors
           [ self ]
         end

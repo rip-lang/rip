@@ -3,13 +3,16 @@ module Rip::Core
     attr_reader :context
     attr_reader :overloads
     attr_reader :applied_arguments
+    attr_reader :wrapped_lambda
 
-    def initialize(context, overloads, applied_arguments = [])
+    def initialize(context, overloads, applied_arguments = [], wrapped_lambda: nil)
       super()
 
       @context = context
       @overloads = overloads
       @applied_arguments = applied_arguments
+
+      @wrapped_lambda = wrapped_lambda
 
       self['type'] = self.class.type_instance
     end
@@ -52,9 +55,23 @@ module Rip::Core
       end
 
       if overload
-        overload.call(calling_context(invocation_context), _arguments)
+        reply, c_context = overload.call(calling_context(invocation_context), _arguments)
+
+        if reply.is_a?(Symbol) && (reply == :resolve)
+          original_lambda.call(c_context, _arguments)
+        else
+          reply
+        end
       else
-        apply(full_signature, arguments)
+        apply(invocation_context, full_signature, arguments)
+      end
+    end
+
+    def original_lambda
+      if wrapped_lambda
+        wrapped_lambda.original_lambda
+      else
+        self
       end
     end
 
@@ -75,7 +92,7 @@ module Rip::Core
 
           full_signature = _arguments.map { |arg| arg['type'] }
 
-          _this.send(:apply, full_signature, arguments)
+          _this.send(:apply, context.nested_context, full_signature, arguments)
         end
 
         Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ apply_overload ])
@@ -129,15 +146,25 @@ module Rip::Core
 
     protected
 
-    def apply(full_signature, arguments)
+    def apply(invocation_context, full_signature, arguments)
       matching_overloads = overloads.select do |overload|
         overload.matches?(full_signature)
       end
 
       if matching_overloads.count > 0
-        self.class.new(context, matching_overloads, applied_arguments + arguments).tap do |reply|
-          reply['@'] = self['@'] if bound?
+        _context = context.nested_context.tap do |ctx|
+          ctx['@'] = self['@'] if bound?
         end
+
+        location = Rip::Utilities::Location.new(invocation_context.origin, 0, 1, 1)
+
+        _matching_overloads = matching_overloads.map do |overload|
+          Rip::Core::NativeOverload.new(overload.parameters) do |c_context|
+            [ :resolve, c_context ]
+          end
+        end
+
+        self.class.new(_context, _matching_overloads, applied_arguments + arguments, wrapped_lambda: self)
       elsif arguments.count.zero?
         self
       else
@@ -157,3 +184,5 @@ module Rip::Core
     end
   end
 end
+
+require 'pry'

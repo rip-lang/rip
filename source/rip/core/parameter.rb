@@ -35,6 +35,7 @@ module Rip::Core
     def matches_special?(argument_type)
       (type == Rip::Core::Object.type_instance) && (
         (argument_type == Rip::Core::Lambda.type_instance) ||
+        # (argument_type == Rip::Core::Object.type_instance) ||
         (argument_type == Rip::Core::Type.type_instance)
       )
     end
