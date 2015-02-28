@@ -154,7 +154,8 @@ module Rip::Compiler
     # TODO literals for unit
     # TODO literals for version (maybe)
     rule(:object) do
-      condition_block_sequence |
+      import |
+        condition_block_sequence |
         exception_block_sequence |
         type_block |
         lambda_block |
@@ -179,6 +180,8 @@ module Rip::Compiler
     rule(:word) { word_legal >> (word_legal | digit).repeat }
     rule(:word_legal) { match['^\d\s\`\'",.:;#\/\\()<>\[\]{}'] }
 
+
+    rule(:import) { str('import').as(:location) >> whitespaces >> string.as(:module_name) }
 
     rule(:condition_block_sequence) { if_block >> whitespaces? >> else_block }
 
