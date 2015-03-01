@@ -1,17 +1,6 @@
 module Rip::Core
   class System < Rip::Core::Base
     define_type_instance do |type_instance|
-      type_instance['require'] = Rip::Core::DelayedProperty.new do |_|
-        overload = Rip::Core::NativeOverload.new([
-          Rip::Core::Parameter.new('module_name', Rip::Core::String.type_instance)
-        ]) do |context|
-          module_name = context['module_name'].to_native
-          Rip::Loaders::FileSystem.new(context.origin + module_name).load
-        end
-
-        Rip::Core::Lambda.new(Rip::Compiler::Scope.global_context.nested_context, [ overload ])
-      end
-
       type_instance['Boolean']           = Rip::Core::DelayedProperty.new { |_| Rip::Core::Boolean.type_instance }
       type_instance['Character']         = Rip::Core::DelayedProperty.new { |_| Rip::Core::Character.type_instance }
       # type_instance['Date']              = Rip::Core::DelayedProperty.new { |_| Rip::Core::Date.type_instance }
