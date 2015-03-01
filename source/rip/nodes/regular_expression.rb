@@ -10,6 +10,10 @@ module Rip::Nodes
     def interpret(context)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       pattern_debug = pattern.map(&:data).join('')
 

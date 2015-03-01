@@ -16,6 +16,10 @@ module Rip::Nodes
       Rip::Core::Character.new(data)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       [
         [ level, "#{super.last.last} (#{data})" ]

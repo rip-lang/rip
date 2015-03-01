@@ -22,6 +22,10 @@ module Rip::Nodes
       Rip::Core::Lambda.new(context, _overloads)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       overloads_debug = overloads.inject([]) do |memo, overload|
         memo + overload.to_debug(level + 2)

@@ -21,6 +21,10 @@ module Rip::Nodes
       context[name] = block.call
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       [
         [ level, "#{super.last.last} (#{name})" ]

@@ -26,6 +26,10 @@ module Rip::Nodes
       Rip::Core::Overload.new(_parameters, body)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       parameters_debug_inner = parameters.inject([]) do |reply, parameter|
         reply + parameter.to_debug(level + 2)

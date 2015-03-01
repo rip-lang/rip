@@ -35,6 +35,10 @@ module Rip::Nodes
       end
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       super_types_debug_inner = super_types.inject([]) do |reply, super_type|
         reply + super_type.to_debug(level + 2)

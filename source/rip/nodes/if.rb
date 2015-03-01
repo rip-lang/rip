@@ -28,6 +28,10 @@ module Rip::Nodes
       end
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       argument_debug = [ [ level + 1, 'argument =' ] ] +
         argument.to_debug(level + 2)

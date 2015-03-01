@@ -19,6 +19,10 @@ module Rip::Nodes
       body.interpret(context)
     end
 
+    def resolve
+      self
+    end
+
     def matches?(context, argument)
       arguments.any? do |_argument|
         _argument.interpret(context)['==='].call(context, [ argument ]).to_native

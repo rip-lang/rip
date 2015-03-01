@@ -8,7 +8,11 @@ module Rip::Nodes
     end
 
     def interpret(context)
-      Rip::Loaders::FileSystem.new(target).load
+      loader.load
+    end
+
+    def resolve
+      loader.parser.syntax_tree.resolve
     end
 
     def to_debug(level = 0)
@@ -18,6 +22,10 @@ module Rip::Nodes
     end
 
     protected
+
+    def loader
+      Rip::Loaders::FileSystem.new(target)
+    end
 
     def target
       if location.origin.directory?

@@ -16,6 +16,10 @@ module Rip::Nodes
       body.interpret(context.nested_context)
     end
 
+    def resolve
+      self.class.new(location, body.resolve)
+    end
+
     def to_debug(level = 0)
       super + body.to_debug(level + 1)
     end

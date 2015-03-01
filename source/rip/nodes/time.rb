@@ -27,6 +27,10 @@ module Rip::Nodes
     def interpret(context)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       [
         [ level, "#{super.last.last} (#{hour}:#{minute}:#{second}.#{sub_second}#{offset})" ]

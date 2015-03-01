@@ -15,6 +15,10 @@ module Rip::Nodes
       end
     end
 
+    def resolve
+      self.class.new(location, lhs, rhs.resolve)
+    end
+
     def to_debug(level = 0)
       lhs_line_1, *lhs_other_lines = lhs.to_debug(level + 1)
       lhs_debug = [ [ level + 1, "lhs = #{Array(lhs_line_1).last}" ] ] +

@@ -19,6 +19,10 @@ module Rip::Nodes
       Rip::Core::List.new(_items)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       items_debug_inner = items.inject([]) do |reply, item|
         reply + item.to_debug(level + 2)
