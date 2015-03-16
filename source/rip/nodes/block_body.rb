@@ -24,6 +24,10 @@ module Rip::Nodes
       end.last
     end
 
+    def resolve
+      self.class.new(location, statements.map(&:resolve))
+    end
+
     def to_debug(level = 0)
       statements.inject([]) do |reply, statement|
         reply + statement.to_debug(level)

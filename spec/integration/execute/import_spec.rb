@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-describe 'System.require' do
+describe 'import keyword' do
   after(:each) { assert_exit_status(0) }
 
   context 'relative to loading module' do
     before(:each) do
       write_file('main.rip', <<-RIP)
-        result = System.require('./source/foo')
+        result = import './source/foo'
         System.IO.out(result)
       RIP
 
       write_file('source/foo.rip', <<-RIP)
-        helper = System.require('../lib/helper')
+        helper = import '../lib/helper'
         helper(:cat)
       RIP
 

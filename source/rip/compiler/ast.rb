@@ -41,6 +41,11 @@ module Rip::Compiler
       module_for(location, lines)
     end
 
+    rule(:location => simple(:location), :module_name => simple(:module_name)) do |locals|
+      location = location_for(locals[:origin], locals[:location])
+      Rip::Nodes::Import.new(location, locals[:module_name])
+    end
+
     {
       :exit => Rip::Nodes::Exit,
       :return => Rip::Nodes::Return,

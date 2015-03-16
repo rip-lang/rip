@@ -15,6 +15,10 @@ module Rip::Nodes
     def interpret(context)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       pairs_debug_inner = pairs.inject([]) do |reply, pair|
         reply + pair.to_debug(level + 2)

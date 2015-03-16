@@ -18,6 +18,10 @@ module Rip::Nodes
     def interpret(context)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       super + argument.to_debug(level + 1) + body.to_debug(level + 1)
     end

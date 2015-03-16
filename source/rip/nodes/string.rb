@@ -19,6 +19,10 @@ module Rip::Nodes
       Rip::Core::String.new(_characters)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       characters_debug = characters.map(&:data).join('')
 

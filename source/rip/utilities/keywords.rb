@@ -53,7 +53,7 @@ module Rip::Utilities
     end
 
     def self.transfer
-      make_keywords(:exit, :return, :throw)
+      make_keywords(:exit, :import, :return, :throw)
     end
 
     protected

@@ -47,7 +47,8 @@ Usage:
       end.merge({
         'raw_parse'  => :raw_parse_tree,
         'parse'  => :parse_tree,
-        'syntax' => :syntax_tree
+        'syntax' => :syntax_tree,
+        'syntax_expanded' => :syntax_tree_expanded
       })
 
       output = wrap_exceptions do
@@ -79,6 +80,10 @@ Usage:
 
     def syntax_tree(origin)
       loader(origin).parser.syntax_tree
+    end
+
+    def syntax_tree_expanded(origin)
+      loader(origin).parser.syntax_tree.resolve
     end
 
     def wrap_exceptions(&block)

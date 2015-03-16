@@ -8,5 +8,9 @@ module Rip::Nodes
 
       Rip::Core::Rational.new(numerator, denominator, sign)
     end
+
+    def resolve
+      self
+    end
   end
 end

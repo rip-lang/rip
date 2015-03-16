@@ -16,6 +16,10 @@ module Rip::Nodes
       body.interpret(context)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       body_debug = [ [ level + 1, 'body = [' ] ] +
         body.to_debug(level + 2) +

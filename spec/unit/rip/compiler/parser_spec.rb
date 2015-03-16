@@ -2325,6 +2325,31 @@ describe Rip::Compiler::Parser do
           }
         end
       end
+
+      recognizes_as_expected 'static import expressions' do
+        let(:rip) do
+          <<-RIP
+            User = import './user'
+          RIP
+        end
+        let(:expected) do
+          {
+            :module => [
+              {
+                :lhs => { :reference => 'User' },
+                :location => '=',
+                :rhs => {
+                  :location => 'import',
+                  :module_name => {
+                    :location => '\'',
+                    :string => rip_string('./user')
+                  }
+                }
+              }
+            ]
+          }
+        end
+      end
     end
   end
 end

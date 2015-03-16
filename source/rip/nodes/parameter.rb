@@ -21,6 +21,10 @@ module Rip::Nodes
       Rip::Core::Parameter.new(name, _type)
     end
 
+    def resolve
+      self
+    end
+
     def required?
       true
     end

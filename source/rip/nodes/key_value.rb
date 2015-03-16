@@ -18,6 +18,10 @@ module Rip::Nodes
     def interpret(context)
     end
 
+    def resolve
+      self
+    end
+
     def to_debug(level = 0)
       key_line_1, *key_other_lines = key.to_debug(level + 1)
       key_debug = [ [ level + 1, "key = #{Array(key_line_1).last}" ] ] +
