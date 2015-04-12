@@ -5,7 +5,7 @@ module Rip::Utilities
     end
 
     def start
-      context = Rip::Compiler::Scope.new(Rip::Compiler::Scope.global_context, Pathname.pwd)
+      context = Rip::Compiler::Scope.global_context.nested_context(Pathname.pwd)
 
       print_welcome
 

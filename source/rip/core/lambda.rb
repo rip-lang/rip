@@ -150,7 +150,7 @@ module Rip::Core
     end
 
     def calling_context(invocation_context)
-      Rip::Compiler::Scope.new(context, invocation_context.origin).tap do |reply|
+      context.nested_context(invocation_context.origin).tap do |reply|
         reply['@'] = self['@'] if bound?
         reply['self'] = self
       end

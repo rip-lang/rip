@@ -30,8 +30,8 @@ module Rip::Compiler
       end
     end
 
-    def nested_context
-      self.class.new(self)
+    def nested_context(origin = nil)
+      self.class.new(self, origin)
     end
 
     def origin

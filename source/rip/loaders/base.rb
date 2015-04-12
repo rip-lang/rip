@@ -4,7 +4,7 @@ module Rip::Loaders
     attr_reader :load_path
 
     def context
-      Rip::Compiler::Scope.new(Rip::Compiler::Scope.global_context, load_path)
+      Rip::Compiler::Scope.global_context.nested_context(load_path)
     end
 
     def load

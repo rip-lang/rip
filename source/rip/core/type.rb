@@ -15,8 +15,8 @@ module Rip::Core
       self['@'] = Rip::Core::Prototype.new
     end
 
-    def nested_context
-      Rip::Compiler::Scope.new(self)
+    def nested_context(origin = nil)
+      Rip::Compiler::Scope.new(self, origin)
     end
 
     def self.type_instance

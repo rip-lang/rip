@@ -20,7 +20,7 @@ module Rip::Nodes
         argument.interpret(context)
       end
 
-      _context = Rip::Compiler::Scope.new(context, callable.location.origin)
+      _context = context.nested_context(callable.location.origin)
 
       callable.interpret(_context).call(_context, _arguments)
     end
