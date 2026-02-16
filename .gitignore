@@ -1,8 +1,0 @@
-.bundle
-.idea
-.rspec
-build
-coverage
-packaging/cache
-packaging/vendor
-tmp
