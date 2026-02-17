@@ -354,6 +354,52 @@ overloaded_function = => {
 }
 ```
 
+Below are three implementations for calculating `n!`. They show the conceptual transformations a function (technically an overload) goes through during compilation.
+
+The first version is the idomatic code a developer might actually write:
+
+```rip
+factorial = -> (n, accumulator = 1) {
+  if (n == 0) {
+    accumulator
+  } else {
+    self(n - 1, n * accumulator)
+  }
+}
+```
+
+During compilation the compiler wraps any "naked" overloads with function:
+
+```rip
+factorial = => {
+  -> (n, accumulator = 1) {
+    if (n == 0) {
+      accumulator
+    } else {
+      self(n - 1, n * accumulator)
+    }
+  }
+}
+```
+
+The compiler also eliminates any optional parameters by synthesizing missing overloads that call the function recursively. Of course developer could write each overload out by hand, but it's usually better to just let the compiler handle it.
+
+```rip
+factorial = => {
+  -> (n) {
+    self(n, 1)
+  }
+
+  -> (n, accumulator) {
+    if (n == 0) {
+      accumulator
+    } else {
+      self(n - 1, n * accumulator)
+    }
+  }
+}
+```
+
 ## Structures
 
 Structures are used to build complex data structures. Structures can also define
