@@ -205,7 +205,7 @@ WHERE id = "42"
 SELECT u.name, u.dob
 ```
 
-### XML Fragment
+### XML Fragment (PLANNED)
 
 ```rip
 <foo>
@@ -298,10 +298,10 @@ foo = -> () { return 42 }
 foo()
 
 # functions can take parameters separated by commas
-bar = -> (a, b) { return a + b }
+bar = -> (a: Integer, b: Integer) { return a + b }
 
 # parameters are optional if a default is provided
-baz = -> (a = 1, b = 2) { return a + b }
+baz = -> (a: Integer = 1, b: Integer = 2) { return a + b }
 
 # returns 3
 bar()
@@ -314,7 +314,7 @@ bar(3)
 # is called
 
 # functions can be passed to and returned from other functions
-make-foo = -> (get-answer) {
+make-foo = -> (get-answer: () -> Integer) {
   -> () {
     get-answer()
   }
@@ -322,7 +322,7 @@ make-foo = -> (get-answer) {
 
 # function arguments are automatically curried if enough required arguments
 # aren't given
-contrived-greeting = -> (name1, name2) {
+contrived-greeting = -> (name1: String, name2: String) {
   "Hello #{name1} and #{name2}!"
 }
 
@@ -344,7 +344,8 @@ overload for the function. Functions are defined with the `->` (dash
 rocket) keyword.
 
 ```rip
-overloaded_function = -> (a, b = 10) { a + b }
+# parameter b type is inferred as Integer because it has a default
+overloaded_function = -> (a: Integer, b = 10) { a + b }
 ```
 
 Which compiles to the following example. `self` is a special reference that
@@ -353,8 +354,8 @@ defined with the `=>` keyword followed by a block containing all overloads.
 
 ```rip
 overloaded_function = => {
-  -> (a) { self(a, 10) }
-  -> (a, b) { a + b }
+  -> (a: Integer) { self(a, 10) }
+  -> (a: Integer, b: Integer) { a + b }
 }
 ```
 
@@ -363,7 +364,7 @@ Below are three implementations for calculating `n!`. They show the conceptual t
 The first version is the idomatic code a developer might actually write:
 
 ```rip
-factorial = -> (n, accumulator = 1) {
+factorial = -> (n: Integer, accumulator = 1) {
   if (n == 0) {
     accumulator
   } else {
@@ -376,7 +377,7 @@ During compilation the compiler wraps any "naked" overloads with function:
 
 ```rip
 factorial = => {
-  -> (n, accumulator = 1) {
+  -> (n: Integer, accumulator = 1) {
     if (n == 0) {
       accumulator
     } else {
@@ -390,11 +391,11 @@ The compiler also eliminates any optional parameters by synthesizing missing ove
 
 ```rip
 factorial = => {
-  -> (n) {
+  -> (n: Integer) {
     self(n, 1)
   }
 
-  -> (n, accumulator) {
+  -> (n: Integer, accumulator: Integer) {
     if (n == 0) {
       accumulator
     } else {
@@ -410,7 +411,7 @@ Structures are used to build complex data structures. Structures can also define
 property methods that have access to the structure.
 
 ```rip
-User = struct (name, age) {
+User = struct (name: String, age: Integer) {
   # note the swerve rocket (`~>`) keyword
   @.greet = ~> {
     "Hello #{@.name}!"
@@ -427,6 +428,80 @@ user.age
 
 user.greet
 # => "Hello Frank!"
+```
+
+## Types And Generics
+
+Rip uses structural typing and heavily relies on type inference. We can declare free-standing types for use in function paramters with the `type` keyword.
+
+Note that I'm not super-thrilled with the type syntax for describing a function. Also a syntax for inferring/reading the type of an expression is probably needed.
+
+```rip
+# any structure with a `color` member that is a `String` will satisfy Foo
+Foo = type { color: String }
+
+get-color = -> (thing: Foo) {
+  thing.color
+}
+```
+
+We can also define the type directly where it's used.
+
+```rip
+get-color = -> (thing: type { color: String }) {
+  thing.color
+}
+```
+
+Another way to make a new type is to combine other types.
+
+```rip
+# Custom is a String or a Number, but it isn't both
+Custom = String | Integer
+
+Foo = type { color: String }
+Bar = type { shape: String }
+
+# Baz is type { color: String, shape: String }
+Baz = Foo & Bar
+```
+
+Types can also be generic. Think of it as similar to a function parameter, but at the type level.
+
+```rip
+# the exact type of ResultSet depends on the type passed to it
+ResultSet = type <T> { count: Integer, data: List<T> }
+
+ThingResultSet = ResultSet<type { name: String }>
+
+OtherResultSet = ResultSet<type { country: String }>
+```
+
+Rip does it's best to properly infer the correct type based on usage, but sometimes this isn't enough.
+
+```rip
+date = Date.now
+
+# structures are types. User is typed as type { name: String, birthday: Date }
+User = struct (name: String, birthday: Date) {}
+
+# infers return type is DateSpan
+get-age = -> (now: Date, u: User) {
+  now - u.birthday
+}
+
+# user is type { name: String, birthday: Date }
+user = User.new(:Ginny, 2000-03-15)
+
+ginny-age = get-age(date, user)
+
+# Pet is typed as type { name: String, birthday: Date, species: String }
+Pet = struct (name: String, birthday: Date, species: String) {}
+
+# Pet isn't a User, but it overlaps with User, so it works
+cat = Pet.new(:Socks, 2026-01-28, :cat)
+
+socks-age = get-age(date, cat)
 ```
 
 ## Module Import/Export
