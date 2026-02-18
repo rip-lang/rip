@@ -195,7 +195,9 @@ Ranges are a concise way to represent a large collection. They are evaluated on-
 `a..`z
 ```
 
-### SQL
+### SQL (PLANNED)
+
+This is heavily inspired by C#'s linq and should be able to query arbitrary collections.
 
 ```rip
 FROM users AS u
@@ -209,6 +211,16 @@ SELECT u.name, u.dob
 <foo>
   <bar answer={42} />
 </foo>
+```
+
+## Units
+
+```rip
+42cm
+
+# TODO work out a way for units to relate to one another, including custom units developers create
+# F# style doesn't work because `inch` would be value
+inch = 2.54cm
 ```
 
 ## Blocks
