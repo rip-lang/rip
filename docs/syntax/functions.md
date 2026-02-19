@@ -49,19 +49,14 @@ contrived-greeting()(:Sam)()(:Jane)
 
 ## Function Overloads
 
-Functions may be overloaded with multiple implementations. Optional parameters
-is syntactical sugar for this, where each optional parameter synthesizes an
-overload for the function. Functions are defined with the `->` (dash
-rocket) keyword.
+Functions may be overloaded with multiple implementations. Optional parameters is syntactical sugar for this, where each optional parameter synthesizes an overload for the function. Functions are defined with the `=>` (fat rocket) keyword.
 
 ```rip
 # parameter b type is inferred as Integer because it has a default
 overloaded_function = -> (a: Integer, b = 10) { a + b }
 ```
 
-Which compiles to the following example. `self` is a special reference that
-refers to the entire overloaded function. Overloaded functions are grouped and
-defined with the `=>` keyword followed by a block containing all overloads.
+Which compiles to the following example. `self` is a special reference that refers to the entire overloaded function. Overloaded functions are grouped and defined with the `=>` keyword followed by a block containing all overloads.
 
 ```rip
 overloaded_function = => {

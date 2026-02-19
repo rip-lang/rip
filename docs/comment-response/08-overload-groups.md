@@ -21,8 +21,8 @@ If no → restrict explicitly.
 "Bare" overloads are just syntax sugar for a single overload wrapped in a a function.
 
 ```rip
-a = -> () {...}
-b = => { -> () {...} }
+a = -> () { ... }
+b = => { -> () { ... } }
 ```
 
 `a` and `b` are exactly equivelant. A function (`=>`) always has one or more overloads (`->`). Functions are somewhat dynamic when it comes to auto-currying, as the curried function has a new overload that wasn't part of the original function.

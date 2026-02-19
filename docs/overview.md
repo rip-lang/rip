@@ -23,6 +23,6 @@ ChatGPT summarized Rip for the computer science nerds as follows:
 - everything is an expression/value
 - all values are immutable
 - binary operators are actually syntax sugar for method invocation (`a + b` is the same as `a.+(b)`)
-    - some operators exist, but there aren't many
-    - binary "operators" must be surrounded by whitespace to distinguish them from identifiers
+  - some operators exist, but there aren't many
+  - binary "operators" must be surrounded by whitespace to distinguish them from identifiers
 - literal syntax for range, date, time, datetime, sql, xml and more

@@ -1,9 +1,6 @@
 # Module Import/Export
 
-A program can be divided up into multiple modules, which typically map 1:1 with
-files. Each module may provide any number of named exports with the `export`
-keyword. Imported modules are specified as URLs with strings, and the file
-extension doesn't matter.
+A program can be divided up into multiple modules, which typically map 1:1 with files. Each module may provide any number of named exports with the `export` keyword. Imported modules are specified as URLs with strings, and the file extension doesn't matter.
 
 ```rip
 # a.rip
@@ -15,8 +12,7 @@ export question
 export answer = 42
 ```
 
-Other modules can import these references and use them. Multiple references may
-be imported by separating each with commas.
+Other modules can import these references and use them. Multiple references may be imported by separating each with commas.
 
 ```rip
 # b.rip
@@ -32,8 +28,7 @@ Instead of listing every reference to import, all references can be imported int
 from "./b.rip" import b
 ```
 
-When importing as a namespace, the individual members are accessed with the
-dot operator.
+When importing as a namespace, the individual members are accessed with the dot operator.
 
 ```rip
 # d.rip
@@ -47,8 +42,7 @@ export b.answer
 
 ## Other Module Formats (PLANNED)
 
-The imported module format is assumed to be Rip. Other types of modules may be
-imported using the `with` keyword followed by a hash specifying the type. The only restriction is the type must be registered first, though these (and others) may eventually be built-in. Non-Rip imports will likely only support namespaces.
+The imported module format is assumed to be Rip. Other types of modules may be imported using the `with` keyword followed by a hash specifying the type. The only restriction is the type must be registered first, though these (and others) may eventually be built-in. Non-Rip imports will likely only support namespaces.
 
 ```rip
 from "./blog.md" import blog-post with { :type: :markdown }
