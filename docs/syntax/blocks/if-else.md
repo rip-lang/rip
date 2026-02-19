@@ -9,3 +9,5 @@ if (condition) {
   # condition is false
 }
 ```
+
+Note that unlike many other languages, Rip doesn't support chaining `if` directly after `else`. Use `switch (true)` instead.

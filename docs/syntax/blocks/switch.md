@@ -18,3 +18,14 @@ switch (expression) {
   }
 }
 ```
+
+Rip doesn't support chaining `if` directly after `else`. Instead this behavior can be mimiced with a `switch (true)` block:
+
+```rip
+switch (true) {
+  when (...) { ... }
+  when (...) { ... }
+  when (...) { ... }
+  else { ... }
+}
+```
