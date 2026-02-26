@@ -1,14 +1,20 @@
 # Functions
 
+Here is a function with no parameters. It returns a special number.
+
 ```rip
-# a function with no arguments. it returns a special number
 foo = -> () { return 42 }
+```
 
-# call a function by referencing it and passing any arguments with parenthesis.
-# arguments are expressions separated by commas
+Call a function by referencing it and passing any arguments with parenthesis. Arguments are expressions separated by commas.
+
+```rip
 foo()
+```
 
-# functions can take parameters separated by commas
+Functions can take parameters separated by commas.
+
+```rip
 bar = -> (a: Integer, b: Integer) { return a + b }
 
 # parameters are optional if a default is provided
@@ -19,11 +25,11 @@ bar()
 
 # returns 5
 bar(3)
+```
 
-# functions bodies are demarcated by curly braces. the return keyword is
-# optional, and the final expression will be returned when the function
-# is called
+Functions bodies are demarcated by curly braces. The return keyword is optional, and the final expression will be returned when the function is called.
 
+```rip
 # functions can be passed to and returned from other functions
 make-foo = -> (get-answer: () -> Integer) {
   -> () {
@@ -31,8 +37,15 @@ make-foo = -> (get-answer: () -> Integer) {
   }
 }
 
-# function arguments are automatically curried if enough required arguments
-# aren't given
+foo = make-foo(-> () { 42 })
+
+foo()
+# => 42
+```
+
+Function arguments are automatically curried if enough arguments aren't given to satisfy all required parameters.
+
+```rip
 contrived-greeting = -> (name1: String, name2: String) {
   "Hello #{name1} and #{name2}!"
 }
@@ -93,7 +106,7 @@ factorial = => {
 }
 ```
 
-The compiler also eliminates any optional parameters by synthesizing missing overloads that call the function recursively. Of course developer could write each overload out by hand, but it's usually better to just let the compiler handle it.
+The compiler also eliminates any optional parameters by synthesizing missing overloads that call the function recursively. Of course a developer could write each overload out by hand, but it's usually better to just let the compiler handle it.
 
 ```rip
 factorial = => {

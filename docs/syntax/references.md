@@ -15,7 +15,7 @@ true
 false
 ```
 
-You can associate a value with a reference with the assignment operator (`=`).
+You can associate a value with a reference with the assignment operator (`=`). All references are immutable and "write-once".
 
 ```rip
 answer = 42
