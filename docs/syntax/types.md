@@ -71,3 +71,5 @@ cat = Pet.new(:Socks, 2026-01-28, :cat)
 
 socks-age = get-age(date, cat)
 ```
+
+TODO Work out how literal types can be handled (`:foo` as a sub-type of `String` et cetera).
