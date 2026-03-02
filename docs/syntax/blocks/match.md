@@ -4,7 +4,7 @@
 
 A `match` block expression performs ordered pattern matching on a value. The type of a `match` expression is the normalized union of all branch result types.
 
-The `expression` is examined and potentially destructured according to each branch's `pattern` (`when` block). Patterns are matched top to bottom; the first matching `when` block is executed and the value is returned for the entire `match` block. Conceptually all `switch` blocks could be replaced with equivalent `match` blocks.
+The `expression` is examined and potentially destructured according to each branch's `pattern` (`when` block). Patterns are matched top to bottom; the first matching `when` block is executed and the value is returned for the entire `match` block.
 
 ```rip
 match (expression) {
@@ -35,7 +35,7 @@ Patterns in `when` clauses may be:
 
 ### 2.1. Literal Patterns
 
-The simplest pattern is a literal value (or a reference). If all patterns are just simple literals, `match` block behaves similarly as a `switch` block. (NOTE Should `match` be merged with `switch`?)
+The simplest pattern is a literal value (or a reference). If all patterns are literals, `match` behaves similarly to a traditional `switch` statement.
 
 Literal patterns participate in type narrowing through structural equality.
 

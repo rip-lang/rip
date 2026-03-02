@@ -10,7 +10,7 @@ if (condition) {
 }
 ```
 
-Note that unlike many other languages, Rip doesn't support chaining `if` directly after `else`. Use `switch (true)` instead.
+Note that unlike many other languages, Rip doesn't support chaining `if` directly after `else`. Chained conditional logic can be expressed with `match`.
 
 ## Destructured Assignment Conditions
 
