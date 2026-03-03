@@ -196,9 +196,9 @@ Patterns may reference declared or global types, as well as type literals. Type 
 match (value) {
   when (String) { }
 
-  when (type { name: String }) { }
+  when ({ name: String }) { }
 
-  when (A & type { active: Boolean })
+  when (A & { active: Boolean })
 }
 ```
 
@@ -210,7 +210,7 @@ Note: Structure patterns operate on runtime values; type patterns operate on sta
 match (foo) {
   when ({:name: n}) { }
   when ({:name: String}) { }
-  when (type { name: String }) { }
+  when ({ name: String }) { }
 }
 ```
 
@@ -243,8 +243,8 @@ The result is normalized using standard union and intersection reduction rules.
 Example:
 
 ```rip
-A = type { name: String, color: String }
-B = type { name: String, age: Rational }
+A = { name: String, color: String }
+B = { name: String, age: Rational }
 C = A | B
 
 match (c) {

@@ -15,8 +15,8 @@ That combination is one of the hardest spaces in language design because it crea
 Example of the problem
 
 ```rip
-Foo = type { color: String }
-Bar = type { color: String, shape: String }
+Foo = { color: String }
+Bar = { color: String, shape: String }
 
 f = -> (x: Foo) { ... }
 f = -> (x: Bar) { ... }

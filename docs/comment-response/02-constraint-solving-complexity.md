@@ -7,7 +7,7 @@ Structural typing with generics requires solving:
 This becomes expensive when nested:
 
 ```rip
-type { data: List<type { id: Integer }> }
+{ data: List<{ id: Integer }> }
 ```
 
 This is solvable, but you’ll want to define:

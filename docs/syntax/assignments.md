@@ -60,7 +60,7 @@ References for types and structures generally follow `UpperCamelCase`.
 ```rip
 User = struct (name: String) { }
 
-Result
-  = type <T> { success: true, data: T }
-  | type { success: false, error: String }
+Result<T>
+  = { success: true, data: T }
+  | { success: false, error: String }
 ```

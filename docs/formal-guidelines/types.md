@@ -42,7 +42,7 @@ Primitive types participate in structural subtyping where applicable.
 A record type is defined by a set of named fields.
 
 ```rip
-type { name: String, age: Integer }
+{ name: String, age: Integer }
 ```
 
 A value satisfies a record type if it contains at least those fields with compatible types.
@@ -101,7 +101,7 @@ Reduction operates purely structurally. When intersections distribute across a u
 
 ```rip
 List<T>
-type <T> { data: T }
+Foo<T> = { data: T }
 ```
 
 Generic parameters are instantiated at compile time.
