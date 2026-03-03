@@ -1,6 +1,8 @@
 # References And Assignments
 
-Similar to other languages, references (or identifiers) must not start with a digit and must not contain any whitespace. Unlike most other languages, references are allowed to contain most other printable characters and do not need to contain letters at all. References are case sensitive.
+## References
+
+Similar to other languages, references (or identifiers) must not start with a digit and must not contain any whitespace. Unlike most other languages, references are allowed to contain most other printable characters and do not need to contain letters at all. All references are case sensitive.
 
 ```rip
 foo
@@ -15,18 +17,28 @@ true
 false
 ```
 
-You can associate a value with a reference with the assignment operator (`=`). All references are immutable and "write-once".
+## Assignment
+
+You can associate a value or a type with a reference using the assignment operator (`=`). All references are immutable and "write-once" (single static assignment).
+
+## Normal Assignment
+
+The normal assignment syntax is used for both runtime values and compile-time types, depending on the RHS.
 
 ```rip
+# value
 answer = 42
-name = :Fred
+
+# type
+Result = { success: Literal<true>, data: Foo }
 ```
 
-## Destructured Assignments
+## Destructured Assignment
 
-List and hash destructured assignment follow the same rules for patterns in `match` expression blocks. If a destructured assignment pattern cannot match the assigned value, it is a runtime error unless the type system can determine the mismatch at compile time.
+Value destructured assignment follow the same rules for patterns in `match` expression blocks. If a destructured assignment pattern cannot match the assigned value, it is a runtime error unless the type system can determine the mismatch at compile time.
 
 ```rip
+# value
 [head, *tail] = list
 {:two: two} = hash
 ```
@@ -34,11 +46,23 @@ List and hash destructured assignment follow the same rules for patterns in `mat
 An object's property may be bound to a reference of the same name. Multiple properties may be bound by separating each with a comma.
 
 ```rip
+# value
 {name} = any-value-with-a-name-property
 {foo, bar, baz} = quix
 ```
 
 See blocks/match.md for more information about pattern matching.
+
+## Generic Assignment
+
+Generic type references need the type parameters listed after the reference. Generic parameters are shared across any unions or intersections.
+
+```rip
+# type
+Result<T, E>
+  = { success: Literal<true>, data: T }
+  | { success: Literal<false>, error: E }
+```
 
 ## Naming Convensions
 
