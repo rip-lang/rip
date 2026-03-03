@@ -104,7 +104,79 @@ List<T>
 Foo<T> = { data: T }
 ```
 
-Generic parameters are instantiated at compile time.
+Generic parameters are instantiated at compile time. Similar to functions, multiple generic type parameters may be listed, separated by commas. Generic parameters may also specify a default type with a comma (`=`). All generic parameters with defaults must be listed after generic parameters without defaults. Later type parameters may refer to earlier type parameters.
+
+```rip
+Response<Error, Data, RawData = Data>
+  = { success: Literal<true>, data: Data }
+  | { success: Literal<false>, error: Error }
+```
+
+Generic types may have constrants added to them that must be satisfied. Contraints are written after the generic reference separated by a colon (`:`). A type satisfies a generic constraint if it is a subtype of the constraint type. Unions and intersections may be used to specify multiple constraints.
+
+```rip
+ResultSet<T: Interable> = { data: T }
+```
+
+If a default is provided for a generic type with a constraint, it must satisfy the constraint.
+
+---
+
+### 2.8 Literal Types
+
+Lteral values may be converted to compile-time singleton types by passing them to the `Literal<V>` generic type. Such literal types participate in structural subtyping where applicable.
+
+```rip
+Color
+  = Literal<:red>
+  | Literal<:green>
+  | Literal<:blue>
+  | Literal<:yellow>
+  | Literal<:magenta>
+  | Literal<:cyan>
+```
+
+Literal types are available for any type that has a literal syntax. The literal type is understood to be a subtype of the literal value's type.
+
+#### 2.8.1 Literal Refinement
+
+A literal expression `V` has a base type corresponding to its literal kind (e.g., `String`, `Integer`, `Boolean`). Literal values do not automatically acquire the type `Literal<V>`.
+
+However, a literal expression provides a compile-time singleton refinement that may be used when checking compatibility against `Literal<V>`.
+
+A binding is considered _refined to_ `Literal<V>` if and only if it is initialized directly from the literal expression `V`.
+
+```rip
+background-color = -> (theme: Literal<:dark> | Literal<:light>) { }
+# :dark is typed as String, but is refined to Literal<:dark> in the argument
+# position since the parameter's type is literal
+background-color(:dark)
+```
+
+Literal type refinement does not propagate.
+
+```rip
+background-color = -> (theme: Literal<:dark> | Literal<:light>) { }
+# :dark is typed as String, and literal refinement is NOT propagated
+my-theme = :dark
+background-color(my-theme)
+```
+
+Use `Exact<V>` if a literal type is needed. `Exact<V>` produces a value whose static type is `Literal<V>`. Normally a literal expression (like `42`) is given a broad base type (`Integer` in this case) that, among other things, does not participate in exhaustiveness checks. Using `Exact` tells the compiler to assign the singleton literal subtype to the value at the binding site, rather than relying on non-propagating literal refinement. The runtime value is unchanged.
+
+```rip
+background-color = -> (theme: Literal<:dark> | Literal<:light>) { }
+# :dark is typed as Literal<:dark>, and literal refinement is not needed
+my-theme = Exact<:dark>
+background-color(my-theme)
+```
+
+Literal refinement:
+
+- Does not change the inferred or declared type of the binding.
+- Does not propagate.
+- Is erased by any non-literal expression (including function calls, operators, control flow joins, or other composite expressions).
+- Does not participate in general subtyping or normalization.
 
 ---
 
@@ -184,6 +256,10 @@ A function value contains one or more overloads.
 ### 5.2 Compatibility
 
 An overload is compatible with a call if argument types are subtypes of parameter types.
+
+A literal expression `V` (see §2.8.1) is compatible with parameter type `Literal<V>`.
+
+Literal refinement affects compatibility checks only. It does not modify the structural type of a value, does not introduce implicit widening or narrowing, and does not alter overload specificity ordering beyond satisfying `Literal<V>` parameters.
 
 ---
 

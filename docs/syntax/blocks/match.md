@@ -39,23 +39,30 @@ The simplest pattern is a literal value (or a reference). If all patterns are li
 
 Literal patterns participate in type narrowing through structural equality.
 
+#### 2.1.1. Literal Types and Exact
+
+Literal patterns match by runtime structural equality and do not require the matched value to have type `Literal<V>`.
+
+However, exhaustiveness analysis operates over the static type of the matched expression.
+
+A literal pattern `V` is considered exhaustive for a union member only if that union member is `Literal<V>`.
+
+Literal refinement does not affect exhaustiveness. To construct a value whose static type is `Literal<V>`, use `Exact<V>`.
+
 ```rip
-match (value) {
-  # Rational
-  when (42) { }
+x = 42
+# x is type Integer
 
-  # String
-  when (:answer) { }
+match (x) {
+  when (42) { }   # not exhaustive
+}
 
-  # List
-  when ([]) { }
+y = Exact<42>
 
-  # Hash
-  when ({}) { }
+match (y) {
+  when (42) { }   # exhaustive
 }
 ```
-
-See equality.md for how equality is calculated.
 
 ---
 

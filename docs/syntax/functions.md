@@ -1,5 +1,7 @@
 # Functions
 
+Functions are specified with the dash rocket (`->`) keyword, followed by a pair of parenthesis (`(`/`)`) for any parameters, followed by the body. The body is surrounded by a pair of curly brackets (`{`/`}`). The parenthesis are required even if no parameters are specified, and the curly brackets are required even if the body has just one expression.
+
 Here is a function with no parameters. It returns a special number.
 
 ```rip
@@ -122,4 +124,43 @@ factorial = => {
     }
   }
 }
+```
+
+## Generic Parameter Types
+
+Functions can take generic type parameters separated by commas. Type parameters are surrounded by angled brackets (`<`/`>`) before the value parameters.
+
+Angle brackets must be omitted if no type parameters are given.
+
+```rip
+foo = -> <T> (x: { ok: T } | { error: String }) { ... }
+```
+
+For functions written with the fat rocket keyword, type parameters are placed after the fat rocket instead of the dash rocket. Type parameters are shared across all overloads.
+
+See formal-guidelines/types.md for more information about generics.
+
+If an argument is syntactically a literal `V`, and the parameter type includes `Literal<V>`, the argument is considered compatible.
+
+### Literal Types and Dispatch
+
+A literal expression `V` is compatible with a parameter of type `Literal<V>` via literal refinement (see formal-guidelines/types.md §2.8.1). This refinement applies only at the call site and does not change the static type of the argument.
+
+If a value is bound and later passed to a function, literal refinement does not propagate.
+
+To create a value whose static type is `Literal<V>`, use `Exact<V>`. Values constructed with `Exact` participate fully in overload specificity and union exhaustiveness.
+
+```rip
+foo = => {
+  -> (x: Literal<42>) { :exact }
+  -> (x: Integer) { :integer }
+}
+
+foo(42)        # :exact (via refinement)
+
+n = 42
+foo(n)         # :integer
+
+m = Exact<42>
+foo(m)         # :exact
 ```

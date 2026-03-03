@@ -5,7 +5,7 @@ Rip uses structural typing and heavily relies on type inference. We can declare 
 Note a syntax for inferring/reading the type of an expression is probably needed.
 
 ```rip
-# any structure with a `color` member that is a `String` will satisfy Foo
+# any structure with a `color` member that is a `String` will satisfy `Foo`
 Foo = { color: String }
 
 get-color = -> (thing: Foo) {
@@ -71,5 +71,3 @@ cat = Pet.new(:Socks, 2026-01-28, :cat)
 
 socks-age = get-age(date, cat)
 ```
-
-TODO Work out how literal types can be handled (`:foo` as a sub-type of `String` et cetera).
