@@ -16,15 +16,51 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
-					label: "Guides",
+					label: "Introduction",
+					autogenerate: { directory: "introduction" }
+				},
+				{
+					label: "Syntax",
 					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: "Example Guide", slug: "guides/example" }
+						{ slug: "syntax/comments" },
+						{
+							label: "Literals",
+							collapsed: true,
+							autogenerate: { directory: "syntax/literals" }
+						},
+						{
+							label: "Blocks",
+							collapsed: true,
+							autogenerate: { directory: "syntax/blocks" }
+						},
+						{ slug: "syntax/assignments" },
+						{ slug: "syntax/functions" },
+						{ slug: "syntax/modules" },
+						{ slug: "syntax/structures" },
+						{ slug: "syntax/types" }
 					]
 				},
 				{
-					label: "Reference",
-					autogenerate: { directory: "reference" }
+					label: "Semantics",
+					autogenerate: { directory: "semantics" }
+				},
+				{
+					label: "Internals",
+					collapsed: true,
+					items: [
+						{
+							label: "Decisions",
+							collapsed: true,
+							autogenerate: { directory: "internals/decisions" }
+						},
+						{
+							label: "Comments/Responses",
+							collapsed: true,
+							autogenerate: {
+								directory: "internals/comments-responses"
+							}
+						}
+					]
 				}
 			]
 		})
