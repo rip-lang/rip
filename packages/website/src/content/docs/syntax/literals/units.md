@@ -1,5 +1,6 @@
 ---
-title: Units
+title: Units (PLANNED)
+sidebar: { order: 100 }
 ---
 
 ```rip

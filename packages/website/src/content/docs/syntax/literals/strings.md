@@ -1,5 +1,6 @@
 ---
 title: Strings
+sidebar: { order: 3 }
 ---
 
 Strings are specialized lists of grapheme clusters. They have three different literal syntaxes: symbol, double-quote, HEREDOC.

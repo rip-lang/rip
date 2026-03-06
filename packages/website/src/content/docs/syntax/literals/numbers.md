@@ -1,5 +1,6 @@
 ---
 title: Numbers
+sidebar: { order: 1 }
 ---
 
 ```rip

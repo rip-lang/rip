@@ -1,5 +1,6 @@
 ---
 title: XML Fragment (PLANNED)
+sidebar: { order: 100 }
 ---
 
 ```rip

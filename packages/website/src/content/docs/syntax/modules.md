@@ -2,17 +2,19 @@
 title: Module Import/Export
 ---
 
-A program can be divided up into multiple modules, which typically map 1:1 with files. Each module may provide any number of named exports with the `export` keyword. Imported modules are specified as URLs with strings, and the file extension doesn't matter.
+A program can be divided up into multiple modules, which typically map 1:1 with files. A module is evaluated once and produces a fixed set of exported bindings. Some or all of these bindings may be exported in an `export` block. Only one `export` block per module is allowed, and it must be at the very end.
 
 ```rip
 # a.rip
 
 question = "What is the meaning of everything?"
 
-export question
+answer = 42
 
-export answer = 42
+export { answer, question }
 ```
+
+Multiple `import` statements are allowed, and they must be written at the top of the module. Imported modules are specified as URLs with strings, and the file extension doesn't matter.
 
 Other modules can import these references and use them. Multiple references may be imported by separating each with commas.
 
@@ -37,10 +39,14 @@ When importing as a namespace, the individual members are accessed with the dot 
 
 from "./b.rip" import b
 
-b.question
+b-answer = b.question
 
-export b.answer
+export { b-answer }
 ```
+
+## Dynamic Imports (PLANNED)
+
+Most imports will be statically known, but it would be nice to support dynamically building the import URL. Such dynamic imports are planned.
 
 ## Other Module Formats (PLANNED)
 
@@ -52,12 +58,8 @@ from "./config.toml" import config with { :type: :toml }
 from "./data.csv" import data with { :headers: true, :type: :csv }
 from "./data.json" import data with { :type: :json }
 from "./data.yml" import data with { :type: :yaml }
-from "./index.css" import home-page with { :type: :html }
+from "./index.html" import home-page with { :type: :html }
 from "./profile.webp" import avatar with { :type: :webp }
 from "./query.sql" import query with { :dialect: :postgres, :type: :sql }
 from "./styles.css" import styles with { :type: :css }
 ```
-
-## Dynamic Imports (PLANNED)
-
-Most imports will be statically known, but it would be nice to support dynamically building the import URL. Such dynamic imports are planned.

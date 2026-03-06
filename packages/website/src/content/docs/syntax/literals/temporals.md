@@ -1,5 +1,6 @@
 ---
 title: Date, Time, DateTime
+sidebar: { order: 5 }
 ---
 
 Rip has a literal syntax for Date, Time and DateTime objects. A subset of ISO8601 is supported. All dates and times are taken to be in UTC, regardless of the system timezone, unless a timezone is specified.

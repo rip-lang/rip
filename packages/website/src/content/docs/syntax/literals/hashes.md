@@ -1,5 +1,6 @@
 ---
 title: Hash
+sidebar: { order: 5 }
 ---
 
 A hash is a collection of key-value pairs surround by curly braces, and separated by a comma. Keys are strings, typically written as a symbol. Values can be any expression. Keys and values are separated by a colon.

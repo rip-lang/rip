@@ -1,5 +1,6 @@
 ---
 title: SQL (PLANNED)
+sidebar: { order: 100 }
 ---
 
 This is heavily inspired by C#'s linq and should be able to query arbitrary collections.
