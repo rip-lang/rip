@@ -1,0 +1,5 @@
+[settings]
+auto_install_disable_tools = ["node"]
+
+[tools]
+bun = "1.3.10"
