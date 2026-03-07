@@ -1,6 +1,8 @@
 ---
-title: Pattern matching exhaustiveness
+title: 0009 Exhaustiveness
 ---
+
+Pattern matching exhaustiveness
 
 You say:
 
@@ -19,6 +21,6 @@ You'll need a rule like:
 
 Otherwise developers will expect guarantees you can't provide.
 
----
+## Response
 
 Structures don't have inheritance. They are immutable, so they can't be added to or otherwise modified after they are defined. I think I need more details about "types are closed" and "adts are sealed" before I can fully respond.

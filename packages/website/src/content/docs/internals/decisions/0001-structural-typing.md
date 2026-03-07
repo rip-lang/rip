@@ -1,6 +1,8 @@
 ---
-title: "Biggest architectural tension: structural typing + overloads + monomorphization"
+title: 0001 Structural Typing
 ---
+
+Biggest architectural tension: structural typing + overloads + monomorphization
 
 You have:
 
@@ -24,7 +26,7 @@ f = -> (x: Foo) { ... }
 f = -> (x: Bar) { ... }
 ```
 
-If you pass a { color: String, shape: String }, both match structurally.
+If you pass a `{ color: String, shape: String }`, both match structurally.
 
 👉 Which overload wins?
 
@@ -36,6 +38,6 @@ You'll need a formal rule:
 
 This must be defined early or the type system becomes unpredictable.
 
----
+## Response
 
 We could say the most specific type wins. If it's still ambiguous, it should throw a compiler error. I haven't considered deeply nested structures, but there will have to be a limit at some point. I wouldn't expect it to be a practical problem in nearly all cases, but the devil is in the details.

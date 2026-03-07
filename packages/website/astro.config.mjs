@@ -52,13 +52,6 @@ export default defineConfig({
 							label: "Decisions",
 							collapsed: true,
 							autogenerate: { directory: "internals/decisions" }
-						},
-						{
-							label: "Comments/Responses",
-							collapsed: true,
-							autogenerate: {
-								directory: "internals/comments-responses"
-							}
 						}
 					]
 				}

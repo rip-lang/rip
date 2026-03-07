@@ -1,6 +1,8 @@
 ---
-title: Modules + structural typing
+title: 0011 Modules
 ---
+
+Modules + structural typing
 
 Structural typing across modules requires a canonical type identity model.
 
@@ -18,6 +20,6 @@ You'll need to define:
 - Type alias transparency
 - Exported type canonicalization
 
----
+## Response
 
 I'd expect two modules that independently define identical types to be considered interchangable, like TypeScript. The exact details of structural identity need to be worked out.

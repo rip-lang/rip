@@ -1,10 +1,12 @@
 ---
-title: Structural typing + generics → constraint solving complexity
+title: 0002 Constraint Solving Complexity
 ---
+
+Structural typing + generics → constraint solving complexity
 
 Structural typing with generics requires solving:
 
-👉 “Does type T satisfy this structural constraint?”
+👉 "Does type `T` satisfy this structural constraint?"
 
 This becomes expensive when nested:
 
@@ -20,7 +22,7 @@ This is solvable, but you'll want to define:
 
 Otherwise compile times can explode.
 
----
+## Response
 
 I'm not _too_ worried about compile times at this point. (I could be naive here.) I think letting developers accept the trade-off of long compile times for super-nested types might be acceptable. If not a depth limit could be introduced. I'd like to see how the problem presents itself in real code.
 

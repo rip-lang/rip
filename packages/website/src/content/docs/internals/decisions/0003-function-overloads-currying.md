@@ -1,6 +1,8 @@
 ---
-title: Function overloads + currying interaction
+title: 0003 Function Semantics
 ---
+
+Function overloads + currying interaction
 
 You allow:
 
@@ -16,20 +18,20 @@ Example:
 f = -> (x: Integer, y: Integer)
 f = -> (x: String, y: String)
 
-g = f(10)
+g = f(x: 10)
 ```
 
 What is `g`'s type?
 
 You must define whether overload resolution happens:
 
-1️⃣ Before currying
-2️⃣ After currying
-3️⃣ Lazily
+1. Before currying
+2. After currying
+3. Lazily
 
 Each choice has big implications.
 
----
+## Response
 
 Your example is actually a bit ambiguous because `f` can't be re-assigned.
 
@@ -37,7 +39,7 @@ Your example is actually a bit ambiguous because `f` can't be re-assigned.
 f = -> (x: Integer, y: Integer)
 f = -> (x: String, y: String)
 
-g = f(10)
+g = f(x: 10)
 ```
 
 Let's assume you meant something like this:
@@ -48,7 +50,7 @@ f = => {
   -> (x: String, y: String) { ... }
 }
 
-g = f(10)
+g = f(x: 10)
 ```
 
 In that case `g` is a function that would be equivelant to the following:
@@ -57,7 +59,7 @@ In that case `g` is a function that would be equivelant to the following:
 g = => {
   # -> (x: Integer, y: Integer) { ... }
   # -> (x: String, y: String) { ... }
-  -> (y: Integer) { self(10, y) }
+  -> (y: Integer) { self(x: 10, y) }
 }
 ```
 

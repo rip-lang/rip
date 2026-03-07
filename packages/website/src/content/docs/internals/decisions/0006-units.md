@@ -1,6 +1,8 @@
 ---
-title: Units system is underspecified
+title: 0006 Units
 ---
+
+Units system is underspecified.
 
 Units are deceptively hard.
 
@@ -16,6 +18,6 @@ F#'s unit system is complex for a reason.
 
 Right now this is just a placeholder — which is fine — but expect high complexity.
 
----
+## Response
 
 Very true. It can be addressed and hopefully added later.

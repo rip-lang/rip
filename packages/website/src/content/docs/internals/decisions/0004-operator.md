@@ -1,8 +1,10 @@
 ---
-title: Operator-as-method + structural typing
+title: 0004 Operators
 ---
 
-Since operators are methods (a.+(b)), structural typing implies:
+Operator-as-method + structural typing
+
+Since operators are methods (`a.+(b)`), structural typing implies:
 
 👉 Any type with a + method supports +
 
@@ -17,6 +19,6 @@ Rational + Irrational
 
 You'll need a numeric promotion lattice or results become ambiguous.
 
----
+## Response
 
 I'm actually not clear about what "numeric tower" and "numeric promotion lattice" means. What I intend if for numbers to be mathmatically correct, even if it makes the language slower.

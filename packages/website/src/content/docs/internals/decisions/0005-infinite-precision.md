@@ -1,6 +1,8 @@
 ---
-title: Infinite precision + irrational numbers
+title: 0005 Numbers
 ---
+
+Infinite precision + irrational numbers
 
 You wrote:
 
@@ -20,7 +22,7 @@ Most languages avoid true irrationals for this reason.
 
 This is a research-level feature.
 
----
+## Response
 
 I had the impression that there are libraries for handling infinitely precise rational numbers. I'm pretty sure Ruby had one that I used while building the original REPL/interpreter.
 

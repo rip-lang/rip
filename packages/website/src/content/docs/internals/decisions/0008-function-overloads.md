@@ -1,6 +1,8 @@
 ---
-title: Overload groups as values (self)
+title: 0008 Function Overloads
 ---
+
+Overload groups as values (`self`)
 
 This is interesting and powerful:
 
@@ -18,9 +20,9 @@ But introduces questions:
 If yes → you're building multi-methods.
 If no → restrict explicitly.
 
----
+## Response
 
-"Bare" overloads are just syntax sugar for a single overload wrapped in a a function.
+"Naked" overloads are just syntax sugar for a single overload wrapped in a a function.
 
 ```rip
 a = -> () { ... }

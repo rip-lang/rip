@@ -1,5 +1,5 @@
 ---
-title: Structure Syntax
+title: 0017 Structure Syntax
 ---
 
 Let's break this down into two parts: defining a structure and instantiating it. (Structures are closed by the way. Also structures already have a syntax for derived fields: `@.foo = ~> {}`)

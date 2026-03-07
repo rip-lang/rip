@@ -1,6 +1,8 @@
 ---
-title: Structural typing of structs
+title: 0007 Structure Typing
 ---
+
+Structural typing of structs
 
 You show:
 
@@ -22,7 +24,7 @@ If they're nominal + structural compatible, you'll need to define:
 
 This is a key philosophical decision.
 
----
+## Response
 
 I had to look up "width subtyping". My intension in that example is to show that a `Pet` type is acceptable for the `get-age` function because it satisfies the type contraints that the `User` type imposes.
 

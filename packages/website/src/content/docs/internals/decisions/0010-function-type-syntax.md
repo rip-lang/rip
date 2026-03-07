@@ -1,10 +1,8 @@
 ---
-title: Function type syntax discomfort is a real signal
+title: 0010 Function Type Syntax
 ---
 
-You wrote:
-
-> not thrilled with function type syntax ￼
+Function type syntax discomfort is a real signal.
 
 That's a strong instinct — function types often expose deeper model issues.
 
@@ -22,6 +20,6 @@ is just another structural type.
 
 That would be internally consistent with your philosophy.
 
----
+## Response
 
 Yes. I'm really okay with the function type syntax. My only complaint is it puts the dash rocket between the parameters and return type, while actual functions (overloads at least) start with the dash rocket. It's a minor quibble.
