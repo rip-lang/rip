@@ -29,9 +29,9 @@ export default defineConfig({
 							autogenerate: { directory: "syntax/literals" }
 						},
 						{
-							label: "Blocks",
+							label: "Control Flow",
 							collapsed: true,
-							autogenerate: { directory: "syntax/blocks" }
+							autogenerate: { directory: "syntax/control-flow" }
 						},
 						{ slug: "syntax/assignments" },
 						{ slug: "syntax/functions" },
