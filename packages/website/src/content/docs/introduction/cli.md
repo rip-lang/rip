@@ -2,25 +2,44 @@
 title: CLI API
 ---
 
+No arguments starts a REPL like Ruby's pry:
+
 ```shell
-# no arguments starts a REPL like Ruby's pry
 rip
+```
 
-# start REPL explicitly
+Start REPL explicitly:
+
+```shell
 rip repl
+```
 
-# pass a file to compile and execute it immediately
+Pass a file to compile and execute it immediately:
+
+```shell
 rip file.rip
+```
 
-# read from standard in to compile and execute immediately
+Read from standard in to compile and execute immediately:
+
+```shell
 rip -
+```
 
-# the compiler include various tools to inspect the code in different forms
+The compiler include various tools to inspect the code in different forms:
+
+```shell
 rip compile file.rip
+```
 
-# format file
+Format file:
+
+```shell
 rip format file.rip
+```
 
-# format current directory recursively while skipping ignored files
+Format current directory recursively while skipping ignored files:
+
+```shell
 rip format .
 ```
