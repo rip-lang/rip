@@ -37,7 +37,7 @@ SYSTEM_EMAIL = "no-reply@example.com"
 References for types and structures generally follow `UpperCamelCase`.
 
 ```rip
-User = struct (name: String) { }
+User = struct { @.name: String }
 
 Result<T>
   = { success: true, data: T }

@@ -152,7 +152,7 @@ A binding is considered _refined to_ `Literal<V>` if and only if it is initializ
 background-color = -> (theme: Literal<:dark> | Literal<:light>) { }
 # :dark is typed as String, but is refined to Literal<:dark> in the argument
 # position since the parameter's type is literal
-background-color(:dark)
+background-color(theme: :dark)
 ```
 
 Literal type refinement does not propagate.
@@ -161,7 +161,7 @@ Literal type refinement does not propagate.
 background-color = -> (theme: Literal<:dark> | Literal<:light>) { }
 # :dark is typed as String, and literal refinement is NOT propagated
 my-theme = :dark
-background-color(my-theme)
+background-color(theme: my-theme)
 ```
 
 Use `Exact<V>` if a literal type is needed. `Exact<V>` produces a value whose static type is `Literal<V>`. Normally a literal expression (like `42`) is given a broad base type (`Integer` in this case) that, among other things, does not participate in exhaustiveness checks. Using `Exact` tells the compiler to assign the singleton literal subtype to the value at the binding site, rather than relying on non-propagating literal refinement. The runtime value is unchanged.
@@ -170,7 +170,7 @@ Use `Exact<V>` if a literal type is needed. `Exact<V>` produces a value whose st
 background-color = -> (theme: Literal<:dark> | Literal<:light>) { }
 # :dark is typed as Literal<:dark>, and literal refinement is not needed
 my-theme = Exact<:dark>
-background-color(my-theme)
+background-color(theme: my-theme)
 ```
 
 Literal refinement:
