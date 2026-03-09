@@ -36,6 +36,102 @@ add(a, b)
 
 Since every argument names the parameter it is bound to, arguments may be written in any order, as long as the same parameter isn't bound more than once.
 
+## Method Invocation
+
+Rip supports a shorthand syntax for calling methods with a single argument. This syntax is inspired by traditional binary operator notation but is available for **any** method that is called with exactly one argument.
+
+### Dot Call
+
+The most explicit form uses dot notation.
+
+```rip
+foo.bar(x: 1)
+```
+
+This calls the method `bar` on `foo`, binding the argument to parameter `x`. This is how most methods are called.
+
+### Binary Method Call
+
+If a method is called with exactly **one argument**, it _may_ be invoked using binary syntax:
+
+```rip
+foo bar 1
+```
+
+This desugars to:
+
+```rip
+foo.bar(_: 1)
+```
+
+The argument is bound to the parameter named `_`.
+
+Binary syntax is available for **any single‑argument method**, not just traditional operators.
+
+### Operator Methods
+
+Operator-looking methods are simply methods whose names are symbols.
+
+```rip
+1 + 2
+```
+
+This is equivalent to:
+
+```rip
+1.+(_: 2)
+```
+
+Binary operators are ordinary methods and may be defined on structures. For example, a method may be defined like this:
+
+```rip
+Greeter = struct {
+  @.greet = -> (_: String) { "Hello #{_}" }
+}
+
+g = Greeter.new()
+
+# "normal" dot notation
+g.greet(_: :world)
+# => "Hello world"
+
+# binary "operator" notation
+g greet :world
+# => "Hello world"
+```
+
+### Left-to-Right Evaluation
+
+Rip intentionally does **not** define operator precedence rules.
+
+Binary method syntax is always evaluated **left to right**.
+
+For example:
+
+```rip
+a + b * c
+```
+
+is interpreted as:
+
+```rip
+(a + b) * c
+```
+
+because the expression is parsed as chained binary method calls.
+
+Parentheses may be used to control evaluation order explicitly.
+
+### Readability
+
+Binary syntax is entirely optional. Developers may always use the explicit dot syntax instead:
+
+```rip
+foo.bar(_: baz)
+```
+
+Binary syntax is generally preferred for operator-like methods, while dot syntax is typically clearer for ordinary method names.
+
 ## Optional Parameters
 
 A parameter is considered optional if it is defined with a default expression. A default expression is written after the parameter name/type combo, separated by an equal sign (`=`). The default expression is statically analyzed to infer the parameter's type, therefore the type is typically omitted.
