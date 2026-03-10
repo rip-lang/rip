@@ -23,7 +23,7 @@ title: Types
 
 Rip has the following categories of types:
 
-### 2.1 Primitive Types
+### 2.1. Primitive Types
 
 Examples include:
 
@@ -39,7 +39,7 @@ Primitive types participate in structural subtyping where applicable.
 
 ---
 
-### 2.2 Structural Record Types
+### 2.2. Structural Record Types
 
 A record type is defined by a set of named fields.
 
@@ -51,7 +51,7 @@ A value satisfies a record type if it contains at least those fields with compat
 
 ---
 
-### 2.3 Function Types
+### 2.3. Function Types
 
 Function types are structural.
 
@@ -63,7 +63,7 @@ A function value satisfies a function type if at least one overload matches the 
 
 ---
 
-### 2.4 Union Types
+### 2.4. Union Types
 
 ```rip
 A | B
@@ -75,7 +75,7 @@ Exhaustiveness checking in pattern matching operates over the structurally disti
 
 ---
 
-### 2.5 Intersection Types
+### 2.5. Intersection Types
 
 ```rip
 A & B
@@ -85,7 +85,7 @@ Represents values satisfying both types. Intersections are distributed across un
 
 ---
 
-### 2.6 Reduction Rules
+### 2.6. Reduction Rules
 
 ```
 (A | B) & C = (A & C) | (B & C)
@@ -99,7 +99,7 @@ Reduction operates purely structurally. When intersections distribute across a u
 
 ---
 
-### 2.7 Generic Types
+### 2.7. Generic Types
 
 ```rip
 List<T>
@@ -124,7 +124,7 @@ If a default is provided for a generic type with a constraint, it must satisfy t
 
 ---
 
-### 2.8 Literal Types
+### 2.8. Literal Types
 
 Lteral values may be converted to compile-time singleton types by passing them to the `Literal<V>` generic type. Such literal types participate in structural subtyping where applicable.
 
@@ -184,9 +184,9 @@ Literal refinement:
 
 ## 3. Structural Subtyping
 
-Type A is a subtype of type B if A satisfies all requirements of B.
+Type `A` is a subtype of type `B` if `A` satisfies all requirements of `B`.
 
-### 3.1 Width Subtyping
+### 3.1. Width Subtyping
 
 A record with more fields is a subtype.
 
@@ -196,17 +196,17 @@ A record with more fields is a subtype.
 
 ---
 
-### 3.2 Depth Subtyping
+### 3.2. Depth Subtyping
 
 Fields are compatible if their types are subtypes.
 
 ```
-{ x: Integer } <: { x: Number }
+{ x: Integer } <: { x: Rational }
 ```
 
 ---
 
-### 3.3 Function Subtyping
+### 3.3. Function Subtyping
 
 Functions are:
 
@@ -215,7 +215,7 @@ Functions are:
 
 ---
 
-### 3.4 Union Rules
+### 3.4. Union Rules
 
 ```
 A <: A | B
@@ -224,7 +224,7 @@ B <: A | B
 
 ---
 
-### 3.5 Intersection Rules
+### 3.5. Intersection Rules
 
 ```
 A & B <: A
@@ -249,23 +249,23 @@ Types defined in separate modules are interchangeable if structurally identical.
 
 ## 5. Function Overloads and Dispatch
 
-### 5.1 Overload Groups
+### 5.1. Overload Groups
 
 A function value contains one or more overloads.
 
 ---
 
-### 5.2 Compatibility
+### 5.2. Compatibility
 
 An overload is compatible with a call if argument types are subtypes of parameter types.
 
-A literal expression `V` (see §2.8.1) is compatible with parameter type `Literal<V>`.
+A literal expression `V` (see [§2.8.1](#281-literal-refinement)) is compatible with parameter type `Literal<V>`.
 
 Literal refinement affects compatibility checks only. It does not modify the structural type of a value, does not introduce implicit widening or narrowing, and does not alter overload specificity ordering beyond satisfying `Literal<V>` parameters.
 
 ---
 
-### 5.3 Specificity Ordering
+### 5.3. Specificity Ordering
 
 An overload A is more specific than B if:
 
@@ -274,7 +274,7 @@ An overload A is more specific than B if:
 
 ---
 
-### 5.4 Dispatch Rule
+### 5.4. Dispatch Rule
 
 1. Collect all compatible overloads
 2. Select most specific
@@ -282,7 +282,7 @@ An overload A is more specific than B if:
 
 ---
 
-### 5.5 Currying
+### 5.5. Currying
 
 Partial application produces a new overload with bound arguments removed from the parameter list.
 
@@ -306,7 +306,7 @@ Structural matching is used.
 
 ## 8. Numeric Model
 
-### 8.1 Numeric Types
+### 8.1. Numeric Types
 
 Initial numeric hierarchy:
 
@@ -318,7 +318,7 @@ Integer <: Rational
 
 ---
 
-### 8.2 Arithmetic
+### 8.2. Arithmetic
 
 Operations produce the least upper bound numeric type.
 
@@ -330,7 +330,7 @@ Integer + Rational → Rational
 
 ---
 
-### 8.3 Equality
+### 8.3. Equality
 
 Numeric equality is exact for rational values.
 
@@ -340,7 +340,7 @@ Non-exact numeric types must define comparison semantics explicitly.
 
 ## 9. Equality Semantics
 
-### 9.1 Structural Equality
+### 9.1. Structural Equality
 
 Two values are equal if:
 
@@ -349,7 +349,7 @@ Two values are equal if:
 
 ---
 
-### 9.2 Function Equality
+### 9.2. Function Equality
 
 Functions are equal only by identity.
 
@@ -357,13 +357,13 @@ Functions are equal only by identity.
 
 ## 10. Pattern Matching
 
-### 10.1 Structural Matching
+### 10.1. Structural Matching
 
 Patterns match based on structural compatibility.
 
 ---
 
-### 10.2 Exhaustiveness
+### 10.2. Exhaustiveness
 
 Exhaustiveness checking is guaranteed only for unions whose normalized members are structurally distinct and fully enumerated in the match.
 

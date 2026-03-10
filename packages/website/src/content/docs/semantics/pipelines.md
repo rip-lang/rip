@@ -5,7 +5,7 @@ sidebar: { order: 1 }
 
 Data can be processed with a chained binary method called "pipe" (`|>`). Chaining multiple together creates a "pipeline". Pipelines create readable data transformation flows that operate left-to-right. Each pipeline stage receives the result of the previous stage as a `value` argument. To participate in pipelines, functions must provide an overload with a `value` parameter of the appropriate type.
 
-## Eager Evaluation Over Single Value
+## 1. Eager Evaluation Over Single Value
 
 The pipe operator `|>` binds the piped value to a parameter named `value`. If the value is a collection, it binds the entire collection, not the individual items.
 
@@ -47,7 +47,7 @@ The advantage of the pipeline approach is the code reads in the same order it ex
 
 The rule is that `a |> f(b: 1)` is exactly equal to `f(b: 1)(value: a)`, which is semantically equal to `f(b: 1, value: a)`. `f(b: 1)` produces an automatically-curried function with `b` partially applied. This new anonymous function is passed to `|>`, which applies the `value` argument, which executes the original `f` function.
 
-## Overload Resolution
+## 2. Overload Resolution
 
 After the pipeline binds the `value` argument, normal overload resolution selects the most specific overload.
 
@@ -60,7 +60,7 @@ foo = => {
 42 |> foo
 ```
 
-### Behind The Scenes
+### 2.1. Behind The Scenes
 
 The pipe "operator" takes advantage of Rip's binary operator method invocation. `|>` isn't actually an operator at all. It's just a method that is available on all values.
 
@@ -83,7 +83,7 @@ Object = struct {
 }
 ```
 
-### Partial Application
+### 2.2. Partial Application
 
 Suppose `String.pad()` is meant to be called with two required arguments: `value` (the string to pad) and `length` (minimum number of characters the final result should be). (We can ignore an optional `fill` parameter for now.)
 

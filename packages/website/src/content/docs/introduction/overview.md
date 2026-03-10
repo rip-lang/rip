@@ -3,7 +3,7 @@ title: Overview
 sidebar: { order: 1 }
 ---
 
-A new programming language emphasizing developer ergonomics, consistency and correctness.
+Rip is a new programming language emphasizing developer ergonomics, consistency and correctness.
 
 ChatGPT summarized Rip for the computer science nerds as follows:
 

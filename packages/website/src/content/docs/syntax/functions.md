@@ -4,7 +4,7 @@ title: Functions
 
 Functions are units of code that are executed when "called". They are first-class objects, so they may be passed around and to/from other functions.
 
-## Basic Syntax
+## 1. Basic Syntax
 
 Functions are defined with the dash rocket (`->`) keyword. This is followed by parenthesis (`(`/`)`) for any parameters. Parenthesis are required even if no parameters are given. Parameters are typed references for binding to arguments when the function is called. The function body is defined by curly braces (`{`/`}`), which are required, even if the body has just one expression.
 
@@ -16,7 +16,7 @@ Functions must always return a value. A function can return a value with the `re
 
 The `return` keyword is normally not used unless it is required. (For instance if the function needs to return early.)
 
-## Required Parameters
+## 2. Required Parameters
 
 Functions may have values passed to them when they are called. When a function is defined, any number of parameters may be specified. Each parameter has a reference and a type, separated by a colon (`:`). Multiple parameters are separated by comma (`,`).
 
@@ -36,11 +36,11 @@ add(a, b)
 
 Since every argument names the parameter it is bound to, arguments may be written in any order, as long as the same parameter isn't bound more than once.
 
-## Method Invocation
+## 3. Method Invocation
 
 Rip supports a shorthand syntax for calling methods with a single argument. This syntax is inspired by traditional binary operator notation but is available for **any** method that is called with exactly one argument.
 
-### Dot Call
+### 3.1. Dot Call
 
 The most explicit form uses dot notation.
 
@@ -50,7 +50,7 @@ foo.bar(x: 1)
 
 This calls the method `bar` on `foo`, binding the argument to parameter `x`. This is how most methods are called.
 
-### Binary Method Call
+### 3.2. Binary Method Call
 
 If a method is called with exactly **one argument**, it _may_ be invoked using binary syntax:
 
@@ -68,7 +68,7 @@ The argument is bound to the parameter named `_`.
 
 Binary syntax is available for **any single‑argument method**, not just traditional operators.
 
-### Operator Methods
+### 3.3. Operator Methods
 
 Operator-looking methods are simply methods whose names are symbols.
 
@@ -100,7 +100,7 @@ g greet :world
 # => "Hello world"
 ```
 
-### Left-to-Right Evaluation
+### 3.4. Left-to-Right Evaluation
 
 Rip intentionally does **not** define operator precedence rules.
 
@@ -122,7 +122,7 @@ because the expression is parsed as chained binary method calls.
 
 Parentheses may be used to control evaluation order explicitly.
 
-### Readability
+### 3.5. Readability
 
 Binary syntax is entirely optional. Developers may always use the explicit dot syntax instead:
 
@@ -132,7 +132,7 @@ foo.bar(_: baz)
 
 Binary syntax is generally preferred for operator-like methods, while dot syntax is typically clearer for ordinary method names.
 
-## Optional Parameters
+## 4. Optional Parameters
 
 A parameter is considered optional if it is defined with a default expression. A default expression is written after the parameter name/type combo, separated by an equal sign (`=`). The default expression is statically analyzed to infer the parameter's type, therefore the type is typically omitted.
 
@@ -152,7 +152,7 @@ add(b: 21, a: 13)
 # => 34
 ```
 
-## Splat
+## 5. Splat
 
 The unary splat operator (`*`) may be used to specify multiple arguments at once.
 
@@ -177,7 +177,7 @@ marked-map = mark-map(map: blank-map, *coords)
 
 Arguments may be splattered as long as the object being splatted has compatible fields and types. Arguments are bound in source order (left-to-right, so explicitly named arguments that appear after may override splatted bindings will take precedent.
 
-## Recursion
+## 6. Recursion
 
 Functions have a special reference (`self`) available in the body that allows the function to call itself.
 
@@ -191,7 +191,7 @@ factorial = -> (n: Integer, accumulator = 1) {
 }
 ```
 
-## Overloads
+## 7. Overloads
 
 Functions may be defined with multiple implementations called overloads. Each overload defines its own parameters and function body. Functions with overloads are defined with the fat rocket (`=>`) keyword. They have a collection of anonymous overloads inside a pair of curly braces (`{`/`}`).
 
@@ -204,7 +204,7 @@ overloaded_function = => {
 
 A function with optional parameters is syntactical sugar for this, where each optional parameter synthesizes an overload for the function.
 
-### Wrapping
+### 7.1. Wrapping
 
 So far we've called two different things "functions", but this isn't quite accurate. Technically a _function_ is defined with `=>`, and an _overload_ is defined with `->`. The difference might be subtle, but in Rip, a function is a wrapper around one or more overloads. Practically speaking though, overloads may be considered functions because the compiler automatically wraps any "naked" overload.
 
@@ -252,7 +252,7 @@ factorial = => {
 }
 ```
 
-## Automatic Curry
+## 8. Automatic Curry
 
 Function arguments are automatically curried if enough arguments aren't given to satisfy all required parameters. If a call does not bind all required parameters, the result is a new function expecting the remaining parameters. Parameters may not be bound more than once.
 
@@ -278,7 +278,7 @@ bar(b: 2, a: 1)
 bar(b: 2)(a: 1)
 ```
 
-## Generic Parameter Types
+## 9. Generic Parameter Types
 
 Functions can take generic type parameters separated by commas. Type parameters are surrounded by angled brackets (`<`/`>`) between the `=>` or `->` and the value parameters.
 
@@ -296,7 +296,7 @@ See [Types](/syntax/types#27-generic-types) for more information about generics.
 
 If an argument is syntactically a literal `V`, and the parameter type includes `Literal<V>`, the argument is considered compatible.
 
-## Literal Types And Dispatch
+## 10. Literal Types And Dispatch
 
 A literal expression `V` is compatible with a parameter of type `Literal<V>` via [literal refinement](/syntax/types/#281-literal-refinement). This refinement applies only at the call site and does not change the static type of the argument.
 

@@ -3,13 +3,17 @@ title: Strings
 sidebar: { order: 3 }
 ---
 
-Strings are specialized lists of grapheme clusters. They have three different literal syntaxes: symbol, double-quote, HEREDOC.
+Strings are specialized lists of grapheme clusters. (Strings may be thought of as extensions of `List<Grapheme>`.) They have three different literal syntaxes: `symbol`, `double-quote`, `HEREDOC`.
 
-Symbolic strings (symbols) are a colon followed by any number of grapheme clusters than may be used for grapheme literals. Symbols are primarily used in source code as hash keys for instance.
+## 1. Symbol (app source string)
+
+Symbolic strings (symbols) are a colon followed by any number of grapheme clusters than may be used for grapheme literals. Symbols are primarily used in source code, for instance as hash keys.
 
 ```rip
 :symbol-string
 ```
+
+## 2. Double Quoted (single-line string)
 
 Double quoted strings ("normal" strings) are any number of grapheme clusters (even zero!) surrounded by double quotes. An expression can be interpolated into a string with `#{...}`. Interpolation is just syntax sugar for concatenation.
 
@@ -18,6 +22,8 @@ Double quoted strings ("normal" strings) are any number of grapheme clusters (ev
 
 "the answer is #{answer}"
 ```
+
+## 3. HEREDOC (multi-line string)
 
 Double quote strings are great for single lines of text. Use a HEREDOC string for multiple lines.
 
@@ -34,7 +40,7 @@ and also haiku
 POEM
 ```
 
-Some notes about HEREDOCs:
+### 3.1. Some notes about HEREDOCs
 
 - HEREDOCs can be interpolated like double quoted strings.
 - The leading whitespace on each line is trimmed during parsing to line up with the start of line with the opening terminator. This allows the HEREDOC to be indented. All additional whitespace is preserved. (Similar to the way Kotlin's `trimIndent()` works, but without needing to call an extra method.)

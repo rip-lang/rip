@@ -1,8 +1,8 @@
 ---
-title: References And Assignments
+title: Identifiers
 ---
 
-## References
+## 1. References
 
 Similar to other languages, references (or identifiers) must not start with a digit and must not contain any whitespace. Unlike most other languages, references are allowed to contain most other printable characters and do not need to contain letters at all. All references are case sensitive.
 
@@ -19,7 +19,7 @@ true
 false
 ```
 
-### Naming Convensions
+### 1.1. Naming Convensions
 
 References for "normal" values (variables in other languages) and properties generally follow `lower-kebab-case` or `lower_snake_case`. Both are fine, but kebab is preferred since it's easier to write.
 
@@ -44,11 +44,11 @@ Result<T>
   | { success: false, error: String }
 ```
 
-## Assignment
+## 2. Assignment
 
 You can associate a value or a type with a reference using the assignment operator (`=`). All references are immutable and "write-once" (single static assignment).
 
-### Normal Assignment
+### 2.1. Normal Assignment
 
 The normal assignment syntax is used for both runtime values and compile-time types, depending on the RHS.
 
@@ -60,7 +60,7 @@ answer = 42
 Result = { success: Literal<true>, data: Foo }
 ```
 
-### Destructured Assignment
+### 2.2. Destructured Assignment
 
 Value destructured assignment follow the same rules for patterns in `match` expression blocks. If a destructured assignment pattern cannot match the assigned value, it is a runtime error unless the type system can determine the mismatch at compile time.
 
@@ -78,9 +78,9 @@ An object's property may be bound to a reference of the same name. Multiple prop
 {foo, bar, baz} = quix
 ```
 
-See blocks/match.md for more information about pattern matching.
+See [match](/syntax/control-flow/match) for more information about pattern matching.
 
-### Generic Assignment
+### 2.3. Generic Assignment
 
 Generic type references need the type parameters listed after the reference. Generic parameters are shared across any unions or intersections.
 

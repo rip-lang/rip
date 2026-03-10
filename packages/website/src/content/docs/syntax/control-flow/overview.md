@@ -1,5 +1,5 @@
 ---
-title: Blocks
+title: Overview
 sidebar: { order: 1 }
 ---
 

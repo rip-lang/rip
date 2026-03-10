@@ -4,7 +4,7 @@ title: Structures
 
 Structures are used to build complex, typed data structures. Structures define fields on their prototype. A field may contain a value (including functions) or a computed expression.
 
-## Basic Syntax
+## 1. Basic Syntax
 
 The `@` is the structure's prototype. Decorating it determines the shape of the structure and how it can be used. `@` refers to the structure's prototype during declaration and to the instance when accessed inside computed fields or methods.
 
@@ -15,7 +15,7 @@ User = struct {
 }
 ```
 
-## Instantiation
+## 2. Instantiation
 
 A structure needs to be instantiated to be used. This creates a new object that matches the type described by the structure's prototype. Call the `.new()` function on the structure to create an instance.
 
@@ -32,7 +32,7 @@ user = User.new(name: :Frank, birthday: 2000-01-01)
 
 Now you can read `user.name` to get the string `:Frank`.
 
-## Optional Fields
+## 3. Optional Fields
 
 Sometimes it makes sense to provide a default for a field. In this case the field type is inferred.
 
@@ -59,7 +59,7 @@ user2.color
 # => :blue
 ```
 
-## Computed Fields
+## 4. Computed Fields
 
 Structures can also define computed fields that have access to the rest of the structure. Create a computed field with the swerve rocket keyword (`~>`) followed by a body wrapped in curly braces (`{`/`}`).
 
@@ -83,7 +83,7 @@ Notice that inside the computed field, `@` refers to the structure instance.
 
 Computed fields behave like read-only functions. They are lazy-evaluated on first access and return value is cached for the life of the instance. They don't need parenthesis to be called. (Adding parenthesis would actually be an error unless the computed field evaluates to a function.)
 
-## Function Fields
+## 5. Function Fields
 
 Functions may also be added as normal fields. They also have access to the instance via `@`. Otherwise they behave like ordinary functions. Such "instance functions" may be passed around, and overload and automatic currying work as they would with any other function.
 
@@ -115,7 +115,7 @@ john.oldest(mary)
 
 Functions are treated like regular fields.
 
-## Splat
+## 6. Splat
 
 Structures may be splatted into function calls. This allows structures to act as argument bundles when their fields match the function's parameter names.
 
@@ -173,7 +173,7 @@ george = User.new(
 
 Generally an instance `a` may splat into structure `B`'s initializer if `a`'s type is a sub-type of `B`. Computed fields may be used to splat into a compatible structure, but fields do not overwrite computed fields.
 
-## Static Fields
+## 7. Static Fields
 
 Structures may have static fields. Static fields are not attached to the prototype, so they aren't accessed from any instance. Instead they are accessed directly from the structure.
 
@@ -193,7 +193,7 @@ error.code
 # => compiler error
 ```
 
-## Generic Fields
+## 8. Generic Fields
 
 Structures and fields may be declared with generic types. Generic type parameters may be accessed inside the structure anywhere a regular type is allowed.
 

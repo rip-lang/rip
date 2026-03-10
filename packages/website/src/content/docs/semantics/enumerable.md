@@ -3,8 +3,6 @@ title: Enumerable
 sidebar: { order: 2 }
 ---
 
-## Overview
-
 An `Enumerable<T>` represents a sequence of values that are produced lazily.
 
 Unlike normal collections, which contain all of their values immediately, an enumerable produces values one at a time when they are requested. This allows pipelines to operate on very large collections efficiently and also enables infinite sequences.
@@ -15,7 +13,7 @@ An enumerable pipeline does **not** execute when it is defined. Instead, it buil
 
 ---
 
-## The Enumerable Protocol
+## 1. The Enumerable Protocol
 
 Conceptually, an enumerable exposes a `next()` method that produces the next value in the sequence.
 
@@ -39,7 +37,7 @@ Each call to `next()` advances the enumerable forward by one item.
 
 ---
 
-## Lazy Pipelines
+## 2. Lazy Pipelines
 
 The `||>` operator creates a **lazy pipeline stage**.
 
@@ -64,9 +62,9 @@ This allows `||>` to express the behavior of common enumerable operations such a
 
 ---
 
-## Examples
+## 3. Examples
 
-### Map
+### 3.1. Map
 
 ```rip
 1..5
@@ -77,7 +75,7 @@ This allows `||>` to express the behavior of common enumerable operations such a
 
 ---
 
-### Filter
+### 3.2. Filter
 
 Returning `None` removes a value from the stream.
 
@@ -92,7 +90,7 @@ Returning `None` removes a value from the stream.
 
 ---
 
-### Flat Map
+### 3.3. Flat Map
 
 Returning a collection expands the stream.
 
@@ -105,7 +103,7 @@ Returning a collection expands the stream.
 
 ---
 
-## Infinite Enumerables
+## 4. Infinite Enumerables
 
 Because enumerables produce values on demand, they may represent infinite sequences.
 
@@ -125,7 +123,7 @@ The pipeline runs only until the consumer (`List.take`) has received enough valu
 
 ---
 
-## Consuming Enumerables
+## 5. Consuming Enumerables
 
 Enumerables do not execute until a consumer requests values.
 
@@ -149,7 +147,7 @@ For example:
 
 ---
 
-## Relationship to `|>`
+## 6. Relationship to `|>`
 
 `||>` builds **lazy enumerable pipelines**, while `|>` performs **eager single-value pipelines**.
 

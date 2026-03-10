@@ -8,7 +8,7 @@ No arguments starts a REPL like Ruby's pry:
 rip
 ```
 
-Start REPL explicitly:
+Start a REPL explicitly:
 
 ```shell
 rip repl
@@ -32,13 +32,13 @@ The compiler include various tools to inspect the code in different forms:
 rip compile file.rip
 ```
 
-Format file:
+Format a single file:
 
 ```shell
 rip format file.rip
 ```
 
-Format current directory recursively while skipping ignored files:
+Format the current directory recursively while skipping (git) ignored files:
 
 ```shell
 rip format .

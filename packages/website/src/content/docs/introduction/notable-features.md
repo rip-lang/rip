@@ -6,6 +6,7 @@ title: Notable Features
 - compiles to LLVM IR, then to WASM and native code
 - everything is an expression/value
 - all values are immutable
+- all types are structural
 - binary operators are actually syntax sugar for method invocation (`a + b` is the same as `a.+(_: b)`)
   - some operators exist, but there aren't many
   - binary "operators" must be surrounded by whitespace to distinguish them from identifiers (`a+b` is parsed as a single identifier)

@@ -33,7 +33,7 @@ export default defineConfig({
 							collapsed: true,
 							autogenerate: { directory: "syntax/control-flow" }
 						},
-						{ slug: "syntax/assignments" },
+						{ slug: "syntax/identifiers" },
 						{ slug: "syntax/functions" },
 						{ slug: "syntax/modules" },
 						{ slug: "syntax/structures" },
