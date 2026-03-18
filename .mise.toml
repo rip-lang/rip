@@ -1,0 +1,11 @@
+[settings]
+auto_install_disable_tools = ["node"]
+
+[tools]
+bun = "1.3.10"
+
+[tasks.format]
+run = "bun run format"
+
+[tasks.format-check]
+run = "bun run format:check"

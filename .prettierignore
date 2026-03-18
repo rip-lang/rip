@@ -1,0 +1,5 @@
+*.lock
+.astro/
+dist/
+target/
+node_modules/

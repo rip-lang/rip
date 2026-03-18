@@ -1,0 +1,16 @@
+{
+  "name": "rip",
+  "private": true,
+  "workspaces": [
+    "packages/website"
+  ],
+  "scripts": {
+    "format": "bunx prettier --write  package.json prettier.config.mjs packages/website",
+    "format:check": "bunx prettier --check package.json prettier.config.mjs packages/website"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "prettier": "^3.8.1",
+    "prettier-plugin-astro": "^0.14.1"
+  }
+}
