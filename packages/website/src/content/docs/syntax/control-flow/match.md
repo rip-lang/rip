@@ -56,15 +56,51 @@ x = 42
 # x is type Integer
 
 match (x) {
-  when (42) { }   # not exhaustive
+  when (42) { } # not exhaustive
 }
 
 y = Exact<42>
 
 match (y) {
-  when (42) { }   # exhaustive
+  when (42) { } # exhaustive
 }
 ```
+
+#### 2.1.1. Nil
+
+The empty value `nil` may be used as a literal pattern.
+
+```rip
+match (value) {
+  when (nil) { }
+}
+```
+
+A `nil` pattern matches only `nil` values.
+
+When the matched expression has type `Nil`, a single `nil` pattern is exhaustive:
+
+```rip
+x = nil
+
+match (x) {
+  when (nil) { } # exhaustive
+}
+```
+
+Since `Nil` has exactly one inhabitant, matching on `Nil` is equivalent whether using a literal pattern `nil` or a type pattern `Nil`:
+
+```rip
+match (x) {
+  when (nil) { }
+}
+
+match (x) {
+  when (Nil) { }
+}
+```
+
+Using both `nil` and `Nil` as separate branches is considered redundant and results in a compile-time error due to unreachable patterns.
 
 ---
 
