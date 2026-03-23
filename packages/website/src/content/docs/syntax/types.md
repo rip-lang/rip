@@ -27,6 +27,7 @@ Rip has the following categories of types:
 
 Examples include:
 
+- Nil
 - Integer
 - Rational
 - Decimal (if introduced)
@@ -37,11 +38,33 @@ Examples include:
 
 Primitive types participate in structural subtyping where applicable.
 
+### 2.1.1. Nil
+
+Rip defines a built-in singleton type `Nil`, which represents the absence of a value. The expression `nil` is the only value of type `Nil`.
+
+```rip
+Nil # type
+nil # value
+```
+
+`Nil` is commonly used in union types to model optional values:
+
+```rip
+T | Nil
+```
+
+`Nil` is a singleton type:
+
+- It has exactly one inhabitant: `nil`
+- All values of type `Nil` are equal
+
+`Nil` participates in unions and pattern matching like any other type.
+
 ---
 
 ### 2.2. Structural Record Types
 
-A record type is defined by a set of named fields.
+A record type is defined by a set of named fields. Note that type field names are identifiers.
 
 ```rip
 { name: String, age: Integer }

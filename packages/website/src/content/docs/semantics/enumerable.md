@@ -19,9 +19,8 @@ Conceptually, an enumerable exposes a `next()` method that produces the next val
 
 ```rip
 Some<T> = { value: T }
-None = {}
 
-Option<T> = Some<T> | None
+Option<T> = Some<T> | Nil
 
 Enumerable<T> = {
   next: () -> Option<T>
@@ -48,7 +47,7 @@ A pipeline stage may return:
 | Return value    | Meaning             |
 | --------------- | ------------------- |
 | `T`             | emit a single value |
-| `None`          | emit no value       |
+| `Nil`           | emit no value       |
 | `Enumerable<T>` | emit many values    |
 | `Collection<T>` | emit many values    |
 
@@ -77,12 +76,12 @@ This allows `||>` to express the behavior of common enumerable operations such a
 
 ### 3.2. Filter
 
-Returning `None` removes a value from the stream.
+Returning `Nil` removes a value from the stream.
 
 ```rip
 1..10
   ||> -> (value: Integer) {
-    if (value % 2 == 0) { value } else { None }
+    if (value % 2 == 0) { value } else { nil }
   }
   |> List.collect
 # => [2, 4, 6, 8, 10]
@@ -113,7 +112,7 @@ For example:
 NaturalNumbers
   ||> -> (value: Integer) { value * 2 }
   ||> -> (value: Integer) {
-    if (value % 3 == 0) { value } else { None }
+    if (value % 3 == 0) { value } else { nil }
   }
   |> List.take(count: 3)
 # => [6, 12, 18]

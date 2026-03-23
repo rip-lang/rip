@@ -24,6 +24,59 @@ age-bracket = if (age >= 18) {
 }
 ```
 
+## Condition Semantics
+
+An `if` condition may be either:
+
+1. A value expression
+2. A pattern assignment (`pattern = value`)
+
+### 1. Value Conditions
+
+When a value expression is used, the condition is evaluated as follows:
+
+- If the value has type `Boolean`, its value is used directly
+- If the value is `nil`, the condition is `false`
+- Otherwise, the condition is `true`
+
+This means that `nil` is the only non-Boolean value treated as false.
+
+Examples:
+
+```rip
+if (nil) {
+  # not executed
+}
+
+if (false) {
+  # not executed
+}
+
+if (true) {
+  # executed
+}
+
+if (42) {
+  # executed
+}
+```
+
+This behavior is defined as part of `if` semantics and does not rely on implicit method calls or coercion.
+
+### 2. Pattern Conditions
+
+When using pattern assignment:
+
+```rip
+if (pattern = value) { ... }
+```
+
+The condition is `true` if the pattern matches and `false` otherwise.
+
+If the pattern matches, any bound references are available inside the consequence block, and the value is narrowed according to the pattern.
+
+Pattern conditions do not use value truthiness rules.
+
 ## Destructured Assignment Conditions
 
 You can pattern match in the condition. Patterns and matching follows the same rules as `match`/`when` branches. Bound references are available inside the consequence block. If the pattern doesn't match, the alternative block (`else`) is executed. Inside the consequence block, the matched value is narrowed using the same intersection rules as in `match`.
